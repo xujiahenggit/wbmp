@@ -1,6 +1,7 @@
-/.settings/
+/.settings
 /target/
 /.classpath
 /.project
 /logs/
 /*.iml
+/.factorypath
