@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.UsherDao">
+	<insert id="insertBatch" parameterType="java.util.List">
+        INSERT INTO T_USHER (USHER_NAME, COMPANY_NAME, ORG_ID, ORG_NAME, PHONE_NO, BANK_PRINCIPAL, WORK_DAYS, CREATED_BY, CREATED_TIME, UPDATED_BY, UPDATED_TIME) 
+        SELECT TU.* FROM (
+        <foreach collection="list" item="item" index="index" separator="UNION ALL">
+            SELECT 
+            #{item.usherName, jdbcType=VARCHAR} USHER_NAME, 
+            #{item.companyName, jdbcType=VARCHAR} COMPANY_NAME, 
+            #{item.orgId, jdbcType=VARCHAR} ORG_ID, 
+            #{item.orgName, jdbcType=VARCHAR} ORG_NAME, 
+            #{item.phoneNo, jdbcType=VARCHAR} PHONE_NO, 
+            #{item.bankPrincipal, jdbcType=VARCHAR} BANK_PRINCIPAL, 
+            #{item.workDays, jdbcType=INTEGER} WORK_DAYS, 
+            #{item.createdBy, jdbcType=VARCHAR} CREATED_BY, 
+            #{item.createdTime, jdbcType=TIMESTAMP} CREATED_TIME,
+            #{item.updatedBy, jdbcType=VARCHAR} UPDATED_BY, 
+            #{item.updatedTime, jdbcType=TIMESTAMP} UPDATED_TIME 
+            FROM DUAL
+        </foreach>
+        ) TU
+    </insert>
+    
+    <select id="selectPageExt" resultType="com.bank.manage.dto.UsherDTO">
+		SELECT TU.USHER_ID, TU.USHER_NAME, TU.COMPANY_NAME, TU.COMPANY_NAME, TU.ORG_ID, 
+		TU.ORG_NAME, TU.PHONE_NO,TU.SEX, TU.IDENTITY_NO,TUWD.WORK_DAYS
+		FROM T_USHER TU 
+		LEFT JOIN T_USHER_WORK_DAYS TUWD ON TUWD.USHER_ID  = TU.USHER_ID 
+			AND TUWD.WORK_YEAR_MONTH = #{queryParam.workYearMonth, jdbcType=VARCHAR}
+		<trim prefix="WHERE" prefixOverrides="and|or">
+			TU.USHER_DELFLAG = '0'
+			<if test="queryParam.usherName != null and queryParam.usherName != ''">
+				AND TU.USHER_NAME LIKE CONCAT('%', #{queryParam.usherName, jdbcType=VARCHAR}, '%')
+			</if>
+			<if test="queryParam.companyName != null and queryParam.companyName != ''">
+				AND TU.COMPANY_NAME LIKE CONCAT('%', #{queryParam.companyName, jdbcType=VARCHAR}, '%')
+			</if>
+			<if test="queryParam.orgName != null and queryParam.orgName != ''">
+				AND TU.ORG_NAME LIKE CONCAT('%', #{queryParam.orgName, jdbcType=VARCHAR}, '%')
+			</if>
+		</trim>		
+	</select>
+</mapper>

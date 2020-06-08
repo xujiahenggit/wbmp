@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.StaffDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.bank.manage.dos.StaffDO">
+        <id column="STAFF_ID" property="staffId" />
+        <result column="STAFF_NAME" property="staffName" />
+        <result column="STAFF_SEX" property="staffSex" />
+        <result column="STAFF_USERID" property="staffUserid" />
+        <result column="STAFF_HONOR" property="staffHonor" />
+        <result column="STAFF_VIEWPOINT" property="staffViewpoint" />
+        <result column="STAFF_FULLFACEPHOTO" property="staffFullfacephoto" />
+        <result column="STAFF_SMILEPHOTOPATH" property="staffSmilephotopath" />
+        <result column="STAFF_POSTERPATH" property="staffPosterpath" />
+        <result column="STAFF_PHONE" property="staffPhone" />
+        <result column="STAFF_QRCODEPATH" property="staffQrcodepath" />
+        <result column="STAFF_ORGID" property="staffOrgid" />
+        <result column="UPDATE_USERID" property="updateUserid" />
+        <result column="UPDATE_USERNAME" property="updateUsername" />
+        <result column="UPDATE_TIME" property="updateTime" />
+        <result column="AUDITOR_USERID" property="auditorUserid" />
+        <result column="AUDITOR_USERNAME" property="auditorUsername" />
+        <result column="AUDITOR_TIME" property="auditorTime" />
+        <result column="AUDITOR_OPTION" property="auditorOption" />
+        <result column="AUDITOR_STATUS" property="auditorStatus" />
+        <result column="STAFF_IDENTIFY" property="staffIdentify" />
+        <result column="ISLINE" property="isline" />
+        <result column="WELCOME" property="welcome" />
+        <result column="POSITION_ID" property="positionId" />
+        <result column="POSITION" property="position" />
+        <result column="CREDITATION" property="creditation" />
+        <result column="CNNAME" property="cnname" />
+        <result column="CREATE_USERID" property="createUserid" />
+        <result column="CREATE_USERNAME" property="createUsername" />
+        <result column="CREATE_TIME" property="createTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        STAFF_ID, STAFF_NAME, STAFF_SEX, STAFF_USERID, STAFF_HONOR, STAFF_VIEWPOINT, STAFF_FULLFACEPHOTO, STAFF_SMILEPHOTOPATH, STAFF_POSTERPATH, STAFF_PHONE, STAFF_QRCODEPATH, STAFF_ORGID, UPDATE_USERID, UPDATE_USERNAME, UPDATE_TIME, AUDITOR_USERID, AUDITOR_USERNAME, AUDITOR_TIME, AUDITOR_OPTION, AUDITOR_STATUS, STAFF_IDENTIFY, ISLINE, WELCOME, POSITION_ID, POSITION, CREDITATION, CNNAME, CREATE_USERID, CREATE_USERNAME, CREATE_TIME
+    </sql>
+
+</mapper>

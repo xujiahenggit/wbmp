@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.user.dao.OrganizationDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.bank.user.dos.OrganizationDO">
+        <id column="ORG_ID" property="orgId"/>
+        <result column="ORG_NAME" property="orgName"/>
+        <result column="PARENT_ID" property="parentId"/>
+        <result column="PARENT_NAME" property="parentName"/>
+        <result column="ORG_UNIT_ID" property="orgUnitId"/>
+        <result column="ORG_UNIT_NAME" property="orgUnitName"/>
+        <result column="ORG_DEPART_ID" property="orgDepartId"/>
+        <result column="ORG_DEPART_NAME" property="orgDepartName"/>
+        <result column="ORG_TYPE" property="orgType"/>
+        <result column="ORG_CODE" property="orgCode"/>
+        <result column="ORG_STATUS" property="orgStatus"/>
+        <result column="ORG_TRUST_ID" property="orgTrustId"/>
+        <result column="ORG_LASTFLAG" property="orgLastflag"/>
+        <result column="ORG_LEVEL" property="orgLevel"/>
+    </resultMap>
+
+    <resultMap id="OrgList" type="com.bank.user.dto.OrgListDto" extends="BaseResultMap">
+        <result column="ORG_ADDRESS" property="orgAddress"/>
+        <result column="ORG_CONTACT_MAN" property="orgContactMan"/>
+        <result column="ORG_PHONE" property="orgPhone"/>
+        <result column="ORG_TELL" property="orgTell"/>
+    </resultMap>
+
+
+    <resultMap id="OrgDetailInfo" type="com.bank.user.dto.OrgListDto" extends="BaseResultMap">
+        <result column="ORG_ADDRESS" property="orgAddress"/>
+        <result column="ORG_CONTACT_MAN" property="orgContactMan"/>
+        <result column="ORG_PHONE" property="orgPhone"/>
+        <result column="ORG_TELL" property="orgTell"/>
+        <collection property="listPositonPeople" ofType="com.bank.user.dto.PositionPeopleNum" column="{orgId=ORG_ID}"
+                    select="SelectPosition">
+            <result column="POSITION_NAME" property="positionName"/>
+            <result column="PEOPLE_NUM" property="peopleNum"/>
+        </collection>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        ORG_ID, ORG_NAME, PARENT_ID, PARENT_NAME, ORG_UNIT_ID, ORG_UNIT_NAME, ORG_DEPART_ID, ORG_DEPART_NAME, ORG_CODE, ORG_TYPE, ORG_STATUS, ORG_TRUST_ID, ORG_LASTFLAG, ORG_LEVEL
+    </sql>
+
+    <!--    清空机构数表-->
+    <update id="clearnOrgData">
+        TRUNCATE TABLE T_ORGANIZATION
+    </update>
+
+    <!--复制零时表的数据到 机构表中-->
+    <update id="copyData">
+        INSERT INTO T_ORGANIZATION SELECT * FROM T_ORGANIZATION_TEMP
+    </update>
+
+    <!--查找父机构ID-->
+    <select id="getParentName" resultType="java.lang.String">
+        SELECT ORG_R.ORG_NAME FROM T_ORGANIZATION ORG_L JOIN T_ORGANIZATION ORG_R ON ORG_L.PARENT_ID=ORG_R.ORG_ID WHERE ORG_L.ORG_ID=#{orgId}
+    </select>
+
+    <sql id="Org_List_Select_sql">
+            ORG_L.ORG_ID,
+            ORG_L.ORG_NAME,
+            ORG_L.PARENT_ID,
+            ORG_R.ORG_NAME AS PARENT_NAME,
+            ORG_L.ORG_TYPE,
+            ORG_L.ORG_STATUS,
+            ORG_L.ORG_TRUST_ID,
+            ORG_L.ORG_LASTFLAG,
+            ORG_L.ORG_LEVEL,
+            ORG_L.ORG_CODE,
+            ORG_D.ORG_ADDRESS,
+            ORG_D.ORG_CONTACT_MAN,
+            ORG_D.ORG_PHONE,
+            ORG_D.ORG_TELL
+    </sql>
+
+    <!--    多维度查询 机构列表-->
+    <select id="selectPageByCondition" resultMap="OrgList">
+        SELECT
+        <include refid="Org_List_Select_sql"/>
+        FROM
+        T_ORGANIZATION ORG_L
+        LEFT JOIN T_ORGANIZATION ORG_R ON ORG_L.PARENT_ID = ORG_R.ORG_ID
+        LEFT JOIN T_ORG_DETAILINFO ORG_D ON ORG_D.ORG_ID=ORG_L.ORG_ID
+        WHERE
+        ORG_L.ORG_ID IN
+        <foreach collection="listOrgIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        <if test="orgQueryVo.orgId!=null and orgQueryVo.orgId!=''">
+            AND ORG_L.ORG_ID=#{orgQueryVo.orgId}
+        </if>
+        <if test="orgQueryVo.orgName!=null and orgQueryVo.orgName!=''">
+            <bind name="orgName" value="'%'+orgQueryVo.orgName+'%'"/>
+            AND ORG_L.ORG_NAME like #{orgName}
+        </if>
+        <if test="orgQueryVo.orgLevel!=null and orgQueryVo.orgLevel!=''">
+            AND ORG_L.ORG_LEVEL=#{orgQueryVo.orgLevel}
+        </if>
+        <if test="orgQueryVo.parentId!=null and orgQueryVo.parentId!=''">
+            AND ORG_L.PARENT_ID=#{orgQueryVo.parentId}
+        </if>
+    </select>
+
+
+    <!--    获取机构详细信息-->
+    <select id="getOrgDetailById" resultMap="OrgDetailInfo">
+        SELECT
+        <include refid="Org_List_Select_sql"/>
+        FROM
+        T_ORGANIZATION ORG_L
+        LEFT JOIN T_ORGANIZATION ORG_R ON ORG_L.PARENT_ID = ORG_R.ORG_ID
+        LEFT JOIN T_ORG_DETAILINFO ORG_D ON ORG_D.ORG_ID=ORG_L.ORG_ID
+        WHERE
+        ORG_L.ORG_ID=#{orgId}
+    </select>
+
+    <!--    获取岗位人数列表-->
+    <select id="SelectPosition" resultType="com.bank.user.dto.PositionPeopleNum">
+        SELECT
+            POSITION_NAME,
+            COUNT(USER_ID) AS 'PEOPLE_NUM'
+        FROM
+            T_USER
+        WHERE
+            ORG_ID = #{orgId}
+        GROUP BY
+            POSITION_NAME
+    </select>
+
+    <!--    查找父机机构-->
+    <select id="getParentOrg" resultType="com.bank.user.dto.OrgDemandDto">
+        SELECT ORG_ID,ORG_NAME,ORG_LASTFLAG FROM T_ORGANIZATION WHERE ORG_ID=#{tempOrgId} AND ORG_STATUS=1
+    </select>
+
+    <!--    查找子机构-->
+    <select id="getChild" resultType="com.bank.user.dto.OrgDemandDto">
+        SELECT ORG_ID,ORG_NAME,ORG_LASTFLAG FROM T_ORGANIZATION WHERE PARENT_ID=#{orgId} AND ORG_STATUS=1
+    </select>
+</mapper>

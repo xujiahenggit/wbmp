@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.ProgramDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.bank.manage.dos.ProgramDO">
+        <id column="PROGRAM_ID" property="programId"/>
+        <result column="PROGRAM_NAME" property="programName"/>
+        <result column="PROGRAM_TYPE" property="programType"/>
+        <result column="ORG_ID" property="orgId"/>
+        <result column="CREATED_USER" property="createdUser"/>
+        <result column="CREATED_TIME" property="createdTime"/>
+        <result column="START_TIME" property="startTime"/>
+        <result column="END_TIME" property="endTime"/>
+        <result column="TERMINAL_NUM" property="terminalNum"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        PROGRAM_ID, PROGRAM_NAME, PROGRAM_TYPE, ORG_ID, CREATED_USER, CREATED_TIME, START_TIME, END_TIME, TERMINAL_NUM
+    </sql>
+
+    <!--    节目样式-->
+    <resultMap id="StyleDto" type="com.bank.manage.dto.Progame.StyleDTO">
+        <id column="ID" property="id"/>
+        <result column="DEVICE_TYPE" property="deviceType"/>
+        <result column="STYLE" property="style"/>
+        <result column="STYLE_NAME" property="styleName"/>
+        <result column="STYLE_TYPE" property="styleType"/>
+        <result column="CREATED_USER" property="createdUser"/>
+        <result column="CREATED_TIME" property="createdTime"/>
+        <result column="UPDATE_USER" property="updateUser"/>
+        <result column="UPDATE_TIME" property="updateTime"/>
+        <result column="PROGRAM_ID" property="programId"/>
+        <result column="STYLE_PATH" property="stylePath"/>
+    </resultMap>
+
+    <resultMap id="ProgramData" type="com.bank.manage.dto.Progame.ProgramData">
+        <result property="layoutId" column="TYPE"/>
+        <result property="areaType" column="AREA_TYPE"/>
+        <result property="areaName" column="AREA_NAME"/>
+        <collection property="contentList"
+                    column="{layoutId=AREA_NUM,type=TYPE,areaType=AREA_TYPE,id=STYLE_NUM,programId=PROGRAM_ID}"
+                    select="SelectContent"></collection>
+    </resultMap>
+
+
+    <resultMap id="ProgramContent" type="com.bank.manage.dto.Progame.ProgramContent">
+        <result property="playTime" column="PLAY_TIME"/>
+        <result property="materialid" column="MATERIAL_ID"/>
+        <result property="materialtype" column="MATERIAL_TYPE"/>
+        <result property="materialname" column="MATERIAL_NAME"/>
+        <result property="path" column="MATERIAL_PATH"/>
+        <result property="text" column="TEXT"/>
+        <result property="sort" column="SORT"/>
+    </resultMap>
+
+    <!--    节目预览模型-->
+    <resultMap id="ProgramPreviewDTO" type="com.bank.manage.dto.Progame.ProgramPreviewDTO" extends="StyleDto">
+        <result column="PROGRAM_ID" property="programId"/>
+        <result column="ORG_ID" property="orgId"/>
+        <result column="TERMINAL_NUM" property="deviceNo"/>
+        <result column="PROGRAM_NAME" property="programeName"/>
+        <collection property="data" column="{id=ID,programId=PROGRAM_ID,deviceId=TERMINAL_NUM}" select="selectType">
+        </collection>
+    </resultMap>
+
+    <!--    PAD 查询可用节目用-->
+    <resultMap id="PadProgramDto" type="com.bank.manage.dto.Progame.PadProgramDto">
+        <result column="PROGRAM_ID" property="programId"/>
+        <result column="ORG_ID" property="orgId"/>
+        <result column="TERMINAL_NUM" property="deviceNo"/>
+        <result column="PROGRAM_NAME" property="programeName"/>
+        <collection property="data" column="{id=ID,programId=PROGRAM_ID,deviceId=TERMINAL_NUM}" select="selectType">
+        </collection>
+    </resultMap>
+
+    <!--    查询节目预览-->
+    <select id="getPreView" resultMap="ProgramPreviewDTO">
+        SELECT DISTINCT
+                S.*, P.PROGRAM_ID,PM.PROGRAM_NAME,P.TERMINAL_NUM,PM.ORG_ID
+            FROM
+                T_PLAYAREA_MATERIAL P
+            JOIN T_STYLE_AREA S ON P.STYLE_NUM = S.ID
+            JOIN T_PROGRAM PM ON PM.PROGRAM_ID=P.PROGRAM_ID
+            WHERE
+                P.PROGRAM_ID = #{programId} AND  P.TERMINAL_NUM=#{deviceId}
+    </select>
+
+    <select id="selectType" resultMap="ProgramData">
+        SELECT DISTINCT TYPE,STYLE_NUM,PROGRAM_ID,AREA_NUM,AREA_TYPE,AREA_NAME FROM T_PLAYAREA_MATERIAL WHERE PROGRAM_ID=#{programId} AND STYLE_NUM=#{id} AND TERMINAL_NUM=#{deviceId}
+    </select>
+
+    <select id="SelectContent" resultMap="ProgramContent">
+        SELECT P.PLAY_TIME,
+            M.MATERIAL_TYPE,
+            M.MATERIAL_ID,
+            M.MATERIAL_NAME,
+            M.MATERIAL_PATH,
+            M.TEXT,
+            P.SORT
+        FROM T_PLAYAREA_MATERIAL P
+            JOIN T_MATERIAL M ON M.MATERIAL_ID=P.MATERIAL_ID
+            WHERE P.AREA_NUM=#{layoutId} AND P.PROGRAM_ID=#{programId} AND P.STYLE_NUM=#{id} AND P.TYPE=#{type} AND P.AREA_TYPE=#{areaType}
+    </select>
+
+    <!--    查询节目已选择素材-->
+    <select id="getMaterialList" resultType="com.bank.manage.dto.MaterialDTO">
+        SELECT M.* FROM T_MATERIAL M
+            JOIN T_PLAYAREA_MATERIAL P ON M.MATERIAL_ID=P.MATERIAL_ID
+            WHERE P.PROGRAM_ID=#{programId} AND P.TERMINAL_NUM=#{deviceId}
+    </select>
+
+
+    <!--    根据设备编号 查找节目列表-->
+    <select id="selectProgrameList" resultType="com.bank.manage.dto.ProgramListDTO">
+        SELECT DISTINCT
+        P.*,
+        SD.ORG_NAME,
+        SD.DEVICE_NAME,
+        SD.DEVICE_TYPE
+        FROM
+        T_PROGRAM P
+        JOIN T_PLAYAREA_MATERIAL PM ON P.PROGRAM_ID = PM.PROGRAM_ID
+        JOIN S_DEVICE SD ON SD.TERMINAL_NUM=P.TERMINAL_NUM
+        WHERE
+        PM.TERMINAL_NUM =#{param.deviceId}
+        <if test="param.programName!=null and param.programName!=''">
+            <bind name="programName" value=" '%' + param.programName + '%' "/>
+            AND P.PROGRAM_NAME LIKE #{programName}
+        </if>
+    </select>
+
+    <!--    PAD 查询节目-->
+    <select id="selectPadProgram" resultMap="PadProgramDto">
+        SELECT DISTINCT
+            S.*, P.PROGRAM_ID,
+            PM.PROGRAM_NAME,
+            P.TERMINAL_NUM,
+            PM.ORG_ID
+        FROM
+            T_PLAYAREA_MATERIAL P
+        JOIN T_STYLE_AREA S ON P.STYLE_NUM = S.ID
+        JOIN T_PROGRAM PM ON PM.PROGRAM_ID = P.PROGRAM_ID
+        WHERE
+            P.PROGRAM_ID = #{programId} AND  P.TERMINAL_NUM=#{deviceId}
+    </select>
+
+    <!--    查询样式-->
+    <select id="getStyle" resultType="com.bank.manage.dto.ProgramUpdate.ProgramStyleDto">
+        SELECT DISTINCT
+            SA.*
+        FROM
+            T_STYLE_AREA SA
+        JOIN T_PLAYAREA_MATERIAL PM ON SA.ID = PM.STYLE_NUM
+        WHERE
+            PM.PROGRAM_ID = #{programId}
+        AND PM.TERMINAL_NUM = #{deviceId}
+    </select>
+
+    <resultMap id="ProgramUpdateDto" type="com.bank.manage.dto.ProgramUpdate.ProgramUpdateDto">
+        <id column="PROGRAM_ID" property="programId"/>
+        <result column="PROGRAM_NAME" property="programName"/>
+        <result column="PROGRAM_TYPE" property="programType"/>
+        <result column="ORG_ID" property="orgId"/>
+        <result column="START_TIME" property="startTime"/>
+        <result column="END_TIME" property="endTime"/>
+        <result column="TERMINAL_NUM" property="terminalNum"/>
+        <association property="styleArea" select="SelectProgramStyle" column="{styleId=STYLE_NUM}"/>
+        <collection property="listMaterial" select="SelectProgramMaterial"
+                    column="{programId=PROGRAM_ID,deviceId=TERMINAL_NUM}"/>
+    </resultMap>
+
+    <resultMap id="listMaterialDto" type="com.bank.manage.dto.ProgramUpdate.ProgramMaterialDto">
+        <result column="AREA_NUM" property="areaId"/>
+        <result column="AREA_NAME" property="areaName"/>
+        <result column="AREA_TYPE" property="areaType"/>
+        <collection property="listMaterial" ofType="com.bank.manage.dto.MaterialDTO" column="{materialId=MATERIAL_ID}"
+                    select="SelectListMaterial"/>
+    </resultMap>
+
+    <select id="getProgramInfo" resultMap="ProgramUpdateDto">
+        SELECT DISTINCT P.*,PM.STYLE_NUM FROM T_PLAYAREA_MATERIAL PM
+            JOIN T_PROGRAM P ON PM.PROGRAM_ID=P.PROGRAM_ID
+            WHERE PM.PROGRAM_ID=#{programId} AND PM.TERMINAL_NUM=#{deviceId}
+    </select>
+
+    <select id="SelectProgramStyle" resultType="com.bank.manage.dto.ProgramUpdate.ProgramStyleDto">
+        SELECT * FROM T_STYLE_AREA WHERE ID=#{styleId}
+    </select>
+
+    <select id="SelectProgramMaterial" resultMap="listMaterialDto">
+        SELECT AREA_NUM,AREA_NAME,AREA_TYPE,PROGRAM_ID,TERMINAL_NUM,MATERIAL_ID FROM T_PLAYAREA_MATERIAL WHERE PROGRAM_ID=#{programId} AND TERMINAL_NUM=#{deviceId}
+    </select>
+
+    <select id="SelectListMaterial" resultType="com.bank.manage.dto.MaterialDTO">
+        SELECT * FROM T_MATERIAL WHERE MATERIAL_ID=#{materialId}
+    </select>
+</mapper>

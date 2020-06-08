@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.user.dao.UserTempDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.bank.user.dos.UserTempDO">
+        <id column="USER_ID" property="userId"/>
+        <result column="PASSWORD" property="password"/>
+        <result column="USER_NAME" property="userName"/>
+        <result column="ORG_ID" property="orgId"/>
+        <result column="ORG_NAME" property="orgName"/>
+        <result column="POSITION_ID" property="positionId"/>
+        <result column="POSITION_NAME" property="positionName"/>
+        <result column="DEPART_ID" property="departId"/>
+        <result column="DEPART_NAME" property="departName"/>
+        <result column="USER_STATUS" property="userStatus"/>
+        <result column="USER_PHONE" property="userPhone"/>
+        <result column="USER_GENDER" property="userGender"/>
+        <result column="USER_IDENTIYNO" property="userIdentiyno"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        USER_ID, PASSWORD, USER_NAME, ORG_ID, ORG_NAME, POSITION_ID, POSITION_NAME, DEPART_ID, DEPART_NAME, USER_STATUS, USER_PHONE, USER_GENDER, USER_IDENTIYNO
+    </sql>
+
+    <!--清空用户零时表的数据-->
+    <update id="clearnTmepUserData">
+        truncate table T_USER_TEMP
+    </update>
+</mapper>

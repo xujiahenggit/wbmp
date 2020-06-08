@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.pad.dao.PadDeviceDao">
+
+    <select id="queryDeviceByOrgId" resultType="com.bank.manage.dto.DeviceDTO">
+        SELECT D.* FROM S_DEVICE D WHERE D.ORG_ID = #{orgId}
+        <if test="deviceType != null and deviceType !=''">
+            AND D.DEVICE_TYPE = #{deviceType}
+        </if>
+        <if test="terminalNum != null and terminalNum != ''">
+            AND D.TERMINAL_NUM = #{terminalNum}
+        </if>
+        <if test="deviceName != null and deviceName != ''">
+            AND D.DEVICE_NAME LIKE CONCAT('%','${deviceName}','%' )
+        </if>
+    </select>
+
+
+</mapper>

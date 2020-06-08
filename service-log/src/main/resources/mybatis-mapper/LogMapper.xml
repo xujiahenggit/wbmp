@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.log.dao.LogDao">
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.bank.log.dos.LogDO">
+        <id column="LOG_ID" property="logId"/>
+        <result column="OPT_MODUAL" property="optModual"/>
+        <result column="OPT_TYPE" property="optType"/>
+        <result column="OPT_DISC" property="optDisc"/>
+        <result column="OPT_CLASS" property="optClass"/>
+        <result column="OPT_METHOD" property="optMethod"/>
+        <result column="OPT_PARAM" property="optParam"/>
+        <result column="OPT_RESULT" property="optResult"/>
+        <result column="OPT_IP" property="optIp"/>
+        <result column="OPT_URL" property="optUrl"/>
+        <result column="OPT_DATE" property="optDate"/>
+        <result column="OPT_USER_ID" property="optUserId"/>
+        <result column="OPT_USER_NAME" property="optUserName"/>
+        <result column="OPT_VERSION" property="optVersion"/>
+        <result column="OPT_DURA" property="optDura"/>
+    </resultMap>
+
+    <!--    查询所有的模块-->
+    <select id="selectModuleList" resultType="java.lang.String">
+        SELECT DISTINCT OPT_MODUAL FROM T_LOG
+    </select>
+
+    <!--    查询所有的操作 类型-->
+    <select id="selectOptTypes" resultType="java.lang.String">
+        SELECT DISTINCT OPT_TYPE FROM T_LOG
+    </select>
+
+    <!--    查询所有的日志版本列表-->
+    <select id="selectLogVersions" resultType="java.lang.String">
+        SELECT DISTINCT OPT_VERSION FROM T_LOG
+    </select>
+</mapper>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.quartz.dao.TaskEntityDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.bank.quartz.dos.TaskEntityDO">
+        <id column="TASK_ID" property="taskId" />
+        <result column="TASK_NAME" property="taskName" />
+        <result column="TASK_GROUP" property="taskGroup" />
+        <result column="TASK_STATUS" property="taskStatus" />
+        <result column="TASK_CORN" property="taskCorn" />
+        <result column="TASK_BEAN" property="taskBean" />
+        <result column="TASK_REMARK" property="taskRemark" />
+        <result column="CREATE_TIME" property="createTime" />
+        <result column="UPDATE_TIME" property="updateTime" />
+        <result column="TASK_LAST_RUNTIME" property="taskLastRuntime" />
+        <result column="TASK_NEXT_RUNTIME" property="taskNextRuntime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        TASK_ID, TASK_NAME, TASK_GROUP, TASK_STATUS, TASK_CORN, TASK_BEAN, TASK_REMARK, CREATE_TIME, UPDATE_TIME, TASK_LAST_RUNTIME, TASK_NEXT_RUNTIME
+    </sql>
+
+</mapper>

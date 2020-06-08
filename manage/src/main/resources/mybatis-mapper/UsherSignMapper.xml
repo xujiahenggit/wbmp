@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.UsherSignDao">
+
+    <select id="selInfoByNow" resultType="com.bank.manage.dos.UsherSignDO">
+        SELECT U.* FROM T_USHER_SIGN U WHERE U.USHER_ID = #{usherId}
+	    AND DATE_FORMAT( U.ON_DUTY_TIME, '%Y-%m-%d' ) = #{dateNowStr}
+	    AND U.SIGN_STATUS = '0'
+    </select>
+
+    <select id="selInfoByMonth" resultType="com.bank.manage.dos.UsherSignDO">
+        SELECT U.* FROM T_USHER_SIGN U WHERE U.USHER_ID = #{usherId} AND DATE_FORMAT(U.SIGN_DATE,'%Y-%m') = #{month}
+        ORDER BY U.SIGN_DATE DESC
+    </select>
+
+    <select id="selInfoByMonthAndOff" resultType="com.bank.manage.dos.UsherSignDO">
+        SELECT U.* FROM T_USHER_SIGN U WHERE U.USHER_ID = #{usherId} AND DATE_FORMAT(U.SIGN_DATE,'%Y-%m') = #{month}
+         /*AND U.OFF_DUTY_TIME IS NOT NULL*/ ORDER BY U.SIGN_DATE DESC
+    </select>
+
+    <select id="selInfoByMonthAndOffIsNull" resultType="com.bank.manage.dos.UsherSignDO">
+        SELECT U.* FROM T_USHER_SIGN U WHERE U.USHER_ID = #{usherId} AND DATE_FORMAT(U.SIGN_DATE,'%Y-%m') = #{month}
+         AND U.OFF_DUTY_TIME IS NOT NULL ORDER BY U.SIGN_DATE DESC
+    </select>
+
+    <select id="queryWorkSupple" resultType="com.bank.manage.dos.WorkSuppleDO">
+        SELECT W.* FROM
+	        T_WORK_SUPPLE W
+        WHERE
+	        W.USHER_ID = #{usherId}
+	        AND DATE_FORMAT( W.WORK_SUPPLE_DATE, '%Y-%m' ) = #{month}
+	        AND W.WORK_SUPPLE_STATE = '10'
+	        /*AND W.WORK_SUPPLE_DELETE_FLAG = '0'*/
+    </select>
+
+
+    <select id="selectDeckDays" resultType="com.bank.manage.dos.UsherSignDO">
+        SELECT U.* FROM T_USHER_SIGN U WHERE U.USHER_ID = #{usherId} AND DATE_FORMAT(U.SIGN_DATE,'%Y-%m') = #{month}
+        AND U.OFF_DUTY_TIME IS NULL
+    </select>
+
+</mapper>

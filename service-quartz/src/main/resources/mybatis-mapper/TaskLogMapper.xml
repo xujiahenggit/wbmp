@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.quartz.dao.TaskLogDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.bank.quartz.dos.TaskLogDO">
+        <result column="TASKLOG_ID" property="tasklogId" />
+        <result column="TASKLOG_GROUP" property="tasklogGroup" />
+        <result column="TASKLOG_NAME" property="tasklogName" />
+        <result column="TASKLOG_STATE" property="tasklogState" />
+        <result column="TASKLOG_TIME" property="tasklogTime" />
+        <result column="TASKLOG_CONSUM_TIME" property="tasklogConsumTime" />
+        <result column="TASKLOG_ERROR_INFO" property="tasklogErrorInfo" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        TASKLOG_ID, TASKLOG_GROUP, TASKLOG_NAME, TASKLOG_STATE, TASKLOG_TIME, TASKLOG_CONSUM_TIME, TASKLOG_ERROR_INFO
+    </sql>
+
+</mapper>

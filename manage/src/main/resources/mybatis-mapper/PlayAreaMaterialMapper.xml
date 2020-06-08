@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bank.manage.dao.PlayAreaMaterialDao">
+
+    <resultMap id="BaseResultMap" type="com.bank.manage.vo.PlayAreaMaterialVo">
+        <result column="ORG_NAME" property="orgName"/>
+        <result column="DEVICE_NAME" property="deviceName"/>
+        <result column="DEVICE_TYPE" property="deviceType"/>
+        <result column="PROGRAM_NAME" property="programName"/>
+        <result column="START_TIME" property="startTime"/>
+        <result column="END_TIME" property="endTime"/>
+        <result column="CREATED_TIME" property="createdTime"/>
+        <result column="PROGRAM_ID" property="programId"/>
+        <result column="TERMINAL_NUM" property="terminalNum"/>
+    </resultMap>
+
+    <select id="selectPageListByPageQueryModel" resultMap="BaseResultMap">
+        SELECT
+        D.ORG_NAME ,
+        D.DEVICE_NAME ,
+        D.DEVICE_TYPE ,
+        D.PROGRAM_NAME ,
+        P.START_TIME ,
+        P.END_TIME ,
+        P.CREATED_TIME,
+        D.PROGRAM_ID,
+        D.TERMINAL_NUM
+        FROM S_DEVICE D
+        LEFT JOIN T_PROGRAM P ON D.TERMINAL_NUM = P.TERMINAL_NUM AND D.PROGRAM_ID = P.PROGRAM_ID
+        WHERE 1=1
+        <if test="orgId != null and orgId !=''">
+            AND D.ORG_ID = #{orgId}
+        </if>
+        <if test="deviceType != null and deviceType != ''">
+            AND D.DEVICE_TYPE = #{deviceType}
+        </if>
+        <if test="programName != null and programName != ''">
+            AND P.PROGRAM_NAME LIKE CONCAT('%','${programName}','%' )
+        </if>
+    </select>
+
+
+    <select id="queryProgramList" resultType="com.bank.manage.vo.ProgramVo">
+        SELECT
+		    P.PROGRAM_ID,P.PROGRAM_NAME,P.PROGRAM_TYPE,P.TERMINAL_NUM,P.START_TIME,
+		    P.END_TIME,PM.AREA_NAME,PM.AREA_NUM,PM.PLAY_TIME
+		    ,PM.SORT,PM.TYPE,S.STYLE,M.MATERIAL_PATH,D.MAC,D.ORG_ID,PM.MATERIAL_ID,M.TEXT,PM.AREA_TYPE,M.MATERIAL_NAME,
+		    S.LAYOUT_WIDTH,S.LAYOUT_HEIGHT,S.LAYOUT_BACKGROUND
+        FROM T_PROGRAM P
+        LEFT JOIN T_PLAYAREA_MATERIAL PM ON P.PROGRAM_ID = PM.PROGRAM_ID AND P.TERMINAL_NUM = PM.TERMINAL_NUM
+        LEFT JOIN T_STYLE_AREA S ON PM.STYLE_NUM = S.ID
+        LEFT JOIN T_MATERIAL M ON PM.MATERIAL_ID = M.MATERIAL_ID
+        LEFT JOIN S_DEVICE D ON PM.TERMINAL_NUM = D.TERMINAL_NUM
+        WHERE P.START_TIME = #{s}  ORDER BY P.PROGRAM_ID, PM.SORT
+    </select>
+
+    <!--    查询节目切换-->
+    <select id="queryProgramListByPromId" resultType="com.bank.manage.vo.ProgramVo">
+         SELECT
+		    P.PROGRAM_ID,P.PROGRAM_NAME,P.PROGRAM_TYPE,P.TERMINAL_NUM,P.START_TIME,
+		    P.END_TIME,PM.AREA_NAME,PM.AREA_NUM,PM.PLAY_TIME
+		    ,PM.SORT,PM.TYPE,S.STYLE,M.MATERIAL_PATH,D.MAC,D.ORG_ID,PM.MATERIAL_ID,M.TEXT,PM.AREA_TYPE,M.MATERIAL_NAME,
+		    S.LAYOUT_WIDTH,S.LAYOUT_HEIGHT,S.LAYOUT_BACKGROUND
+        FROM T_PROGRAM P
+        LEFT JOIN T_PLAYAREA_MATERIAL PM ON P.PROGRAM_ID = PM.PROGRAM_ID AND P.TERMINAL_NUM = PM.TERMINAL_NUM
+        LEFT JOIN T_STYLE_AREA S ON PM.STYLE_NUM = S.ID
+        LEFT JOIN T_MATERIAL M ON PM.MATERIAL_ID = M.MATERIAL_ID
+        LEFT JOIN S_DEVICE D ON PM.TERMINAL_NUM = D.TERMINAL_NUM
+        WHERE P.PROGRAM_ID = #{programId} AND P.TERMINAL_NUM=#{deviceId} ORDER BY P.PROGRAM_ID, PM.SORT
+    </select>
+
+</mapper>

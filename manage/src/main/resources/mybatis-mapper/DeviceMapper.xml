@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.DeviceDao">
+
+
+    <select id="selectPageListByPageQueryModel" resultType="com.bank.manage.dto.DeviceDTO">
+            SELECT D.* FROM T_GROUP G
+            INNER JOIN T_DEVICE_GROUP DG ON G.GROUP_ID = DG.GROUP_ID
+            INNER JOIN S_DEVICE D ON DG.DEVICE_ID = D.DEVICE_ID
+            WHERE G.GROUP_ID = #{groupId}
+            <if test="orgId != null and orgId != ''">
+                AND D.ORG_ID = #{orgId}
+            </if>
+            <if test="deviceType != null and deviceType != ''">
+                AND D.DEVICE_TYPE = #{deviceType}
+            </if>
+            <if test="status != null and status != ''">
+                AND D.STATUS = #{status}
+            </if>
+            <if test="terminalNum != null and terminalNum != ''">
+                AND D.TERMINAL_NUM = #{terminalNum}
+            </if>
+    </select>
+
+</mapper>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.StarTempBranchDao">
+    <select id="queryExampleBranch" resultType="com.bank.manage.dos.StarDataTempBranchDO">
+        SELECT * FROM T_STAR_DATA_TEMP_BRANCH S
+        <trim prefix="where" suffixOverrides="and">
+            <if test="startYear != null and startYear != ''">
+                S.START_YEAR = #{startYear} AND
+            </if>
+            <if test="assessStart != null and assessStart != ''">
+                S.ASSESS_STAR = #{assessStart} AND
+            </if>
+            <if test="branchOrgId != null and branchOrgId != ''">
+                S.BRANCH_ORG_ID = #{branchOrgId} AND
+            </if>
+            <if test="outOrgId != null and outOrgId != ''">
+                S.OUT_ORG_ID = #{outOrgId}
+            </if>
+        </trim>
+    </select>
+
+</mapper>

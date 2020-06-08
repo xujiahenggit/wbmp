@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.HappyDao">
+
+    <select id="HeadStatus" resultType="java.util.Map">
+        SELECT CREATE_TYPE type,COUNT(ID) count FROM
+        <choose>
+            <when test="hasAdmin">
+                T_EXAMPLE_ADMIN
+            </when>
+            <otherwise>
+                T_EXAMPLE_BRANCH
+            </otherwise>
+        </choose>
+        WHERE START_YEAR = #{year}
+         AND FAILURE_YEAR >= START_YEAR
+        GROUP BY CREATE_TYPE
+    </select>
+
+    <select id="checkStatusDetails" resultType="com.bank.manage.dos.ExamineDataAdminDO">
+        SELECT ORG_ID,ORG_NAME,SUM(EXAMINE_SCORE) EXAMINE_SCORE FROM
+        <choose>
+            <when test="hasAdmin">
+                T_EXAMINE_DATA_ADMIN
+            </when>
+            <otherwise>
+                T_EXAMINE_DATA_BRANCH
+            </otherwise>
+        </choose>
+        WHERE EXCEL_QUARTER = #{quarter} AND EXCEL_DATE = #{year} AND EXAMINE_ID IS NULL
+        <if test="orgids!=null">
+           AND ORG_ID IN (#{orgids})
+        </if>
+        GROUP BY ORG_ID,ORG_NAME ORDER BY EXAMINE_SCORE DESC
+    </select>
+
+    <select id="checkStatusStatisticsYear"  resultType="com.bank.manage.dto.StatisticsDTO">
+    SELECT EXCEL_DATE year,SUM(EXAMINE_SCORE) score FROM
+        <choose>
+            <when test="hasAdmin">
+                T_EXAMINE_DATA_ADMIN
+            </when>
+            <otherwise>
+                T_EXAMINE_DATA_BRANCH
+            </otherwise>
+        </choose>
+    WHERE EXAMINE_ID IS NULL
+    GROUP BY EXCEL_DATE
+    </select>
+
+    <select id="checkStatusStatisticsQuarter"  resultType="com.bank.manage.dto.StatisticsDTO">
+        SELECT EXCEL_DATE year,EXCEL_QUARTER quarter,SUM(EXAMINE_SCORE) score FROM
+        <choose>
+            <when test="hasAdmin">
+                T_EXAMINE_DATA_ADMIN
+            </when>
+            <otherwise>
+                T_EXAMINE_DATA_BRANCH
+            </otherwise>
+        </choose>
+        WHERE EXAMINE_ID IS NULL
+        GROUP BY EXCEL_DATE,EXCEL_QUARTER
+    </select>
+    
+    
+    <select id="deductStatus" resultType="com.bank.manage.dos.ExamineDataTempAdminDO" >
+        SELECT a.TWO_MODULE,SUM(a.DEDUCTION) DEDUCTION FROM
+        <choose>
+            <when test="hasAdmin">
+                T_EXAMINE_DATA_TEMP_ADMIN a
+            </when>
+            <otherwise>
+                T_EXAMINE_DATA_TEMP_BRANCH a
+            </otherwise>
+        </choose>
+        LEFT JOIN
+        <choose>
+            <when test="hasAdmin">
+                T_EXAMINE_DATA_ADMIN b
+            </when>
+            <otherwise>
+                T_EXAMINE_DATA_BRANCH b
+            </otherwise>
+        </choose>
+        ON b.ID = a.EXAMINE_ID
+        WHERE b.EXCEL_DATE = #{year} AND b.EXCEL_QUARTER = #{quarter}
+        <if test="orgids!=null">
+            AND ORG_ID IN (#{orgids})
+        </if>
+        GROUP BY a.TWO_MODULE ORDER BY DEDUCTION DESC
+    </select>
+
+    <select id="starStatus" resultType="java.util.Map" >
+        SELECT ASSESS_STAR star,COUNT(ID) count FROM
+        <choose>
+            <when test="hasAdmin">
+                T_STAR_DATA_ADMIN
+            </when>
+            <otherwise>
+                T_STAR_DATA_TEMP_BRANCH
+            </otherwise>
+        </choose>
+            WHERE START_YEAR = #{year}
+            <choose>
+                <when test="orgids!=null and networks!=null">
+                    AND (BRANCH_ORG_ID IN (#{orgids}) OR OUT_ORG_ID IN (#{networks}))
+                </when>
+                <when test="orgids!=null and networks==null">
+                    AND BRANCH_ORG_ID IN (#{orgids})
+                </when>
+                <when test="orgids==null and networks!=null">
+                    AND OUT_ORG_ID IN (#{networks})
+                </when>
+            </choose>
+            GROUP BY ASSESS_STAR
+    </select>
+
+    <select id="serviceLevelStatus"  resultType="java.util.Map">
+        SELECT a.level,COUNT(a.ID) count FROM(
+            SELECT ID,
+            CASE
+            WHEN EXAMINE_SCORE &lt; 950 THEN '重点关注'
+            WHEN EXAMINE_SCORE &gt;= 950 AND EXAMINE_SCORE &lt; 960 THEN '关注'
+            WHEN EXAMINE_SCORE &gt;= 960 AND EXAMINE_SCORE &lt; 970 THEN '一般'
+            WHEN EXAMINE_SCORE &gt;= 970 AND EXAMINE_SCORE &lt; 980 THEN '优秀'
+            WHEN EXAMINE_SCORE &gt;= 980 AND EXAMINE_SCORE &lt;= 1000 THEN '卓越'
+            END as 'level'
+            FROM
+            <choose>
+                <when test="hasAdmin">
+                    T_EXAMINE_DATA_ADMIN
+                </when>
+                <otherwise>
+                    T_EXAMINE_DATA_BRANCH
+                </otherwise>
+            </choose>
+            WHERE EXCEL_QUARTER = #{quarter} AND EXCEL_DATE = #{year}
+            <if test="orgids!=null">
+                AND ORG_ID IN (#{orgids})
+            </if>
+        )a GROUP BY a.level
+    </select>
+
+
+    <select id="getModuleScore" resultType="com.bank.manage.dos.CountModuleTempDO">
+        SELECT a.* FROM T_COUNT_MODULE_TEMP a
+        LEFT JOIN T_COUNT_MODULE b ON a.MODULE_ID = b.ID WHERE b.MODULE_YEAR = #{year}
+    </select>
+
+</mapper>

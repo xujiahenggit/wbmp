@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.message.dao.WebsocketConnsDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="websocketConnsResultMap" type="com.bank.message.dos.WebsocketConnsDO">
+        <id column="MAC" property="mac"/>
+        <result column="CLIENT_ID" property="clientId"/>
+        <result column="ROLE_ID" property="roleId"/>
+        <result column="SERVER_IP" property="serverIp"/>
+        <result column="CREATE_TIME" property="createTime"/>
+    </resultMap>
+
+
+    <select id="selectWebsocketConnsPage" resultMap="websocketConnsResultMap">
+        select * from T_WEBSOCKET_CONNS
+    </select>
+
+
+</mapper>

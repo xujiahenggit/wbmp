@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.GameDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="gameResultMap" type="com.bank.manage.dos.GameDO">
+        <id column="ID" property="id"/>
+        <result column="PHONE" property="phone"/>
+        <result column="NAME" property="name"/>
+        <result column="TYPE" property="type"/>
+        <result column="RANKING" property="ranking"/>
+        <result column="SCORE" property="score"/>
+        <result column="USERNUM" property="usernum"/>
+        <result column="TIME" property="time"/>
+    </resultMap>
+
+
+    <select id="selectGamePage" resultMap="gameResultMap">
+        select * from T_GRAME
+    </select>
+
+
+    <select id="getGameRankByType" resultType="com.bank.manage.dos.GameDO">
+        SELECT
+            t.*,(
+                @rownum := @rownum + 1
+            ) AS RANKING
+        FROM
+            T_GAME t,(
+            SELECT
+                @rownum := 0
+            ) r
+        WHERE
+        type	= #{type}
+        ORDER BY
+        <choose>
+            <when test='type == "1"'>
+                t.SCORE DESC
+            </when>
+            <when test='type == "2"'>
+                t.TIME + 0
+            </when>
+        </choose>
+        LIMIT #{limit}
+    </select>
+
+
+    <select id="getGameRankInIds" resultType="com.bank.manage.dos.GameDO">
+        SELECT
+            c.*
+        FROM
+            (
+            SELECT
+                t.*,(
+                    @rownum := @rownum + 1
+                ) AS RANKING
+            FROM
+                T_GAME t,(
+                SELECT
+                    @rownum := 0
+                ) r
+            WHERE
+        type	= #{type}
+        ORDER BY
+        <choose>
+            <when test='type == "1"'>
+                t.SCORE DESC
+            </when>
+            <when test='type == "2"'>
+                t.TIME + 0
+            </when>
+        </choose>
+            ) c
+        WHERE
+            USERNUM IN (#{ids})
+    </select>
+
+
+</mapper>

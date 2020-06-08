@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.VersionsDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="versionsResultMap" type="com.bank.manage.dos.VersionsDO">
+        <id column="id" property="id"/>
+        <result column="APP_NO" property="appNo"/>
+        <result column="APP_DESC" property="appDesc"/>
+        <result column="APP_VERSION" property="appVersion"/>
+        <result column="APP_VERSION_NAME" property="appVersionName"/>
+        <result column="FORCE_UPDATE" property="forceUpdate"/>
+        <result column="REMARK" property="remark"/>
+        <result column="APP_SAVE_PATH" property="appSavePath"/>
+        <result column="CREATE_USER" property="createUser"/>
+        <result column="CREATE_TIME" property="createTime"/>
+        <result column="UPDATE_USER" property="updateUser"/>
+        <result column="UPDATE_TIME" property="updateTime"/>
+    </resultMap>
+
+
+    <select id="listPage" resultMap="versionsResultMap">
+        select * from T_VERSIONS
+        <where>
+                <if test="model!=null">
+                    <if test="model.id != null and model.id !=''">
+                        id = #{model.id}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.appNo != null and model.appNo !=''">
+ AND                         APP_NO = #{model.appNo}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.appDesc != null and model.appDesc !=''">
+ AND                         APP_DESC = #{model.appDesc}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.appVersion != null and model.appVersion !=''">
+ AND                         APP_VERSION = #{model.appVersion}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.appVersionName != null and model.appVersionName !=''">
+ AND                         APP_VERSION_NAME = #{model.appVersionName}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.forceUpdate != null and model.forceUpdate !=''">
+ AND                         FORCE_UPDATE = #{model.forceUpdate}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.remark != null and model.remark !=''">
+ AND                         REMARK = #{model.remark}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.appSavePath != null and model.appSavePath !=''">
+ AND                         APP_SAVE_PATH = #{model.appSavePath}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.createUser != null and model.createUser !=''">
+ AND                         CREATE_USER = #{model.createUser}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.createTime != null and model.createTime !=''">
+ AND                         CREATE_TIME = #{model.createTime}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.updateUser != null and model.updateUser !=''">
+ AND                         UPDATE_USER = #{model.updateUser}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.updateTime != null and model.updateTime !=''">
+ AND                         UPDATE_TIME = #{model.updateTime}
+                    </if>
+                </if>
+        </where>
+    </select>
+
+
+</mapper>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.MonthAttendDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.bank.manage.dos.MonthAttendDO">
+        <id column="MONTH_ATTEND_ID" property="monthAttendId"/>
+        <result column="MONTH_ATTEND_YEAR" property="monthAttendYear"/>
+        <result column="MONTH_ATTEND_ORG_ID" property="monthAttendOrgId"/>
+        <result column="MONTH_ATTEND_ORG_NAME" property="monthAttendOrgName"/>
+        <result column="MONTH_ATTEND_STATE" property="monthAttendState"/>
+        <result column="MONTH_ATTEND_PROCESS_USER_ID" property="monthAttendProcessUserId"/>
+        <result column="MONTH_ATTEND_PROCESS_USER_NAME" property="monthAttendProcessUserName"/>
+        <result column="MONTH_ATTEND_PROCESS_TIME" property="monthAttendProcessTime"/>
+        <result column="MONTH_ATTEND_REJECT_RESION" property="monthAttendRejectResion"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        MONTH_ATTEND_ID, MONTH_ATTEND_YEAR, MONTH_ATTEND_ORG_ID, MONTH_ATTEND_ORG_NAME, MONTH_ATTEND_STATE, MONTH_ATTEND_PROCESS_USER_ID, MONTH_ATTEND_PROCESS_USER_NAME, MONTH_ATTEND_PROCESS_TIME, MONTH_ATTEND_REJECT_RESION
+    </sql>
+
+    <resultMap id="MonthAttend" type="com.bank.manage.dto.MonthAttendDto" extends="BaseResultMap">
+        <collection property="listItem" column="{monthAttendId=MONTH_ATTEND_ID}" select="SelectMothAttendItem"/>
+    </resultMap>
+
+    <!--    查询月度考勤信息-->
+    <select id="getInfo" resultMap="MonthAttend">
+        SELECT * FROM T_MONTH_ATTEND WHERE MONTH_ATTEND_ID=#{monthAttendId}
+    </select>
+
+    <!--    查询月度考勤项目-->
+    <select id="SelectMothAttendItem" resultType="com.bank.manage.dto.MonthAttendItemDto">
+        SELECT
+            U.USHER_NAME,
+            MAI.*
+        FROM
+            T_MONTH_ATTEND_ITEM MAI
+        JOIN T_USHER U ON MAI.USHER_ID = U.USHER_ID
+        WHERE
+            MAI.MONTH_ATTEND_ID =#{monthAttendId}
+    </select>
+
+    <!--    查询月度考勤人数-->
+    <select id="getMonthAttendNum" resultType="java.lang.Integer">
+        SELECT
+            COUNT(DISTINCT MAI.USHER_ID)
+        FROM
+            T_MONTH_ATTEND MA
+        JOIN T_MONTH_ATTEND_ITEM MAI ON MA.MONTH_ATTEND_ID = MAI.MONTH_ATTEND_ID
+        WHERE
+            DATE_FORMAT(MA.MONTH_ATTEND_YEAR, '%Y-%m')=#{date}
+        AND MA.MONTH_ATTEND_STATE =#{processPass}
+    </select>
+
+    <!--    驳回人数列表-->
+    <resultMap id="RejectAttendDto" type="com.bank.manage.dto.CheckWorkRejectDto">
+        <result property="uName" column="USHER_NAME"/>
+        <result property="orgName" column="MONTH_ATTEND_ORG_NAME"/>
+        <result property="rejectResion" column="MONTH_ATTEND_REJECT_RESION"/>
+    </resultMap>
+
+<!--    查询 月度考勤 驳回 未完成 人数列表-->
+    <select id="getRejectList" resultMap="RejectAttendDto">
+        SELECT
+            U.USHER_NAME,
+            MA.MONTH_ATTEND_ORG_NAME,
+            MA.MONTH_ATTEND_REJECT_RESION
+        FROM
+            T_MONTH_ATTEND MA
+        JOIN T_MONTH_ATTEND_ITEM MAI ON MA.MONTH_ATTEND_ID = MAI.MONTH_ATTEND_ID
+        JOIN T_USHER U ON U.USHER_ID=MAI.USHER_ID
+        WHERE
+            DATE_FORMAT(MA.MONTH_ATTEND_YEAR, '%Y-%m')=#{date}
+        AND MA.MONTH_ATTEND_STATE =#{type}
+    </select>
+</mapper>

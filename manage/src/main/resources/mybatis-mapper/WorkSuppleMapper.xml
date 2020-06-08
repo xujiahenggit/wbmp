@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.WorkSuppleDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.bank.manage.dos.WorkSuppleDO">
+        <id column="WORK_SUPPLE_ID" property="workSuppleId"/>
+        <result column="USHER_ID" property="usherId"/>
+        <result column="WORK_SUPPLE_STATE" property="workSuppleState"/>
+        <result column="WORK_SUPPLE_DATE" property="workSuppleDate"/>
+        <result column="WORK_SUPPLE_RESION" property="workSuppleResion"/>
+        <result column="WORK_SUPPLE_STARTTIME" property="workSuppleStarttime"/>
+        <result column="WORK_SUPPLE_ENDTIME" property="workSuppleEndtime"/>
+        <result column="WORK_SUPPLE_LENGTH" property="workSuppleLength"/>
+        <result column="WORK_SUPPLE_TYPE" property="workSuppleType"/>
+        <result column="WORK_SUPPLE_IMG" property="workSuppleImg"/>
+        <result column="WORK_SUPPLE_PROCESS_USER_ID" property="workSuppleProcessUserId"/>
+        <result column="WORK_SUPPLE_PROCESS_USER_NAME" property="workSuppleProcessUserName"/>
+        <result column="WORK_SUPPLE_TIME" property="workSuppleTime"/>
+        <result column="WORK_SUPPLE_PROCESS_TIME" property="workSuppleProcessTime"/>
+        <result column="WORK_SUPPLE_REJECT_RESION" property="workSuppleRejectResion"/>
+        <result column="WORK_SUPPLE_DELETE_FLAG" property="workSuppleDeleteFlag"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        WORK_SUPPLE_ID, USHER_ID, WORK_SUPPLE_STATE, WORK_SUPPLE_STARTTIME, WORK_SUPPLE_ENDTIME, WORK_SUPPLE_LENGTH, WORK_SUPPLE_TYPE, WORK_SUPPLE_IMG, WORK_SUPPLE_PROCESS_USER_ID, WORK_SUPPLE_PROCESS_USER_NAME, WORK_SUPPLE_TIME, WORK_SUPPLE_PROCESS_TIME, WORK_SUPPLE_REJECT_RESION, WORK_SUPPLE_DELETE_FLAG
+    </sql>
+
+    <!--    查询列表-->
+    <select id="getList" resultType="com.bank.manage.dto.WorkSuppleDto">
+        SELECT
+        WS.*, U.USHER_NAME
+        FROM
+        T_WORK_SUPPLE WS
+        JOIN T_USHER U ON WS.USHER_ID = U.USHER_ID
+        WHERE
+        U.ORG_ID = #{orgId}
+        <if test="queryType!=null and queryType!='' and queryType=='AWAIT'">
+            AND WS.WORK_SUPPLE_STATE = 10
+        </if>
+        <if test="queryType!=null and queryType!='' and queryType=='AREADY'">
+            AND (
+            WS.WORK_SUPPLE_STATE = 20
+            OR WS.WORK_SUPPLE_STATE = 30
+            )
+        </if>
+        ORDER BY WS.WORK_SUPPLE_TIME DESC
+    </select>
+
+    <!--    获取详细信息-->
+    <select id="getDetailInfo" resultType="com.bank.manage.dto.WorkSuppleDto">
+        SELECT
+            WS.*, U.USHER_NAME
+        FROM
+            T_WORK_SUPPLE WS
+        JOIN T_USHER U ON WS.USHER_ID = U.USHER_ID
+        WHERE WS.WORK_SUPPLE_ID=#{workSuppleId}
+    </select>
+
+    <!--    统计加班时长-->
+    <select id="getRestWorkLenghth" resultType="java.lang.Float">
+        SELECT
+            SUM(WORK_SUPPLE_LENGTH)
+        FROM
+            T_WORK_SUPPLE
+        WHERE
+            USHER_ID = #{usherId}
+        AND WORK_SUPPLE_DATE=#{satisfactAttendYear}
+        AND WORK_SUPPLE_STATE = 20
+        AND WORK_SUPPLE_TYPE = #{type}
+    </select>
+</mapper>

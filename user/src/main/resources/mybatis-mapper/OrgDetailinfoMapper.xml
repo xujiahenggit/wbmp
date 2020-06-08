@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.user.dao.OrgDetailinfoDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.bank.user.dos.OrgDetailinfoDO">
+        <id column="ORG_ID" property="orgId"/>
+        <result column="ORG_ADDRESS" property="orgAddress"/>
+        <result column="ORG_CONTACT_MAN" property="orgContactMan"/>
+        <result column="ORG_PHONE" property="orgPhone"/>
+        <result column="ORG_TELL" property="orgTell"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        ORG_ID, ORG_ADDRESS, ORG_CONTACT_MAN, ORG_PHONE, ORG_TELL
+    </sql>
+
+    <resultMap id="OrgDetaiInfo" type="com.bank.user.dto.OrgDetailDto" extends="BaseResultMap">
+        <collection property="listPositonPeople" ofType="com.bank.user.dto.PositionPeopleNum" column="{orgId=ORG_ID}" select="SelectPosition">
+            <result column="POSITION_NAME" property="positionName"/>
+            <result column="PEOPLE_NUM" property="peopleNum"/>
+        </collection>
+    </resultMap>
+
+    <!--    获取机构详细信息-->
+    <select id="getOrgInfoByOrgId" resultMap="OrgDetaiInfo">
+        SELECT OD.*,COUNT(U.USER_ID) AS ORG_PEOPLENUM FROM T_ORG_DETAILINFO OD
+        JOIN T_USER U ON OD.ORG_ID=U.ORG_ID
+        WHERE OD.ORG_ID=#{orgId}
+    </select>
+
+    <select id="SelectPosition" resultType="com.bank.user.dto.PositionPeopleNum">
+        SELECT
+            POSITION_NAME,
+            COUNT(USER_ID) AS 'PEOPLE_NUM'
+        FROM
+            T_USER
+        WHERE
+            ORG_ID = #{orgId}
+        GROUP BY
+            POSITION_NAME
+    </select>
+</mapper>

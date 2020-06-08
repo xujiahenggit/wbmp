@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.ActivitieSalonLogDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="activitieSalonLogResultMap" type="com.bank.manage.dos.ActivitieSalonLogDO">
+        <id column="ID" property="id"/>
+        <result column="ACTIVITIE_ID" property="activitieId"/>
+        <result column="ORG_ID" property="orgId"/>
+        <result column="ORG_NAME" property="orgName"/>
+        <result column="PLAY_TIME" property="playTime"/>
+        <result column="START_TIME" property="startTime"/>
+    </resultMap>
+
+
+    <select id="listPage" resultMap="activitieSalonLogResultMap">
+        select * from T_ACTIVITIE_SALON_LOG
+        <where>
+                <if test="model!=null">
+                    <if test="model.id != null and model.id !=''">
+                        ID = #{model.id}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.activitieId != null and model.activitieId !=''">
+ AND                         ACTIVITIE_ID = #{model.activitieId}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.orgId != null and model.orgId !=''">
+ AND                         ORG_ID = #{model.orgId}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.orgName != null and model.orgName !=''">
+ AND                         ORG_NAME = #{model.orgName}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.playTime != null and model.playTime !=''">
+ AND                         PLAY_TIME = #{model.playTime}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.startTime != null and model.startTime !=''">
+ AND                         START_TIME = #{model.startTime}
+                    </if>
+                </if>
+        </where>
+    </select>
+
+
+</mapper>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.DictionaryDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.bank.manage.dos.DictionaryDO">
+        <id column="DICT_ID" property="dictId"/>
+        <result column="DICT_NAME" property="dictName"/>
+        <result column="DICT_DESCRIBE" property="dictDescribe"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        DICT_ID, DICT_NAME, DICT_DESCRIBE
+    </sql>
+
+    <resultMap id="DictInfo" type="com.bank.manage.dto.DictionaryDto" extends="BaseResultMap">
+        <collection property="listItem" column="dictId=DICT_ID" select="SelecDictItem"></collection>
+    </resultMap>
+
+    <!--查找字典详细信息-->
+    <select id="getDictinfo" resultMap="DictInfo">
+        SELECT * FROM T_DICTIONARY WHERE DICT_ID=#{dictId}
+    </select>
+
+    <!--    查找字典子项-->
+    <select id="SelecDictItem" resultType="com.bank.manage.dos.DictionaryItemDO">
+        SELECT * FROM T_DICTIONARY_ITEM WHERE DICT_ID=#{dictId}
+    </select>
+
+</mapper>

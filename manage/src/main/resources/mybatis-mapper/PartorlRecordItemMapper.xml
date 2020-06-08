@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.PartorlRecordItemDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.bank.manage.dos.PartorlRecordItemDO">
+        <id column="PARTORL_RECORD_ITEM_ID" property="partorlRecordItemId"/>
+        <result column="PARTORL_RECORD_ID" property="partorlRecordId"/>
+        <result column="PARTORL_CONTENT_ID" property="partorlContentId"/>
+        <result column="PARTORL_RESULT" property="partorlResult"/>
+        <result column="PARTORL_MARK" property="partorlMark"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        PARTORL_RECORD_ITEM_ID, PARTORL_RECORD_ID, PARTORL_CONTENT_ID, PARTORL_RESULT, PARTORL_MARK
+    </sql>
+
+    <resultMap id="PartorlModualExcelEntity" type="com.bank.manage.excel.partorl.PartorlModualExcelEntity">
+        <result property="id" column="PARTORL_MODUAL_ID"/>
+        <result property="partorlModual" column="PARTORL_MODUAL_NAME"/>
+    </resultMap>
+
+    <!--    查询所有模块-->
+    <select id="getListModual" resultMap="PartorlModualExcelEntity">
+        SELECT PARTORL_MODUAL_ID,PARTORL_MODUAL_NAME FROM T_PARTORL_MODUAL ORDER BY PARTORL_MODUAL_SORT
+    </select>
+
+    <!--巡查内容-->
+    <resultMap id="PartorlContentExcelEntity" type="com.bank.manage.excel.partorl.PartorlContentExcelEntity">
+        <result property="id" column="PARTORL_CONTENT_ID"/>
+        <result property="partorlContent" column="PARTORL_CONTENT"/>
+        <result property="isNomal" column="PARTORL_RESULT"/>
+        <result property="remark" column="PARTORL_MARK"/>
+    </resultMap>
+
+    <!--    查找 巡查内容-->
+    <select id="getListByRecordIds" resultMap="PartorlContentExcelEntity">
+        SELECT
+            RC.PARTORL_CONTENT_ID,
+            RC.PARTORL_CONTENT,
+            PTI.PARTORL_RESULT,
+            PTI.PARTORL_MARK
+        FROM
+            T_PARTORL_RECORD_ITEM PTI
+        JOIN T_PARTORL_CONTENT RC ON PTI.PARTORL_CONTENT_ID = RC.PARTORL_CONTENT_ID
+        WHERE
+            PTI.PARTORL_RECORD_ID=#{recordId} AND RC.PARTORL_MODUAL_ID=#{modualId}
+    </select>
+</mapper>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.DevicePlayDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="devicePlayResultMap" type="com.bank.manage.dos.DevicePlayDO">
+        <id column="ID" property="id"/>
+        <result column="TERMINAL_NUM" property="terminalNum"/>
+        <result column="MAC" property="mac"/>
+        <result column="MESSAGE_LOG" property="messageLog"/>
+        <result column="CREATE_TIME" property="createTime"/>
+        <result column="UPDATE_TIME" property="updateTime"/>
+        <result column="PROGRAM_ID" property="programId"/>
+        <result column="PROGRAM_NAME" property="programName"/>
+    </resultMap>
+
+
+    <select id="queryPlayLatestTwo" resultType="com.bank.manage.dos.DevicePlayDO">
+        select * from T_DEVICE_PLAY ORDER BY ID DESC LIMIT 2
+    </select>
+
+
+</mapper>

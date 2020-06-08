@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.MonthAttendItemDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.bank.manage.dos.MonthAttendItemDO">
+        <id column="MONTH_ATTEND_ITEM_ID" property="monthAttendItemId" />
+        <result column="MONTH_ATTEND_ID" property="monthAttendId" />
+        <result column="USHER_ID" property="usherId" />
+        <result column="MONTH_ATTEND_SCORE" property="monthAttendScore" />
+        <result column="MONTH_ATTEND_MUST_DAYS" property="monthAttendMustDays" />
+        <result column="MONTH_ATTEND_REAL_DAYS" property="monthAttendRealDays" />
+        <result column="MONTH_ATTEND_WORK_LENGTH" property="monthAttendWorkLength" />
+        <result column="MONTH_ATTEND_REST_LENGHT" property="monthAttendRestLenght" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        MONTH_ATTEND_ITEM_ID, MONTH_ATTEND_ID, USHER_ID, MONTH_ATTEND_SCORE, MONTH_ATTEND_MUST_DAYS, MONTH_ATTEND_REAL_DAYS, MONTH_ATTEND_WORK_LENGTH, MONTH_ATTEND_REST_LENGHT
+    </sql>
+
+</mapper>

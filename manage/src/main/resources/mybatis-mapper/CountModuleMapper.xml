@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.CountModuleDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="countModuleResultMap" type="com.bank.manage.dos.CountModuleDO">
+        <id column="ID" property="id"/>
+        <result column="MODULE_YEAR" property="moduleYear"/>
+        <result column="ONE_MODULE" property="oneModule"/>
+        <result column="COUNT_SCORE" property="countScore"/>
+        <result column="CREATED_USER" property="createdUser"/>
+        <result column="CREATED_TIME" property="createdTime"/>
+        <result column="UPDATE_USER" property="updateUser"/>
+        <result column="UPDATE_TIME" property="updateTime"/>
+    </resultMap>
+
+    <select id="queryCountModulePage" resultType="com.bank.manage.dto.CountModuleDTO">
+        /*SELECT C.MODULE_YEAR,C.CREATED_USER,C.CREATED_TIME,C.UPDATE_TIME FROM T_COUNT_MODULE C*/
+        SELECT C.MODULE_YEAR,C.CREATED_USER,C.CREATED_TIME,C.UPDATE_TIME
+        FROM T_COUNT_MODULE C GROUP BY  C.MODULE_YEAR,C.CREATED_USER,C.CREATED_TIME,C.UPDATE_TIME HAVING COUNT(C.MODULE_YEAR) =1
+    </select>
+
+    <select id="queryCountModuleByCount" resultType="map">
+        SELECT COUNT(DISTINCT C.MODULE_YEAR) AS MALL FROM T_COUNT_MODULE C
+    </select>
+
+    <select id="getCountModule" resultType="com.bank.manage.vo.CountModuleDetailVo">
+        SELECT C.MODULE_YEAR,C.ONE_MODULE,C.COUNT_SCORE,M.TWO_MODULE,M.TWO_MODULE_SCORE
+        FROM T_COUNT_MODULE C
+	    LEFT JOIN T_COUNT_MODULE_TEMP M ON C.ID = M.MODULE_ID
+        WHERE C.MODULE_YEAR = #{moduleYear}
+    </select>
+
+    <select id="queryCountModule" resultType="map">
+        SELECT C.ONE_MODULE,M.TWO_MODULE FROM
+	    T_COUNT_MODULE C
+	    LEFT JOIN T_COUNT_MODULE_TEMP M ON C.ID = M.MODULE_ID
+        WHERE
+	    C.MODULE_YEAR = #{year}
+    </select>
+
+</mapper>

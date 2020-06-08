@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.role.dao.RoleDao">
+
+    <!--根据机构获取用户角色-->
+    <select id="getByCode" resultType="com.bank.role.dos.RoleDO">
+        SELECT ROLE_ID, ROLE_NAME, ROLE_CODE, CREATE_TIME, UPDATE_TIME, ROLE_DELFLAG, SYSTEM
+         FROM S_ROLE
+         WHERE ROLE_CODE = #{role_code,jdbcType=VARCHAR}
+    </select>
+
+</mapper>

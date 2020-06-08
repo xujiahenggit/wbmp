@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.NewProcessHistoryDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.bank.manage.dos.NewProcessHistoryDO">
+        <id column="PROCESS_HISTORY_ID" property="processHistoryId" />
+        <result column="PROCESS_ID" property="processId" />
+        <result column="OPERATOR_ID" property="operatorId" />
+        <result column="OPERATOR_NAME" property="operatorName" />
+        <result column="ORG_ID" property="orgId" />
+        <result column="OPERATE_TYPE" property="operateType" />
+        <result column="REJECT_REASON" property="rejectReason" />
+        <result column="CREATE_TIME" property="createTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        PROCESS_HISTORY_ID, PROCESS_ID, OPERATOR_ID, OPERATOR_NAME, ORG_ID, OPERATE_TYPE, REJECT_REASON, CREATE_TIME
+    </sql>
+
+</mapper>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.ExamineDataBranchDao">
+
+    <delete id="delExamineDataBranchByExcelId">
+        DELETE FROM T_EXAMINE_DATA_BRANCH WHERE EXCEL_ID = #{id}
+    </delete>
+
+    <select id="queryExamineDataRankFH" resultType="com.bank.manage.vo.ExamineDataRankVo">
+        SELECT E.ORG_NAME AS 'BRANCH_NAME',
+	        MAX(CASE E.EXCEL_QUARTER WHEN '1' THEN E.EXAMINE_SCORE ELSE 0 END) 	'ONE_QUARTER',
+	        MAX(CASE E.EXCEL_QUARTER WHEN '2' THEN E.EXAMINE_SCORE ELSE 0 END) 	'TWO_QUARTER',
+	        MAX(CASE E.EXCEL_QUARTER WHEN '3' THEN E.EXAMINE_SCORE ELSE 0 END) 	'THREE_QUARTER',
+	        MAX(CASE E.EXCEL_QUARTER WHEN '4' THEN E.EXAMINE_SCORE ELSE 0 END) 	'FOUR_QUARTER'
+        FROM T_EXAMINE_DATA_BRANCH E
+        WHERE
+	        E.EXCEL_DATE BETWEEN   #{startYear} AND #{endYear}
+	        AND E.EXCEL_QUARTER BETWEEN #{startQuarter} AND #{endQuarter} AND E.EXAMINE_ID IS NULL
+		    GROUP BY E.ORG_NAME ORDER BY AVG(E.EXAMINE_SCORE) DESC
+    </select>
+
+    <select id="queryExamineDataRankWD" resultType="com.bank.manage.vo.ExamineDataRankVo">
+        SELECT E.ORG_NAME AS 'BRANCH_NAME',
+	        MAX(CASE E.EXCEL_QUARTER WHEN '1' THEN E.EXAMINE_SCORE ELSE 0 END) 	'ONE_QUARTER',
+	        MAX(CASE E.EXCEL_QUARTER WHEN '2' THEN E.EXAMINE_SCORE ELSE 0 END) 	'TWO_QUARTER',
+	        MAX(CASE E.EXCEL_QUARTER WHEN '3' THEN E.EXAMINE_SCORE ELSE 0 END) 	'THREE_QUARTER',
+	        MAX(CASE E.EXCEL_QUARTER WHEN '4' THEN E.EXAMINE_SCORE ELSE 0 END) 	'FOUR_QUARTER'
+        FROM T_EXAMINE_DATA_BRANCH E
+        WHERE
+	        E.EXCEL_DATE BETWEEN   #{startYear} AND #{endYear}
+	        AND E.EXCEL_QUARTER BETWEEN #{startQuarter} AND #{endQuarter} AND E.EXAMINE_ID IS NOT NULL
+		    GROUP BY E.ORG_NAME ORDER BY AVG(E.EXAMINE_SCORE) DESC
+    </select>
+
+	<select id="queryExamineDataDeduByBranch" resultType="com.bank.manage.vo.ExamineDeduVo">
+		SELECT EL.ORG_NAME AS OUT_ORG_NAME,EL.ORG_ID AS OUT_ORG_ID,EL.EXAMINE_SCORE,EL.EXCEL_DATE,EL.EXCEL_QUARTER,
+		ER.ORG_NAME AS 'BRANCH_ORG_NAME',ER.ORG_ID AS 'BRANCH_ORG_ID',ETEMP.ONE_MODULE,ETEMP.TWO_MODULE,ETEMP.INDICATOR_NAME,
+		ETEMP.DEDUCTION,ETEMP.DEDUCTION_SPEC
+		FROM T_EXAMINE_DATA_BRANCH EL
+		LEFT JOIN T_EXAMINE_DATA_BRANCH ER ON EL.EXAMINE_ID = ER.ID
+		LEFT JOIN T_EXAMINE_DATA_TEMP_BRANCH ETEMP ON ETEMP.EXAMINE_ID = EL.ID
+		WHERE EL.EXAMINE_ID IS NOT NULL
+		AND EL.EXCEL_DATE BETWEEN #{startYear} AND #{endYear}
+		AND EL.EXCEL_QUARTER BETWEEN #{startQuarter} AND #{endQuarter}
+		<if test="branchOrgId != null and branchOrgId != ''">
+			AND EL.ORG_ID = #{branchOrgId}
+		</if>
+		<if test="outOrgId != null and outOrgId != ''">
+			AND ER.ORG_ID = #{outOrgId}
+		</if>
+	</select>
+
+	<select id="queryExamineDataAnalyzeByBranch" resultType="com.bank.manage.vo.ExamineAnalyzeVo">
+		SELECT B.ONE_MODULE,/*ROUND(AVG(B.DEDUCTION),2) AS AVG_DEDUCTION,*/
+		SUM( CASE B.EXCEL_QUARTER WHEN '1' THEN B.DEDUCTION ELSE 0 END ) 'ONE_QUARTER',
+		SUM( CASE B.EXCEL_QUARTER WHEN '2' THEN B.DEDUCTION ELSE 0 END ) 'TWO_QUARTER',
+		SUM( CASE B.EXCEL_QUARTER WHEN '3' THEN B.DEDUCTION ELSE 0 END ) 'THREE_QUARTER',
+		SUM( CASE B.EXCEL_QUARTER WHEN '4' THEN B.DEDUCTION ELSE 0 END ) 'FOUR_QUARTER'
+		FROM
+		(
+		SELECT
+		EL.EXCEL_DATE,
+		EL.EXCEL_QUARTER,
+		ETEMP.ONE_MODULE,
+		ETEMP.DEDUCTION,
+		EL.ORG_ID,
+		EL.ID,
+		EL.EXAMINE_ID
+		FROM T_EXAMINE_DATA_BRANCH EL
+		LEFT JOIN T_EXAMINE_DATA_BRANCH ER ON EL.EXAMINE_ID = ER.ID
+		LEFT JOIN T_EXAMINE_DATA_TEMP_BRANCH ETEMP ON ETEMP.EXAMINE_ID = EL.ID
+		WHERE EL.EXCEL_DATE BETWEEN #{vo.startYear} AND #{vo.endYear} AND EL.EXCEL_QUARTER BETWEEN #{vo.startQuarter} AND #{vo.endQuarter}
+
+			<if test="vo.branchOrgId != null and vo.branchOrgId != ''">
+				AND ER.ORG_ID = #{vo.branchOrgId}
+			</if>
+			<if test="vo.outOrgId != null and vo.outOrgId != ''">
+				AND EL.ORG_ID = #{vo.outOrgId}
+			</if>
+			<if test="vo.outOrgId == null and vo.branchOrgId == null">
+				AND ER.ORG_ID IS NOT NULL
+			</if>
+
+		) B WHERE 1=1
+		<if test="vo.module != null and vo.module != ''">
+			AND B.ONE_MODULE LIKE CONCAT('%','${vo.module }','%' )
+		</if>
+		GROUP BY B.ONE_MODULE
+	</select>
+
+</mapper>

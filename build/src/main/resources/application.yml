@@ -1,0 +1,6 @@
+spring:
+  profiles:
+    #这里只写application-之后的名称。多个之间用逗号分隔
+    active: dev
+  main:
+    allow-bean-definition-overriding: true

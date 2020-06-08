@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.HomeDao">
+
+
+    <select id="getHomePanleData" resultType="java.util.Map" parameterType="int">
+        SELECT
+            (SELECT COUNT(*) FROM T_MATERIAL WHERE CREATED_TIME BETWEEN DATE_SUB(CURDATE(),INTERVAL #{day} DAY) AND current_date) AS materialadd,
+            ( SELECT count(*) FROM T_MATERIAL ) AS materialnum,
+            ( SELECT count(*) FROM T_PROGRAM WHERE CREATED_TIME BETWEEN DATE_SUB(CURDATE(),INTERVAL #{day} DAY) AND current_date) AS programadd,
+            ( SELECT count(*) FROM T_PROGRAM ) AS programnum,
+            ( SELECT count( * ) FROM T_USER ) AS usernum,
+            '0' AS useradd,
+            ( SELECT count( * ) FROM S_DEVICE) AS devicenum,
+            '0' AS deviceadd
+        FROM
+            T_MATERIAL
+        LIMIT 1
+    </select>
+
+
+    <select id="getNewMaterial" resultType="java.util.Map">
+        SELECT
+            d.*
+        FROM
+            T_MATERIAL d
+            INNER JOIN S_NEW_PROCESS a ON a.TRADING_ID = d.MATERIAL_ID
+        WHERE
+            a.trading_type = 'T_MATERIAL' and a.STATUS='20' and a.active = '1' 
+            and d.CREATED_TIME between DATE_SUB(CURRENT_TIMESTAMP,INTERVAL #{arg0} DAY) and CURRENT_TIMESTAMP
+            AND d.ORG_ID LIKE CONCAT(#{arg1},'%')
+            ORDER BY d.CREATED_TIME DESC
+            LIMIT 6
+    </select>
+
+
+
+</mapper>

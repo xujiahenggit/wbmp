@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bank.manage.dao.NewProcessDao">
+    <resultMap id="BaseResultMap" type="com.bank.manage.dos.NewProcessDO">
+        <id column="PROCESS_ID" property="processId"/>
+        <result column="STATUS" property="status"/>
+        <result column="ACTIVE" property="active"/>
+        <result column="CREATOR_ID" property="creatorId"/>
+        <result column="CREATOR_NAME" property="creatorName"/>
+        <result column="ORG_ID" property="orgId"/>
+        <result column="TRADING_ID" property="tradingId"/>
+        <result column="TRADING_NAME" property="tradingName"/>
+        <result column="TRADING_TYPE" property="tradingType"/>
+        <result column="TRADING_MODULE" property="tradingModule"/>
+        <result column="CREATE_TIME" property="createTime"/>
+    </resultMap>
+
+    <!--审核流程详细信息-->
+    <resultMap id="ProcessDetailInfo" type="com.bank.manage.dto.NewProcessInfoDto" extends="BaseResultMap">
+        <result column="ORG_NAME" property="orgName"/>
+        <collection property="listHistory" column="PROCESS_ID"
+                    select="selectHistoryByProcessId">
+        </collection>
+    </resultMap>
+
+    <resultMap id="ProcessHistory" type="com.bank.manage.dto.NewProcessHistoryDto">
+        <id column="PROCESS_HISTORY_ID" property="processHistoryId" />
+        <result column="PROCESS_ID" property="processId" />
+        <result column="OPERATOR_ID" property="operatorId" />
+        <result column="OPERATOR_NAME" property="operatorName" />
+        <result column="ORG_ID" property="orgId" />
+        <result column="OPERATE_TYPE" property="operateType" />
+        <result column="REJECT_REASON" property="rejectReason" />
+        <result column="CREATE_TIME" property="createTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        PROCESS_ID, STATUS, ACTIVE, CREATOR_ID, CREATOR_NAME, ORG_ID, TRADING_ID, TRADING_NAME, TRADING_TYPE, TRADING_MODULE, CREATE_TIME
+    </sql>
+
+    <!--查询审批列表-->
+    <select id="listProcessModual" resultType="java.lang.String">
+        SELECT DISTINCT TRADING_MODULE FROM S_NEW_PROCESS
+    </select>
+
+    <!--查询审批详细信息-->
+    <select id="getProcessInfo" resultMap="ProcessDetailInfo">
+        SELECT SP.*,ORG.ORG_NAME FROM S_NEW_PROCESS SP JOIN T_ORGANIZATION ORG ON SP.ORG_ID=ORG.ORG_ID WHERE SP.PROCESS_ID=#{processId}
+    </select>
+
+    <!--查询流程的历史信息-->
+    <select id="selectHistoryByProcessId" resultMap="ProcessHistory">
+        SELECT * FROM S_NEW_PROCESS_HISTORY WHERE PROCESS_ID=#{PROCESS_ID}
+    </select>
+</mapper>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.DictionaryItemDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.bank.manage.dos.DictionaryItemDO">
+        <id column="DICT_ITEM_ID" property="dictItemId"/>
+        <result column="DICT_ID" property="dictId"/>
+        <result column="DICT_NUM" property="dictNum"/>
+        <result column="DICT_ITEM_VALUE" property="dictItemValue"/>
+        <result column="DICT_ITEM_TITLE" property="dictItemTitle"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        DICT_ITEM_ID, DICT_ID, DICT_NUM, DICT_ITEM_VALUE, DICT_ITEM_TITLE
+    </sql>
+
+    <!--    批量删除 字典项目-->
+    <delete id="DeleteItemByDictIds">
+        DELETE FROM T_DICTIONARY_ITEM WHERE DICT_ID IN
+        <foreach collection="listDictIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--    单条删除-->
+    <delete id="deleteByDictId">
+        DELETE FROM T_DICTIONARY_ITEM WHERE DICT_ID=#{dictId}
+    </delete>
+</mapper>

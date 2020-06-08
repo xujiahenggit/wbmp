@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.MaterialDao">
+
+    <select id="selectPageListByCatalogType" resultType="com.bank.manage.dto.MaterialDTO">
+        SELECT M.* FROM T_CATALOG C
+        INNER JOIN T_CATALOG_MATERIAL CM ON C.CATALOG_ID = CM.CATALOG_ID
+        INNER JOIN T_MATERIAL M ON CM.MATERIAL_ID = M.MATERIAL_ID
+        INNER JOIN S_NEW_PROCESS N ON M.MATERIAL_ID = N.TRADING_ID
+        WHERE C.CATALOG_ID=#{catalogId} AND N.STATUS = '20' AND N.TRADING_TYPE = 'T_MATERIAL' AND N.ACTIVE = '1'
+        <if test="createdUser != null and createdUser != ''">
+            AND M.CREATED_USER = #{createdUser}
+        </if>
+        <if test="orgId != null and orgId != ''">
+            AND M.ORG_ID = #{orgId}
+        </if>
+        <if test="deviceType != null and deviceType != ''">
+            AND M.DEVICE_TYPE = #{deviceType}
+        </if>
+        <if test="forcePlay != null and forcePlay != ''">
+            AND M.FORCE_PLAY = #{forcePlay}
+        </if>
+        <if test="materialName != null and materialName != ''">
+            AND M.MATERIAL_NAME LIKE CONCAT('%','${materialName}','%' )
+        </if>
+        order by M.FORCE_PLAY
+    </select>
+
+    <select id="queryListForPlay" resultType="com.bank.manage.dto.MaterialDTO">
+        SELECT M.* FROM T_MATERIAL M
+        LEFT JOIN S_NEW_PROCESS N ON M.MATERIAL_ID = N.TRADING_ID
+        LEFT JOIN T_CATALOG_MATERIAL C ON M.MATERIAL_ID = C.MATERIAL_ID
+        LEFT JOIN T_CATALOG T ON C.CATALOG_ID = T.CATALOG_ID
+        WHERE N.STATUS = '20' AND N.ACTIVE = '1' AND N.TRADING_TYPE = 'T_MATERIAL' AND T.CATALOG_ID = #{catalogId} AND M.DEVICE_TYPE = #{deviceType}
+            AND M.EXPIR_TIME >= CURDATE()
+        <if test="orgId != null and orgId != ''">
+            AND M.ORG_ID = #{orgId}
+        </if>
+        <if test="materialName != null and materialName != ''">
+            AND M.MATERIAL_NAME LIKE CONCAT('%','${materialName}','%' )
+        </if>
+        ORDER BY M.FORCE_PLAY
+    </select>
+
+</mapper>

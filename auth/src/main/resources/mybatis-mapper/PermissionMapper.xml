@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.auth.dao.PermissionDao">
+    <select id="getByCode"
+            resultType="com.bank.auth.dos.PermissionDO">
+		SELECT ID, NAME, CODE, CREATE_TIME, UPDATE_TIME FROM SYS_PERMISSION WHERE
+		CODE = #{code,jdbcType=VARCHAR}
+	</select>
+
+    <select id="listByRoleIds" resultType="com.bank.auth.dos.PermissionDO">
+        SELECT sp.PERMISSION_ID, sp.PERMISSION_NAME, sp.PERMISSION_CODE,
+        sp.ROUTER_PATH, sp.PARENT_ID, sp.PARENT_DESC, sp.ICON, sp.COMPONENT, sp.SORT, sp.PERMISSION_TYPE,
+        sp.PERMISSION_TYPE_DESC, sp.CREATE_TIME, sp.UPDATE_TIME, sp.PERMISSION_DELFLAG
+        FROM S_PERMISSION sp
+        INNER JOIN S_ROLE_PERMISSION srp ON sp.PERMISSION_ID = srp.PERMISSION_ID
+        <where>
+            sp.PERMISSION_TYPE = '3' AND srp.ROLE_ID in
+            <foreach collection="ids" item="id" open="(" separator=","
+                     close=")">
+                #{id,jdbcType=BIGINT}
+            </foreach>
+        </where>
+    </select>
+
+    <select id="selectParentList" resultType="map">
+		SELECT PERMISSION_ID value, PERMISSION_NAME label
+		FROM S_PERMISSION 
+		WHERE (PERMISSION_CODE = 'root' OR (PERMISSION_TYPE = '1')) AND PERMISSION_DELFLAG = '0'
+	</select>
+
+    <select id="selectParentList2" resultType="map">
+		SELECT PERMISSION_ID value, PERMISSION_NAME label
+		FROM S_PERMISSION 
+		WHERE PERMISSION_TYPE = '2' AND PERMISSION_DELFLAG = '0'
+	</select>
+
+    <select id="listAllPermissions" resultType="com.bank.auth.dto.PermissionDTO">
+		select * from S_PERMISSION where PERMISSION_DELFLAG = '0'
+	</select>
+
+    <select id="listByRoleId" resultType="com.bank.auth.dto.PermissionDTO">
+        SELECT sp.PERMISSION_ID, sp.PERMISSION_NAME, sp.PERMISSION_CODE,
+        sp.ROUTER_PATH, sp.PARENT_ID, sp.ICON, sp.COMPONENT, sp.SORT, sp.PERMISSION_TYPE,
+        sp.CREATE_TIME, sp.UPDATE_TIME, sp.PERMISSION_DELFLAG
+        FROM S_PERMISSION sp
+        INNER JOIN S_ROLE_PERMISSION srp ON sp.PERMISSION_ID = srp.PERMISSION_ID
+        <where>
+            srp.ROLE_ID = #{roleId}
+        </where>
+    </select>
+
+    <select id="listPermissionByRoleIds" resultType="com.bank.auth.dto.PermissionDTO">
+        SELECT sp.*
+        FROM S_PERMISSION sp
+        INNER JOIN S_ROLE_PERMISSION srp ON sp.PERMISSION_ID = srp.PERMISSION_ID
+        <where>
+            sp.PERMISSION_DELFLAG = '0' AND srp.ROLE_ID in
+            <foreach collection="ids" item="id" open="(" separator=","
+                     close=")">
+                #{id,jdbcType=BIGINT}
+            </foreach>
+        </where>
+    </select>
+
+    <!--	查询 权限赋予的角色 数-->
+    <select id="selectRoleCount" resultType="java.lang.Integer">
+		SELECT
+			COUNT(*)
+		FROM
+			S_ROLE_PERMISSION RP
+		JOIN S_ROLE R ON RP.ROLE_ID = R.ROLE_ID
+		WHERE
+			RP.PERMISSION_ID = #{roleId}
+		AND R.ROLE_DELFLAG = 0
+    </select>
+
+    <select id="listButtonPermissionByUserId" resultType="java.lang.String">
+        SELECT
+			SP.PERMISSION_CODE 
+		FROM
+			S_USER_ROLE SUR
+			INNER JOIN S_ROLE_PERMISSION SRP ON SRP.ROLE_ID = SUR.ROLE_ID
+			INNER JOIN S_PERMISSION SP ON SP.PERMISSION_ID = SRP.PERMISSION_ID 
+			AND PERMISSION_TYPE = '4' 
+		WHERE
+			SUR.USER_ID = #{userId}
+    </select>
+
+</mapper>

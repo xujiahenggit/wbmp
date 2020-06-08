@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.CardSuppleDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.bank.manage.dos.CardSuppleDO">
+        <id column="CARD_SUPPLE_ID" property="cardSuppleId"/>
+        <result column="USHER_ID" property="usherId"/>
+        <result column="CARD_SUPPLE_STATE" property="cardSuppleState"/>
+        <result column="CARD_SUPPLE_DATE" property="cardSuppleDate"/>
+        <result column="CARD_SUPPLE_START_WORK_TIME" property="cardSuppleStartWorkTime"/>
+        <result column="CARD_SUPPLE_END_WORK_TIME" property="cardSuppleEndWorkTime"/>
+        <result column="CARD_SUPPLE_RESION" property="cardSuppleResion"/>
+        <result column="CARD_SUPPLE_IMG" property="cardSuppleImg"/>
+        <result column="CARD_SUPPLE_PROCESS_USER_ID" property="cardSuppleProcessUserId"/>
+        <result column="CARD_SUPPLE_PROCESS_USER_NAME" property="cardSuppleProcessUserName"/>
+        <result column="CARD_SUPPLE_CREATETIME" property="cardSuppleCreatetime"/>
+        <result column="CARD_SUPPLE_PROCESS_TIME" property="cardSuppleProcessTime"/>
+        <result column="CARD_SUPPLE_REJECT_RESION" property="cardSuppleRejectResion"/>
+        <result column="CARD_SUPPLE_DELETE_FLAG" property="cardSuppleDeleteFlag"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        CARD_SUPPLE_ID, USHER_ID, CARD_SUPPLE_STATE, CARD_SUPPLE_DATE, CARD_SUPPLE_START_WORK_TIME, CARD_SUPPLE_END_WORK_TIME, CARD_SUPPLE_RESION, CARD_SUPPLE_IMG, CARD_SUPPLE_PROCESS_USER_ID, CARD_SUPPLE_PROCESS_USER_NAME, CARD_SUPPLE_CREATETIME, CARD_SUPPLE_PROCESS_TIME, CARD_SUPPLE_REJECT_RESION, CARD_SUPPLE_DELETE_FLAG
+    </sql>
+
+    <!--    查询待办列表-->
+    <select id="getList" resultType="com.bank.manage.dto.CardSuppleDto">
+        SELECT
+            CS.*, U.USHER_NAME
+        FROM
+            T_CARD_SUPPLE CS
+        JOIN T_USHER U ON CS.USHER_ID = U.USHER_ID
+        WHERE
+            U.ORG_ID = #{orgId}
+        ORDER BY
+            CS.CART_SUPPLE_CREATETIME DESC
+    </select>
+
+    <!--    通知列表-->
+    <resultMap id="InfoMessageDto" type="com.bank.manage.dto.InfoMessageDto">
+        <result property="id" column="ID"/>
+        <result property="Date" column="PROCESS_TIME"/>
+        <result property="title" column="TITLE"/>
+        <result property="type" column="TYPE"/>
+    </resultMap>
+
+    <!--    查询通知列表-->
+    <select id="getInfomationList" resultMap="InfoMessageDto">
+        SELECT
+            CARD_SUPPLE_ID ID,
+            CARD_SUPPLE_PROCESS_TIME PROCESS_TIME,
+            CONCAT(
+                DATE_FORMAT(
+                    CS.CARD_SUPPLE_CREATETIME,
+                    '%Y-%m-%d %H:%i:%s'
+                ),
+                '',
+                '补卡申请',if(CS.CARD_SUPPLE_STATE=20,"通过","驳回")
+            ) TITLE,
+            'CARD_SUPPLE' TYPE
+        FROM
+            T_CARD_SUPPLE CS WHERE CS.CARD_SUPPLE_DELETE_FLAG=0 AND (CS.CARD_SUPPLE_STATE=20 OR CS.CARD_SUPPLE_STATE=30) AND CS.USHER_ID=#{uherId}
+        UNION ALL
+            SELECT
+                WORK_SUPPLE_ID ID,
+                WORK_SUPPLE_PROCESS_TIME PROCESS_TIME,
+                CONCAT(
+                    DATE_FORMAT(
+                        WS.WORK_SUPPLE_TIME,
+                        '%Y-%m-%d %H:%i:%s'
+                    ),
+                    '',
+                    '加班申请',if(WS.WORK_SUPPLE_STATE=20,"通过","驳回")
+                ) TITLE,
+                'WORK_SUPPLE' TYPE
+            FROM
+                T_WORK_SUPPLE WS
+            WHERE WS.WORK_SUPPLE_DELETE_FLAG=0 AND (WS.WORK_SUPPLE_STATE=20 OR WS.WORK_SUPPLE_STATE=30) AND WS.USHER_ID=#{uherId} ORDER BY PROCESS_TIME DESC
+    </select>
+
+    <!--    获取详细信息-->
+    <select id="getInfo" resultType="com.bank.manage.dto.CardSuppleDto">
+        SELECT
+            CS.*, U.USHER_NAME
+        FROM
+            T_CARD_SUPPLE CS
+        JOIN T_USHER U ON CS.USHER_ID = U.USHER_ID
+        WHERE
+            CS.CARD_SUPPLE_ID=#{cardSuppleId}
+    </select>
+</mapper>

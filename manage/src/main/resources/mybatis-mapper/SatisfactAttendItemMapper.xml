@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.SatisfactAttendItemDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.bank.manage.dos.SatisfactAttendItemDO">
+        <id column="SATISFACT_ATTEND_ITEM_ID" property="satisfactAttendItemId" />
+        <result column="SATISFACT_ATTEND_ID" property="satisfactAttendId" />
+        <result column="SATISFACT_ASSESSMENT_FIRST_ID" property="satisfactAssessmentFirstId" />
+        <result column="SATISFACT_ASSESSMENT_SECOND_ID" property="satisfactAssessmentSecondId" />
+        <result column="SATISFACT_ASSESSMENT_FIRST_CORE" property="satisfactAssessmentFirstCore" />
+        <result column="SATISFACT_ASSESSMENT_SECOND_SCORE" property="satisfactAssessmentSecondScore" />
+        <result column="SATISFACT_ATTEND_ITEM_REMARK" property="satisfactAttendItemRemark" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        SATISFACT_ATTEND_ITEM_ID, SATISFACT_ATTEND_ID, SATISFACT_ASSESSMENT_FIRST_ID, SATISFACT_ASSESSMENT_SECOND_ID, SATISFACT_ASSESSMENT_FIRST_CORE, SATISFACT_ASSESSMENT_SECOND_SCORE, SATISFACT_ATTEND_ITEM_REMARK
+    </sql>
+
+</mapper>

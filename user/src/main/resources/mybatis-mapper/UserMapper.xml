@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.user.dao.UserDao">
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.bank.user.dos.UserDO">
+        <id column="USER_ID" property="userId"/>
+        <result column="PASSWORD" property="password"/>
+        <result column="USER_NAME" property="userName"/>
+        <result column="ORG_ID" property="orgId"/>
+        <result column="ORG_NAME" property="orgName"/>
+        <result column="POSITION_ID" property="positionId"/>
+        <result column="POSITION_NAME" property="positionName"/>
+        <result column="DEPART_ID" property="departId"/>
+        <result column="DEPART_NAME" property="departName"/>
+        <result column="USER_STATUS" property="userStatus"/>
+        <result column="USER_PHONE" property="userPhone"/>
+        <result column="USER_GENDER" property="userGender"/>
+        <result column="USER_IDENTIYNO" property="userIdentiyno"/>
+        <result column="USER_CREATE_USERID" property="userCreateUserid"/>
+        <result column="USER_CREATE_USERNAME" property="userCreateUsername"/>
+        <result column="USER_CREATE_TIME" property="userCreateTime"/>
+        <result column="USER_UPDATE_USERID" property="userUpdateUserid"/>
+        <result column="USER_UPDATE_USERNAME" property="userUpdateUsername"/>
+        <result column="USER_UPDATE_TIME" property="userUpdateTime"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        USER_ID, PASSWORD, USER_NAME, ORG_ID, ORG_NAME, POSITION_ID, POSITION_NAME, DEPART_ID, DEPART_NAME, USER_STATUS, USER_PHONE, USER_GENDER, USER_IDENTIYNO, USER_CREATE_USERID, USER_CREATE_USERNAME, USER_CREATE_TIME, USER_UPDATE_USERID, USER_UPDATE_USERNAME, USER_UPDATE_TIME
+    </sql>
+
+    <!--清空用户表-->
+    <update id="clearnUserData">
+        truncate table T_USER
+    </update>
+    <!--复制 零时表的数据到 用户表-->
+    <update id="copyData">
+        INSERT INTO T_USER SELECT * FROM T_USER_TEMP
+    </update>
+
+
+    <resultMap id="UserInfoDto" type="com.bank.user.dto.UserInfoDto" extends="BaseResultMap">
+        <result property="orgCode" column="ORG_CODE"/>
+        <collection property="Roles" column="{userId=USER_ID}" select="SelectUserRoles"></collection>
+    </resultMap>
+
+    <!--    查询用户列表-->
+    <select id="selectUsersPage" resultMap="UserInfoDto">
+        SELECT DISTINCT U.*,ORG.ORG_CODE FROM T_USER U
+        LEFT JOIN T_ORGANIZATION ORG ON U.ORG_ID=ORG.ORG_ID
+        LEFT JOIN S_USER_ROLE UR ON U.USER_ID=UR.USER_ID
+        WHERE
+        U.ORG_ID IN
+        <foreach collection="listOrgIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+<!--        <if test="userVO.orgId!=null and userVO.orgId!=''">-->
+<!--            AND U.ORG_ID=#{userVO.orgId}-->
+<!--        </if>-->
+<!--        <if test="userVO.orgName!=null and userVO.orgName!=''">-->
+<!--            AND U.ORG_NAME=#{userVO.orgName}-->
+<!--        </if>-->
+        <if test="userVO.userId!=null and userVO.userId!=''">
+            AND U.USER_ID=#{userVO.userId}
+        </if>
+        <if test="userVO.userName!=null and userVO.userName!=''">
+            <bind name="orgName" value="'%'+userVO.userName+'%'"/>
+            AND U.USER_NAME LIKE #{orgName}
+        </if>
+        <if test="userVO.roleId!=null and userVO.roleId!=''">
+            AND UR.ROLE_ID=#{userVO.roleId}
+        </if>
+    </select>
+
+    <select id="SelectUserRoles" resultType="java.lang.String">
+        SELECT DISTINCT R.ROLE_NAME FROM S_USER_ROLE UR
+        JOIN S_ROLE R ON UR.ROLE_ID=R.ROLE_ID
+        WHERE UR.USER_ID=#{userId} AND R.ROLE_DELFLAG=0
+    </select>
+</mapper>

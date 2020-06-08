@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.ExcelDataDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="excelDataResultMap" type="com.bank.manage.dos.ExcelDataDO">
+        <id column="ID" property="id"/>
+        <result column="DATA_TYPE" property="dataType"/>
+        <result column="EXCEL_NAME" property="excelName"/>
+        <result column="EXCEL_PATH" property="excelPath"/>
+        <result column="EXCEL_SIZE" property="excelSize"/>
+        <result column="EXCEL_DATE" property="excelDate"/>
+        <result column="EXCEL_QUARTER" property="excelQuarter"/>
+        <result column="EXCEL_RELEASE" property="excelRelease"/>
+        <result column="CREATE_USER" property="createUser"/>
+        <result column="CREATE_TIME" property="createTime"/>
+    </resultMap>
+
+
+    <select id="queryExcelData" resultMap="excelDataResultMap">
+        select * from T_EXCEL_DATA E
+        where 1=1
+        <if test="dataType != null and dataType != ''">
+            AND E.DATA_TYPE = #{dataType}
+        </if>
+        <if test="excelName != null and excelName != ''">
+            AND E.EXCEL_NAME LIKE CONCAT('%','${excelName}','%' )
+        </if>
+    </select>
+</mapper>

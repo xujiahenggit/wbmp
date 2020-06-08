@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.PartorlModualDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.bank.manage.dos.PartorlModualDO">
+        <id column="PARTORL_MODUAL_ID" property="partorlModualId"/>
+        <result column="PARTORL_MODUAL_NAME" property="partorlModualName"/>
+        <result column="PARTORL_MODUAL_SORT" property="partorlModualSort"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        PARTORL_MODUAL_ID, PARTORL_MODUAL_NAME, PARTORL_MODUAL_SORT
+    </sql>
+
+
+    <!--    巡查模块-->
+    <resultMap id="PartorlModual" type="com.bank.manage.dto.PartorlDto">
+        <id column="PARTORL_MODUAL_ID" property="partorlModualId"/>
+        <result column="PARTORL_RECORD_ID" property="partorlRecordId"/>
+        <result column="PARTORL_MODUAL_NAME" property="partorlModualName"/>
+        <result column="PARTORL_MODUAL_SORT" property="partorlModualSort"/>
+        <collection property="listContent" ofType="com.bank.manage.dto.PartorlContentDto"
+                    column="{partorlModualId=PARTORL_MODUAL_ID,partorlRecordId=PARTORL_RECORD_ID}"
+                    select="SelectPartorlContent"></collection>
+    </resultMap>
+
+    <!--    巡查内容-->
+    <resultMap id="PartorlContent" type="com.bank.manage.dto.PartorlContentDto">
+        <id column="PARTORL_RECORD_ITEM_ID" property="partorlRecordItemId"/>
+        <result column="PARTORL_CONTENT_ID" property="partorlContentId"/>
+        <result column="PARTORL_CONTENT" property="partorlContent"/>
+        <result column="PARTORL_CONTENT_SORT" property="partorlContentSort"/>
+        <result column="PARTORL_RESULT" property="partorlResult"/>
+        <result column="PARTORL_MARK" property="partorlMark"/>
+        <collection property="listProve" ofType="com.bank.manage.dto.PartorlProveDto"
+                    column="{partorlRecordItemId=PARTORL_RECORD_ITEM_ID}" select="SelectPartorlProve"/>
+    </resultMap>
+
+    <!--    证明文件-->
+    <resultMap id="PartorlProve" type="com.bank.manage.dto.PartorlProveDto">
+        <result column="PARTORL_PROVE_NUM" property="partorlProveNum"/>
+        <result column="PARTORL_PROVE_FILE_NAME" property="partorlProveFileName"/>
+        <result column="PARTORL_PROVE_FILE_SIZE" property="partorlProveFileSize"/>
+        <result column="PARTORL_PROVE_FILE_PATH" property="partorlProveFilePath"/>
+    </resultMap>
+
+    <!--    查找巡查内容-->
+    <select id="SelectPartorlContent" resultMap="PartorlContent">
+        SELECT
+           PRT.PARTORL_RECORD_ITEM_ID,
+           PC.PARTORL_CONTENT_ID,
+           PC.PARTORL_CONTENT,
+           PC.PARTORL_CONTENT_SORT,
+           PRT.PARTORL_MARK,
+           PRT.PARTORL_RESULT
+           FROM
+                T_PARTORL_CONTENT PC
+           JOIN T_PARTORL_RECORD_ITEM PRT ON PC.PARTORL_CONTENT_ID = PRT.PARTORL_CONTENT_ID
+           WHERE
+               PRT.PARTORL_RECORD_ID = #{partorlRecordId} AND PC.PARTORL_MODUAL_ID = #{partorlModualId}
+    </select>
+
+    <!--    查找证明文件-->
+    <select id="SelectPartorlProve" resultMap="PartorlProve">
+        SELECT PARTORL_PROVE_NUM,PARTORL_PROVE_FILE_NAME,PARTORL_PROVE_FILE_SIZE,PARTORL_PROVE_FILE_PATH FROM T_PARTORL_PROVE WHERE PARTORL_RECORD_ITEM_ID=#{partorlRecordItemId}
+    </select>
+
+    <!--    用ID 查找巡查内容-->
+    <select id="getPartorlListByRecordIdList" resultMap="PartorlModual">
+        SELECT DISTINCT
+             PM.PARTORL_MODUAL_ID,
+             PM.PARTORL_MODUAL_NAME,
+             PM.PARTORL_MODUAL_SORT,
+             PRI.PARTORL_RECORD_ID
+        FROM
+             T_PARTORL_MODUAL PM
+        JOIN T_PARTORL_CONTENT PC ON PM.PARTORL_MODUAL_ID = PC.PARTORL_MODUAL_ID
+        JOIN T_PARTORL_RECORD_ITEM PRI ON PC.PARTORL_CONTENT_ID = PRI.PARTORL_CONTENT_ID
+        WHERE
+             PRI.PARTORL_RECORD_ID = #{partorlRecordId}
+    </select>
+
+    <resultMap id="ContentDtoNoRecordId" type="com.bank.manage.dto.PartorlContentDto">
+        <result column="PARTORL_CONTENT_ID" property="partorlContentId"/>
+        <result column="PARTORL_CONTENT" property="partorlContent"/>
+        <result column="PARTORL_CONTENT_SORT" property="partorlContentSort"/>
+    </resultMap>
+
+    <select id="SelectPartorlContentNoRecord" resultMap="ContentDtoNoRecordId">
+            SELECT * FROM T_PARTORL_CONTENT WHERE PARTORL_MODUAL_ID=#{partorlModualId}
+        </select>
+</mapper>

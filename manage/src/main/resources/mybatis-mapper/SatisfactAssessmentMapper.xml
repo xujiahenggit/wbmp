@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.SatisfactAssessmentDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.bank.manage.dos.SatisfactAssessmentDO">
+        <id column="SATISFACT_ASSESSMENT_ID" property="satisfactAssessmentId" />
+        <result column="SATISFACT_ASSESSMENT_TOPID" property="satisfactAssessmentTopid" />
+        <result column="SATISFACT_ASSESSMENT_DISC" property="satisfactAssessmentDisc" />
+        <result column="SATISFACT_ASSESSMENT_SCORE" property="satisfactAssessmentScore" />
+        <result column="SATISFACT_ASSESSMENT_CONTENT" property="satisfactAssessmentContent" />
+        <result column="SATISFACT_ASSESSMENT_STANDART" property="satisfactAssessmentStandart" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        SATISFACT_ASSESSMENT_ID, SATISFACT_ASSESSMENT_TOPID, SATISFACT_ASSESSMENT_DISC, SATISFACT_ASSESSMENT_SCORE, SATISFACT_ASSESSMENT_CONTENT, SATISFACT_ASSESSMENT_STANDART
+    </sql>
+
+</mapper>

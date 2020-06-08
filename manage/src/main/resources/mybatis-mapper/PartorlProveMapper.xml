@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.PartorlProveDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.bank.manage.dos.PartorlProveDO">
+        <id column="PARTORL_PROVE_ID" property="partorlProveId"/>
+        <result column="PARTORL_RECORD_ITEM_ID" property="partorlRecordItemId"/>
+        <result column="PARTORL_PROVE_NUM" property="partorlProveNum"/>
+        <result column="PARTORL_PROVE_FILE_NAME" property="partorlProveFileName"/>
+        <result column="PARTORL_PROVE_FILE_SIZE" property="partorlProveFileSize"/>
+        <result column="PARTORL_PROVE_FILE_PATH" property="partorlProveFilePath"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        PARTORL_PROVE_ID, PARTORL_RECORD_ITEM_ID, PARTORL_PROVE_NUM, PARTORL_PROVE_FILE_NAME, PARTORL_PROVE_FILE_SIZE, PARTORL_PROVE_FILE_PATH
+    </sql>
+
+    <!--    按巡查内容批量删除证明文件-->
+    <delete id="deleteProveByRecordItemIds">
+        DELETE FROM T_PARTORL_PROVE WHERE PARTORL_RECORD_ITEM_ID IN
+        <foreach collection="listRecordItemIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--    查询证明文件路径列表-->
+    <select id="selectFilePathByRecordId" resultType="java.lang.String">
+        SELECT
+            PROVE.PARTORL_PROVE_FILE_PATH
+        FROM
+            T_PARTORL_PROVE PROVE
+        JOIN T_PARTORL_RECORD_ITEM RITEM ON PROVE.PARTORL_RECORD_ITEM_ID = RITEM.PARTORL_RECORD_ITEM_ID
+        JOIN T_PARTORL_RECORD PR ON RITEM.PARTORL_RECORD_ID=PR.PARTORL_RECORD_ID
+        WHERE PR.PARTORL_RECORD_ID=#{partorlRecordId}
+    </select>
+</mapper>

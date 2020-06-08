@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.SatisfactAttendDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.bank.manage.dos.SatisfactAttendDO">
+        <result column="SATISFACT_ATTEND_ID" property="satisfactAttendId"/>
+        <result column="USHER_ID" property="usherId"/>
+        <result column="SATISFACT_ATTEND_YEAR" property="satisfactAttendYear"/>
+        <result column="SATISFACT_ATTEND_SCORE" property="satisfactAttendScore"/>
+        <result column="SATISFACT_ATTEND_SUBMIT_STATE" property="satisfactAttendSubmitState"/>
+        <result column="SATISFACT_ATTEND_SUBMIT_USERID" property="satisfactAttendSubmitUserid"/>
+        <result column="SATISFACT_ATTEND_SUBMIT_USERNAME" property="satisfactAttendSubmitUsername"/>
+        <result column="SATISFACT_ATTEND_SUBMIT_TIME" property="satisfactAttendSubmitTime"/>
+        <result column="SATISFACT_ATTEND_REMARK" property="satisfactAttendRemark"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        SATISFACT_ATTEND_ID, USHER_ID, SATISFACT_ATTEND_YEAR, SATISFACT_ATTEND_SCORE, SATISFACT_ATTEND_SUBMIT_STATE, SATISFACT_ATTEND_SUBMIT_USERID, SATISFACT_ATTEND_SUBMIT_USERNAME, SATISFACT_ATTEND_SUBMIT_TIME, SATISFACT_ATTEND_REMARK
+    </sql>
+
+    <!--    查询月度满意度审核列表-->
+    <select id="getList" resultType="com.bank.manage.dto.SatisfactAttendDto">
+        SELECT
+        SA.*, U.USHER_NAME
+        FROM
+        T_SATISFACT_ATTEND SA
+        JOIN T_USHER U ON SA.USHER_ID = SA.USHER_ID
+        WHERE
+        U.ORG_ID = #{orgId}
+        AND U.USHER_DELFLAG = 0
+        <if test="queryType!=null and queryType!='' and queryType='WAIT'">
+            AND SA.SATISFACT_ATTEND_SUBMIT_STATE=10
+        </if>
+        <if test="queryType!=null and queryType!='' and queryType='AREADY'">
+            AND SA.SATISFACT_ATTEND_SUBMIT_STATE=20
+        </if>
+    </select>
+
+    <resultMap id="SatisfactAssessmentBaiscInfo" type="com.bank.manage.dto.SatisfactAssessmentActDto">
+        <result property="satisfactAttendId" column="SATISFACT_ATTEND_ID"/>
+        <result property="usherId" column="USHER_ID"/>
+        <result property="usherName" column="USHER_NAME"/>
+        <result property="orgName" column="ORG_NAME"/>
+        <result property="satisfactAttendYear" column="SATISFACT_ATTEND_YEAR"/>
+        <result property="satisfactAttendScore" column="SATISFACT_ATTEND_SCORE"/>
+        <result property="satisfactAttendSubmitState" column="SATISFACT_ATTEND_SUBMIT_STATE"/>
+        <result property="satisfactAttendRemark" column="SATISFACT_ATTEND_REMARK"/>
+    </resultMap>
+
+    <!--    考核指标列表-->
+    <resultMap id="SatisfactAssessmentActDto" type="com.bank.manage.dto.SatisfactAssessmentActDto"
+               extends="SatisfactAssessmentBaiscInfo">
+        <collection property="listAssessment" column="{satisfactId=SATISFACT_ATTEND_ID}"
+                    select="SelectFistSatisfactAssessment"/>
+    </resultMap>
+
+    <!--    一级考核列表-->
+    <resultMap id="SatisfactAssessmentDto" type="com.bank.manage.dto.SatisfactAssessmentDto">
+        <result property="satisfactAssessmentId" column="SATISFACT_ASSESSMENT_ID"/>
+        <result property="satisfactAssessmentDisc" column="SATISFACT_ASSESSMENT_DISC"/>
+        <result property="satisfactAssessmentScore" column="SATISFACT_ASSESSMENT_SCORE"/>
+        <result property="satisfactAssessmentTrueScore" column="SATISFACT_ASSESSMENT_FIRST_CORE"/>
+        <result property="satisfactAssessmentContent" column="SATISFACT_ASSESSMENT_CONTENT"/>
+        <result property="satisfactAssessmentStandart" column="SATISFACT_ASSESSMENT_STANDART"/>
+        <collection property="secondAssessmentList" column="{satisfactSessmentId=SATISFACT_ASSESSMENT_ID}"
+                    select="SelectSecondSatisfactAssessment"/>
+    </resultMap>
+
+    <!--    二级考核列表-->
+    <resultMap id="SatisfactSecondAssessmentDto" type="com.bank.manage.dto.SatisfactSecondAssessmentDto">
+        <result property="secondsatisfactAssessmentId" column="SATISFACT_ASSESSMENT_ID"/>
+        <result property="secondsatisfactAssessmentDisc" column="SATISFACT_ASSESSMENT_DISC"/>
+        <result property="secondsatisfactAssessmentScore" column="SATISFACT_ASSESSMENT_SCORE"/>
+        <result property="secondSatisfactTrueScore" column="SATISFACT_ASSESSMENT_SECOND_SCORE"/>
+        <result property="secondsatisfactAssessmentContent" column="SATISFACT_ASSESSMENT_CONTENT"/>
+        <result property="secondsatisfactAssessmentStandart" column="SATISFACT_ASSESSMENT_STANDART"/>
+        <result property="satisfactAttendItemRemark" column="SATISFACT_ATTEND_ITEM_REMARK"/>
+    </resultMap>
+
+    <!--    查询满意度月度考核-->
+    <select id="SelectSatisfactInfo" resultMap="SatisfactAssessmentActDto">
+        SELECT
+            SA.SATISFACT_ATTEND_ID,
+            U.USHER_ID,
+            U.USHER_NAME,
+            U.ORG_NAME,
+            SA.SATISFACT_ATTEND_YEAR,
+            SA.SATISFACT_ATTEND_SCORE,
+            SA.SATISFACT_ATTEND_SUBMIT_STATE,
+            SA.SATISFACT_ATTEND_REMARK
+        FROM
+            T_SATISFACT_ATTEND SA
+        JOIN T_USHER U ON SA.USHER_ID = U.USHER_ID WHERE SA.SATISFACT_ATTEND_ID=#{satisfactAttendId}
+    </select>
+
+    <!--    查询满意度月度 一级指标-->
+    <select id="SelectFistSatisfactAssessment" resultMap="SatisfactAssessmentDto">
+        SELECT DISTINCT
+            SAI.SATISFACT_ATTEND_ID,
+            SAL.SATISFACT_ASSESSMENT_ID,
+            SAL.SATISFACT_ASSESSMENT_DISC,
+            SAL.SATISFACT_ASSESSMENT_SCORE,
+            SAI.SATISFACT_ASSESSMENT_FIRST_CORE,
+            SAL.SATISFACT_ASSESSMENT_CONTENT,
+            SAL.SATISFACT_ASSESSMENT_STANDART
+        FROM
+            T_SATISFACT_ATTEND_ITEM SAI
+        JOIN T_SATISFACT_ASSESSMENT SAL ON SAL.SATISFACT_ASSESSMENT_ID = SAI.SATISFACT_ASSESSMENT_FIRST_ID
+        LEFT JOIN T_SATISFACT_ASSESSMENT SAR ON SAR.SATISFACT_ASSESSMENT_TOPID = SAL.SATISFACT_ASSESSMENT_ID
+        WHERE
+            SAI.SATISFACT_ATTEND_ID = #{satisfactId}
+        AND SAL.SATISFACT_ASSESSMENT_TOPID = 0
+    </select>
+
+    <!--    查询满意度 二级指标-->
+    <select id="SelectSecondSatisfactAssessment" resultMap="SatisfactSecondAssessmentDto">
+        SELECT
+            SA.SATISFACT_ASSESSMENT_ID,
+            SA.SATISFACT_ASSESSMENT_DISC,
+            SA.SATISFACT_ASSESSMENT_SCORE,
+            SAI.SATISFACT_ASSESSMENT_SECOND_SCORE,
+            SA.SATISFACT_ASSESSMENT_CONTENT,
+            SA.SATISFACT_ASSESSMENT_STANDART,
+            SAI.SATISFACT_ATTEND_ITEM_REMARK
+        FROM
+            T_SATISFACT_ATTEND_ITEM SAI
+        JOIN T_SATISFACT_ASSESSMENT SA ON SAI.SATISFACT_ASSESSMENT_SECOND_ID = SA.SATISFACT_ASSESSMENT_ID
+        WHERE
+            SA.SATISFACT_ASSESSMENT_TOPID = #{satisfactSessmentId}
+    </select>
+
+    <!--    查询基本信息-->
+    <select id="SelectSatisfactBasicInfo" resultMap="SatisfactAssessmentBaiscInfo">
+        SELECT
+            SA.SATISFACT_ATTEND_ID,
+            U.USHER_ID,
+            U.USHER_NAME,
+            U.ORG_NAME,
+            SA.SATISFACT_ATTEND_YEAR,
+            SA.SATISFACT_ATTEND_SCORE,
+            SA.SATISFACT_ATTEND_SUBMIT_STATE,
+            SA.SATISFACT_ATTEND_REMARK
+        FROM
+            T_SATISFACT_ATTEND SA
+        JOIN T_USHER U ON SA.USHER_ID = U.USHER_ID WHERE SA.SATISFACT_ATTEND_ID=#{satisfactAttendId}
+    </select>
+
+    <!--    查当前已经提交的满意度条数-->
+    <select id="getSatisfactAttendPassSize" resultType="com.bank.manage.dos.SatisfactAttendDO">
+        SELECT
+            SA.*
+        FROM
+            T_SATISFACT_ATTEND SA
+        JOIN T_USHER U ON SA.USHER_ID = U.USHER_ID
+        WHERE
+            U.ORG_ID = #{orgId} AND SA.SATISFACT_ATTEND_YEAR = #{queryDate}
+        AND SA.SATISFACT_ATTEND_SUBMIT_STATE = 20
+    </select>
+
+    <!--    查询满意度 考核人数-->
+    <select id="getatisfactAttendNum" resultType="java.lang.Integer">
+        SELECT
+            COUNT(USHER_ID)
+        FROM
+            T_SATISFACT_ATTEND
+        WHERE
+            DATE_FORMAT(SATISFACT_ATTEND_YEAR, '%Y-%m') = #{date}
+        AND SATISFACT_ATTEND_SUBMIT_STATE = #{processPass}
+    </select>
+
+    <!--    驳回人数列表-->
+    <resultMap id="SasifactWaitPerple" type="com.bank.manage.dto.CheckWorkRejectDto">
+        <result property="uName" column="USHER_NAME"/>
+        <result property="orgName" column="ORG_NAME"/>
+    </resultMap>
+
+    <!--    查询 月满意度 未完成人数列表-->
+    <select id="getSasifactWaitPerple" resultMap="SasifactWaitPerple">
+        SELECT
+            U.USHER_NAME,
+            U.ORG_NAME
+        FROM
+            T_SATISFACT_ATTEND SA
+        JOIN T_USHER U ON SA.USHER_ID = U.USHER_ID
+        WHERE
+            DATE_FORMAT(SA.SATISFACT_ATTEND_YEAR,'%Y-%m') = #{date}
+    </select>
+
+</mapper>

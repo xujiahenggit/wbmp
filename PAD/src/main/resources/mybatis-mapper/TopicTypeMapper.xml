@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.pad.dao.TopicTypeDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="topicTypeResultMap" type="com.bank.pad.dos.TopicTypeDO">
+        <id column="ID" property="id"/>
+        <result column="TYPE_NAME" property="typeName"/>
+    </resultMap>
+
+
+    <select id="selectTopicTypePage" resultMap="topicTypeResultMap">
+        select * from S_TOPIC_TYPE
+    </select>
+
+
+</mapper>

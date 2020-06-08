@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.log.dao.ErrorLogDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.bank.log.dos.ErrorLogDO">
+        <id column="ERR_LOG_ID" property="errLogId"/>
+        <result column="ERR_CLASS" property="errClass"/>
+        <result column="ERR_METHOD" property="errMethod"/>
+        <result column="ERR_METHOD_NAME" property="errMethodName"/>
+        <result column="ERR_PARA" property="errPara"/>
+        <result column="ERR_NAME" property="errName"/>
+        <result column="ERR_INFO" property="errInfo"/>
+        <result column="OPT_URL" property="optUrl"/>
+        <result column="OPT_USER_ID" property="optUserId"/>
+        <result column="OPT_USER_NAME" property="optUserName"/>
+        <result column="OPT_IP" property="optIp"/>
+        <result column="ERR_VERSION" property="errVersion"/>
+        <result column="ERR_DATE" property="errDate"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        ERR_LOG_ID, ERR_CLASS, ERR_METHOD, ERR_METHOD_NAME, ERR_PARA, ERR_NAME, ERR_INFO, OPT_URL, OPT_USER_ID, OPT_USER_NAME, OPT_IP, ERR_VERSION, ERR_DATE
+    </sql>
+
+
+    <!--    获取错误日志版本列表-->
+    <select id="getErrVersion" resultType="java.lang.String">
+       SELECT DISTINCT ERR_VERSION FROM T_ERROR_LOG
+    </select>
+</mapper>
