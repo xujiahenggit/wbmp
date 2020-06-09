@@ -1,18 +1,10 @@
 package com.bank.auth.controller;
 
-import com.alibaba.fastjson.JSONObject;
-import com.bank.auth.dto.AuthDTO;
-import com.bank.auth.util.TokenUtil;
-import com.bank.core.entity.BizException;
-import com.bank.core.entity.TokenUserInfo;
-import com.bank.core.utils.JwtUtil;
-import com.bank.core.utils.RedisUtil;
-import com.bank.user.dos.UserDO;
-import com.bank.user.service.UserService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.annotation.Resource;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -24,7 +16,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
+import com.alibaba.fastjson.JSONObject;
+import com.bank.auth.dto.AuthDTO;
+import com.bank.auth.util.TokenUtil;
+import com.bank.core.entity.BizException;
+import com.bank.core.entity.TokenUserInfo;
+import com.bank.core.utils.JwtUtil;
+import com.bank.core.utils.RedisUtil;
+import com.bank.role.dos.RoleDO;
+import com.bank.role.service.RoleService;
+import com.bank.user.dos.UserDO;
+import com.bank.user.service.UserService;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 
 @Api(tags = "认证授权接口")
 @RestController
@@ -32,6 +39,9 @@ public class TokenController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private RoleService roleService;
 
     @ApiOperation(value = "用户登陆")
     @ApiImplicitParams({
@@ -72,14 +82,24 @@ public class TokenController {
     })
     @PostMapping("/ssoLogin")
     public Object ssoLogin(String username) {
-        String token = tokenUtil.getToken(username);
+        UserDO userDO = this.userService.getById(username);
+        if (userDO == null) {
+            throw new BizException("该用户不存在");
+        }
+
+        String token = this.tokenUtil.getToken(username);
+        Set<RoleDO> roles = this.roleService.listByUserId(userDO.getUserId());
+        Set<String> roleCodes = new HashSet<>();
+        for (RoleDO role : roles) {
+            roleCodes.add(role.getRoleCode());
+        }
         JSONObject obj = new JSONObject();
         obj.put("token", token);
-        obj.put("userInfo", userService.getById(username));
-        redisUtil.set(token,"");
+        obj.put("userInfo", userDO);
+        obj.put("roleInfo", roleCodes);
+        this.redisUtil.set(token, "");
         return obj;
     }
-
 
     @ApiOperation(value = "用户登陆")
     @ApiImplicitParams({
@@ -110,10 +130,16 @@ public class TokenController {
                 .orgId(userDO.getOrgId()).orgName(userDO.getOrgName()).build();
 
         String token = JwtUtil.sign(userinfo, simpleHash.toHex());
+        Set<RoleDO> roles = this.roleService.listByUserId(userDO.getUserId());
+        Set<String> roleCodes = new HashSet<>();
+        for (RoleDO role : roles) {
+            roleCodes.add(role.getRoleCode());
+        }
         JSONObject obj = new JSONObject();
         obj.put("token", token);
         obj.put("userInfo", userDO);
-        redisUtil.set(token,"");
+        obj.put("roleInfo", roleCodes);
+        this.redisUtil.set(token, "");
         return obj;
     }
 

@@ -56,4 +56,12 @@ public interface RoleService extends IService<RoleDO> {
     Set<RoleDO> listByUserId(String id);
 
     List<RoleDO> getAllRole();
+
+    /**
+     * 查询 用户是否具有 品宣部 角色权限
+     * @param userId 用户编号
+     * @param roleCode 角色编码
+     * @return
+     */
+    List<RoleDO> getHeadOfficeUserRole(String userId,String roleCode);
 }

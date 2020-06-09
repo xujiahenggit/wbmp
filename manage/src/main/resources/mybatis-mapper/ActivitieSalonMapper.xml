@@ -30,8 +30,8 @@
             <if test="activitieName != null and activitieName != ''">
               T.ACTIVITIE_NAME  LIKE CONCAT('%','${activitieName}','%' ) AND
             </if>
-            <if test="startTime != null and endTime != null">
-               #{endTime} >= T.CREATED_TIME >= #{startTime}
+            <if test="startTime != null and startTime != '' and endTime != null and endTime != ''" >
+                T.CREATED_TIME  BETWEEN #{startTime} AND #{endTime}
             </if>
         </trim>
     </select>

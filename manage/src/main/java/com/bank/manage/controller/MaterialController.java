@@ -7,6 +7,7 @@ import com.bank.core.utils.ConfigFileReader;
 import com.bank.manage.dos.MaterialDO;
 import com.bank.manage.dto.MaterialDTO;
 import com.bank.manage.service.MaterialService;
+import com.bank.manage.vo.MaterialVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
@@ -143,7 +144,7 @@ public class MaterialController extends BaseController {
     @PostMapping("/queryMaterial")
     @ApiOperation(value = "查询素材列表")
     @ApiImplicitParam(name = "pageQueryModel", value = "素材信息分页查询", required = true, paramType = "body", dataType = "PageQueryModel")
-    public IPage<MaterialDTO> queryMaterialList(@RequestBody PageQueryModel pageQueryModel){
+    public IPage<MaterialVo> queryMaterialList(@RequestBody PageQueryModel pageQueryModel){
         return materialService.queryMaterialList(pageQueryModel);
     }
 

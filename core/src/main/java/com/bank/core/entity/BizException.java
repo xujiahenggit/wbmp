@@ -20,6 +20,8 @@ public class BizException extends RuntimeException {
      */
     protected String errorMsg;
 
+    protected Object data = null;
+
     public BizException() {
         super();
     }
@@ -27,6 +29,12 @@ public class BizException extends RuntimeException {
     public BizException(String errorMsg) {
         super(errorMsg);
         this.errorMsg = errorMsg;
+    }
+
+    public BizException(String errorMsg, Object data) {
+        super(errorMsg);
+        this.errorMsg = errorMsg;
+        this.data = data;
     }
 
     public BizException(String message, String errorMsg) {

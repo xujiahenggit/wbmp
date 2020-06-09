@@ -1,9 +1,11 @@
 package com.bank.core.entity;
 
-import java.io.Serializable;
-
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 /**
  * 当前用户信息
@@ -21,6 +23,8 @@ import lombok.Data;
  */
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class TokenUserInfo implements Serializable {
 
     /**

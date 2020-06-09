@@ -170,6 +170,7 @@ public class ActivitieSalonServiceImpl extends ServiceImpl<ActivitieSalonDao, Ac
             activitieSalonImageDao.removeActivitieSalonImageByIds(ids);
             return true;
         } catch (Exception e) {
+            log.error("活动沙龙数据删除失败,{}",e.getMessage());
             throw new BizException("活动沙龙数据删除失败");
         }
     }

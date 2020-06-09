@@ -7,20 +7,20 @@ public class GeneratorTest {
 //    @Test
     public void generVUE() {
         GeneratorCode generator = new GeneratorCode();
-//        generator.setPackageDir("E:\\YUXIN\\CSBank\\Code\\wbmp\\manage");
-//        generator.setPackageName("com.bank.manage");
-        generator.setServiceName("沙龙活动");
-        generator.setPackageWebDir("C:\\Users\\ZHAO\\Desktop\\view");
-//        generator.setIncludeTables(new String[]{
+        generator.setPackageDir("E:\\YUXIN\\CSBank\\Code\\wbmp\\icop");
+        generator.setPackageName("com.bank.icop");
+//        generator.setServiceName("沙龙活动");
+//        generator.setPackageWebDir("C:\\Users\\ZHAO\\Desktop\\view");
+        generator.setIncludeTables(new String[]{
 ////                "T_GAME",
-//                "T_VERSIONS"
-//        });
-        generator.setIncludeTables(new String[]{"T_ACTIVITIE_SALON",
-                "T_ACTIVITIE_SALON_LOG"});
+                "T_SOAP_LOG"
+        });
+//        generator.setIncludeTables(new String[]{"T_ACTIVITIE_SALON",
+//                "T_ACTIVITIE_SALON_LOG"});
 
 
-        generator.setPackageDir("E:\\IDEA\\generator");
-        generator.setPackageName("com.bank.generator");
+//        generator.setPackageDir("E:\\IDEA\\generator");
+//        generator.setPackageName("com.bank.generator");
 //        generator.setServiceName("游戏模块");
 //        generator.setPackageWebDir("E:\\IDEA\\generator\\src\\main\\resources\\view");
 //        generator.setIncludeTables(new String[]{

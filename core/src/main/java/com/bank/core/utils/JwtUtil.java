@@ -21,6 +21,7 @@ public class JwtUtil {
 
     /**
      * 校验token是否正确
+     *
      * @param token  密钥
      * @param secret 用户的密码
      * @return 是否正确
@@ -32,15 +33,14 @@ public class JwtUtil {
             JWTVerifier verifier = JWT.require(algorithm).withClaim("userId", userInfo.getUserId())
                     .withClaim("userName", userInfo.getUserName())
                     .withClaim("orgId", userInfo.getOrgId())
-                    .withClaim("orgName",userInfo.getOrgName())
+                    .withClaim("orgName", userInfo.getOrgName())
                     .build();
 
             // 效验TOKEN
             DecodedJWT jwt = verifier.verify(token);
             log.info(jwt + ":-token is valid");
             return true;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.info("The token is invalid{}", e.getMessage());
             return false;
         }
@@ -48,9 +48,9 @@ public class JwtUtil {
 
     /**
      * 获得token中的信息无需secret解密也能获得
+     *
      * @return token中包含的用户名
      */
-
     public static TokenUserInfo getUserInfo(String token) {
         try {
             DecodedJWT jwt = JWT.decode(token);
@@ -59,8 +59,7 @@ public class JwtUtil {
                     .orgId(jwt.getClaim("orgId").asString())
                     .orgName(jwt.getClaim("orgName").asString())
                     .build();
-        }
-        catch (JWTDecodeException e) {
+        } catch (JWTDecodeException e) {
             log.error("error：{}", e.getMessage());
             return null;
         }
@@ -68,7 +67,8 @@ public class JwtUtil {
 
     /**
      * 生成签名
-     * @param secret   用户的密码
+     *
+     * @param secret 用户的密码
      * @return 加密的token
      */
     public static String sign(TokenUserInfo userInfo, String secret) {
@@ -79,8 +79,8 @@ public class JwtUtil {
                 .withClaim("userId", userInfo.getUserId())
                 .withClaim("userName", userInfo.getUserName())
                 .withClaim("orgId", userInfo.getOrgId())
-                .withClaim("orgName",userInfo.getOrgName())
-                .withClaim("time",date)
+                .withClaim("orgName", userInfo.getOrgName())
+                .withClaim("time", date)
 //                .withExpiresAt(date)
                 .sign(algorithm);
     }

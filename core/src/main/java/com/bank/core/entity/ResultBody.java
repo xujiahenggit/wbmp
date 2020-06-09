@@ -1,6 +1,7 @@
 package com.bank.core.entity;
 
 import com.bank.core.enums.StatusEnum;
+
 import lombok.Data;
 
 /**
@@ -64,17 +65,27 @@ public class ResultBody<T> {
         return error(null, errorMsg);
     }
 
-
     /**
      * @param code     消息码
      * @param errorMsg errorMsg 错误消息
      */
     public ResultBody<T> error(Integer code, String errorMsg) {
+        return error(code, errorMsg, null);
+    }
+
+    /**
+     *
+     * @param code 消息码
+     * @param errorMsg 错误消息
+     * @param data 数据
+     * @return
+     */
+    public ResultBody<T> error(Integer code, String errorMsg, T data) {
         ResultBody<T> resultBody = new ResultBody<>();
         resultBody.setStatus(false);
         resultBody.setCode(code);
         resultBody.setErrorMsg(errorMsg);
-        resultBody.setData(null);
+        resultBody.setData(data);
         return resultBody;
     }
 }

@@ -123,6 +123,7 @@ public class CashVoucherController extends BaseIcopController{
     @GetMapping("/orderList/{orderType}")
     @ApiImplicitParam(name = "orderType", value = "订单类型：01-重要空白凭证订单、02-非重要空白凭证订单、03-分行代理凭证订单", required = true, dataType = "String")
     public Object orderList(@PathVariable String orderType) {
+
         return cashVoucherService.orderList(orderType);
     }
 

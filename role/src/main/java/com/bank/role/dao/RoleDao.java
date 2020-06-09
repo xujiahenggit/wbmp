@@ -2,7 +2,9 @@ package com.bank.role.dao;
 
 import com.bank.role.dos.RoleDO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -26,4 +28,11 @@ public interface RoleDao extends BaseMapper<RoleDO> {
      */
     Set<RoleDO> listByUserId(Integer id);
 
+    /**
+     * 查询 当前用户是否具有 品宣部 角色权限
+     * @param userId 用户编号
+     * @param roleCode 角色编码
+     * @return
+     */
+    List<RoleDO> getHeadOfficeUserRole(@Param(value = "userId") String userId,@Param(value = "roleCode") String roleCode);
 }

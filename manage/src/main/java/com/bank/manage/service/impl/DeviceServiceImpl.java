@@ -3,6 +3,7 @@ package com.bank.manage.service.impl;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -231,10 +232,10 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceDao, DeviceDO> implemen
         queryWrapper.in("MAC", Arrays.asList(StringUtils.split(macAddress, ",")));
         List<DeviceDO> deviceList = this.deviceDao.selectList(queryWrapper);
         if (deviceList.size() == 0) {
-            throw new BizException("根据Mac地址【" + macAddress + "】未查询到对应设备信息数据");
+            throw new BizException("根据Mac地址【" + macAddress + "】未查询到对应设备信息数据", new HashMap<String, String>());
         }
         if (deviceList.size() > 1) {
-            throw new BizException("根据Mac地址【" + macAddress + "】查询到多笔设备信息数据，请检查设备数据维护是否准确");
+            throw new BizException("根据Mac地址【" + macAddress + "】查询到多笔设备信息数据，请检查设备数据维护是否准确", new HashMap<String, String>());
         }
         DeviceDTO deviceDTO = new DeviceDTO();
         //PropertyUtil.copyProperties(deviceList.get(0), deviceDTO);
