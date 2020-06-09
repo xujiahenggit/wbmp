@@ -7,6 +7,7 @@ import com.bank.core.entity.TokenUserInfo;
 import com.bank.core.enums.ConstantEnum;
 import com.bank.core.sysConst.ConstFile;
 import com.bank.core.sysConst.NewProcessStatusFile;
+import com.bank.core.sysConst.RolePermissionCode;
 import com.bank.manage.dao.NewProcessDao;
 import com.bank.manage.dos.NewProcessDO;
 import com.bank.manage.dos.NewProcessHistoryDO;
@@ -19,6 +20,8 @@ import com.bank.manage.util.NewProcessUtil;
 import com.bank.manage.vo.NewProcessPassVo;
 import com.bank.manage.vo.NewProcessQueryVo;
 import com.bank.manage.vo.NewProcessRejectVo;
+import com.bank.role.dos.RoleDO;
+import com.bank.role.service.RoleService;
 import com.bank.user.dao.UserDao;
 import com.bank.user.dos.OrganizationDO;
 import com.bank.user.dos.UserDO;
@@ -57,6 +60,9 @@ public class NewProcessServiceImpl extends ServiceImpl<NewProcessDao,NewProcessD
     @Resource
     @Lazy
     private MaterialService materialService;
+
+    @Resource
+    private RoleService roleService;
     /**
      * 待审核 流程列表
      *
@@ -68,7 +74,15 @@ public class NewProcessServiceImpl extends ServiceImpl<NewProcessDao,NewProcessD
     public IPage<NewProcessDO> getWaitProcessList(NewProcessQueryVo newProcessQueryVo,TokenUserInfo tokenUserInfo) {
         //获取用户所在的 机构ID和下级机构ID
         List<OrganizationDO> organizationDOList=organizationService.list();
-        List<String> listOrgIds=OrgIdUtils.returnFidList(tokenUserInfo.getOrgId(),organizationDOList);
+        List<String> listOrgIds=null;
+
+        List<RoleDO> listRole=roleService.getHeadOfficeUserRole(tokenUserInfo.getUserId(), RolePermissionCode.ROLE_PUBLICCITY);
+        //说明是品宣部用户 则只能看 总行
+        if(listRole.size()>0){
+            listOrgIds=OrgIdUtils.returnFidList("100",organizationDOList);
+        }else{
+            listOrgIds=OrgIdUtils.returnFidList(tokenUserInfo.getOrgId(),organizationDOList);
+        }
         //待审核列表
         QueryWrapper<NewProcessDO> queryWrapper= NewProcessUtil.getQueryWrapper(newProcessQueryVo,NewProcessStatusFile.QUERY_TYPE_WAIT,listOrgIds,tokenUserInfo);
         Page<NewProcessDO> newProcessDOPage=new Page<>(newProcessQueryVo.getPageIndex(),newProcessQueryVo.getPageSize());
@@ -107,7 +121,15 @@ public class NewProcessServiceImpl extends ServiceImpl<NewProcessDao,NewProcessD
     public IPage<NewProcessDO> getPassProcessList(NewProcessQueryVo newProcessQueryVo, TokenUserInfo tokenUserInfo) {
         //获取用户所在的 机构ID和下级机构ID
         List<OrganizationDO> organizationDOList=organizationService.list();
-        List<String> listOrgIds=OrgIdUtils.returnFidList(tokenUserInfo.getOrgId(),organizationDOList);
+        List<String> listOrgIds=null;
+
+        List<RoleDO> listRole=roleService.getHeadOfficeUserRole(tokenUserInfo.getUserId(), RolePermissionCode.ROLE_PUBLICCITY);
+        //说明是品宣部用户 则只能看 总行
+        if(listRole.size()>0){
+            listOrgIds=OrgIdUtils.returnFidList("100",organizationDOList);
+        }else{
+            listOrgIds=OrgIdUtils.returnFidList(tokenUserInfo.getOrgId(),organizationDOList);
+        }
         //已审核列表
         QueryWrapper<NewProcessDO> queryWrapper= NewProcessUtil.getQueryWrapper(newProcessQueryVo,NewProcessStatusFile.QUERY_TYPE_ALREADY,listOrgIds,tokenUserInfo);
         Page<NewProcessDO> newProcessDOPage=new Page<>(newProcessQueryVo.getPageIndex(),newProcessQueryVo.getPageSize());

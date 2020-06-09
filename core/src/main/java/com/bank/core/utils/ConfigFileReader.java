@@ -46,10 +46,16 @@ public class ConfigFileReader {
     private String FTP_PASSWORD;
 
     /**
-     * FTP 文件路径
+     * FTP 人力资源文件路径
      */
     @Value("${DAT.FTP_FILE_PATH}")
     private String FTP_FILE_PATH;
+
+    /**
+     * FTP 核心机构文件路径
+     */
+    @Value("${DAT.FTP_FILE_HX_PATH}")
+    private String FTP_FILE_HX_PATH;
 
     /**
      * 大数据文件本地路径
@@ -68,6 +74,12 @@ public class ConfigFileReader {
      */
     @Value("${DAT.USERFILE_NAME}")
     private String USER_FILENAME;
+
+    /**
+     * 核心机构文件名称
+     */
+    @Value("${DAT.HX_ORGFILE_NAME}")
+    private String HX_ORGFILE_NAME;
 
     /**
      * http素材临时路径--共享

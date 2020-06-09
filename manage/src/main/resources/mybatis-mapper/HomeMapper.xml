@@ -13,9 +13,6 @@
             '0' AS useradd,
             ( SELECT count( * ) FROM S_DEVICE) AS devicenum,
             '0' AS deviceadd
-        FROM
-            T_MATERIAL
-        LIMIT 1
     </select>
 
 

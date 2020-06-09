@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.BusinessPanelDao">
+
+
+    <select id="getTellerOnlineInfo" resultType="com.bank.manage.vo.TellerOnlineInfo">
+        <if test="tellerId!=null">
+            SELECT g.* FROM(
+        </if>
+        SELECT f.*,(@b := @b + 1) as score  FROM(
+        SELECT teller_id,sum(sub_seconds) onlineTime FROM(
+        select A.teller_id,A.recordtime,TIMESTAMPDIFF(SECOND,A.recordtime,B.recordtime) sub_seconds
+        from(
+            select a.*,(@i := @i + 1) as ord_num from wbmp_abs_online_time a,(select @i := 1) d
+                WHERE a.RTNCODE='00000000' AND a.DATA_DT=CURDATE() order by teller_id,recordtime
+        ) as A LEFT JOIN (
+            select a.*,(@j := @j + 1) as ord_num from wbmp_abs_online_time a,(select @j := 0) c
+                 WHERE RTNCODE='00000000' AND DATA_DT=CURDATE() order by teller_id,recordtime
+        )as B on A.ord_num=B.ord_num and A.teller_id=B.teller_id) e,(select @a:=0) as tem
+        WHERE (@a:=@a+1)%2=1
+        GROUP BY teller_id) f,(select @b:=0) as tem1
+        <if test="tellerId!=null">
+            ) g
+            WHERE teller_id='#{tellerId}';
+        </if>
+    </select>
+</mapper>

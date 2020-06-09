@@ -10,4 +10,13 @@
          WHERE ROLE_CODE = #{role_code,jdbcType=VARCHAR}
     </select>
 
+    <!--    查询用户是否具有 品宣部 角色权限-->
+    <select id="getHeadOfficeUserRole" resultType="com.bank.role.dos.RoleDO">
+        SELECT
+            S.*
+        FROM
+            S_ROLE S
+        JOIN S_USER_ROLE UR ON S.ROLE_ID=UR.ROLE_ID
+        WHERE S.ROLE_DELFLAG=0 AND UR.USER_ID=#{userId} AND S.ROLE_CODE=#{roleCode}
+    </select>
 </mapper>

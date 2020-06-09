@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.user.dao.NfrtOrgTempDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.bank.user.dos.NfrtOrgTempDO">
+        <result column="NFRT_ORG_ID" property="nfrtOrgId" />
+        <result column="NFRT_ORG_NO" property="nfrtOrgNo" />
+        <result column="NFRT_ORG_NAME" property="nfrtOrgName" />
+        <result column="NFRT_ORG_BRANCH_NO" property="nfrtOrgBranchNo" />
+        <result column="NFRT_ORG_BRANCH_NAME" property="nfrtOrgBranchName" />
+        <result column="NFRT_ORG_STATE" property="nfrtOrgState" />
+        <result column="NFRT_ORG_LEGAL_ID" property="nfrtOrgLegalId" />
+        <result column="NFRT_ORG_BUS_TYPE" property="nfrtOrgBusType" />
+        <result column="NFRT_ORG_BUS_ORGID" property="nfrtOrgBusOrgid" />
+        <result column="NFRT_ORG_LEVEL" property="nfrtOrgLevel" />
+        <result column="NFRT_ORG_TYPE" property="nfrtOrgType" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        NFRT_ORG_ID, NFRT_ORG_NO, NFRT_ORG_NAME, NFRT_ORG_BRANCH_NO, NFRT_ORG_BRANCH_NAME, NFRT_ORG_STATE, NFRT_ORG_LEGAL_ID, NFRT_ORG_BUS_TYPE, NFRT_ORG_BUS_ORGID, NFRT_ORG_LEVEL, NFRT_ORG_TYPE
+    </sql>
+
+    <!--清空组织机构零时表数据-->
+    <update id="ClearnNfrtOrgTemp">
+        truncate table T_NFRT_ORG_TEMP
+    </update>
+
+</mapper>

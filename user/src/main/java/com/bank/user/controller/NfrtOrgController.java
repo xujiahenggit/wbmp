@@ -3,13 +3,14 @@ package com.bank.user.controller;
 import com.bank.core.entity.BizException;
 import com.bank.core.utils.BigDataFileReader;
 import com.bank.user.dos.NfrtOrgDO;
+import com.bank.user.dto.OrgNftDto;
 import com.bank.user.service.NfrtOrgService;
 import com.bank.user.utils.GetDataUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.util.List;
@@ -21,21 +22,21 @@ import java.util.List;
 @RestController
 @RequestMapping("/nfrtorg")
 @Slf4j
+@Api(tags = "分支行/网点接口")
 public class NfrtOrgController {
 
     @Autowired
     private NfrtOrgService nfrtOrgService;
 
-    @PostMapping("/save")
-    public boolean saveNfrtOrgController(){
-        try{
-            List<List<Object>> listdataorg = BigDataFileReader.parseNfrtOrgText(new File("D:\\bankdata\\NFRT_ORG_ALL_20200316"), "|");
-            List<NfrtOrgDO> list= GetDataUtils.getNfrtOrgList(listdataorg);
-            nfrtOrgService.saveBatch(list);
-        }catch (Exception e){
-            log.info("错误"+e);
-            throw new BizException("同步失败");
-        }
-        return true;
+    @ApiOperation("获取分支行列表")
+    @GetMapping("/nftlist")
+    public List<OrgNftDto> getNftOrgList(){
+        return nfrtOrgService.getNftOrgList();
+    }
+
+    @GetMapping("/outlets/{orgId}")
+    @ApiOperation("获取网点列表")
+    public List<OrgNftDto> getOutletsList(@PathVariable String orgId){
+        return nfrtOrgService.getOutletsList(orgId);
     }
 }

@@ -3,7 +3,7 @@
 <mapper namespace="com.bank.manage.dao.ActivitieSalonImageDao">
 
     <delete id="removeActivitieSalonImageByIds">
-        DELETE FROM T_ACTIVITIE_SALON_IMAGE T WHERE T.ACTIVITIE_ID IN
+        DELETE FROM T_ACTIVITIE_SALON_IMAGE WHERE ACTIVITIE_ID IN
         <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
             #{id}
         </foreach>

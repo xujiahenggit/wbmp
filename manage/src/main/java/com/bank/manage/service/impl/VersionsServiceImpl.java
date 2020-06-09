@@ -1,9 +1,9 @@
 package com.bank.manage.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import com.bank.core.entity.PageQueryModel;
+import com.bank.core.utils.MapUtils;
 import com.bank.manage.dao.VersionsDao;
 import com.bank.manage.dos.VersionsDO;
 import com.bank.manage.service.VersionsService;
@@ -41,9 +41,9 @@ public class VersionsServiceImpl extends ServiceImpl<VersionsDao, VersionsDO> im
 //                page.setOrders(OrderItem.descs(sort));
             }
         }
-        Map<String, Object> queryParam = pageQueryModel.getQueryParam();
+        Map<String, Object> queryParam = MapUtils.removeEmptyVal(pageQueryModel.getQueryParam());
         VersionsDO versionsDO = null;
-        if (!MapUtil.isEmpty(queryParam)) {
+        if (!MapUtils.isEmpty(queryParam)) {
             versionsDO = BeanUtil.mapToBean(queryParam, VersionsDO.class, false);
         }
         page.setRecords(versionsDao.listPage(page, versionsDO));

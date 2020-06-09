@@ -26,6 +26,7 @@ public interface OrganizationService extends IService<OrganizationDO> {
      */
     void copyData();
 
+
     /**
      * 添加机构
      * @param orgVo 机构信息

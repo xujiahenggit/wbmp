@@ -18,6 +18,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
@@ -88,9 +89,14 @@ public class CashVoucherController extends BaseIcopController{
                 .invoiceTitle("北京宇信科技集团股份有限公司")
                 .dutyParagraph("911101087921006070").build();
     }
+
+    @Resource
+    HttpServletRequest request;
+
+
     @ApiOperation("获取角色信息")
     @GetMapping("/roleinfo")
-    public RoleInfoVo getRoleInfo(HttpServletRequest request){
+    public RoleInfoVo getRoleInfo(){
         TokenUserInfo tokenUserInfo=getCurrentUserInfo(request);
         return cashVoucherService.getRoleInfo(tokenUserInfo);
     }
@@ -123,6 +129,7 @@ public class CashVoucherController extends BaseIcopController{
     @GetMapping("/orderList/{orderType}")
     @ApiImplicitParam(name = "orderType", value = "订单类型：01-重要空白凭证订单、02-非重要空白凭证订单、03-分行代理凭证订单", required = true, dataType = "String")
     public Object orderList(@PathVariable String orderType) {
+
         return cashVoucherService.orderList(orderType);
     }
 

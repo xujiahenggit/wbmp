@@ -85,7 +85,7 @@ public class ActivitieSalonController extends BaseController {
 		salonDO.setActivitieType(activitieSalon.getActivitieType());
 		salonDO.setActivitieDesc(activitieSalon.getActivitieDesc());
 		salonDO.setActivitieStatus(activitieSalon.getActivitieStatus());
-		activitieSalon.setCreatedBy(tokenUserInfo.getUserId());
+		salonDO.setUpdatedBy(tokenUserInfo.getUserId());
 		salonDO.setUpdatedTime(LocalDateTime.now());
 		return activitieSalonService.updateById(salonDO);
 	}
@@ -95,7 +95,6 @@ public class ActivitieSalonController extends BaseController {
 	 */
 	@DeleteMapping("/delete")
 	@ApiOperation(value = "删除", notes = "传入id")
-	@ApiImplicitParam(name = "id", value = "唯一标识", required = true, paramType = "path")
 	public Boolean remove(@RequestBody @ApiParam(value = "活动沙龙主键列表") List<Integer> ids) {
 		return activitieSalonService.removeActivitieSalonByIds(ids);
 	}

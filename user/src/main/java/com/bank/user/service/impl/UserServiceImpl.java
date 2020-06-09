@@ -43,6 +43,13 @@ public class UserServiceImpl extends ServiceImpl<UserDao,UserDO> implements User
     @Autowired
     private OrganizationService organizationService;
 
+    /**
+     * 总行人员显示 所有用户列表
+     * 当 查询机构号不为空时 查询本级及下属机构用户
+     * @param userVO 查询参数
+     * @param currentOrgId 当前用户所在的机构ID
+     * @return
+     */
     @Override
     public IPage<UserInfoDto> getUserList(UserVO userVO, String currentOrgId) {
         //获取用户所在的 机构ID和下级机构ID

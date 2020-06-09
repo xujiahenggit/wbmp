@@ -21,8 +21,13 @@
     </resultMap>
 
 
-    <select id="queryActivitiesPage" resultType="com.bank.manage.dos.ActivitieSalonDO">
-        SELECT T.* FROM T_ACTIVITIE_SALON T
+    <select id="queryActivitiesPage" resultType="com.bank.manage.vo.ActivitieSalonVO">
+        SELECT T.*,
+         CASE
+         WHEN T.STATUS = 0 THEN '解析成功'
+         WHEN  T.STATUS = 1 THEN '解析失败'
+         END AS 'STATUS_NAME'
+         FROM T_ACTIVITIE_SALON T
         <trim prefix="where" suffixOverrides="and">
             <if test="activitieType != null and activitieType != ''">
                 T.ACTIVITIE_TYPE = #{activitieType} AND
@@ -30,8 +35,8 @@
             <if test="activitieName != null and activitieName != ''">
               T.ACTIVITIE_NAME  LIKE CONCAT('%','${activitieName}','%' ) AND
             </if>
-            <if test="startTime != null and endTime != null">
-               #{endTime} >= T.CREATED_TIME >= #{startTime}
+            <if test="startTime != null and startTime != '' and endTime != null and endTime != ''" >
+                T.CREATED_TIME  BETWEEN #{startTime} AND #{endTime}
             </if>
         </trim>
     </select>

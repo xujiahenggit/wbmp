@@ -62,4 +62,9 @@ public interface OrganizationDao extends BaseMapper<OrganizationDO> {
      * @return
      */
     List<OrgDemandDto> getChild(@Param(value = "orgId") String orgId);
+
+    /**
+     * 复制 核心机构零时表中的数据 到 核心机构表中
+     */
+    void copyNfrtData();
 }

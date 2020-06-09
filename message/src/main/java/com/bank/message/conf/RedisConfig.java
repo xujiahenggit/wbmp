@@ -83,19 +83,6 @@ public class RedisConfig extends CachingConfigurerSupport {
                                 GenericJackson2JsonRedisSerializer()));     // 设置CacheManager的值序列化方式为json序列化，可加入@Class属性
         return RedisCacheManager.builder(factory).cacheDefaults(cacheConfiguration).build();     // 设置默认的cache组件
     }
-//    @Value("${spring.redis.cluster.nodes}")
-//    private String clusterNodes;
-//
-//    public RedisClusterConfiguration clusterConfig(){
-//        RedisClusterConfiguration config = new RedisClusterConfiguration();
-//        String[] nodes = clusterNodes.split(",");
-//        for(String node : nodes){
-//            String[] host =  node.split(":");
-//            RedisNode redis = new RedisNode(host[0], Integer.parseInt(host[1]));
-//            config.addClusterNode(redis);
-//        }
-//        return config;
-//    }
 
 
     @Value("${spring.redis.sentinel.master}")

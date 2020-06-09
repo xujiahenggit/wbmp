@@ -16,7 +16,7 @@ import org.apache.ibatis.annotations.Param;
 public interface ActivitieSalonDao extends BaseMapper<ActivitieSalonDO> {
 
 
-    IPage<ActivitieSalonDO> queryActivitiesPage(Page<ActivitieSalonDO> page,@Param("activitieName") String activitieName,
+    IPage<ActivitieSalonVO> queryActivitiesPage(Page<ActivitieSalonVO> page,@Param("activitieName") String activitieName,
 		@Param("activitieType") String activitieType, @Param("startTime") String startTime,@Param("endTime") String endTime);
 
     List<Map<String, Object>> selectActivitieSalonById(@Param("activitieSalonId") Integer activitieSalonId);

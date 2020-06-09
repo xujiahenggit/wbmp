@@ -17,6 +17,9 @@ import com.bank.manage.dto.ProgramDTO;
 import com.bank.manage.service.PlayAreaMaterialService;
 import com.bank.manage.vo.PlayAreaMaterialVo;
 import com.bank.manage.vo.ProgramVo;
+import com.bank.user.dos.OrganizationDO;
+import com.bank.user.service.OrganizationService;
+import com.bank.user.utils.OrgIdUtils;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -29,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +53,9 @@ public class PlayAreaMaterialServiceImpl extends ServiceImpl<PlayAreaMaterialDao
 
     @Resource
     private ConfigFileReader configFileReader;
+
+    @Autowired
+    private OrganizationService organizationService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -109,7 +116,18 @@ public class PlayAreaMaterialServiceImpl extends ServiceImpl<PlayAreaMaterialDao
         String programName = (String)queryParam.get("programName");
         String orgId = (String) queryParam.get("orgId");
         String deviceType = (String) queryParam.get("deviceType");
-        IPage<PlayAreaMaterialVo> pageList = playAreaMaterialDao.selectPageListByPageQueryModel(page,programName,orgId,deviceType);
+
+        boolean headOffice = organizationService.isHeadOffice(orgId);
+        List<String> ids=new ArrayList<>();
+        //获取用户所在的 机构ID和下级机构ID
+        List<OrganizationDO> organizationDOList=organizationService.list();
+        //如果是总行 则 显示所有的机构
+        if(headOffice){
+            ids=OrgIdUtils.returnFidList("0",organizationDOList);
+        }else {
+            ids=OrgIdUtils.returnFidList(orgId,organizationDOList);
+        }
+        IPage<PlayAreaMaterialVo> pageList = playAreaMaterialDao.selectPageListByPageQueryModel(page,programName,ids,deviceType);
         return pageList;
     }
 

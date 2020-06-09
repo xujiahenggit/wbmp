@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface PlayAreaMaterialDao extends BaseMapper<PlayAreaMaterialDO> {
     IPage<PlayAreaMaterialVo> selectPageListByPageQueryModel(Page page, @Param("programName") String programName,
-                                             @Param("orgId") String orgId, @Param("deviceType") String deviceType);
+                                             @Param("ids") List<String> ids, @Param("deviceType") String deviceType);
 
     List<ProgramVo> queryProgramList(@Param("s") String s);
 

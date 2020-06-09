@@ -105,11 +105,11 @@ public class GetDataUtils {
      * @param list 大数据文件已读内容
      * @return
      */
-    public static List<NfrtOrgDO> getNfrtOrgList(List<List<Object>> list){
-        List<NfrtOrgDO> listOrg=new ArrayList<>();
+    public static List<NfrtOrgTempDO> getNfrtOrgList(List<List<Object>> list){
+        List<NfrtOrgTempDO> listOrg=new ArrayList<>();
         for (int i=0;i<list.size();i++){
             Object[] arrayList=list.get(i).toArray();
-            NfrtOrgDO nfrtOrgDO=new NfrtOrgDO();
+            NfrtOrgTempDO nfrtOrgDO=new NfrtOrgTempDO();
             //设置6位机构号
             nfrtOrgDO.setNfrtOrgId(arrayList[0].toString());
             //设置柜组号

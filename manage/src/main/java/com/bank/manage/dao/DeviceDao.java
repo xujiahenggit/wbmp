@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * 设备信息
  *
@@ -15,5 +17,8 @@ import org.apache.ibatis.annotations.Param;
  */
 public interface DeviceDao extends BaseMapper<DeviceDO> {
     IPage<DeviceDTO> selectPageListByPageQueryModel(Page<DeviceDTO> page, @Param("groupId") String groupId,
-                                                    @Param("terminalNum")String terminalNum, @Param("orgId")String orgId, @Param("status")String status, @Param("deviceType")String deviceType);
+                                                       @Param("deviceType")String deviceType);
+
+    IPage<DeviceDTO> queryPageByListOrgIds(Page<DeviceDTO> page, @Param("groupId") String groupId,@Param("deviceType") String deviceType,
+                                           @Param("ids") List<String> listOrgIds);
 }

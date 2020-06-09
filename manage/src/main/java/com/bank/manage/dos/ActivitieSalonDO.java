@@ -125,5 +125,7 @@ public class ActivitieSalonDO implements Serializable {
   @TableField("UPDATED_TIME")
   private LocalDateTime updatedTime;
 
-
+  @ApiModelProperty(value = "解析状态 0 解析成功 1 未解析成功")
+  @TableField("STATUS")
+  private Integer status;
 }

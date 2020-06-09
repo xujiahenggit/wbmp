@@ -1,16 +1,34 @@
 package com.bank.manage.service.impl;
 
-import cn.hutool.core.util.StrUtil;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.bank.core.entity.BizException;
 import com.bank.core.entity.TokenUserInfo;
 import com.bank.core.sysConst.NewProcessStatusFile;
 import com.bank.core.sysConst.PartorlConstFile;
 import com.bank.core.utils.DateUtils;
 import com.bank.manage.dao.PartorlRecordDao;
-import com.bank.manage.dos.*;
+import com.bank.manage.dos.NewProcessDO;
+import com.bank.manage.dos.PartorlProcessDO;
+import com.bank.manage.dos.PartorlProveDO;
+import com.bank.manage.dos.PartorlRecordDO;
+import com.bank.manage.dos.PartorlRecordItemDO;
 import com.bank.manage.dto.PartorlRecordHeadDto;
 import com.bank.manage.excel.partorl.PartorlExcelEntity;
-import com.bank.manage.service.*;
+import com.bank.manage.service.PartorlProcessService;
+import com.bank.manage.service.PartorlProveService;
+import com.bank.manage.service.PartorlRecordItemService;
+import com.bank.manage.service.PartorlRecordService;
 import com.bank.manage.vo.PartorlRecordQueryVo;
 import com.bank.manage.vo.partorlRecord.PartorlContentVo;
 import com.bank.manage.vo.partorlRecord.PartorlProveVo;
@@ -19,17 +37,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import cn.hutool.core.util.StrUtil;
 
 /**
  * @Author: Andy
@@ -61,26 +70,26 @@ public class PartorlRecordServiceImpl extends ServiceImpl<PartorlRecordDao, Part
         QueryWrapper<PartorlRecordDO> queryWrapper = new QueryWrapper<>();
         //填报日期
         if (StrUtil.isNotBlank(partorlRecordQueryVo.getStartTime()) && StrUtil.isNotBlank(partorlRecordQueryVo.getEndTime())) {
-            queryWrapper.between("PARTORL_DATE" , partorlRecordQueryVo.getStartTime(), partorlRecordQueryVo.getEndTime());
+            queryWrapper.between("PARTORL_DATE", partorlRecordQueryVo.getStartTime(), partorlRecordQueryVo.getEndTime());
         }
         //填报人
         if (StrUtil.isNotBlank(partorlRecordQueryVo.getPartorlUser())) {
-            queryWrapper.like("PARTORL_USER" , partorlRecordQueryVo.getPartorlUser());
+            queryWrapper.like("PARTORL_USER", partorlRecordQueryVo.getPartorlUser());
         }
         //是否正常
         if (StrUtil.isNotBlank(partorlRecordQueryVo.getPartorlNomal())) {
-            queryWrapper.eq("PARTORL_NOMAL" , partorlRecordQueryVo.getPartorlNomal());
+            queryWrapper.eq("PARTORL_NOMAL", partorlRecordQueryVo.getPartorlNomal());
         }
         //是否超时
         if (StrUtil.isNotBlank(partorlRecordQueryVo.getPartorlOrvertime())) {
-            queryWrapper.eq("PARTORL_ORVERTIME" , partorlRecordQueryVo.getPartorlOrvertime());
+            queryWrapper.eq("PARTORL_ORVERTIME", partorlRecordQueryVo.getPartorlOrvertime());
         }
         //机构号
         if (StrUtil.isNotBlank(partorlRecordQueryVo.getOrgId())) {
-            queryWrapper.eq("ORG_ID" , partorlRecordQueryVo.getOrgId());
+            queryWrapper.eq("ORG_ID", partorlRecordQueryVo.getOrgId());
         }
         Page<PartorlRecordDO> page = new Page<>(partorlRecordQueryVo.getPageIndex(), partorlRecordQueryVo.getPageSize());
-        return partorlRecordDao.selectPage(page, queryWrapper);
+        return this.partorlRecordDao.selectPage(page, queryWrapper);
     }
 
     /**
@@ -99,15 +108,16 @@ public class PartorlRecordServiceImpl extends ServiceImpl<PartorlRecordDao, Part
     @Transactional(rollbackFor = Exception.class)
     public boolean saveRecord(PartorlRecordVo partorlRecordVo, TokenUserInfo tokenUserInfo) {
         try {
-            PartorlProcessDO partorlProcessDO=partorlProcessService.getById(partorlRecordVo.getProcessId());
+            PartorlProcessDO partorlProcessDO = this.partorlProcessService.getById(partorlRecordVo.getProcessId());
             //判断是新增还是更新
-            if (partorlProcessDO!=null && 0!=partorlProcessDO.getPartorlRecordId()) {
+            if (partorlProcessDO != null && 0 != partorlProcessDO.getPartorlRecordId()) {
                 //删除
                 deletePartorlRecord(partorlProcessDO.getPartorlRecordId());
             }
             savePartorlRecord(partorlRecordVo, tokenUserInfo);
             return true;
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new BizException("保存巡查内容失败！");
         }
     }
@@ -127,9 +137,9 @@ public class PartorlRecordServiceImpl extends ServiceImpl<PartorlRecordDao, Part
     public boolean submitPartorlRecord(PartorlRecordVo partorlRecordVo, TokenUserInfo tokenUserInfo) {
         SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            PartorlProcessDO partorlProcessDO=partorlProcessService.getById(partorlRecordVo.getProcessId());
+            PartorlProcessDO partorlProcessDO = this.partorlProcessService.getById(partorlRecordVo.getProcessId());
             //判断是新增还是更新
-            if (partorlProcessDO!=null && 0!=partorlProcessDO.getPartorlRecordId()) {
+            if (partorlProcessDO != null && 0 != partorlProcessDO.getPartorlRecordId()) {
                 //删除
                 deletePartorlRecord(partorlProcessDO.getPartorlRecordId());
             }
@@ -141,33 +151,34 @@ public class PartorlRecordServiceImpl extends ServiceImpl<PartorlRecordDao, Part
             String dateNow = sf.format(new Date());
             //判断 填表日期 与 当前时间大小
             boolean isOrverTime = DateUtils.conparDate(partorlRecordDate, dateNow, "yyyy-MM-dd");
-            String orverTime = isOrverTime == true ? PartorlConstFile.PARTOR_OVERTIME_TRUE : PartorlConstFile.PARTOR_OVERTIME_FALSE ;
-            String nomal=PartorlConstFile.PARTOR_NOMAL_TRUE;
+            String orverTime = isOrverTime == true ? PartorlConstFile.PARTOR_OVERTIME_TRUE : PartorlConstFile.PARTOR_OVERTIME_FALSE;
+            String nomal = PartorlConstFile.PARTOR_NOMAL_TRUE;
             //查询 是否有 巡查内容为 否的数据
             QueryWrapper<PartorlRecordItemDO> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("PARTORL_RECORD_ID" , partorlRecordDO.getPartorlRecordId());
-            queryWrapper.eq("PARTORL_RESULT" , PartorlConstFile.PARTOR_NOMAL_FALSE);
-            List<PartorlRecordItemDO> list = partorlRecordItemService.list(queryWrapper);
+            queryWrapper.eq("PARTORL_RECORD_ID", partorlRecordDO.getPartorlRecordId());
+            queryWrapper.eq("PARTORL_RESULT", PartorlConstFile.PARTOR_NOMAL_FALSE);
+            List<PartorlRecordItemDO> list = this.partorlRecordItemService.list(queryWrapper);
             //巡查内容 如过有一条 是 否 则整个巡查记录状态为否
             if (list.size() > 0) {
-                nomal=PartorlConstFile.PARTOR_NOMAL_FALSE;
+                nomal = PartorlConstFile.PARTOR_NOMAL_FALSE;
             }
             //3.修改 超时 正常状态
             PartorlRecordDO updateDo = new PartorlRecordDO();
             updateDo.setPartorlRecordId(partorlRecordDO.getPartorlRecordId());
             updateDo.setPartorlOrvertime(orverTime);
             updateDo.setPartorlNomal(nomal);
-            partorlRecordDao.updateById(updateDo);
+            this.partorlRecordDao.updateById(updateDo);
             //4.修改流程 状态为 已审核
-            NewProcessDO newProcessDOpass=NewProcessDO.builder().processId(partorlRecordDO.getNewprocessId()).status(NewProcessStatusFile.PROCESS_PASS).build();
+            NewProcessDO newProcessDOpass = NewProcessDO.builder().processId(partorlRecordDO.getNewprocessId()).status(NewProcessStatusFile.PROCESS_PASS).build();
 
-            PartorlProcessDO newPartorlProcessDo=new PartorlProcessDO();
+            PartorlProcessDO newPartorlProcessDo = new PartorlProcessDO();
             //设置编号
             newPartorlProcessDo.setPartorlProcessId(partorlRecordDO.getNewprocessId());
             newPartorlProcessDo.setPartorlProcessState(NewProcessStatusFile.PROCESS_PASS);
-            partorlProcessService.updateById(newPartorlProcessDo);
+            this.partorlProcessService.updateById(newPartorlProcessDo);
             return true;
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new BizException("提交巡查内容");
         }
     }
@@ -179,7 +190,7 @@ public class PartorlRecordServiceImpl extends ServiceImpl<PartorlRecordDao, Part
      */
     @Override
     public PartorlExcelEntity getRecordById(Integer recordId) {
-        return partorlRecordDao.getRecordById(recordId);
+        return this.partorlRecordDao.getRecordById(recordId);
     }
 
     /**
@@ -189,17 +200,18 @@ public class PartorlRecordServiceImpl extends ServiceImpl<PartorlRecordDao, Part
      * @return
      */
     @Override
-    public PartorlRecordHeadDto getHeadInfo(Integer processId,TokenUserInfo tokenUserInfo) {
-        PartorlProcessDO partorlProcessDO=partorlProcessService.getById(processId);
-        PartorlRecordHeadDto partorlRecordHeadDto=new PartorlRecordHeadDto();
+    public PartorlRecordHeadDto getHeadInfo(Integer processId, TokenUserInfo tokenUserInfo) {
+        PartorlProcessDO partorlProcessDO = this.partorlProcessService.getById(processId);
+        PartorlRecordHeadDto partorlRecordHeadDto = new PartorlRecordHeadDto();
         partorlRecordHeadDto.setOrgName(partorlProcessDO.getPartorlProcessOrgName());
         partorlRecordHeadDto.setPartorlProcessDate(partorlProcessDO.getPartorlProcessDate());
         partorlRecordHeadDto.setSaveUserName(tokenUserInfo.getUserName());
-        Date dateCurrent=new Date();
-        Date processDate=DateUtils.localDate2Date(partorlProcessDO.getPartorlProcessDate());
-        if(dateCurrent.getTime()>=processDate.getTime()){
+        Date dateCurrent = new Date();
+        Date processDate = DateUtils.localDate2Date(partorlProcessDO.getPartorlProcessDate());
+        if (dateCurrent.getTime() >= processDate.getTime()) {
             partorlRecordHeadDto.setIsOverTime("已超时");
-        }else{
+        }
+        else {
             partorlRecordHeadDto.setIsOverTime("未超时");
         }
         return partorlRecordHeadDto;
@@ -216,8 +228,8 @@ public class PartorlRecordServiceImpl extends ServiceImpl<PartorlRecordDao, Part
     private boolean deletePartorlRecord(Integer partorlRecordId) {
         try {
             QueryWrapper<PartorlRecordItemDO> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("PARTORL_RECORD_ID" , partorlRecordId);
-            List<PartorlRecordItemDO> list = partorlRecordItemService.list(queryWrapper);
+            queryWrapper.eq("PARTORL_RECORD_ID", partorlRecordId);
+            List<PartorlRecordItemDO> list = this.partorlRecordItemService.list(queryWrapper);
             //保存 巡查记录内容ID 方便批量删除
             List<Integer> listRecordItemIds = new ArrayList<>();
             //删除证明文件
@@ -226,12 +238,13 @@ public class PartorlRecordServiceImpl extends ServiceImpl<PartorlRecordDao, Part
                     listRecordItemIds.add(itemDO.getPartorlRecordItemId());
                 }
                 // 删除巡查内容表
-                partorlRecordItemService.removeByIds(listRecordItemIds);
+                this.partorlRecordItemService.removeByIds(listRecordItemIds);
                 // 删除巡查证明文件
-                partorlProveService.deleteProve(listRecordItemIds);
+                this.partorlProveService.deleteProve(listRecordItemIds);
             }
             return true;
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw e;
         }
     }
@@ -246,30 +259,31 @@ public class PartorlRecordServiceImpl extends ServiceImpl<PartorlRecordDao, Part
      */
     private PartorlRecordDO savePartorlRecord(PartorlRecordVo partorlRecordVo, TokenUserInfo tokenUserInfo) {
         try {
-            PartorlProcessDO newProcessDO=partorlProcessService.getById(partorlRecordVo.getProcessId());
+            PartorlProcessDO newProcessDO = this.partorlProcessService.getById(partorlRecordVo.getProcessId());
             //判断是新增还是更新
-            if (newProcessDO!=null && 0!=newProcessDO.getPartorlRecordId()) {
+            if (newProcessDO != null && 0 != newProcessDO.getPartorlRecordId()) {
                 //先查询是否已经存在
-                PartorlRecordDO isExist=partorlRecordDao.selectById(newProcessDO.getPartorlRecordId());
-                if(isExist!=null){
+                PartorlRecordDO isExist = this.partorlRecordDao.selectById(newProcessDO.getPartorlRecordId());
+                if (isExist != null) {
                     //保存子项
-                    SaveRecordItem(partorlRecordVo.getListContent(),isExist.getPartorlRecordId());
+                    SaveRecordItem(partorlRecordVo.getListContent(), isExist.getPartorlRecordId());
                     return isExist;
                 }
             }
             //1.保存巡查内容信息
             PartorlRecordDO partorlRecordDO = getPartorlRecord(partorlRecordVo.getProcessId(), tokenUserInfo);
-            partorlRecordDao.insert(partorlRecordDO);
+            this.partorlRecordDao.insert(partorlRecordDO);
             //1.1 更改流程 关联的业务ID
-            PartorlProcessDO partorlProcessDO=new PartorlProcessDO();
+            PartorlProcessDO partorlProcessDO = new PartorlProcessDO();
             partorlProcessDO.setPartorlProcessId(partorlRecordVo.getProcessId());
             partorlProcessDO.setPartorlRecordId(partorlRecordDO.getPartorlRecordId());
-            partorlProcessService.updateById(partorlProcessDO);
+            this.partorlProcessService.updateById(partorlProcessDO);
 
             //保存子项
-            SaveRecordItem(partorlRecordVo.getListContent(),partorlProcessDO.getPartorlRecordId());
+            SaveRecordItem(partorlRecordVo.getListContent(), partorlProcessDO.getPartorlRecordId());
             return partorlRecordDO;
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw e;
         }
     }
@@ -279,7 +293,7 @@ public class PartorlRecordServiceImpl extends ServiceImpl<PartorlRecordDao, Part
      * @param listContent 子项列表
      * @param recordId 寻擦记录编号
      */
-    private void SaveRecordItem(List<PartorlContentVo> listContent,Integer recordId){
+    private void SaveRecordItem(List<PartorlContentVo> listContent, Integer recordId) {
         for (PartorlContentVo item : listContent) {
             //2.保存巡查记录 从表
             PartorlRecordItemDO partorlRecordItemDO = new PartorlRecordItemDO();
@@ -291,11 +305,11 @@ public class PartorlRecordServiceImpl extends ServiceImpl<PartorlRecordDao, Part
             //巡查内容备注
             partorlRecordItemDO.setPartorlMark(item.getPartorlMark());
             //保存巡查记录从表内容
-            partorlRecordItemService.save(partorlRecordItemDO);
+            this.partorlRecordItemService.save(partorlRecordItemDO);
             //2.1 保存巡查记录 证明文件
-            if (item.getListProves().size() > 0) {
+            if (item.getListProve().size() > 0) {
                 List<PartorlProveDO> listProve = new ArrayList<>();
-                for (PartorlProveVo itemProve : item.getListProves()) {
+                for (PartorlProveVo itemProve : item.getListProve()) {
                     PartorlProveDO partorlProveDO = new PartorlProveDO();
                     //设置巡查记录从表 主键
                     partorlProveDO.setPartorlRecordItemId(partorlRecordItemDO.getPartorlRecordItemId());
@@ -309,10 +323,11 @@ public class PartorlRecordServiceImpl extends ServiceImpl<PartorlRecordDao, Part
                     partorlProveDO.setPartorlProveFileSize(itemProve.getPartorlProveFileSize());
                     listProve.add(partorlProveDO);
                 }
-                partorlProveService.saveBatch(listProve);
+                this.partorlProveService.saveBatch(listProve);
             }
         }
     }
+
     /**
      * 构建 巡查记录 模型
      *

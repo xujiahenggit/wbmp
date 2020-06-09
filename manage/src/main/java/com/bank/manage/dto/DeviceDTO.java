@@ -1,5 +1,6 @@
 package com.bank.manage.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -81,6 +82,7 @@ public class DeviceDTO implements Serializable {
     private String createUser;
 
     @ApiModelProperty(value ="修改时间",hidden = true)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updateTime;
 
     @ApiModelProperty(value ="修改人ID",hidden = true)

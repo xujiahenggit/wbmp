@@ -1,6 +1,5 @@
 package com.bank.core.advice;
 
-import com.bank.core.entity.AuthException;
 import org.apache.shiro.ShiroException;
 import org.slf4j.Logger;
 import org.springframework.validation.FieldError;
@@ -8,6 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.bank.core.entity.AuthException;
 import com.bank.core.entity.BizException;
 import com.bank.core.entity.ResultBody;
 import com.bank.core.enums.StatusEnum;
@@ -34,9 +34,8 @@ public class GlobalExceptionAdvice {
     @ExceptionHandler(value = BizException.class)
     public ResultBody<Object> bizExceptionHandler(BizException e) {
         loggerB.error(e.getErrorMsg());
-        return new ResultBody<Object>().error(StatusEnum.BIZ_ERROR.getCode(), e.getErrorMsg());
+        return new ResultBody<Object>().error(StatusEnum.BIZ_ERROR.getCode(), e.getErrorMsg(), e.getData());
     }
-
 
     /**
      * 参数异常
@@ -44,9 +43,9 @@ public class GlobalExceptionAdvice {
      * @return
      */
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    public ResultBody<Object> paramException(MethodArgumentNotValidException e){
+    public ResultBody<Object> paramException(MethodArgumentNotValidException e) {
         FieldError fieldError = e.getBindingResult().getFieldError();
-        loggerB.error("参数校验异常:{}({})", fieldError.getDefaultMessage(),fieldError.getField());
+        loggerB.error("参数校验异常:{}({})", fieldError.getDefaultMessage(), fieldError.getField());
         return new ResultBody<Object>().error(StatusEnum.PARM_ERROR.getCode(), fieldError.getDefaultMessage());
     }
 
@@ -56,7 +55,7 @@ public class GlobalExceptionAdvice {
      * @return
      */
     @ExceptionHandler(value = AuthException.class)
-    public ResultBody<Object> noAuthException(AuthException e){
+    public ResultBody<Object> noAuthException(AuthException e) {
         loggerB.error(e.getErrorMsg());
         return new ResultBody<Object>().error(StatusEnum.USER_NO_AUTH.getCode(), e.getErrorMsg());
     }

@@ -3,12 +3,20 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.bank.manage.dao.MaterialDao">
 
-    <select id="selectPageListByCatalogType" resultType="com.bank.manage.dto.MaterialDTO">
-        SELECT M.* FROM T_CATALOG C
+    <select id="selectPageListByCatalogType" resultType="com.bank.manage.vo.MaterialVo">
+        SELECT M.* , N.STATUS,
+        (select USER_NAME from  T_USER where M.CREATED_USER = USER_ID) as 'USER_NAME',
+        CASE
+        WHEN N.STATUS = 10 THEN '待审批'
+        WHEN N.STATUS = 20 THEN '审批通过'
+        WHEN N.STATUS = 30 THEN '审批驳回'
+        WHEN N.STATUS = 40 THEN '撤销'
+        END as 'STATUS_NAME'
+        FROM T_CATALOG C
         INNER JOIN T_CATALOG_MATERIAL CM ON C.CATALOG_ID = CM.CATALOG_ID
         INNER JOIN T_MATERIAL M ON CM.MATERIAL_ID = M.MATERIAL_ID
         INNER JOIN S_NEW_PROCESS N ON M.MATERIAL_ID = N.TRADING_ID
-        WHERE C.CATALOG_ID=#{catalogId} AND N.STATUS = '20' AND N.TRADING_TYPE = 'T_MATERIAL' AND N.ACTIVE = '1'
+        WHERE C.CATALOG_ID=#{catalogId} /*AND N.STATUS = '20'*/ AND N.TRADING_TYPE = 'T_MATERIAL' AND N.ACTIVE = '1'
         <if test="createdUser != null and createdUser != ''">
             AND M.CREATED_USER = #{createdUser}
         </if>

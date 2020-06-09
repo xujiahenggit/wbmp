@@ -11,10 +11,6 @@
 
     <artifactId>generator</artifactId>
 
-    <properties>
-        <blade.tool.version>2.6.2</blade.tool.version>
-    </properties>
-
     <dependencies>
         <!-- 引入代码生成依赖 -->
         <dependency>
@@ -31,16 +27,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springblade</groupId>
-            <artifactId>blade-core-tool</artifactId>
-            <version>${blade.tool.version}</version>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
-
-
     </dependencies>
 </project>

@@ -51,6 +51,7 @@ public class OrganizationServiceImpl extends ServiceImpl<OrganizationDao, Organi
         organizationDao.copyData();
     }
 
+
     /**
      * 添加机构信息
      * @param orgVo 机构信息

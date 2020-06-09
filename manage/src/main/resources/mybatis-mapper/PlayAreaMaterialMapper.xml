@@ -29,10 +29,11 @@
         D.TERMINAL_NUM
         FROM S_DEVICE D
         LEFT JOIN T_PROGRAM P ON D.TERMINAL_NUM = P.TERMINAL_NUM AND D.PROGRAM_ID = P.PROGRAM_ID
-        WHERE 1=1
-        <if test="orgId != null and orgId !=''">
-            AND D.ORG_ID = #{orgId}
-        </if>
+        WHERE D.ORG_ID in
+        <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+
         <if test="deviceType != null and deviceType != ''">
             AND D.DEVICE_TYPE = #{deviceType}
         </if>

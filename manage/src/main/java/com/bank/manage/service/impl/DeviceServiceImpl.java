@@ -1,11 +1,11 @@
 package com.bank.manage.service.impl;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import com.bank.user.dos.OrganizationDO;
+import com.bank.user.service.OrganizationService;
+import com.bank.user.utils.OrgIdUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,6 +54,9 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceDao, DeviceDO> implemen
 
     @Autowired
     private DeviceGroupDao deviceGroupDao;
+
+    @Autowired
+    private OrganizationService organizationService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -205,12 +208,19 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceDao, DeviceDO> implemen
         //条件查询
         Map<String, Object> queryParam = pageQueryModel.getQueryParam();
         String groupId = (String) queryParam.get("groupId");
-        String terminalNum = (String) queryParam.get("terminalNum");
         String orgId = (String) queryParam.get("orgId");
-        String status = (String) queryParam.get("status");
         String deviceType = (String) queryParam.get("deviceType");
+        IPage<DeviceDTO> deviceDOIPage = null;
+        boolean headOffice = organizationService.isHeadOffice(orgId);
+        if (headOffice){
+            deviceDOIPage = this.deviceDao.selectPageListByPageQueryModel(page, groupId, deviceType);
+        }else{
+            //获取用户所在的 机构ID和下级机构ID
+            List<OrganizationDO> organizationDOList=organizationService.list();
+            List<String> listOrgIds= OrgIdUtils.returnFidList(orgId,organizationDOList);
+            deviceDOIPage =  deviceDao.queryPageByListOrgIds(page, groupId, deviceType,listOrgIds);
+        }
         log.info("设备信息查询：{}", pageQueryModel);
-        IPage<DeviceDTO> deviceDOIPage = this.deviceDao.selectPageListByPageQueryModel(page, groupId, terminalNum, orgId, status, deviceType);
         return deviceDOIPage;
     }
 
@@ -231,10 +241,10 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceDao, DeviceDO> implemen
         queryWrapper.in("MAC", Arrays.asList(StringUtils.split(macAddress, ",")));
         List<DeviceDO> deviceList = this.deviceDao.selectList(queryWrapper);
         if (deviceList.size() == 0) {
-            throw new BizException("根据Mac地址【" + macAddress + "】未查询到对应设备信息数据");
+            throw new BizException("根据Mac地址【" + macAddress + "】未查询到对应设备信息数据", new HashMap<String, String>());
         }
         if (deviceList.size() > 1) {
-            throw new BizException("根据Mac地址【" + macAddress + "】查询到多笔设备信息数据，请检查设备数据维护是否准确");
+            throw new BizException("根据Mac地址【" + macAddress + "】查询到多笔设备信息数据，请检查设备数据维护是否准确", new HashMap<String, String>());
         }
         DeviceDTO deviceDTO = new DeviceDTO();
         //PropertyUtil.copyProperties(deviceList.get(0), deviceDTO);

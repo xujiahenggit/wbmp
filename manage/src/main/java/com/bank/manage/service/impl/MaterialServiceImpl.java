@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.bank.manage.vo.MaterialVo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -110,6 +111,7 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialDao, MaterialDO> im
                             .materialType(material.getMaterialType())
                             .materialFormat(material.getMaterialFormat())
                             .orgId(tokenUserInfo.getOrgId())
+                            .orgName(material.getOrgName())
                             .createdUser(tokenUserInfo.getUserId())
                             .createdTime(LocalDateTime.now())
                             .expirTime(material.getExpirTime())
@@ -240,8 +242,8 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialDao, MaterialDO> im
     }
 
     @Override
-    public IPage<MaterialDTO> queryMaterialList(PageQueryModel pageQueryModel) {
-        Page<MaterialDO> page = new Page<>(pageQueryModel.getPageIndex(), pageQueryModel.getPageSize());
+    public IPage<MaterialVo> queryMaterialList(PageQueryModel pageQueryModel) {
+        Page<MaterialVo> page = new Page<>(pageQueryModel.getPageIndex(), pageQueryModel.getPageSize());
 
         if (StringUtils.isNotBlank(pageQueryModel.getSort())) {
             if (StringUtils.equalsIgnoreCase("DESC", pageQueryModel.getOrder())) {
@@ -259,9 +261,9 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialDao, MaterialDO> im
         String deviceType = (String) queryParam.get("deviceType");
         String forcePlay = (String) queryParam.get("forcePlay");
         String materialName = (String) queryParam.get("materialName");
-        IPage<MaterialDTO> pageList = this.materialDao.selectPageListByCatalogType(page, catalogId, createdUser, orgId,
+        IPage<MaterialVo> pageList = this.materialDao.selectPageListByCatalogType(page, catalogId, createdUser, orgId,
                 deviceType, forcePlay, materialName);
-        List<MaterialDTO> records = pageList.getRecords();
+        List<MaterialVo> records = pageList.getRecords();
         if (records != null && records.size() > 0) {
             for (int i = 0; i < records.size(); i++) {
                 String materialType = records.get(i).getMaterialType();

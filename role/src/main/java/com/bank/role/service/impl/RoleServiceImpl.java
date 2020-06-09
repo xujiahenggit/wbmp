@@ -134,4 +134,15 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, RoleDO> implements Rol
         queryWrapper.orderByAsc("ROLE_ID");
         return this.roleDao.selectList(queryWrapper);
     }
+
+    /**
+     * 查询 当前用户是否具有 品宣部 角色权限
+     * @param userId 用户编号
+     * @param roleCode 角色编码
+     * @return
+     */
+    @Override
+    public List<RoleDO> getHeadOfficeUserRole(String userId, String roleCode) {
+        return roleDao.getHeadOfficeUserRole(userId,roleCode);
+    }
 }

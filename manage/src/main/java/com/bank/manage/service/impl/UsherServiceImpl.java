@@ -74,7 +74,7 @@ public class UsherServiceImpl implements UsherService {
             int usherCount = this.usherDao.selectCount(queryWrapperExt);
 
             if (usherCount >= usherPopulationDO.getPopulationLimit().intValue()) {
-                throw new BizException("机构[" + usherDTO.getOrgName() + "]已存在引导员" + usherCount + "人，人数控制不允许小于它，请调整该机构人数控制");
+                throw new BizException("机构[" + usherDTO.getOrgName() + "]已存在引导员" + usherCount + "人，引导员人数不允许超过人数控制，请调整该机构人数控制");
             }
         }
 
@@ -145,9 +145,10 @@ public class UsherServiceImpl implements UsherService {
         UsherDO usherDO = new UsherDO();
         PropertyUtil.copyProperties(usherDTO, usherDO);
         String identityNo = usherDTO.getIdentityNo();
+        ValidIdentityNo(identityNo);//校验身份证号码有效性
         UsherDO usher = this.usherDao.selectOne(new LambdaQueryWrapper<UsherDO>().eq(UsherDO::getIdentityNo, identityNo).eq(UsherDO::getUsherDelflag, "0"));
         if (usher != null && !usher.getIdentityNo().equals(identityNo)) {
-            throw new BizException("更改手机号[" + identityNo + "]与其他引导员信息冲突，不允许更新");
+            throw new BizException("更改身份证号[" + identityNo + "]与其他引导员信息冲突，不允许更新");
         }
 
         if (!StrUtil.isBlankIfStr(identityNo)) {

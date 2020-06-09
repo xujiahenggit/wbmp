@@ -5,6 +5,7 @@ import com.bank.core.entity.TokenUserInfo;
 import com.bank.manage.dos.MaterialDO;
 import com.bank.manage.dto.MaterialDTO;
 import com.bank.manage.vo.ForcePlayVo;
+import com.bank.manage.vo.MaterialVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -40,7 +41,7 @@ public interface MaterialService extends IService<MaterialDO> {
      * @param pageQueryModel
      * @return
      */
-    IPage<MaterialDTO> queryMaterialList(PageQueryModel pageQueryModel);
+    IPage<MaterialVo> queryMaterialList(PageQueryModel pageQueryModel);
 
     /**
      * 根据ID查询素材信息

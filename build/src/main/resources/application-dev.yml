@@ -85,8 +85,6 @@ spring:
     sentinel:
       master: mymaster
       nodes: 47.95.247.11:26379,47.95.247.11:26380,${application.ip}:7001
-#    cluster:
-#      nodes: 47.95.247.11:6379,47.95.247.11:7000,${application.ip}:7000
 mybatis-plus:
   #如果将来整个项目启动较慢，可把此处扫描包位置写到每个依赖的具体dao层，缺点为每添加一个新模块，就需要在此处重新添加，优点为项目启动速度快
   type-aliases-package: com.bank
@@ -114,12 +112,16 @@ DAT:
   FTP_PASS_WORD: 123456
   #FTP 文件路径
   FTP_FILE_PATH: /nhr/
+  #FTP 核心文件 文件
+  FTP_FILE_HX_PATH: /hxdata/
   #大数据文件 本地服务器路径
   LOCALPATH: D:/bankdata/
   #大数据 机构文件名称
   ORGFILE_NAME: NHR_ORGANIZATION_?.dat
   #大数据 用户文件名称
   USERFILE_NAME: NHR_EMPLOYEE_?.dat
+  #大数据 核心机构文件名称
+  HX_ORGFILE_NAME: NFRT_ORG_ALL_?
 #巡查证明文件上传路径
 PARTORAL:
   PROVE_FILE_PATH: /vedio/prove

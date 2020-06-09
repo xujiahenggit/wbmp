@@ -5,13 +5,8 @@ import com.bank.core.utils.*;
 import com.bank.quartz.dos.TaskLogDO;
 import com.bank.quartz.service.TaskLogService;
 import com.bank.quartz.utils.GetTaskLogModel;
-import com.bank.user.dos.OrganizationTempDO;
-import com.bank.user.dos.UserDO;
-import com.bank.user.dos.UserTempDO;
-import com.bank.user.service.OrganizationService;
-import com.bank.user.service.OrganizationTempService;
-import com.bank.user.service.UserService;
-import com.bank.user.service.UserTempService;
+import com.bank.user.dos.*;
+import com.bank.user.service.*;
 import com.bank.user.utils.GetDataUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.ftp.FTPClient;
@@ -52,6 +47,12 @@ public class TranslateUserDataJob implements Job {
 
     @Autowired
     private TaskLogService taskLogService;
+
+    @Autowired
+    private NfrtOrgTempService nfrtOrgTempService;
+
+    @Autowired
+    private NfrtOrgService nfrtOrgService;
 
     /**
      * 用户同步数
@@ -102,6 +103,16 @@ public class TranslateUserDataJob implements Job {
             String userFilenName = configFileReader.getUSER_FILENAME().replace("?", fileDate);
             log.info("用户大数据文件名称：" + userFilenName);
             FTPUtil.downloadFile(ftpClient, localFilePath, userFilenName);
+
+            //============新增 同步核心机构文件========================
+            String ftpNfrtPath=configFileReader.getFTP_FILE_HX_PATH();
+            log.info("进入FTP服务器 核心文件存放地址："+ftpNfrtPath);
+            FTPUtil.accessDirectory(ftpClient,".."+ftpNfrtPath);
+            //下载核心机构文件
+            String hxOrgFileName=configFileReader.getHX_ORGFILE_NAME().replace("?",fileDate);
+            FTPUtil.downloadFile(ftpClient, localFilePath, hxOrgFileName);
+            //========================================================
+
             //5.关闭FTP 连接
             FTPUtil.logoutAndDisconnect(ftpClient);
             //6.同步机构数据文件到 零时表
@@ -121,6 +132,18 @@ public class TranslateUserDataJob implements Job {
             File fileUser=new File(localUserFile);
             List<List<Object>> listdatauser = BigDataFileReader.parseText(fileUser, new String(new byte[]{0x06}));
             List<UserTempDO> listUser = GetDataUtils.getUserData(listdatauser);
+
+            //==========================同步核心机构文件==============
+            String localHxOrgFile = localFilePath + hxOrgFileName;
+            log.info("本地核心机构大数据文件："+localHxOrgFile);
+            File fileHxOrg=new File(localHxOrgFile);
+            List<List<Object>> listHxOrg=BigDataFileReader.parseNfrtOrgText(fileHxOrg,"|");
+            List<NfrtOrgTempDO> listHxOrgDo=GetDataUtils.getNfrtOrgList(listHxOrg);
+            // 清空 零时表
+            nfrtOrgTempService.ClearnNfrtOrgTemp();
+            // 保存 零时表
+            nfrtOrgTempService.saveBatch(listHxOrgDo);
+            //=======================================================
             //清空 用户零时表
             userTempService.clearnTmepUserData();
             //保存到零时表
@@ -134,11 +157,18 @@ public class TranslateUserDataJob implements Job {
             organizationService.copyData();
             //11.复制用户零数据到 用户表
             userService.copyData();
+            //=============================核心机构============================
+            //清空核心机构表
+            nfrtOrgService.clearnNfrt();
+            //复制 零时表的数据 到 核心机构文件
+            nfrtOrgService.copyTempData();
+            //================================================================
             //12.创建ADMIN 用户
             userService.save(this.getAdminUser());
             //13.删除本地 大数据文件
             fileOrg.delete();
             fileUser.delete();
+            fileHxOrg.delete();
             //14.保存日志
             TaskLogDO taskLogDO = GetTaskLogModel.getModel(jobExecutionContext, "1" , localDateTime, System.currentTimeMillis() - start, null);
             taskLogService.save(taskLogDO);

@@ -39,7 +39,7 @@ public class WebLogAspect {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
         // 打印请求相关参数
-        log.info("========================================== Start ==========================================");
+        log.info("========================================= Start ==========================================");
         // 打印请求 url
         log.info("URL: {}", request.getRequestURL().toString());
         // 打印 Http method

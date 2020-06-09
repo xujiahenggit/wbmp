@@ -8,18 +8,21 @@
             INNER JOIN T_DEVICE_GROUP DG ON G.GROUP_ID = DG.GROUP_ID
             INNER JOIN S_DEVICE D ON DG.DEVICE_ID = D.DEVICE_ID
             WHERE G.GROUP_ID = #{groupId}
-            <if test="orgId != null and orgId != ''">
-                AND D.ORG_ID = #{orgId}
-            </if>
             <if test="deviceType != null and deviceType != ''">
                 AND D.DEVICE_TYPE = #{deviceType}
             </if>
-            <if test="status != null and status != ''">
-                AND D.STATUS = #{status}
-            </if>
-            <if test="terminalNum != null and terminalNum != ''">
-                AND D.TERMINAL_NUM = #{terminalNum}
-            </if>
     </select>
 
+    <select id="queryPageByListOrgIds" resultType="com.bank.manage.dto.DeviceDTO">
+            SELECT D.* FROM T_GROUP G
+            INNER JOIN T_DEVICE_GROUP DG ON G.GROUP_ID = DG.GROUP_ID
+            INNER JOIN S_DEVICE D ON DG.DEVICE_ID = D.DEVICE_ID
+            WHERE G.GROUP_ID = #{groupId} AND D.ORG_ID IN
+        <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        <if test="deviceType != null and deviceType != ''">
+            AND D.DEVICE_TYPE = #{deviceType}
+        </if>
+    </select>
 </mapper>
