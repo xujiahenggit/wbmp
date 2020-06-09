@@ -1,0 +1,488 @@
+<template>
+    <div class="dashboard-container">
+        <div class="dashboard-text">
+            <div class="bread">系统管理-<span class="red">功能管理</span></div>
+        </div>
+        <div class="dashboard-title">
+            <div class="input-item">
+                <label>权限名称</label>
+                <el-input v-model="permissionName" placeholder="请输入权限名称" style="width: 220px;" size="mini"/>
+            </div>
+            <div class="input-item">
+                <label>权限编码</label>
+                <el-input v-model="permissionCode" placeholder="请输入权限编码" style="width: 220px;" size="mini"/>
+            </div>
+            <div class="input-item">
+                <label>权限类型</label>
+                <el-select v-model="permissionType" size="mini" placeholder="请选择权限类型">
+                    <el-option v-for="item in powerList" :key="item.value" :value="item.value" :label="item.label">{{
+                        item.label }}
+                    </el-option>
+                </el-select>
+            </div>
+            <el-button style="margin-left: 20px;" type="primary" size="mini" icon="el-icon-search" @click="search">{{ $t
+                ('views.query') }}
+            </el-button>
+            <el-button style="margin-bottom: 20px;" type="primary" size="mini" icon="el-icon-close" @click="reset">{{ $t
+                ('views.reset') }}
+            </el-button>
+            <div class="horzion">1</div>
+        </div>
+        <div class="dashboard-body">
+            <div class="btn_wrapper">
+                <el-button type="primary" size="mini" icon="el-icon-circle-plus-outline" @click.native="add">新增
+                </el-button>
+                <el-button size="mini" icon="el-icon-edit" @click.native="modify">修改</el-button>
+                <el-button size="mini" icon="el-icon-view" @click.native="seeDetail">查看</el-button>
+                <el-button size="mini" icon="el-icon-delete" @click.native="remove">删除</el-button>
+            </div>
+
+            <el-table
+                    v-loading="loading"
+                    :data="tableData"
+                    highlight-current-row
+                    stripe
+                    style="width: 100%"
+                    @row-click="rowClick"
+            >
+                <el-table-column
+                        type="index"
+                        width="50"
+                />
+
+                #foreach($field in $!{table.fields})
+                    #if(!$!{field.keyIdentityFlag})
+                        <el-table-column
+                                prop="$!{field.propertyName}"
+                                label="$!{field.comment}"
+                                width="160"
+                        />
+                    #end
+                #end
+
+            </el-table>
+        </div>
+        <div class="dashboard-footer">
+            <el-pagination
+                    :current-page="currentPage"
+                    :page-sizes="[10, 20, 30, 50, 100]"
+                    :page-size="10"
+                    layout="sizes, prev, pager, next, jumper"
+                    :total="total"
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+            />
+        </div>
+        <el-dialog
+                :title="tips"
+                :visible.sync="dialogVisible"
+                width="60%"
+                :before-close="handleClose"
+        >
+            <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="120px" class="demo-ruleForm">
+                #foreach($field in $!{table.fields})
+                    #if(!$!{field.keyIdentityFlag})
+                        <el-form-item class="input_item" label="$!{field.comment}" prop="$!{field.propertyName}">
+                            <el-input v-model="ruleForm.$!{field.propertyName}" :readonly="tips==='权限详情查看'"/>
+                        </el-form-item>
+                    #end
+                #end
+            </el-form>
+
+            <span slot="footer" class="dialog-footer">
+        <el-button @click="diaCancel('ruleForm')">取 消</el-button>
+        <el-button v-if="tips !== '权限详情查看'" type="primary" @click="diaSubmit('ruleForm')">确 定</el-button>
+      </span>
+        </el-dialog>
+    </div>
+</template>
+
+<script>
+    import {getList, addPower, editPower, deletePower, searchOption} from '@/api/power.js'
+    import {imageUpload} from '@/api/material'
+
+    export default {
+        name: 'PermissionManage',
+        data() {
+            return {
+                permissionName: '', // 权限名称
+                permissionCode: '', // 权限编码
+                tableData: [], // table的数组
+                currentPage: 1, // 分页
+                page: 1, // 分页
+                rows: 10, // 分页
+                total: 0, // 分页
+                dialogVisible: false, // 是否显示dialog
+                tips: '', // tips
+                ruleForm: {
+            #foreach($field in $!{table.fields})
+                #if(!$!{field.keyIdentityFlag})
+                    $!{field.propertyName}: ''#if ($foreach.hasNext),#end //$!{field.comment}
+                #end
+            #end
+        },
+            rules: {
+                powerName: [
+                    {required: true, message: '请输入权限名称', trigger: 'blur'},
+                    {min: 2, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur'}
+                ],
+                        powerCode
+            :
+                [
+                    {required: true, message: '请输入权限编码', trigger: 'blur'}
+                ],
+                        powerUrl
+            :
+                [
+                    {required: true, message: '请输入前端路由地址', trigger: 'blur'},
+                    {min: 3, max: 100, message: '长度在 3 到 100 个字符', trigger: 'blur'}
+                ],
+                        powerComponent
+            :
+                [
+                    {required: false, message: '请输入组件名称', trigger: 'blur'}
+                ],
+                        powerIcon
+            :
+                [
+                    {required: false, message: '请输入icon的名称', trigger: 'blur'}
+                ],
+                        powerSort
+            :
+                [
+                    {required: true, message: '请输入排序的顺序', trigger: 'blur'}
+                ],
+                        powerType
+            :
+                [
+                    {required: true, message: '请选择权限类型', trigger: 'blur'}
+                ],
+                        powerId
+            :
+                [
+                    {required: true, message: '请选择父ID', trigger: 'blur'}
+                ]
+            }
+        ,
+            powerList: [{
+                label: '一级菜单',
+                value: '1'
+            }, {
+                label: '二级菜单',
+                value: '2'
+            }, {
+                label: '接口',
+                value: '3'
+            }, {
+                label: '超链接',
+                value: '4'
+            }],
+                    permissionType
+        :
+            '',
+                    parentIdList
+        :
+            [],
+                    loading
+        :
+            true,
+                    permissionId
+        :
+            ''
+        }
+        },
+        mounted() {
+            this.getOption()
+            this.getList()
+        },
+        methods: {
+            getOption() {
+                // 获取父ID的列表
+                searchOption().then(res => {
+                    this.parentIdList = res
+                }).catch(res => {
+                    console.log(res, 'catch')
+                })
+            },
+            // 权限新增
+            add() {
+                this.dialogVisible = true
+                this.tips = '权限信息新增'
+                this.resetData()
+            },
+            // 权限修改
+            modify() {
+                if (!this.permissionId) {
+                    this.$message.warning('请您选中一行')
+                } else {
+                    this.dialogVisible = true
+                    this.tips = '权限信息编辑'
+                }
+            },
+            // 权限详情查看
+            seeDetail() {
+                if (!this.permissionId) {
+                    this.$message.warning('请您选中一行')
+                } else {
+                    this.dialogVisible = true
+                    this.tips = '权限详情查看'
+                }
+            },
+            // 权限删除
+            remove() {
+                if (!this.permissionId) {
+                    this.$message.warning('请您选中一行')
+                } else {
+                    this.$confirm('此操作将删除该权限, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        deletePower(this.permissionId).then(res => {
+                            if (res) {
+                                this.$message({
+                                    message: '删除成功',
+                                    type: 'success'
+                                })
+                                this.getList()
+                            } else {
+                                return
+                            }
+                        }).catch(res => {
+                            console.log(res, 'catch')
+                        })
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        })
+                    })
+                }
+            },
+            // 页码切换
+            handleCurrentChange(val) {
+                this.page = val
+                this.loading = true
+                this.getList()
+            },
+            // 展示数目切换
+            handleSizeChange(val) {
+                this.page = 1
+                this.rows = val
+                this.loading = true
+                this.getList()
+            },
+            // 搜索
+            search() {
+                this.getList()
+            },
+            // 重置
+            reset() {
+                this.permissionName = ''
+                this.permissionCode = ''
+                this.permissionType = ''
+            },
+            // 获取列表
+            getList(data) {
+                this.loading = true
+                getList({
+                    order: '',
+                    pageIndex: this.page,
+                    pageSize: this.rows,
+                    queryParam: {
+                        permissionCode: this.permissionCode,
+                        permissionName: this.permissionName,
+                        permissionType: this.permissionType
+                    },
+                    sort: 'PARENT_ID,SORT'
+                }).then(res => {
+                    this.permissionId = ''
+                    this.total = res.total
+                    const records = res.records
+                    records.forEach(value => {
+                        value.createTime = new Date(value.createTime).toLocaleString()
+                        value.updateTime = new Date(value.updateTime).toLocaleString()
+                    })
+                    this.tableData = res.records
+                    this.loading = false
+                })
+            },
+            // 关闭
+            handleClose(done) {
+                this.$confirm('确认关闭？')
+                        .then(_ => {
+                            done()
+                        })
+                        .catch(_ => {
+                        })
+            },
+            diaCancel(formName) {
+                this.dialogVisible = false
+                if (this.tips === '权限信息新增') {
+                    this.getList()
+                }
+            },
+            diaSubmit(formName) {
+                this.$refs\[formName\].
+                validate((valid) => {
+                    if (valid) {
+                        if (this.tips === '权限信息新增') {
+                            // 添加权限信息
+                            addPower({
+                                component: this.ruleForm.powerComponent,
+                                icon: this.ruleForm.powerIcon,
+                                parentId: this.ruleForm.powerId.value,
+                                parentDesc: this.ruleForm.powerId.label,
+                                permissionCode: this.ruleForm.powerCode,
+                                permissionName: this.ruleForm.powerName,
+                                permissionType: this.ruleForm.powerType.value,
+                                permissionTypeDesc: this.ruleForm.powerType.label,
+                                routerPath: this.ruleForm.powerUrl,
+                                sort: this.ruleForm.powerSort
+                            }).then(res => {
+                                this.$message({
+                                    message: '权限添加成功！',
+                                    type: 'success'
+                                })
+                                this.loading = true
+                                this.getList()
+                            }).catch(res => {
+                            })
+                        } else if (this.tips === '权限信息编辑') {
+                            editPower({
+                                component: this.ruleForm.powerComponent,
+                                icon: this.ruleForm.powerIcon,
+                                parentId: this.ruleForm.powerId.value,
+                                parentDesc: this.ruleForm.powerId.label,
+                                permissionCode: this.ruleForm.powerCode,
+                                permissionId: this.permissionId,
+                                permissionName: this.ruleForm.powerName,
+                                permissionType: this.ruleForm.powerType.value,
+                                permissionTypeDesc: this.ruleForm.powerType.label,
+                                routerPath: this.ruleForm.powerUrl,
+                                sort: this.ruleForm.powerSort
+                            }).then(res => {
+                                this.$message({
+                                    message: '权限编辑成功！',
+                                    type: 'success'
+                                })
+                                this.loading = true
+                                this.getList()
+                            })
+                        }
+                        this.dialogVisible = false
+                        this.$refs\[formName\].
+                        resetFields()
+                    } else {
+                        return false
+                    }
+                })
+            },
+            rowClick(data) {
+                // data
+                this.permissionId = data.permissionId
+                this.ruleForm.powerName = data.permissionName
+                this.ruleForm.powerUrl = data.routerPath
+                this.ruleForm.powerComponent = data.component
+                this.ruleForm.powerSort = data.sort
+                this.ruleForm.powerType = {value: data.permissionType, label: data.permissionTypeDesc}
+                this.ruleForm.powerId = {value: data.parentId, label: data.parentDesc}
+                this.ruleForm.powerIcon = data.icon
+                this.ruleForm.powerCode = data.permissionCode
+            },
+            resetData() {
+                this.permissionId = ''
+                this.ruleForm.powerName = ''
+                this.ruleForm.powerUrl = ''
+                this.ruleForm.powerComponent = ''
+                this.ruleForm.powerSort = ''
+                this.ruleForm.powerType = ''
+                this.ruleForm.powerId = ''
+                this.ruleForm.powerIcon = ''
+                this.ruleForm.powerCode = ''
+            }
+        }
+    }
+</script>
+
+<style lang="scss" scoped>
+    .bread {
+        font-size: 20px;
+        line-height: 28px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #DCDFE6;
+        font-weight: bold;
+    }
+
+    .bread .red {
+        color: #D91721;
+    }
+
+    .dashboard {
+
+    &
+    -container {
+        margin: 20px;
+        padding: 30px;
+        background-color: #fff;
+    }
+
+    &
+    -title {
+        padding-top: 20px;
+        padding-bottom: 30px;
+
+    &
+    .horzion {
+        margin-left: -30px;
+        margin-right: -30px;
+        color: transparent;
+        background-color: #F5F7FA;
+    }
+
+    &
+    .input-item {
+        width: 360px;
+        display: inline-block;
+        margin-bottom: 20px;
+
+    &
+    label {
+        width: 130px;
+        text-align: right;
+        padding-right: 10px;
+        display: inline-block;
+    }
+
+    }
+    }
+    &
+    -footer {
+        margin-top: 20px;
+    }
+
+    .el-input,
+    .el-select {
+        width: 224px;
+    }
+
+    }
+    .el-table {
+        min-height: 450px;
+    }
+
+    .btn_wrapper {
+        margin-bottom: 30px;
+    }
+
+    .input_item {
+        width: 49%;
+        display: inline-block;
+
+    &
+    .el-select {
+        width: 100%;
+    }
+
+    }
+</style>

@@ -15,7 +15,10 @@
  */
 package com.bank.gen;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotation.DbType;
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.generator.AutoGenerator;
@@ -24,12 +27,11 @@ import com.baomidou.mybatisplus.generator.config.*;
 import com.baomidou.mybatisplus.generator.config.converts.MySqlTypeConvert;
 import com.baomidou.mybatisplus.generator.config.converts.OracleTypeConvert;
 import com.baomidou.mybatisplus.generator.config.converts.PostgreSqlTypeConvert;
+import com.baomidou.mybatisplus.generator.config.po.TableFill;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springblade.core.tool.utils.Func;
-import org.springblade.core.tool.utils.StringUtil;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
@@ -131,7 +133,7 @@ public class GeneratorCode {
         gc.setAuthor(author);
         gc.setFileOverride(true);
         gc.setOpen(false);
-        gc.setActiveRecord(false);
+        gc.setActiveRecord(false);//不启用ac模式
         gc.setEnableCache(false);
         gc.setBaseResultMap(true);
         gc.setBaseColumnList(true);
@@ -147,11 +149,11 @@ public class GeneratorCode {
 
         //数据库配置
         DataSourceConfig dsc = new DataSourceConfig();
-        String driverName = Func.toStr(this.driverName, props.getProperty("spring.datasource.driver-class-name"));
-        if (StringUtil.containsAny(driverName, DbType.MYSQL.getDb())) {
+        String driverName = props.getProperty("spring.datasource.driver-class-name");
+        if (StrUtil.containsAny(driverName, DbType.MYSQL.getDb())) {
             dsc.setDbType(DbType.MYSQL);
             dsc.setTypeConvert(new MySqlTypeConvert());
-        } else if (StringUtil.containsAny(driverName, DbType.POSTGRE_SQL.getDb())) {
+        } else if (StrUtil.containsAny(driverName, DbType.POSTGRE_SQL.getDb())) {
             dsc.setDbType(DbType.POSTGRE_SQL);
             dsc.setTypeConvert(new PostgreSqlTypeConvert());
         } else {
@@ -159,9 +161,10 @@ public class GeneratorCode {
             dsc.setTypeConvert(new OracleTypeConvert());
         }
         dsc.setDriverName(driverName);
-        dsc.setUrl(Func.toStr(this.url, props.getProperty("spring.datasource.url")));
-        dsc.setUsername(Func.toStr(this.username, props.getProperty("spring.datasource.username")));
-        dsc.setPassword(Func.toStr(this.password, props.getProperty("spring.datasource.password")));
+
+        dsc.setUrl(props.getProperty("spring.datasource.url"));
+        dsc.setUsername(props.getProperty("spring.datasource.username"));
+        dsc.setPassword(props.getProperty("spring.datasource.password"));
         mpg.setDataSource(dsc);
 
 
@@ -173,6 +176,19 @@ public class GeneratorCode {
         strategy.setNaming(NamingStrategy.underline_to_camel);
         strategy.setColumnNaming(NamingStrategy.underline_to_camel);
         strategy.setTablePrefix(tablePrefix);
+
+        //逻辑删除属性名称
+        strategy.setLogicDeleteFieldName("deleted");
+
+        List<TableFill> tableFillList= CollUtil.newArrayList();
+        TableFill fill=new TableFill("update_time", FieldFill.INSERT_UPDATE);
+        tableFillList.add(fill);
+
+        fill=new TableFill("create_time", FieldFill.INSERT);
+        tableFillList.add(fill);
+
+        strategy.setTableFillList(tableFillList);
+
         if (includeTables.length > 0) {
             strategy.setInclude(includeTables);
         }
@@ -254,31 +270,32 @@ public class GeneratorCode {
         });
 
 
+        final String dotJava = StringPool.DOT_JAVA;
         focList.add(new FileOutConfig("/templates/controller.java.vm") {
             @Override
             public String outputFile(TableInfo tableInfo) {
-                return getOutputDir() + "/" + packageName.replace(".", "/") + "/" + "controller" + "/" + tableInfo.getControllerName() + StringPool.DOT_JAVA;
+                return getOutputDir() + "/" + packageName.replace(".", "/") + "/" + "controller" + "/" + tableInfo.getControllerName() + dotJava;
             }
         });
 
         focList.add(new FileOutConfig("/templates/mapper.java.vm") {
             @Override
             public String outputFile(TableInfo tableInfo) {
-                return getOutputDir() + "/" + packageName.replace(".", "/") + "/" + "dao" + "/" + tableInfo.getMapperName() + StringPool.DOT_JAVA;
+                return getOutputDir() + "/" + packageName.replace(".", "/") + "/" + "dao" + "/" + tableInfo.getMapperName() + dotJava;
             }
         });
 
         focList.add(new FileOutConfig("/templates/service.java.vm") {
             @Override
             public String outputFile(TableInfo tableInfo) {
-                return getOutputDir() + "/" + packageName.replace(".", "/") + "/" + "service" + "/" + tableInfo.getServiceName() + StringPool.DOT_JAVA;
+                return getOutputDir() + "/" + packageName.replace(".", "/") + "/" + "service" + "/" + tableInfo.getServiceName() + dotJava;
             }
         });
 
         focList.add(new FileOutConfig("/templates/serviceImpl.java.vm") {
             @Override
             public String outputFile(TableInfo tableInfo) {
-                return getOutputDir() + "/" + packageName.replace(".", "/") + "/" + "service/impl/" + tableInfo.getServiceImplName() + StringPool.DOT_JAVA;
+                return getOutputDir() + "/" + packageName.replace(".", "/") + "/" + "service/impl/" + tableInfo.getServiceImplName() + dotJava;
             }
         });
 
@@ -287,20 +304,20 @@ public class GeneratorCode {
         focList.add(new FileOutConfig("/templates/entityVO.java.vm") {
             @Override
             public String outputFile(TableInfo tableInfo) {
-                return getOutputDir() + "/" + packageName.replace(".", "/") + "/" + "vo" + "/" + tableInfo.getEntityName() + "VO" + StringPool.DOT_JAVA;
+                return getOutputDir() + "/" + packageName.replace(".", "/") + "/" + "vo" + "/" + tableInfo.getEntityName() + "VO" + dotJava;
             }
         });
 
         focList.add(new FileOutConfig("/templates/entityDTO.java.vm") {
             @Override
             public String outputFile(TableInfo tableInfo) {
-                return getOutputDir() + "/" + packageName.replace(".", "/") + "/" + "dto" + "/" + tableInfo.getEntityName() + "DTO" + StringPool.DOT_JAVA;
+                return getOutputDir() + "/" + packageName.replace(".", "/") + "/" + "dto" + "/" + tableInfo.getEntityName() + "DTO" + dotJava;
             }
         });
         focList.add(new FileOutConfig("/templates/entity.java.vm") {
             @Override
             public String outputFile(TableInfo tableInfo) {
-                return getOutputDir() + "/" + packageName.replace(".", "/") + "/" + "dos" + "/" + tableInfo.getEntityName()+ "DO" + StringPool.DOT_JAVA;
+                return getOutputDir() + "/" + packageName.replace(".", "/") + "/" + "dos" + "/" + tableInfo.getEntityName()+ "DO" + dotJava;
             }
         });
 
@@ -308,54 +325,26 @@ public class GeneratorCode {
             focList.add(new FileOutConfig("/templates/wrapper.java.vm") {
                 @Override
                 public String outputFile(TableInfo tableInfo) {
-                    return getOutputDir() + "/" + packageName.replace(".", "/") + "/" + "wrapper" + "/" + tableInfo.getEntityName() + "Wrapper" + StringPool.DOT_JAVA;
+                    return getOutputDir() + "/" + packageName.replace(".", "/") + "/" + "wrapper" + "/" + tableInfo.getEntityName() + "Wrapper" + dotJava;
                 }
             });
         }
 
-        if (Func.isNotBlank(packageWebDir)) {
-            focList.add(new FileOutConfig("/templates/sword/action.js.vm") {
+        if (StrUtil.isNotBlank(packageWebDir)) {
+            focList.add(new FileOutConfig("/templates/pageList.vue.vm") {
                 @Override
                 public String outputFile(TableInfo tableInfo) {
-                    return getOutputWebDir() + "/actions" + "/" + tableInfo.getEntityName().toLowerCase() + ".js";
+                    return getOutputWebDir() + "/" + tableInfo.getEntityName().toLowerCase() + ".vue";
                 }
             });
-            focList.add(new FileOutConfig("/templates/sword/model.js.vm") {
+
+            focList.add(new FileOutConfig("/templates/pageList.js.vm") {
                 @Override
                 public String outputFile(TableInfo tableInfo) {
-                    return getOutputWebDir() + "/models" + "/" + tableInfo.getEntityName().toLowerCase() + ".js";
+                    return getOutputWebDir() + "/" + tableInfo.getEntityName().toLowerCase() + ".js";
                 }
             });
-            focList.add(new FileOutConfig("/templates/sword/service.js.vm") {
-                @Override
-                public String outputFile(TableInfo tableInfo) {
-                    return getOutputWebDir() + "/services" + "/" + tableInfo.getEntityName().toLowerCase() + ".js";
-                }
-            });
-            focList.add(new FileOutConfig("/templates/sword/list.js.vm") {
-                @Override
-                public String outputFile(TableInfo tableInfo) {
-                    return getOutputWebDir() + "/pages" + "/" + StringUtil.upperFirst(servicePackage) + "/" + tableInfo.getEntityName() + "/" + tableInfo.getEntityName() + ".js";
-                }
-            });
-            focList.add(new FileOutConfig("/templates/sword/add.js.vm") {
-                @Override
-                public String outputFile(TableInfo tableInfo) {
-                    return getOutputWebDir() + "/pages" + "/" + StringUtil.upperFirst(servicePackage) + "/" + tableInfo.getEntityName() + "/" + tableInfo.getEntityName() + "Add.js";
-                }
-            });
-            focList.add(new FileOutConfig("/templates/sword/edit.js.vm") {
-                @Override
-                public String outputFile(TableInfo tableInfo) {
-                    return getOutputWebDir() + "/pages" + "/" + StringUtil.upperFirst(servicePackage) + "/" + tableInfo.getEntityName() + "/" + tableInfo.getEntityName() + "Edit.js";
-                }
-            });
-            focList.add(new FileOutConfig("/templates/sword/view.js.vm") {
-                @Override
-                public String outputFile(TableInfo tableInfo) {
-                    return getOutputWebDir() + "/pages" + "/" + StringUtil.upperFirst(servicePackage) + "/" + tableInfo.getEntityName() + "/" + tableInfo.getEntityName() + "View.js";
-                }
-            });
+
         }
         cfg.setFileOutConfigList(focList);
         return cfg;
@@ -384,7 +373,7 @@ public class GeneratorCode {
      * @return outputDir
      */
     public String getOutputDir() {
-        return (Func.isBlank(packageDir) ? System.getProperty("user.dir") + "/blade-ops/blade-develop" : packageDir) + "/src/main/java";
+        return (StrUtil.isBlank(packageDir) ? System.getProperty("user.dir") + "/blade-ops/blade-develop" : packageDir) + "/src/main/java";
     }
 
     /**
@@ -393,7 +382,7 @@ public class GeneratorCode {
      * @return outputDir
      */
     public String getOutputWebDir() {
-        return (Func.isBlank(packageWebDir) ? System.getProperty("user.dir") : packageWebDir) + "/src";
+        return (StrUtil.isBlank(packageWebDir) ? System.getProperty("user.dir") : packageWebDir);
     }
 
     /**

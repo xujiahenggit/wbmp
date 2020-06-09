@@ -181,14 +181,15 @@ public class ConfigFileReader {
     @Value("${CARDSUPPLE.CARD_ACCESS_PATH}")
     private String CARD_ACCESS_PATH;
 
-    @Value("${tomcat.port}")
-    private String tomcatPort;
-
     @Value("${tomcat.baseIp}")
     private String tomcatBaseIp;
 
-    @Value("${tomcat.contextPath}")
-    private String contextPath;
+//    @Value("${tomcat.port}")
+//    private String tomcatPort;
+//
+//
+//    @Value("${tomcat.contextPath}")
+//    private String contextPath;
 
     /**
      * 二维码生成路径

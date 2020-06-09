@@ -35,4 +35,12 @@ public interface CardSuppleDao extends BaseMapper<CardSuppleDO> {
      * @return
      */
     CardSuppleDto getInfo(@Param(value = "cardSuppleId") Integer cardSuppleId);
+
+    /**
+     * 获取已办列表
+     * @param page 分页对象
+     * @param orgId 机构ID
+     * @return
+     */
+    IPage<CardSuppleDto> getAreadyList(Page<CardSuppleDto> page,@Param(value = "orgId") String orgId);
 }

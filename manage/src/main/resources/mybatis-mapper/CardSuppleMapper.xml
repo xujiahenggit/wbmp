@@ -33,9 +33,22 @@
             T_CARD_SUPPLE CS
         JOIN T_USHER U ON CS.USHER_ID = U.USHER_ID
         WHERE
-            U.ORG_ID = #{orgId}
+            U.ORG_ID = #{orgId} AND CS.CARD_SUPPLE_STATE=10
         ORDER BY
-            CS.CART_SUPPLE_CREATETIME DESC
+            CS.CARD_SUPPLE_CREATETIME DESC
+    </select>
+
+    <!--    查询已办列表-->
+    <select id="getAreadyList" resultType="com.bank.manage.dto.CardSuppleDto">
+        SELECT
+            CS.*, U.USHER_NAME
+        FROM
+            T_CARD_SUPPLE CS
+        JOIN T_USHER U ON CS.USHER_ID = U.USHER_ID
+        WHERE
+            U.ORG_ID = #{orgId} AND CS.CARD_SUPPLE_STATE=20
+        ORDER BY
+            CS.CARD_SUPPLE_CREATETIME DESC
     </select>
 
     <!--    通知列表-->

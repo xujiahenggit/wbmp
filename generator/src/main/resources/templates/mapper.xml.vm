@@ -27,8 +27,18 @@
 
 #end
 
-    <select id="select$!{entity}Page" resultMap="$!{table.entityPath}ResultMap">
+    <select id="listPage" resultMap="$!{table.entityPath}ResultMap">
         select * from $!{table.name}
+        <where>
+            #foreach($field in $!{table.fields})
+                <if test="model!=null">
+                    <if test="model.$!{field.propertyName} != null and model.$!{field.propertyName} !=''">
+                        #if(!$foreach.first) AND #end
+                        $!{field.name} = #{model.$!{field.propertyName}}
+                    </if>
+                </if>
+            #end
+        </where>
     </select>
 
 

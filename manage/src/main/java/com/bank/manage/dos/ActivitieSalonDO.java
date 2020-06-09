@@ -58,6 +58,12 @@ public class ActivitieSalonDO implements Serializable {
   @ApiModelProperty(value = "文件路径")
   @TableField("ACTIVITIE_PATH")
   private String activitiePath;
+
+
+  @ApiModelProperty(value = "文件名称")
+  @TableField("ACTIVITIE_FILE_NAME")
+  private String activitieFileName;
+
     /**
      * 活动描述
      */

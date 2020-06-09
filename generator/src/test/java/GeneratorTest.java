@@ -5,25 +5,33 @@ import lombok.extern.slf4j.Slf4j;
 public class GeneratorTest {
 
 //    @Test
-    public void test() {
+    public void generVUE() {
         GeneratorCode generator = new GeneratorCode();
-        generator.setPackageDir("E:\\tem\\gen");//测试
-
-        generator.setPackageDir("E:\\YUXIN\\CSBank\\Code\\wbmp\\generator");
-        generator.setPackageName("com.bank.generator");
-
 //        generator.setPackageDir("E:\\YUXIN\\CSBank\\Code\\wbmp\\manage");
 //        generator.setPackageName("com.bank.manage");
+        generator.setServiceName("沙龙活动");
+        generator.setPackageWebDir("C:\\Users\\ZHAO\\Desktop\\view");
+//        generator.setIncludeTables(new String[]{
+////                "T_GAME",
+//                "T_VERSIONS"
+//        });
+        generator.setIncludeTables(new String[]{"T_ACTIVITIE_SALON",
+                "T_ACTIVITIE_SALON_LOG"});
 
-//        generator.setPackageDir("E:\\YUXIN\\CSBank\\Code\\wbmp\\message");
-//        generator.setPackageName("com.bank.message");
+
+        generator.setPackageDir("E:\\IDEA\\generator");
+        generator.setPackageName("com.bank.generator");
+//        generator.setServiceName("游戏模块");
+//        generator.setPackageWebDir("E:\\IDEA\\generator\\src\\main\\resources\\view");
+//        generator.setIncludeTables(new String[]{
+//                "T_GAME",
+//                "t_user"
+//        });
         generator.setMapperXmlDirName("mybatis-mapper");
-        generator.setTablePrefix(new String[]{"T_"});
-        generator.setIncludeTables(new String[]{"T_STAR_DATA_ADMIN",
-                "T_STAR_DATA_TEMP_BRANCH"});
+        generator.setTablePrefix(new String[]{"S_", "T_", "t_"});
         generator.setHasSuperEntity(false);
         generator.run();
-        log.info("代码生成完成,生成路径：{}", generator.getPackageDir());
+        System.out.println("代码生成完成,生成路径：" + generator.getPackageDir());
     }
 
 

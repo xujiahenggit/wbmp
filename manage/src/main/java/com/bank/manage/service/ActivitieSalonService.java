@@ -7,6 +7,9 @@ import com.bank.manage.dos.ActivitieSalonDO;
 import com.bank.manage.vo.CutActivitieSalonVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
+
 /**
  * 活动沙龙  服务类
  *
@@ -26,4 +29,6 @@ public interface ActivitieSalonService extends IService<ActivitieSalonDO> {
     void cutActivitieSalon(CutActivitieSalonVo cutActivitieSalonVo);
 
     Boolean saveActivitieSalon(ActivitieSalonDO activitieSalon, TokenUserInfo tokenUserInfo);
+
+    Boolean removeActivitieSalonByIds(List<Integer> ids);
 }

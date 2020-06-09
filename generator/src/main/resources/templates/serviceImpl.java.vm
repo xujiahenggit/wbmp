@@ -1,14 +1,21 @@
 package $!{package.ServiceImpl};
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.StrUtil;
+import com.bank.core.entity.PageQueryModel;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import javax.annotation.Resource;
+import java.util.Map;
 import $!{package.Entity}.$!{entity}DO;
-#set($voPackage=$package.Entity.replace("dos","vo"))
+    #set($voPackage=$package.Entity.replace("dos","vo"))
 import $!{voPackage}.$!{entity}VO;
 import $!{package.Mapper}.$!{table.mapperName};
 import $!{package.Service}.$!{table.serviceName};
 import $!{superServiceImplClassPackage};
 import org.springframework.stereotype.Service;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-
 /**
  * $!{table.comment} 服务实现类
  *
@@ -19,14 +26,34 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 #if($!{kotlin})
 open class $!{table.serviceImplName} : $!{superServiceImplClass}<$!{table.mapperName}, $!{entity}>(), $!{table.serviceName} {
 
-}
+        }
 #else
-public class $!{table.serviceImplName} extends $!{superServiceImplClass}<$!{table.mapperName}, $!{entity}DO> implements $!{table.serviceName} {
+        public class $!{table.serviceImplName} extends $!{superServiceImplClass}<$!{table.mapperName}, $!{entity}DO>implements $!{table.serviceName} {
 
-	@Override
-	public IPage<$!{entity}VO> select$!{entity}Page(IPage<$!{entity}VO> page, $!{entity}VO $!{table.entityPath}) {
-		return page.setRecords(baseMapper.select$!{entity}Page(page, $!{table.entityPath}));
-	}
+        @Resource
+         $!{entity}Dao $!{table.entityPath}Dao;
 
+        @Override
+        public IPage<$!{entity}DO>listPage(PageQueryModel pageQueryModel){
+            Page<$!{entity}DO> page = new Page<>(pageQueryModel.getPageIndex(),pageQueryModel.getPageSize());
+            String order = pageQueryModel.getOrder();
+            String sort = StrUtil.toUnderlineCase(pageQueryModel.getSort());
+            if (!StrUtil.isBlankIfStr(order)){
+            if (order.equals("asc")) {
+                page.setAsc(sort);//3.1.0
+            //page.setOrders(OrderItem.ascs(sort)); mybatis3.3.1版本支持
+            } else if (order.equals("desc")) {
+                page.setDesc(sort);
+            //page.setOrders(OrderItem.descs(sort));
+            }
+            }
+            Map<String,Object>queryParam=pageQueryModel.getQueryParam();
+            $!{entity}DO $!{table.entityPath}DO=null;
+            if(!MapUtil.isEmpty(queryParam)){
+            $!{table.entityPath}DO=BeanUtil.mapToBean(queryParam, $!{entity}DO.class,false);
+            }
+            page.setRecords($!{table.entityPath}Dao.listPage(page,$!{table.entityPath}DO));
+            return page;
+        }
 }
 #end

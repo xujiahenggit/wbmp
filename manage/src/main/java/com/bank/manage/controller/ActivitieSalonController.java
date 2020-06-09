@@ -97,11 +97,11 @@ public class ActivitieSalonController extends BaseController {
 	@ApiOperation(value = "删除", notes = "传入id")
 	@ApiImplicitParam(name = "id", value = "唯一标识", required = true, paramType = "path")
 	public Boolean remove(@RequestBody @ApiParam(value = "活动沙龙主键列表") List<Integer> ids) {
-		return activitieSalonService.removeByIds(ids);
+		return activitieSalonService.removeActivitieSalonByIds(ids);
 	}
 
 
-	@GetMapping("/queryActivitieSalon")
+	@PostMapping("/queryActivitieSalon")
 	@ApiOperation(value = "PAD端查询活动沙龙数据",notes = "orgId:机构号")
 	@ApiImplicitParam(name = "pageQueryModel", value = "活动沙龙数据分页查询", required = true, paramType = "body", dataType = "PageQueryModel")
 	public IPage<ActivitieSalonDO> queryActivitieSalon(@RequestBody PageQueryModel pageQueryModel){

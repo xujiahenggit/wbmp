@@ -1,11 +1,12 @@
 package $!{package.Service};
 
+
+import com.bank.core.entity.PageQueryModel;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import $!{package.Entity}.$!{entity}DO;
-#set($voPackage=$package.Entity.replace("dos","vo"))
+    #set($voPackage=$package.Entity.replace("dos","vo"))
 import $!{voPackage}.$!{entity}VO;
 import $!{superServiceClassPackage};
-import com.baomidou.mybatisplus.core.metadata.IPage;
-
 /**
  * $!{table.comment} 服务类
  *
@@ -17,14 +18,13 @@ interface $!{table.serviceName} : $!{superServiceClass}<$!{entity}>
 #else
 public interface $!{table.serviceName} extends $!{superServiceClass}<$!{entity}DO> {
 
-	/**
-	 * 自定义分页
-	 *
-	 * @param page
-	 * @param $!{table.entityPath}
-	 * @return
-	 */
-	IPage<$!{entity}VO> select$!{entity}Page(IPage<$!{entity}VO> page, $!{entity}VO $!{table.entityPath});
+    /**
+     * 自定义分页
+     * @param page
+     * @param $!{table.entityPath}
+     * @return
+     */
+    IPage<$!{entity}DO> listPage(PageQueryModel pageQueryModel);
 
 }
 #end

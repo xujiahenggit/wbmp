@@ -63,6 +63,16 @@ public class PartorlProcessServiceImpl extends ServiceImpl<PartorlProcessDao, Pa
     }
 
     /**
+     * 获取待办数目
+     * @param tokenUserInfo 当前登录用户信息
+     * @return
+     */
+    @Override
+    public int getWaitListNum(TokenUserInfo tokenUserInfo) {
+        return partorlProcessDao.getWaitListNum(tokenUserInfo.getOrgId());
+    }
+
+    /**
      * 构建查询模型
      * @param partorlProcessQueryVo 查询参数
      * @param tokenUserInfo 当前登录用户

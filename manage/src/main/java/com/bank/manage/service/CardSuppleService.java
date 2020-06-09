@@ -70,4 +70,11 @@ public interface CardSuppleService extends IService<CardSuppleDO> {
      * @return
      */
     FileDo upLoadFile(MultipartFile file);
+
+    /**
+     * 获取已办列表
+     * @param cardSuppleQueryVo 查询参数
+     * @return
+     */
+    IPage<CardSuppleDto> getAreadyList(CardSuppleQueryVo cardSuppleQueryVo);
 }

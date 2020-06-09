@@ -4,12 +4,12 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.bank.manage.dos.PartorlProcessDO">
-        <id column="PARTORL_PROCESS_ID" property="partorlProcessId" />
-        <result column="PARTORL_PROCESS_DATE" property="partorlProcessDate" />
-        <result column="PARTORL_PROCESS_ORG_ID" property="partorlProcessOrgId" />
-        <result column="PARTORL_PROCESS_ORG_NAME" property="partorlProcessOrgName" />
-        <result column="PARTORL_PROCESS_NUM" property="partorlProcessNum" />
-        <result column="PARTORL_PROCESS_STATE" property="partorlProcessState" />
+        <id column="PARTORL_PROCESS_ID" property="partorlProcessId"/>
+        <result column="PARTORL_PROCESS_DATE" property="partorlProcessDate"/>
+        <result column="PARTORL_PROCESS_ORG_ID" property="partorlProcessOrgId"/>
+        <result column="PARTORL_PROCESS_ORG_NAME" property="partorlProcessOrgName"/>
+        <result column="PARTORL_PROCESS_NUM" property="partorlProcessNum"/>
+        <result column="PARTORL_PROCESS_STATE" property="partorlProcessState"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -17,4 +17,8 @@
         PARTORL_PROCESS_ID, PARTORL_PROCESS_DATE, PARTORL_PROCESS_ORG_ID, PARTORL_PROCESS_ORG_NAME, PARTORL_PROCESS_NUM, PARTORL_PROCESS_STATE
     </sql>
 
+    <!--    大堂经理巡查 待办数目-->
+    <select id="getWaitListNum" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM T_PARTORL_PROCESS WHERE PARTORL_PROCESS_ORG_ID=10010 AND PARTORL_PROCESS_STATE=10
+    </select>
 </mapper>

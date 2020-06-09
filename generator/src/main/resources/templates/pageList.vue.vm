@@ -1,0 +1,305 @@
+<template>
+  <div class="wrapper">
+    <div class="header">
+      <div class="dashboard-text">
+        <div class="bread">$!{cfg.serviceName}-<span class="red">$!{table.comment}设置</span></div>
+      </div>
+
+      #foreach($field in $!{table.fields})
+        #if(!$!{field.keyIdentityFlag})
+          <div class="search-item">
+            <label>$!{field.comment}：</label>
+            <el-input v-model="$!{field.propertyName}" size="mini" style="width: 200px;" />
+          </div>
+        #end
+      #end
+
+      <div class="search-item">
+        <el-button size="mini" type="primary" icon="el-icon-search" @click.native="search">搜索</el-button>
+        <el-button size="mini" type="primary" icon="el-icon-close" @click.native="reset">重置</el-button>
+      </div>
+    </div>
+
+    <el-dialog
+            title="新增"
+            :visible.sync="addDialogVisible"
+            width="60%"
+            :before-close="handleClose"
+    >
+      <el-form ref="ruleForm" :model="ruleForm" label-width="100px" class="demo-ruleForm">
+
+        #foreach($field in $!{table.fields})
+          #if(!$!{field.keyIdentityFlag})
+            <el-form-item class="form-item-list" label="$!{field.comment}" prop="$!{field.propertyName}">
+              <el-input v-model="ruleForm.$!{field.propertyName}" :readonly="edit" size="mini" style="width: 200px;" />
+            </el-form-item>
+          #end
+        #end
+
+        <el-form-item class="form-item-lists">
+          <el-button v-show="!edit" type="primary" @click="submitForm('ruleForm')">保存</el-button>
+          <el-button @click="resetForm('ruleForm')">取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
+
+    <div class="container">
+      <el-button type="primary" size="mini" icon="el-icon-plus" @click="handleBtnAdd">新增</el-button>
+      <el-button size="mini" icon="el-icon-edit" @click="handleBtnModify">修改</el-button>
+      <el-button size="mini" icon="el-icon-view" @click="handleBtnSee">查看</el-button>
+      <el-button size="mini" icon="el-icon-close" @click="handleBtnDelete">删除</el-button>
+      <el-table
+        v-loading="loading"
+        :data="records"
+        stripe
+        highlight-current-row
+        style="width: 100%; margin-top: 20px;"
+        @row-click="handleRowClick"
+      >
+        <el-table-column
+          type="index"
+          width="50"
+        />
+        <!--遍历这个biaotou-->
+        #foreach($field in $!{table.fields})
+          #if(!$!{field.keyIdentityFlag})
+            <el-table-column
+                    prop="$!{field.propertyName}"
+                    label="$!{field.comment}"
+                    width="160"
+            />
+          #end
+        #end
+      </el-table>
+      <Pagination
+        v-if="total > 0"
+        :total="total"
+        :page="page"
+        :limit="limit"
+        @pagination="getLists"
+      />
+    </div>
+  </div>
+</template>
+
+<script>
+import {addNewData, deleteData, getList} from '@/api/happyServe/$!{table.entityPath}.js'
+export default {
+  name: 'StaticModule',
+  data() {
+    return {
+      loading: false,
+      tableData: [],
+      total: 0,
+      page: 1,
+      limit: 10,
+      #foreach($field in $!{table.fields})
+        #if(!$!{field.keyIdentityFlag})
+          $!{field.propertyName}: '', //$!{field.comment}
+        #end
+      #end
+      selectRow: [],
+      addDialogVisible: false,
+      ruleForm: {
+      #foreach($field in $!{table.fields})
+        #if(!$!{field.keyIdentityFlag})
+          $!{field.propertyName}: '', //$!{field.comment}
+        #end
+      #end
+      },
+      editDialogVisible: false,
+      records: [],
+      add: true,
+      edit: false
+
+  }
+  },
+  mounted() {
+    this.getLists({
+      page: 1,
+      limit: 10
+    })
+  },
+
+  methods: {
+    // 搜索
+    search() {
+      this.getLists({
+        page: 1,
+        limit: 10
+      })
+    },
+    // 重置
+    reset() {
+      #foreach($field in $!{table.fields})
+        #if(!$!{field.keyIdentityFlag})
+          this.$!{field.propertyName} = '' //$!{field.comment}
+        #end
+      #end
+    },
+    // 新增
+    handleBtnAdd() {
+      this.addDialogVisible = true
+      this.add = true
+      this.edit = false
+      this.ruleForm = {
+        //
+      }
+    },
+    // 编辑
+    handleBtnModify() {
+      if (this.selectRow.length === 0) {
+        this.$message.warning('请先选中一行')
+      } else {
+        this.addDialogVisible = true
+        this.add = false
+        this.edit = false
+        this.ruleForm = {
+          ...this.selectRow[0]
+        }
+      }
+    },
+    // 查看
+    handleBtnSee() {
+      if (this.selectRow.length === 0) {
+        this.$message.warning('请先选中一行')
+      } else {
+        this.addDialogVisible = true
+        this.add = false
+        this.edit = true
+        this.ruleForm = {
+          ...this.selectRow[0]
+        }
+      }
+    },
+    handleBtnDelete() {
+      if (this.selectRow.length === 0) {
+        this.$message.warning('请您先选中一行！')
+      } else {
+        this.$confirm('请确定是否删除该记录?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          deleteData(this.selectRow[0].$!{keyPropertyName}).then(res => {
+            if (res) {
+              this.selectRow = []
+              this.getLists({
+                page: 1,
+                limit: 10
+              })
+              this.$message.success('删除成功')
+            }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+      }
+    },
+    // 获取列表
+    getLists(data) {
+      this.page = data.page
+      this.limit = data.limit
+      this.loading = true
+      getList({
+        pageIndex: this.page,
+        pageSize: this.limit,
+        queryParam: {
+        #foreach($field in $!{table.fields})
+          #if(!$!{field.keyIdentityFlag})
+            $!{field.propertyName}: this.$!{field.propertyName}#if ($foreach.hasNext),#end //$!{field.comment}
+          #end
+        #end
+      }
+      }).then(resp => {
+        const res = resp.data
+        this.records = res.records
+        this.total = res.total
+        this.loading = false
+      })
+    },
+    // 选中一行
+    handleRowClick(data) {
+      this.selectRow[0] = data
+    },
+    #set($abc = "[formName]")
+    // 提交
+    submitForm(formName) {
+      this.$refs$!{abc}.validate((valid) => {
+      if (valid) {
+        addNewData({
+          ...this.ruleForm,
+        $!{keyPropertyName}: this.add ? '' : this.selectRow[0].$!{keyPropertyName}
+        }).then(res => {
+          this.add ? this.$message.success('新增成功！') : this.$message.success('修改成功！')
+          this.addDialogVisible = false
+          this.getLists({ page: 1, limit: 10 })
+        })
+      } else {
+        return false
+      }
+    })
+    },
+    handleClose(done) {
+      this.$confirm('确认关闭？')
+              .then(_ => {
+                done()
+              })
+              .catch(_ => {})
+    },
+    // 取消 和 重置
+    resetForm(formName) {
+      this.addDialogVisible = false
+      //this.$refs$!{abc}.resetFields()}
+    }
+}}
+</script>
+
+<style lang="scss" scoped>
+  .wrapper {
+    margin: 30px;
+    & .header {
+      background-color: #fff;
+      padding: 20px;
+      & .search-item {
+        display: inline-block;
+        margin-top: 20px;
+        & label {
+          width: 100px;
+          font-size: 16px;
+          color: #333333;
+          font-weight: 400;
+        }
+      }
+    }
+    & .container {
+      background-color: #fff;
+      margin-top: 20px;
+      padding: 20px;
+      min-height: 600px;
+    }
+  }
+  .bread {
+    font-size: 20px;
+    line-height: 28px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #DCDFE6;
+    font-weight: bold;
+  }
+  .bread .red {
+    color: #D91721;
+  }
+  .form-item-list {
+    width: 48%;
+    display: inline-block;
+  }
+  .form-item-lists {
+    width: 100%;
+    display: flex;
+    padding-left: 60%;
+  }
+</style>

@@ -28,4 +28,11 @@ public interface PartorlProcessService extends IService<PartorlProcessDO> {
      * @return
      */
     IPage<PartorlProcessDO> getAreadyList(PartorlProcessQueryVo partorlProcessQueryVo, TokenUserInfo tokenUserInfo);
+
+    /**
+     * 获取待办数目
+     * @param tokenUserInfo 当前登录用户信息
+     * @return
+     */
+    int getWaitListNum(TokenUserInfo tokenUserInfo);
 }

@@ -9,7 +9,7 @@ spring:
   resources:
     static-locations: classpath:/static/
   jackson:
-    date-format: yyyy-MM-dd HH:mm:ss.SSS
+    date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
   activemq:
     user: admin
@@ -85,6 +85,8 @@ spring:
     sentinel:
       master: mymaster
       nodes: 47.95.247.11:26379,47.95.247.11:26380,${application.ip}:7001
+#    cluster:
+#      nodes: 47.95.247.11:6379,47.95.247.11:7000,${application.ip}:7000
 mybatis-plus:
   #如果将来整个项目启动较慢，可把此处扫描包位置写到每个依赖的具体dao层，缺点为每添加一个新模块，就需要在此处重新添加，优点为项目启动速度快
   type-aliases-package: com.bank

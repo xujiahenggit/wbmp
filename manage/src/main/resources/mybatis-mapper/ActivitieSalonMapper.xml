@@ -37,4 +37,10 @@
     </select>
 
 
+    <select id="selectActivitieSalonById" resultType="map">
+        SELECT A.ID,A.ACTIVITIE_NAME,S.IMAGE_PATH,S.SORT FROM
+	    T_ACTIVITIE_SALON A
+	    LEFT JOIN T_ACTIVITIE_SALON_IMAGE S ON A.ID = S.ACTIVITIE_ID
+        WHERE A.ID = #{activitieSalonId} ORDER BY S.SORT ASC
+    </select>
 </mapper>

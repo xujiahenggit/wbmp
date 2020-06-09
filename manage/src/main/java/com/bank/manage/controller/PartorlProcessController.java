@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,5 +43,13 @@ public class PartorlProcessController extends BaseController {
         TokenUserInfo tokenUserInfo=getCurrentUserInfo(request);
         IPage<PartorlProcessDO> areadyList=partorlProcessService.getAreadyList(partorlProcessQueryVo,tokenUserInfo);
         return areadyList;
+    }
+
+    @ApiOperation("获取待办数目")
+    @GetMapping("/num")
+    public int getWaitListNum(HttpServletRequest request){
+        TokenUserInfo tokenUserInfo=getCurrentUserInfo(request);
+        int num=partorlProcessService.getWaitListNum(tokenUserInfo);
+        return num;
     }
 }

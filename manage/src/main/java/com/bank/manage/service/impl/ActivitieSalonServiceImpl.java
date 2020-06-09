@@ -1,12 +1,16 @@
 package com.bank.manage.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.alibaba.fastjson.JSON;
+import com.bank.core.entity.BizException;
 import com.bank.core.entity.PageQueryModel;
 import com.bank.core.entity.TokenUserInfo;
 import com.bank.core.utils.ConfigFileReader;
 import com.bank.core.utils.HttpUtil;
 import com.bank.manage.dao.ActivitieSalonDao;
+import com.bank.manage.dao.ActivitieSalonImageDao;
 import com.bank.manage.dos.ActivitieSalonDO;
+import com.bank.manage.dos.ActivitieSalonImageDO;
 import com.bank.manage.service.ActivitieSalonService;
 import com.bank.manage.util.PDF2Image;
 import com.bank.manage.vo.CutActivitieSalonVo;
@@ -18,9 +22,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +43,9 @@ public class ActivitieSalonServiceImpl extends ServiceImpl<ActivitieSalonDao, Ac
 
     @Autowired
     private ConfigFileReader configFileReader;
+
+    @Autowired
+    private ActivitieSalonImageDao activitieSalonImageDao;
 
     @Override
     public IPage<ActivitieSalonDO>listPage(PageQueryModel pageQueryModel){
@@ -93,36 +102,76 @@ public class ActivitieSalonServiceImpl extends ServiceImpl<ActivitieSalonDao, Ac
 
     @Override
     public void cutActivitieSalon(CutActivitieSalonVo cutActivitieSalonVo) {
-        ActivitieSalonDO salonDO = activitieSalonDao.selectById(cutActivitieSalonVo.getActivitieSalonId());
+        List<Map<String,Object>> salonDO = activitieSalonDao.selectActivitieSalonById(cutActivitieSalonVo.getActivitieSalonId());
         Map<String,Object> map = new HashMap<>();
         map.put("orgId",cutActivitieSalonVo.getOrgId());
         map.put("deviceNo",cutActivitieSalonVo.getDeviceNo());
         map.put("code","000030");
         Map<String,Object> msg = new HashMap<>();
-        msg.put("ACTIVITIE_ID",salonDO.getId());
-        msg.put("ACTIVITIE_NAME",salonDO.getActivitieName());
-        msg.put("ACTIVITIE_PATH",configFileReader.getHTTP_PATH()+ salonDO.getActivitiePath());
+        List<Map<String,Object>> list = new ArrayList<>();
+        for (int i = 0; i < salonDO.size(); i++) {
+            String imagePath = (String)salonDO.get(i).get("IMAGE_PATH");
+            Integer sort = (Integer)salonDO.get(i).get("SORT");
+            Map<String,Object> pathMap = new HashMap<>();
+            pathMap.put("imagePath",configFileReader.getHTTP_PATH()+imagePath);
+            pathMap.put("sort",sort);
+            list.add(pathMap);
+        }
+        msg.put("activitieId",salonDO.get(0).get("ID"));
+        msg.put("activitieName",salonDO.get(0).get("ACTIVITIE_NAME"));
+        msg.put("activitiePath",list);
         map.put("msg",msg);
-        log.info("活动沙龙发送数据，{}",map);
+        //System.out.println(JSON.toJSONString(map));
         HttpUtil.sendPost(configFileReader.getMESSAGE_PATH(),map);
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean saveActivitieSalon(ActivitieSalonDO activitieSalon, TokenUserInfo tokenUserInfo) {
-        ActivitieSalonDO salonDO = new ActivitieSalonDO();
-        salonDO.setActivitieName(activitieSalon.getActivitieName());
-        salonDO.setActivitieType(activitieSalon.getActivitieType());
-        salonDO.setActivitiePath(activitieSalon.getActivitiePath());
-        salonDO.setActivitieDesc(activitieSalon.getActivitieDesc());
-        salonDO.setActivitieStatus("0");
-        salonDO.setOrgId(activitieSalon.getOrgId());
-        salonDO.setOrgName(activitieSalon.getOrgName());
-        salonDO.setCreatedTime(LocalDateTime.now());
-        salonDO.setCreatedBy(tokenUserInfo.getUserId());
-        activitieSalonDao.insert(salonDO);
+        try {
+            ActivitieSalonDO salonDO = new ActivitieSalonDO();
+            salonDO.setActivitieName(activitieSalon.getActivitieName());
+            salonDO.setActivitieType(activitieSalon.getActivitieType());
+            salonDO.setActivitiePath(activitieSalon.getActivitiePath());
+            salonDO.setActivitieDesc(activitieSalon.getActivitieDesc());
+            salonDO.setActivitieFileName(activitieSalon.getActivitieFileName());
+            salonDO.setActivitieStatus("0");
+            salonDO.setOrgId(activitieSalon.getOrgId());
+            salonDO.setOrgName(activitieSalon.getOrgName());
+            salonDO.setCreatedTime(LocalDateTime.now());
+            salonDO.setCreatedBy(tokenUserInfo.getUserId());
+            activitieSalonDao.insert(salonDO);
 
-        //PDF2Image.pdf2Image()
-
-        return null;
+            List<String> imageList = PDF2Image.pdf2Image(activitieSalon.getActivitiePath());
+            if(CollectionUtil.isNotEmpty(imageList)){
+                for (String s : imageList) {
+                    ActivitieSalonImageDO imageDO = new ActivitieSalonImageDO();
+                    imageDO.setActivitieId(salonDO.getId());
+                    imageDO.setImagePath(s);
+                    String[] s1 = s.split("_");
+                    String s2 = s1[1];
+                    String substring = s2.substring(0, s2.lastIndexOf("."));
+                    imageDO.setSort(Integer.parseInt(substring));
+                    activitieSalonImageDao.insert(imageDO);
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            log.error("活动沙龙数据新增失败{}",e.getMessage());
+            throw new BizException("活动沙龙数据新增失败");
+        }
     }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean removeActivitieSalonByIds(List<Integer> ids) {
+        try {
+            activitieSalonDao.deleteBatchIds(ids);
+            activitieSalonImageDao.removeActivitieSalonImageByIds(ids);
+            return true;
+        } catch (Exception e) {
+            throw new BizException("活动沙龙数据删除失败");
+        }
+    }
+
 }

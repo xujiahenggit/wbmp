@@ -201,6 +201,22 @@ public class CardSuppleServiceImpl extends ServiceImpl<CardSuppleDao, CardSupple
     }
 
     /**
+     * 获取已办列表
+     * @param cardSuppleQueryVo 查询参数
+     * @return
+     */
+    @Override
+    public IPage<CardSuppleDto> getAreadyList(CardSuppleQueryVo cardSuppleQueryVo) {
+        // 用手机号码查询 引导员 机构号
+        UsherDO usherDO=usherService.selectUsherByPhone(cardSuppleQueryVo.getUserPhone());
+        if(usherDO==null){
+            throw new BizException("未查到引导员信息");
+        }
+        Page<CardSuppleDto> page=new Page<>(cardSuppleQueryVo.getPageIndex(),cardSuppleQueryVo.getPageSize());
+        return cardSuppleDao.getAreadyList(page,usherDO.getOrgId());
+    }
+
+    /**
      * 构建模型
      * @param cardSupplePassRejectVo 审批参数
      * @param tokenUserInfo 当前用户

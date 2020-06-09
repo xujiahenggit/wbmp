@@ -1,0 +1,28 @@
+import request from '@/utils/request'
+import axios from 'axios'
+
+
+export function getList(data) {
+  return axios({
+    url: `/$!{table.entityPath}/list`,
+    method: 'post',
+    data
+  })
+}
+
+// 删除
+export function deleteData(data) {
+  return axios({
+    url: `/$!{table.entityPath}/${data}`,
+    method: 'delete'
+  })
+}
+
+// 新增
+export function addNewData(data) {
+  return axios({
+    url: `/$!{table.entityPath}/save`,
+    method: 'post',
+    data
+  })
+}
