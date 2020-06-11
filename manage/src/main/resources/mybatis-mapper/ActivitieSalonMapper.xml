@@ -49,3 +49,49 @@
         WHERE A.ID = #{activitieSalonId} ORDER BY S.SORT ASC
     </select>
 </mapper>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.ActivitieSalonDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="activitieSalonResultMap" type="com.bank.manage.dos.ActivitieSalonDO">
+        <id column="ID" property="id"/>
+        <result column="ACTIVITIE_NAME" property="activitieName"/>
+        <result column="ACTIVITIE_TYPE" property="activitieType"/>
+        <result column="ACTIVITIE_PATH" property="activitiePath"/>
+        <result column="ACTIVITIE_DESC" property="activitieDesc"/>
+        <result column="ACTIVITIE_STATUS" property="activitieStatus"/>
+        <result column="ACTIVITIE_TIME" property="activitieTime"/>
+        <result column="ACTIVITIE_TOTAL" property="activitieTotal"/>
+        <result column="ORG_ID" property="orgId"/>
+        <result column="ORG_NAME" property="orgName"/>
+        <result column="CREATED_TIME" property="createdTime"/>
+        <result column="CREATED_BY" property="createdBy"/>
+        <result column="UPDATED_BY" property="updatedBy"/>
+        <result column="UPDATED_TIME" property="updatedTime"/>
+    </resultMap>
+
+
+    <select id="queryActivitiesPage" resultType="com.bank.manage.dos.ActivitieSalonDO">
+        SELECT T.* FROM T_ACTIVITIE_SALON T
+        <trim prefix="where" suffixOverrides="and">
+            <if test="activitieType != null and activitieType != ''">
+                T.ACTIVITIE_TYPE = #{activitieType} AND
+            </if>
+            <if test="activitieName != null and activitieName != ''">
+              T.ACTIVITIE_NAME  LIKE CONCAT('%','${activitieName}','%' ) AND
+            </if>
+            <if test="startTime != null and startTime != '' and endTime != null and endTime != ''" >
+                T.CREATED_TIME  BETWEEN #{startTime} AND #{endTime}
+            </if>
+        </trim>
+    </select>
+
+
+    <select id="selectActivitieSalonById" resultType="map">
+        SELECT A.ID,A.ACTIVITIE_NAME,S.IMAGE_PATH,S.SORT FROM
+	    T_ACTIVITIE_SALON A
+	    LEFT JOIN T_ACTIVITIE_SALON_IMAGE S ON A.ID = S.ACTIVITIE_ID
+        WHERE A.ID = #{activitieSalonId} ORDER BY S.SORT ASC
+    </select>
+</mapper>
