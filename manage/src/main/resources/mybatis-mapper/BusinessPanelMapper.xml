@@ -3,12 +3,85 @@
 <mapper namespace="com.bank.manage.dao.BusinessPanelDao">
 
 
+    <select id="queryOperation" resultType="map">
+        SELECT wbq.take_cnt,wbq.queue_cnt,wbq.already_handle_cnt,wbq.progress_handle_cnt,wbq.abandoned_cnt,wbq.abandoned_lv,
+	    (SELECT COUNT( DISTINCT wbn.win_num ) FROM wbmp_bqms_win wbn WHERE wbn.branch = #{branch} AND wbn.`status` = '1'
+	        AND DATE_FORMAT( wbn.data_dt, '%Y-%m-%d' ) = #{nowStr} ) AS num
+        FROM wbmp_bqms_queue wbq WHERE wbq.branch = #{branch} AND wbq.flag = '1'
+	    AND DATE_FORMAT( wbq.data_dt, '%Y-%m-%d' ) = #{nowStr}
+    </select>
+
+
     <select id="getTellerOnlineInfo" resultType="com.bank.manage.vo.TellerOnlineInfo">
         <if test="tellerId!=null">
             SELECT g.* FROM(
         </if>
-        SELECT f.*,(@b := @b + 1) as score  FROM(
+        SELECT f.*,(@b := @b + 1) as score FROM(
         SELECT teller_id,sum(sub_seconds) onlineTime FROM(
+        select A.teller_id,A.recordtime,TIMESTAMPDIFF(SECOND,A.recordtime,B.recordtime) sub_seconds
+        from(
+        select a.*,(@i := @i + 1) as ord_num from wbmp_abs_online_time a,(select @i := 1) d
+        WHERE a.RTNCODE='00000000' AND a.DATA_DT=CURDATE() order by teller_id,recordtime
+        ) as A LEFT JOIN (
+        select a.*,(@j := @j + 1) as ord_num from wbmp_abs_online_time a,(select @j := 0) c
+        WHERE RTNCODE='00000000' AND DATA_DT=CURDATE() order by teller_id,recordtime
+        )as B on A.ord_num=B.ord_num and A.teller_id=B.teller_id) e,(select @a:=0) as tem
+        WHERE (@a:=@a+1)%2=1
+        GROUP BY teller_id) f,(select @b:=0) as tem1
+        <if test="tellerId!=null">
+            ) g
+            WHERE teller_id='#{tellerId}';
+        </if>
+    </select>
+
+
+    <select id="deviceTotal" resultType="java.util.Map">
+        SELECT
+        (select count(device_id) from wbmp_atmp_basic_info WHERE ORG_ID=#{orgId} AND DATA_DT=CURDATE()) as deviceTotal,
+        (SELECT COUNT(a.DEVICE_TYPE) FROM (SELECT DEVICE_TYPE FROM wbmp_atmp_basic_info WHERE ORG_ID=#{orgId} AND DATA_DT=CURDATE() GROUP BY DEVICE_TYPE) a)
+         as deviceTypeTotal
+    </select>
+
+
+    <select id="deviceStatus" resultType="java.util.Map">
+        SELECT CASE a.device_run_status
+            WHEN 0 THEN "online"
+            WHEN 1 THEN "offline"
+            WHEN 2 THEN "error"
+        END as type,a.sum FROM(
+        SELECT device_run_status,COUNT(device_id) sum FROM wbmp_atmp_basic_info WHERE ORG_ID='' AND DATA_DT=CURDATE() GROUP BY device_run_status
+        ) a WHERE a.TELLER_ID in  (0,1,2)
+    </select>
+    <select id="devicetransCnfTop5" resultType="com.bank.manage.vo.TransCntInfo">
+        SELECT trans_name,SUM(trans_cnt) sum FROM wbmp_atmp_tran_info
+        WHERE ORG_ID=#{orgId} AND DATA_DT=CURDATE()
+        GROUP BY trans_name
+        ORDER BY sum DESC
+        LIMIT 5
+    </select>
+    <select id="devicetransCnfSum" resultType="java.lang.Integer">
+    SELECT SUM(trans_cnt) sum FROM wbmp_atmp_tran_info
+    WHERE ORG_ID=#{orgId} AND DATA_DT=CURDATE() GROUP BY ORG_ID
+    </select>
+    <select id="tradeVolumeTop5" resultType="com.bank.manage.vo.TransCntInfo">
+        SELECT tran_name,SUM(trade_volume) sum FROM wbmp_abs_transinfo
+        WHERE flag='2' AND DATA_DT=CURDATE() AND ORG_ID=#{orgId}
+        GROUP BY tran_name
+        ORDER BY sum DESC
+        LIMIT 5
+    </select>
+    <select id="tradeVolumeSum" resultType="java.lang.Number">
+        SELECT SUM(trade_volume) sum FROM wbmp_abs_transinfo
+        WHERE flag='2' AND DATA_DT=CURDATE() AND ORG_ID=#{orgId}
+        GROUP BY ORG_ID
+    </select>
+    <select id="tellertPageList" resultType="com.bank.manage.vo.AbsTellerInfo">
+        SELECT a.*,b.lj_take_cnt callNum,c.trade_volume,d.trade_volume trade_volume_sum,e.total onLineTime
+        FROM wbmp_abs_teller_info a
+        LEFT JOIN wbmp_bqms_queue b ON a.TELLER_ID=b.TELLER_ID AND b.flag='3' AND b.DATA_DT=CURDATE()
+        LEFT JOIN wbmp_abs_transinfo c ON a.TELLER_ID=c.TELLER_ID AND c.flag='3' AND c.DATA_DT=CURDATE()
+        LEFT JOIN wbmp_abs_transinfo d ON a.ORG_ID=d.ORG_ID and d.flag='1' AND d.DATA_DT=CURDATE()
+        LEFT JOIN (SELECT teller_id,sum(sub_seconds) total FROM(
         select A.teller_id,A.recordtime,TIMESTAMPDIFF(SECOND,A.recordtime,B.recordtime) sub_seconds
         from(
             select a.*,(@i := @i + 1) as ord_num from wbmp_abs_online_time a,(select @i := 1) d
@@ -18,10 +91,9 @@
                  WHERE RTNCODE='00000000' AND DATA_DT=CURDATE() order by teller_id,recordtime
         )as B on A.ord_num=B.ord_num and A.teller_id=B.teller_id) e,(select @a:=0) as tem
         WHERE (@a:=@a+1)%2=1
-        GROUP BY teller_id) f,(select @b:=0) as tem1
-        <if test="tellerId!=null">
-            ) g
-            WHERE teller_id='#{tellerId}';
-        </if>
+        GROUP BY teller_id) e ON a.TELLER_ID=e.TELLER_ID
+        WHERE a.ORG_ID=#{orgId}
     </select>
+
+
 </mapper>

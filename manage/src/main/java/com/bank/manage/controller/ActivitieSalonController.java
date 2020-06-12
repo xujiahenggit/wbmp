@@ -127,7 +127,7 @@ public class ActivitieSalonController extends BaseController {
 		//上传路径
 		String uploadPath=configFileReader.getACTIVITIE_FILE_PATH()+"/"+fist_tab;
 		//访问路径
-		String accessPath=configFileReader.getHTTP_PATH()+configFileReader.getACTIVITIE_ACCESS_PATH()+"/"+fist_tab;
+		String accessPath=configFileReader.getACTIVITIE_ACCESS_PATH()+"/"+fist_tab;
 		//原文件名称
 		String filename = file.getOriginalFilename();
 		//用UUID

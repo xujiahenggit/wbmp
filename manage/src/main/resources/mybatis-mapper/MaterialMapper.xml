@@ -16,7 +16,7 @@
         INNER JOIN T_CATALOG_MATERIAL CM ON C.CATALOG_ID = CM.CATALOG_ID
         INNER JOIN T_MATERIAL M ON CM.MATERIAL_ID = M.MATERIAL_ID
         INNER JOIN S_NEW_PROCESS N ON M.MATERIAL_ID = N.TRADING_ID
-        WHERE C.CATALOG_ID=#{catalogId} /*AND N.STATUS = '20'*/ AND N.TRADING_TYPE = 'T_MATERIAL' AND N.ACTIVE = '1'
+        WHERE C.CATALOG_ID=#{catalogId}  AND N.TRADING_TYPE = 'T_MATERIAL' AND N.ACTIVE = '1'
         <if test="createdUser != null and createdUser != ''">
             AND M.CREATED_USER = #{createdUser}
         </if>

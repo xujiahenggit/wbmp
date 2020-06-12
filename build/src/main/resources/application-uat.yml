@@ -144,8 +144,8 @@ HAPPYSERVICE:
   HAPPY_ACCESS_PATH: /video/happy
 #活动沙龙
 ACTIVITIE:
-  ACTIVITIE_FILE_PATH: /home/bgm/vedio/activitie
-  ACTIVITIE_ACCESS_PATH: /vedio/activitie
+  ACTIVITIE_FILE_PATH: /home/bgm/video/activitie
+  ACTIVITIE_ACCESS_PATH: /video/activitie
 #外包人员
 CARDSUPPLE:
   CARD_FILE_PATH: /home/bgm/video/cardsupple

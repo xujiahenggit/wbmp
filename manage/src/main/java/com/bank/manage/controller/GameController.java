@@ -135,6 +135,7 @@ public class GameController {
         DeviceDTO deviceDTO = new DeviceDTO();
         if (StringUtils.equals(sin, sign)) {
             deviceDTO = this.deviceService.queryDeviceByMac(macaddress.toUpperCase());
+            deviceDTO.setServerTimeStamp(new Date().getTime());
         }
         else {
             throw new BizException("设备入网校验，签名失败", new HashMap<String, String>());

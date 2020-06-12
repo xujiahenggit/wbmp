@@ -19,10 +19,10 @@ import java.util.List;
  * @Author: Andy
  * @Date: 2020/6/3 16:00
  */
+@Api(tags = "分支行/网点接口")
 @RestController
 @RequestMapping("/nfrtorg")
 @Slf4j
-@Api(tags = "分支行/网点接口")
 public class NfrtOrgController {
 
     @Autowired
@@ -34,9 +34,9 @@ public class NfrtOrgController {
         return nfrtOrgService.getNftOrgList();
     }
 
-    @GetMapping("/outlets/{orgId}")
+    @GetMapping("/outlets/{orgId}/{type}")
     @ApiOperation("获取网点列表")
-    public List<OrgNftDto> getOutletsList(@PathVariable String orgId){
-        return nfrtOrgService.getOutletsList(orgId);
+    public List<OrgNftDto> getOutletsList(@PathVariable(value = "orgId") String orgId,@PathVariable(value = "type") String type){
+        return nfrtOrgService.getOutletsList(orgId,type);
     }
 }

@@ -19,6 +19,8 @@ import io.swagger.annotations.ApiModel;
 public class ActivitieSalonVO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@ApiModelProperty(value = "主键ID")
+	private Integer id;
 	/**
 	 * 活动名称
 	 */

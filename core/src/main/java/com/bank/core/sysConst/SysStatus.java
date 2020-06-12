@@ -52,4 +52,14 @@ public class SysStatus {
      * 加班申请
       */
     public static final String MESSAGE_TYPE_WORD="WORK_SUPPLE";
+
+    /**
+     * 正常 机构
+     */
+    public static final String ORG_TYPE_NOMAL="TYPE_N";
+
+    /**
+     * 村镇机构
+     */
+    public static final String ORG_TYPE_CZ="TYPE_C";
 }

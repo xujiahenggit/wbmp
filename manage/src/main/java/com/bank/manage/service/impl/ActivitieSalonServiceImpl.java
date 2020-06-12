@@ -1,7 +1,5 @@
 package com.bank.manage.service.impl;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,16 +10,9 @@ import java.util.concurrent.Executors;
 
 import javax.annotation.Resource;
 
-import com.bank.manage.service.ActivitieSalonImageService;
-import com.bank.manage.vo.ActivitieSalonVO;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementSetter;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bank.core.entity.BizException;
@@ -33,8 +24,10 @@ import com.bank.manage.dao.ActivitieSalonDao;
 import com.bank.manage.dao.ActivitieSalonImageDao;
 import com.bank.manage.dos.ActivitieSalonDO;
 import com.bank.manage.dos.ActivitieSalonImageDO;
+import com.bank.manage.service.ActivitieSalonImageService;
 import com.bank.manage.service.ActivitieSalonService;
 import com.bank.manage.util.PDF2Image;
+import com.bank.manage.vo.ActivitieSalonVO;
 import com.bank.manage.vo.CutActivitieSalonVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -107,7 +100,7 @@ public class ActivitieSalonServiceImpl extends ServiceImpl<ActivitieSalonDao, Ac
         String orgId = (String) queryParam.get("orgId");
         QueryWrapper<ActivitieSalonDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("ORG_ID", orgId);
-        queryWrapper.eq("STATUS",0);
+        queryWrapper.eq("STATUS", 0);
         IPage<ActivitieSalonDO> iPage = this.activitieSalonDao.selectPage(page, queryWrapper);
         List<ActivitieSalonDO> records = iPage.getRecords();
         if (CollectionUtil.isNotEmpty(records)) {
@@ -166,7 +159,9 @@ public class ActivitieSalonServiceImpl extends ServiceImpl<ActivitieSalonDao, Ac
             salonDO.setCreatedBy(tokenUserInfo.getUserId());
             salonDO.setStatus(0);
             this.activitieSalonDao.insert(salonDO);
-            executorService.execute(()->convert2Image(activitieSalon.getActivitiePath(),salonDO.getId()));
+            String pdfPath = StringUtils.replace(activitieSalon.getActivitiePath(), this.configFileReader.getACTIVITIE_ACCESS_PATH(), this.configFileReader.getACTIVITIE_FILE_PATH());
+            log.info("活动沙龙pdf文件服务器存储目录{}", pdfPath);
+            executorService.execute(() -> convert2Image(pdfPath, salonDO.getId()));
         }
         catch (Exception e) {
             log.error("活动沙龙数据新增失败{}", e.getMessage());
@@ -176,14 +171,15 @@ public class ActivitieSalonServiceImpl extends ServiceImpl<ActivitieSalonDao, Ac
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void convert2Image(String activitiePath,Integer id){
+    public void convert2Image(String activitiePath, Integer id) {
         List<String> imageList = PDF2Image.pdf2Image(activitiePath);
         List<ActivitieSalonImageDO> list = new ArrayList<>();
         if (CollectionUtil.isNotEmpty(imageList)) {
             for (String s : imageList) {
                 ActivitieSalonImageDO imageDO = new ActivitieSalonImageDO();
                 imageDO.setActivitieId(id);
-                imageDO.setImagePath(s);
+                String imgPath = StringUtils.replace(s, this.configFileReader.getACTIVITIE_FILE_PATH(), this.configFileReader.getACTIVITIE_ACCESS_PATH());
+                imageDO.setImagePath(imgPath);
                 String[] s1 = s.split("_");
                 String s2 = s1[1];
                 String substring = s2.substring(0, s2.lastIndexOf("."));
@@ -197,7 +193,8 @@ public class ActivitieSalonServiceImpl extends ServiceImpl<ActivitieSalonDao, Ac
                 salonDO.setId(id);
                 salonDO.setStatus(1);
                 this.activitieSalonDao.updateById(salonDO);
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 throw new BizException("数据解析失败！");
             }
         }

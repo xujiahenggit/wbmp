@@ -36,22 +36,63 @@
     <resultMap id="nftOrgDto" type="com.bank.user.dto.OrgNftDto">
         <result property="orgId" column="NFRT_ORGID"/>
         <result property="orgName" column="NFRT_ORGNAME"/>
+        <result property="type" column="TYPE"/>
     </resultMap>
 
     <!--    显示分支行列表-->
     <select id="getNftOrgList" resultMap="nftOrgDto">
         SELECT DISTINCT
-            CONCAT(NFRT_ORG_BRANCH_NO, '0000') AS NFRT_ORGID,
-            NFRT_ORG_BRANCH_NAME AS NFRT_ORGNAME
+            O.ORG_UNIT_ID AS NFRT_ORGID,
+            O.ORG_UNIT_NAME AS NFRT_ORGNAME,
+            'TYPE_N' TYPE
         FROM
-            T_NFRT_ORG
+            T_ORGANIZATION O
+        INNER JOIN T_NFRT_ORG NFRT ON CONCAT(
+            NFRT.NFRT_ORG_ID,
+            NFRT.NFRT_ORG_NO
+        ) = O.ORG_CODE
         WHERE
-            NFRT_ORG_STATE = 1
-        AND (NFRT_ORG_BRANCH_NAME IS NOT NULL AND NFRT_ORG_BRANCH_NAME!='')
+            O.ORG_STATUS = '1'
+        AND O.ORG_ID NOT LIKE '17%'
+    </select>
+
+    <!--    查询村镇支行名称-->
+    <select id="getContryOrgList" resultMap="nftOrgDto">
+        SELECT
+            ORG_ID AS NFRT_ORGID,
+            ORG_NAME AS NFRT_ORGNAME,
+            'TYPE_C' TYPE
+        FROM
+            T_ORGANIZATION
+        WHERE
+            PARENT_ID = 17
     </select>
 
     <!--    查询网点列表-->
     <select id="getOutletsList" resultMap="nftOrgDto">
-        SELECT ORG_ID AS NFRT_ORGID,ORG_NAME AS NFRT_ORGNAME FROM T_ORGANIZATION WHERE ORG_CODE=#{orgId}
+        SELECT DISTINCT
+            O.ORG_ID AS NFRT_ORGID,
+            O.ORG_NAME AS NFRT_ORGNAME
+        FROM
+            T_ORGANIZATION O
+        INNER JOIN T_NFRT_ORG NFRT ON CONCAT(
+            NFRT.NFRT_ORG_ID,
+            NFRT.NFRT_ORG_NO
+        ) = O.ORG_CODE
+        WHERE
+            O.ORG_STATUS = '1'
+        AND O.ORG_UNIT_ID=#{orgId}
+    </select>
+
+    <!--    查询 村镇银行 网点列表-->
+    <select id="getContryOutsitList" resultMap="nftOrgDto">
+        SELECT
+            ORG_ID AS NFRT_ORGID,
+            ORG_NAME AS NFRT_ORGNAME
+        FROM
+            T_ORGANIZATION
+        WHERE
+            PARENT_ID = #{orgId}
+        AND ORG_STATUS = 1
     </select>
 </mapper>

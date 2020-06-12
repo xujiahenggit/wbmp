@@ -2,6 +2,11 @@ package com.bank.manage.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.alibaba.excel.EasyExcel;
+import com.bank.manage.excel.DeviceExcelData;
+import com.bank.manage.excel.ImportExcelResponse;
+import com.bank.manage.listener.DeviceExcelListener;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,11 +32,9 @@ import com.bank.manage.service.DevicePlayService;
 import com.bank.manage.service.DeviceService;
 import com.bank.manage.service.StatusLogService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.springframework.web.multipart.MultipartFile;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import java.util.ArrayList;
 
 /**
  * 设备信息
@@ -130,5 +133,25 @@ public class DeviceController extends BaseController {
     @ApiImplicitParam(name = "pageQueryModel", value = "设备状态日志分页查询", required = true, paramType = "body", dataType = "PageQueryModel")
     public IPage<StatusLogDO> queryStatusLog(@RequestBody PageQueryModel pageQueryModel) {
         return this.statusLogService.queryStatusLog(pageQueryModel);
+    }
+
+    @PostMapping("/importDevice")
+    @ApiOperation(value = "设备Excel表格导入")
+    public ImportExcelResponse importDevice(@RequestParam(value = "excelFile") @ApiParam(value = "Excel文件") MultipartFile excelFile,
+                                            HttpServletRequest request){
+        ImportExcelResponse response = new ImportExcelResponse();
+        response.setStatus(true);
+        response.setErrorRows(new ArrayList<>());
+        if (excelFile == null) {
+            throw new BizException("请上传设备Excel文件进行数据导入操作！");
+        }
+        String userId = getCurrentUserId(request);
+        try {
+            EasyExcel.read(excelFile.getInputStream(), DeviceExcelData.class, new DeviceExcelListener(this.deviceService, userId, response)).sheet().doRead();
+        }
+        catch (Exception e) {
+            throw new BizException("设备-Excel数据导入失败");
+        }
+        return response;
     }
 }

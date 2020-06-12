@@ -23,14 +23,17 @@ public interface NfrtOrgService extends IService<NfrtOrgDO> {
 
     /**
      * 获取分支行列表
+     *
      * @return
      */
     List<OrgNftDto> getNftOrgList();
 
     /**
      * 获取网点类别
-     * @return
+     *
      * @param orgId 分支行核心机构号
+     * @param type  类型
+     * @return
      */
-    List<OrgNftDto> getOutletsList(String orgId);
+    List<OrgNftDto> getOutletsList(String orgId, String type);
 }

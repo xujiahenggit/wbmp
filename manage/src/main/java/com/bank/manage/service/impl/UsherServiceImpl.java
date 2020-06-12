@@ -147,7 +147,7 @@ public class UsherServiceImpl implements UsherService {
         String identityNo = usherDTO.getIdentityNo();
         ValidIdentityNo(identityNo);//校验身份证号码有效性
         UsherDO usher = this.usherDao.selectOne(new LambdaQueryWrapper<UsherDO>().eq(UsherDO::getIdentityNo, identityNo).eq(UsherDO::getUsherDelflag, "0"));
-        if (usher != null && !usher.getIdentityNo().equals(identityNo)) {
+        if (usher != null && !usher.getUsherId().equals(usherDTO.getUsherId())) {
             throw new BizException("更改身份证号[" + identityNo + "]与其他引导员信息冲突，不允许更新");
         }
 
