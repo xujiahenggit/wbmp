@@ -193,15 +193,22 @@ public class ConfigFileReader {
     @Value("${CARDSUPPLE.CARD_ACCESS_PATH}")
     private String CARD_ACCESS_PATH;
 
-    @Value("${tomcat.baseIp}")
-    private String tomcatBaseIp;
+    /**
+     * 应用ip，仅开发环境使用此参数
+     */
+    @Value("${application.ip}")
+    private String applicationIp;
 
-//    @Value("${tomcat.port}")
-//    private String tomcatPort;
-//
-//
-//    @Value("${tomcat.contextPath}")
-//    private String contextPath;
+
+    @Value("${application.port}")
+    private String applicationPort;
+
+
+    @Value("${application.contextPath}")
+    private String applicationContextPath;
+
+    @Value("${spring.profiles.active}")
+    private String springProfile;
 
     /**
      * 二维码生成路径

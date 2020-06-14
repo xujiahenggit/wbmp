@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.WbmpOperateBqmsQueueAvgDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.bank.manage.dos.WbmpOperateBqmsQueueAvgDO">
+        <result column="ETL_TIME" property="etlTime"/>
+        <result column="ORG_ID" property="orgId"/>
+        <result column="INDEX_CNT" property="indexCnt"/>
+        <result column="AVG_ABANDONED_LV" property="avgAbandonedLv"/>
+        <result column="ABANDONED_LV" property="abandonedLv"/>
+        <result column="DATA_DT" property="dataDt"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        ETL_TIME, ORG_ID, INDEX_CNT, AVG_ABANDONED_LV, ABANDONED_LV, DATA_DT
+    </sql>
+
+    <!--    查询客户满意度数据-->
+    <select id="getOperraInfo" resultType="com.bank.manage.dto.WbmpOperateBqmsQueueAvgDto">
+        SELECT INDEX_CNT,AVG_ABANDONED_LV,ABANDONED_LV,'0' AS CUSTOMER_AVG  FROM wbmp_operate_bqms_queue_avg WHERE ORG_ID=#{orgId} AND DATA_DT=#{date }
+    </select>
+</mapper>

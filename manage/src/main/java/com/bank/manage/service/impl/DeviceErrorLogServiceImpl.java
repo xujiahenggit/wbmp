@@ -58,9 +58,14 @@ public class DeviceErrorLogServiceImpl implements DeviceErrorLogService {
         //条件查询
         Map<String, Object> queryParam = pageQueryModel.getQueryParam();
         String terminalNum = (String) queryParam.get("terminalNum");
+        String startTime = (String) queryParam.get("startTime");
+        String endTime = (String) queryParam.get("endTime");
 
         QueryWrapper<DeviceErrorLogDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(StringUtils.isNotBlank(terminalNum), "TERMINAL_NUM", terminalNum);
+        if(StringUtils.isNotBlank(startTime) && StringUtils.isNotBlank(endTime)){
+            queryWrapper.between("CREATE_TIME",startTime,endTime);
+        }
 
         return deviceErrorLogDao.selectPage(page,queryWrapper);
     }

@@ -10,6 +10,7 @@ import java.util.concurrent.Executors;
 
 import javax.annotation.Resource;
 
+import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -136,7 +137,7 @@ public class ActivitieSalonServiceImpl extends ServiceImpl<ActivitieSalonDao, Ac
         msg.put("activitieName", salonDO.get(0).get("ACTIVITIE_NAME"));
         msg.put("activitiePath", list);
         map.put("msg", msg);
-        //System.out.println(JSON.toJSONString(map));
+        log.info("活动沙龙切换信息：{}", JSON.toJSONString(map));
         HttpUtil.sendPost(this.configFileReader.getMESSAGE_PATH(), map);
     }
 
@@ -157,7 +158,7 @@ public class ActivitieSalonServiceImpl extends ServiceImpl<ActivitieSalonDao, Ac
             salonDO.setOrgName(activitieSalon.getOrgName());
             salonDO.setCreatedTime(LocalDateTime.now());
             salonDO.setCreatedBy(tokenUserInfo.getUserId());
-            salonDO.setStatus(0);
+            salonDO.setStatus(1);
             this.activitieSalonDao.insert(salonDO);
             String pdfPath = StringUtils.replace(activitieSalon.getActivitiePath(), this.configFileReader.getACTIVITIE_ACCESS_PATH(), this.configFileReader.getACTIVITIE_FILE_PATH());
             log.info("活动沙龙pdf文件服务器存储目录{}", pdfPath);
@@ -191,7 +192,7 @@ public class ActivitieSalonServiceImpl extends ServiceImpl<ActivitieSalonDao, Ac
 
                 ActivitieSalonDO salonDO = new ActivitieSalonDO();
                 salonDO.setId(id);
-                salonDO.setStatus(1);
+                salonDO.setStatus(0);
                 this.activitieSalonDao.updateById(salonDO);
             }
             catch (Exception e) {

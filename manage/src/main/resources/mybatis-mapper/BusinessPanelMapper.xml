@@ -5,7 +5,7 @@
 
     <select id="queryOperation" resultType="map">
         SELECT wbq.take_cnt,wbq.queue_cnt,wbq.already_handle_cnt,wbq.progress_handle_cnt,wbq.abandoned_cnt,wbq.abandoned_lv,
-	    (SELECT COUNT( DISTINCT wbn.win_num ) FROM wbmp_bqms_win wbn WHERE wbn.branch = #{branch} AND wbn.`status` = '1'
+	    (SELECT COUNT( DISTINCT wbn.win_num ) FROM wbmp_bqms_win wbn WHERE wbn.branch = #{branch} AND wbn.status = '1'
 	        AND DATE_FORMAT( wbn.data_dt, '%Y-%m-%d' ) = #{nowStr} ) AS num
         FROM wbmp_bqms_queue wbq WHERE wbq.branch = #{branch} AND wbq.flag = '1'
 	    AND DATE_FORMAT( wbq.data_dt, '%Y-%m-%d' ) = #{nowStr}
@@ -93,6 +93,39 @@
         WHERE (@a:=@a+1)%2=1
         GROUP BY teller_id) e ON a.TELLER_ID=e.TELLER_ID
         WHERE a.ORG_ID=#{orgId}
+    </select>
+
+    <select id="onlineSum" resultType="java.lang.Integer">
+        SELECT COUNT(TELLER_ID) FROM wbmp_abs_teller_info WHERE teller_ind = '1'
+        <if test="orgId!=null">
+            and ORG_ID=#{orgId}
+        </if>
+    </select>
+
+    <select id="tradeSum" resultType="java.lang.Number">
+        SELECT SUM(trade_volume) FROM wbmp_abs_transinfo
+        WHERE DATA_DT=CURDATE()
+        AND flag=1
+        <if test="orgId!=null">
+            and ORG_ID=#{orgId}
+        </if>
+
+    </select>
+    <select id="tradeNumRank" resultType="java.lang.Integer">
+        SELECT rank FROM (
+        SELECT a.*,(@i := @i + 1) as rank FROM wbmp_abs_transinfo a,(select @i := 0) b
+        WHERE a.DATA_DT=CURDATE() AND a.flag=3
+        <if test="orgId!=null">
+            and ORG_ID=#{orgId}
+        </if>
+        ORDER BY a.trade_volume DESC) c
+        WHERE c.TELLER_ID = #{tellerId}
+    </select>
+    <select id="onlineTimeSum" resultType="java.lang.Number">
+
+    </select>
+    <select id="onlineTimeRank" resultType="java.lang.Integer">
+
     </select>
 
 

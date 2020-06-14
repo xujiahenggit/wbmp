@@ -3,6 +3,7 @@ package com.bank.manage.service;
 
 import com.bank.core.entity.PageQueryModel;
 import com.bank.manage.vo.AbsTellerInfo;
+import com.bank.manage.vo.RankInfo;
 import com.bank.manage.vo.TellerOnlineInfo;
 import com.bank.manage.vo.TransCntInfo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -34,4 +35,6 @@ public interface BusinessPanelService {
     IPage<AbsTellerInfo> tellertPageList(String orgId, PageQueryModel pageQueryModel);
 
     List<Map<String, Object>> queryOperation(String branch);
+
+    RankInfo rankInfo(String orgId, String tellerId);
 }

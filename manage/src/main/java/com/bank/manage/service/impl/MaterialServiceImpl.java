@@ -152,6 +152,17 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialDao, MaterialDO> im
     @Transactional(rollbackFor = Exception.class)
     public Boolean updateMaterial(MaterialDTO materialDTO, TokenUserInfo tokenUserInfo) {
         Boolean flag = null;
+
+        QueryWrapper<NewProcessDO> queryWrapper1 = new QueryWrapper<>();
+        queryWrapper1.eq("TRADING_ID", materialDTO.getMaterialId())
+                .eq("TRADING_TYPE", "T_MATERIAL");
+        NewProcessDO newProcessDO = this.newProcessService.getOne(queryWrapper1);
+
+        String status = newProcessDO.getStatus();
+        if("30".equals(status) || "40".equals(status)){
+            throw new BizException("素材已被驳回或撤销，请勿修改！");
+        }
+
         MaterialDO materialDO = MaterialDO.builder()
                 .materialId(materialDTO.getMaterialId())
                 .materialName(materialDTO.getMaterialName())
@@ -182,12 +193,16 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialDao, MaterialDO> im
         if (i > 0) {
             throw new BizException("该素材正在被使用，请勿删除");
         }
-        try {
-            QueryWrapper<NewProcessDO> queryWrapper1 = new QueryWrapper<>();
-            queryWrapper1.eq("TRADING_ID", id)
-                    .eq("TRADING_TYPE", "T_MATERIAL");
-            NewProcessDO newProcessDO = this.newProcessService.getOne(queryWrapper1);
+        QueryWrapper<NewProcessDO> queryWrapper1 = new QueryWrapper<>();
+        queryWrapper1.eq("TRADING_ID", id)
+                .eq("TRADING_TYPE", "T_MATERIAL");
+        NewProcessDO newProcessDO = this.newProcessService.getOne(queryWrapper1);
 
+        String status = newProcessDO.getStatus();
+        if("10".equals(status) || "20".equals(status)){
+            throw new BizException("素材在审核过程中，请勿删除！");
+        }
+        try {
             NewProcessDO newProcessDO1 = NewProcessDO.builder()
                     .active("0")
                     .processId(newProcessDO.getProcessId())

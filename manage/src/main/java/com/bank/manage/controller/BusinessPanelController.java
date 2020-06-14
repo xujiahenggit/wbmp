@@ -3,16 +3,15 @@ package com.bank.manage.controller;
 import com.bank.core.entity.PageQueryModel;
 import com.bank.manage.service.BusinessPanelService;
 import com.bank.manage.vo.AbsTellerInfo;
+import com.bank.manage.vo.RankInfo;
 import com.bank.manage.vo.TellerOnlineInfo;
 import com.bank.manage.vo.TransCntInfo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -33,7 +32,7 @@ public class BusinessPanelController {
     private BusinessPanelService businessPanelService;
 
     /**
-     *  运营看板统计
+     * 运营看板统计
      */
     @GetMapping("/{id}")
     @ApiOperation(value = "删除", notes = "传入id")
@@ -44,18 +43,18 @@ public class BusinessPanelController {
     }
 
     @GetMapping("/deviceStatusInfo/{orgId}")
-    @ApiOperation(value = "自助设备在线状态",notes = "返回值：deviceTotal：设备总数；deviceTypeTotal：种类")
+    @ApiOperation(value = "自助设备在线状态", notes = "返回值：deviceTotal：设备总数；deviceTypeTotal：种类")
     @ApiImplicitParam(name = "orgId", value = "机构号", required = true, paramType = "path")
     public Object deviceStatus(@PathVariable String orgId) {
-        List<Map<String,Integer>> list = businessPanelService.deviceStatus(orgId);
+        List<Map<String, Integer>> list = businessPanelService.deviceStatus(orgId);
         return list;
     }
 
     @GetMapping("/deviceTotalInfo/{orgId}")
-    @ApiOperation(value = "某一机构下，设备总数，智能设备总类数",notes = "返回值：deviceTotal：设备总数；deviceTypeTotal：种类")
+    @ApiOperation(value = "某一机构下，设备总数，智能设备总类数", notes = "返回值：deviceTotal：设备总数；deviceTypeTotal：种类")
     @ApiImplicitParam(name = "orgId", value = "机构号", required = true, paramType = "path")
     public Object deviceStatusInfo(@PathVariable String orgId) {
-        Map<String,Integer> list = businessPanelService.deviceTotal(orgId);
+        Map<String, Integer> list = businessPanelService.deviceTotal(orgId);
         return list;
     }
 
@@ -75,11 +74,23 @@ public class BusinessPanelController {
         return list;
     }
 
-    @GetMapping("/tellertPageList/{orgId}")
-    @ApiOperation(value = "柜面设备交易量Top5")
+
+    @PostMapping("/tellertPageList/{orgId}")
+    @ApiOperation(value = "柜面设备交易量Top5", notes = "分页可用参数只有：pageIndex，pageSize")
     @ApiImplicitParam(name = "orgId", value = "机构号", required = true, paramType = "path")
-    public Object tellertPageList(@PathVariable String orgId, PageQueryModel pageQueryModel) {
-        IPage<AbsTellerInfo> list = businessPanelService.tellertPageList(orgId,pageQueryModel);
+    public IPage<AbsTellerInfo> tellertPageList(@PathVariable String orgId, @RequestBody PageQueryModel pageQueryModel) {
+        IPage<AbsTellerInfo> list = businessPanelService.tellertPageList(orgId, pageQueryModel);
+        return list;
+    }
+
+    @GetMapping("/RankInfo/{orgId}/{tellerId}")
+    @ApiOperation(value = "柜面设备交易量Top5")
+    @ApiImplicitParams({
+    @ApiImplicitParam(name = "orgId", value = "机构号", required = true, paramType = "path"),
+    @ApiImplicitParam(name = "tellerId", value = "柜员号", required = true, paramType = "path")
+    })
+    public RankInfo rankInfo(@PathVariable String orgId, @PathVariable String tellerId) {
+        RankInfo list = businessPanelService.rankInfo(orgId,tellerId);
         return list;
     }
 
@@ -87,7 +98,7 @@ public class BusinessPanelController {
     @GetMapping("/queryOperation/{branch}")
     @ApiOperation(value = "运营服务查询")
     @ApiImplicitParam(name = "branch", value = "机构号", required = true, paramType = "path")
-    public List<Map<String,Object>> queryOperation(@PathVariable String branch){
+    public List<Map<String, Object>> queryOperation(@PathVariable String branch) {
         return businessPanelService.queryOperation(branch);
     }
 

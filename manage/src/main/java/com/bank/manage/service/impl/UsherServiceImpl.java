@@ -145,7 +145,9 @@ public class UsherServiceImpl implements UsherService {
         UsherDO usherDO = new UsherDO();
         PropertyUtil.copyProperties(usherDTO, usherDO);
         String identityNo = usherDTO.getIdentityNo();
-        ValidIdentityNo(identityNo);//校验身份证号码有效性
+        if (!IdcardUtil.isValidCard(identityNo)) {
+            throw new BizException("无效的身份证号[" + identityNo + "]");
+        }
         UsherDO usher = this.usherDao.selectOne(new LambdaQueryWrapper<UsherDO>().eq(UsherDO::getIdentityNo, identityNo).eq(UsherDO::getUsherDelflag, "0"));
         if (usher != null && !usher.getUsherId().equals(usherDTO.getUsherId())) {
             throw new BizException("更改身份证号[" + identityNo + "]与其他引导员信息冲突，不允许更新");

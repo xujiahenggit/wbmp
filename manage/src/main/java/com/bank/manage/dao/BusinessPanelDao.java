@@ -32,5 +32,32 @@ public interface BusinessPanelDao {
     Number tradeVolumeSum(@Param("orgId")String orgId);
 
     List<AbsTellerInfo> tellertPageList(IPage page,@Param("orgId") String orgId);
+    
     List<Map<String, Object>> queryOperation(@Param("branch") String branch, @Param("nowStr") String nowStr);
+
+    /**
+     * 总在线柜员数
+     * @param orgId，为null全行
+     * @return
+     */
+    Integer onlineSum(@Param("orgId") String orgId);
+
+    /**
+     * 总交易量
+     * @param orgId，为null全行
+     * @return
+     */
+    Number tradeSum(String orgId);
+
+    /**
+     * 交易量排名
+     * @param orgId，为null全行排名
+     * @param tellerId
+     * @return 该柜员是第几名
+     */
+    Integer tradeNumRank(@Param("orgId")String orgId,@Param("tellerId") String tellerId);
+
+    Number onlineTimeSum(String orgId);
+
+    Integer onlineTimeRank(String orgId, String tellerId);
 }

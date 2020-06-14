@@ -7,6 +7,7 @@ import com.bank.core.entity.PageQueryModel;
 import com.bank.manage.dao.BusinessPanelDao;
 import com.bank.manage.service.BusinessPanelService;
 import com.bank.manage.vo.AbsTellerInfo;
+import com.bank.manage.vo.RankInfo;
 import com.bank.manage.vo.TellerOnlineInfo;
 import com.bank.manage.vo.TransCntInfo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -15,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -100,12 +100,12 @@ public class BusinessPanelServiceImpl implements BusinessPanelService {
                  */
                 //TODO 历史平均等待时长  历史1个月平均弃号率 未定义
                 Double wait_time = (queue_cnt/num) * 40 * 0.01;
-                DecimalFormat df = new DecimalFormat("0.00%");
-                String format = df.format(abandoned_lv);
+                /*DecimalFormat df = new DecimalFormat("0.00%");
+                String format = df.format(abandoned_lv);*/
                 Map<String,Object> panelMap = new HashMap<>();
                 panelMap.put("queue_cnt",queue_cnt);
                 panelMap.put("wait_time",wait_time);
-                panelMap.put("abandoned_lv",format);
+                panelMap.put("abandoned_lv",abandoned_lv);
                 list.add(panelMap);
 
                 Map<String,Object> bargraphMap = new HashMap<>();
@@ -118,6 +118,22 @@ public class BusinessPanelServiceImpl implements BusinessPanelService {
             }
         }
         return list;
+    }
+
+    @Override
+    public RankInfo rankInfo(String orgId, String tellerId) {
+        Integer onlineSum = businessPanelDao.onlineSum(orgId);//在线人数
+        Number tradeSum = businessPanelDao.tradeSum(orgId);
+        Number onlineTimeSum = businessPanelDao.onlineTimeSum(orgId);//总在线时长
+        return RankInfo
+                .builder()
+                .tellerId(tellerId)
+                .onlineSum(onlineSum)
+                .tradeNumAverage(NumberUtil.div(tradeSum, onlineSum, 0))
+                .tradeNumRank(businessPanelDao.tradeNumRank(orgId,tellerId))
+                .onlineTimeAverage(NumberUtil.div(onlineTimeSum, onlineSum, 0))
+                .onlineTimeRank(businessPanelDao.onlineTimeRank(orgId,tellerId))
+                .build();
     }
 
 

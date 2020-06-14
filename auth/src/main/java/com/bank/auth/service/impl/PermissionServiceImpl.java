@@ -11,7 +11,7 @@ import com.bank.core.entity.AuthException;
 import com.bank.core.entity.BizException;
 import com.bank.core.entity.Menu;
 import com.bank.core.entity.PageQueryModel;
-import com.bank.core.utils.ConfigFileReader;
+import com.bank.core.utils.NetUtil;
 import com.bank.core.utils.PropertyUtil;
 import com.bank.role.dao.RolePermissionDao;
 import com.bank.role.dos.RoleDO;
@@ -200,12 +200,11 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Resource
-    ConfigFileReader configFileReader;
+    NetUtil netUtil;
 
     @Override
     public Object getAppMenus(String contextPath, String id) {
-        String ip = this.configFileReader.getTomcatBaseIp();
-        String suffix=ip+contextPath;
+        String suffix = netUtil.getUrlSuffix();
         Set<PermissionDTO> permissionDTOS = checkPermission(id).stream()
                 .filter(e -> e.getPermissionCode().startsWith("app"))
                 .map(e -> {
@@ -219,6 +218,8 @@ public class PermissionServiceImpl implements PermissionService {
         treeSet.addAll(permissionDTOS);
         return treeSet;
     }
+
+
 
     @Override
     @Cacheable(cacheNames = "com.bank.auth.service.impl.PermissionServiceImpl.getAuthDTO", key = "#id")
@@ -280,8 +281,7 @@ public class PermissionServiceImpl implements PermissionService {
      */
     @Override
     public Object getAppDealtListMenu(String contextPath, String userId) {
-        String ip = this.configFileReader.getTomcatBaseIp();
-        String suffix=ip+contextPath;
+        String suffix=netUtil.getUrlSuffix();
         Set<PermissionDTO> permissionDTOS = checkPermission(userId).stream()
                 .filter(e -> e.getPermissionCode().startsWith("todo"))
                 .map(e -> {

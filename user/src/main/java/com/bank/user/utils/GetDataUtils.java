@@ -94,7 +94,7 @@ public class GetDataUtils {
             //设置性别
             userDO.setUserGender(arrayList[51].toString());
             //设置证件号码
-            userDO.setUserIdentiyno(arrayList[29].toString());
+            //userDO.setUserIdentiyno(arrayList[29].toString());
             listuser.add(userDO);
         }
         return listuser;

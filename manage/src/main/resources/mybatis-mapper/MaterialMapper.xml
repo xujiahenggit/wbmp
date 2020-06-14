@@ -41,7 +41,7 @@
         LEFT JOIN T_CATALOG_MATERIAL C ON M.MATERIAL_ID = C.MATERIAL_ID
         LEFT JOIN T_CATALOG T ON C.CATALOG_ID = T.CATALOG_ID
         WHERE N.STATUS = '20' AND N.ACTIVE = '1' AND N.TRADING_TYPE = 'T_MATERIAL' AND T.CATALOG_ID = #{catalogId} AND M.DEVICE_TYPE = #{deviceType}
-            AND M.EXPIR_TIME >= CURDATE()
+            AND ((CASE WHEN (M.EXPIR_TIME IS NULL OR M.EXPIR_TIME = '') THEN '9999-99-99' ELSE M.EXPIR_TIME END) >= DATE_FORMAT(CURDATE(),'%Y-%m-%d'))
         <if test="orgId != null and orgId != ''">
             AND M.ORG_ID = #{orgId}
         </if>

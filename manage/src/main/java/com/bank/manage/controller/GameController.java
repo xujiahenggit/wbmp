@@ -1,44 +1,37 @@
 package com.bank.manage.controller;
 
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.extra.qrcode.QrCodeUtil;
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONUtil;
+import com.bank.core.entity.BizException;
+import com.bank.core.utils.ConfigFileReader;
+import com.bank.core.utils.HttpUtil;
+import com.bank.core.utils.NetUtil;
+import com.bank.core.utils.SignUtil;
+import com.bank.manage.dos.GameDO;
+import com.bank.manage.dto.DeviceDTO;
+import com.bank.manage.service.DeviceService;
+import com.bank.manage.service.GameService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.bank.core.entity.BizException;
-import com.bank.core.utils.ConfigFileReader;
-import com.bank.core.utils.HttpUtil;
-import com.bank.core.utils.SignUtil;
-import com.bank.manage.dos.GameDO;
-import com.bank.manage.dto.DeviceDTO;
-import com.bank.manage.service.DeviceService;
-import com.bank.manage.service.GameService;
-import com.bank.manage.service.StaffService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.extra.qrcode.QrCodeUtil;
-import cn.hutool.json.JSONArray;
-import cn.hutool.json.JSONUtil;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * ClassName: GameController
@@ -64,8 +57,8 @@ public class GameController {
     @Autowired
     private DeviceService deviceService;
 
-    @Autowired
-    private StaffService staffService;
+    @Resource
+    private NetUtil netUtil;
 
     @Resource
     private ConfigFileReader configFileReader;
@@ -92,7 +85,7 @@ public class GameController {
             String localImgPath = this.configFileReader.getUPLOAD_FILE_PATH() + this.configFileReader.getQrImages() + "/" + DateUtil.today() + "/" + fileName;
             log.info("当前本地二维码图片存放地址：{}", localImgPath);
             FileUtil.mkParentDirs(localImgPath);
-            String baseUrl = this.configFileReader.getTomcatBaseIp();
+            String baseUrl = netUtil.getUrlSuffix("");
             String content = baseUrl;
             if (StringUtils.equals(type, "1")) {
                 content += this.configFileReader.getHTTP_XQDZ() + macaddress;
@@ -254,7 +247,7 @@ public class GameController {
         paramMap.put("deviceNo", deviceNo);
         paramMap.put("orgId", orgId);
         paramMap.put("msg", code.equals("000010") ? "星球大战" : "点点乐");
-        String jmsPath = this.configFileReader.getMESSAGE_PATH();
+        String jmsPath =  netUtil.getUrlSuffix()+"/jms/topic";
         //        jmsPath = "http://localhost:8088/jms/topic";
         String post = HttpUtil.sendPost(jmsPath, paramMap);
         log.info("切换游戏，远程调用{}的返回值为{}", jmsPath, post);

@@ -107,7 +107,7 @@ public class TranslateUserDataJob implements Job {
             //============新增 同步核心机构文件========================
             String ftpNfrtPath=configFileReader.getFTP_FILE_HX_PATH();
             log.info("进入FTP服务器 核心文件存放地址："+ftpNfrtPath);
-            FTPUtil.accessDirectory(ftpClient,".."+ftpNfrtPath);
+            FTPUtil.accessDirectory(ftpClient,"../.."+ftpNfrtPath);
             //下载核心机构文件
             String hxOrgFileName=configFileReader.getHX_ORGFILE_NAME().replace("?",fileDate);
             FTPUtil.downloadFile(ftpClient, localFilePath, hxOrgFileName);
@@ -193,7 +193,7 @@ public class TranslateUserDataJob implements Job {
         //密码
         userDO.setPassword(Md5Utils.getEnCode("88888888"));
         //所属机构号
-        userDO.setOrgId("1");
+        userDO.setOrgId("100");
         //所属机构名称
         userDO.setOrgName("长沙银行");
         //岗位名称

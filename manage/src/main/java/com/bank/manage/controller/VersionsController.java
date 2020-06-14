@@ -1,7 +1,7 @@
 package com.bank.manage.controller;
 
 import com.bank.core.entity.PageQueryModel;
-import com.bank.core.utils.ConfigFileReader;
+import com.bank.core.utils.NetUtil;
 import com.bank.manage.dos.VersionsDO;
 import com.bank.manage.service.VersionsService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -72,18 +72,19 @@ public class VersionsController {
     }
 
     @Resource
-    ConfigFileReader configFileReader;
+    NetUtil netUtil;
 
 
     @PostMapping("/getLastVersion")
     @ApiOperation(value = "根据应用编号获取最新的版本号", notes = "必传参数：appNo;返回值为-1是没有查询到信息，否则为最新的版本号")
     @ApiImplicitParam(name = "appNo", value = "应用编号", required = true)
     public Object getMaxVersion(String appNo) {
+        String urlSuffix = netUtil.getUrlSuffix("");
         List<VersionsDO> list = versionsService.list(new LambdaQueryWrapper<VersionsDO>().eq(VersionsDO::getAppNo, appNo));
         Optional<VersionsDO> first = list.stream().sorted(Comparator.comparingInt(VersionsDO::getAppVersion).reversed()).findFirst();
         if (first.isPresent()) {
             VersionsDO versionsDO = first.get();
-            versionsDO.setAppSavePath(configFileReader.getTomcatBaseIp() + versionsDO.getAppSavePath());
+            versionsDO.setAppSavePath(urlSuffix + versionsDO.getAppSavePath());
             return versionsDO;
         }
         return Optional.empty();
