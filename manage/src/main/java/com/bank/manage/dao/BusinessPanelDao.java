@@ -3,7 +3,6 @@ package com.bank.manage.dao;
 import com.bank.manage.vo.AbsTellerInfo;
 import com.bank.manage.vo.TellerOnlineInfo;
 import com.bank.manage.vo.TransCntInfo;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -31,8 +30,9 @@ public interface BusinessPanelDao {
 
     Number tradeVolumeSum(@Param("orgId")String orgId);
 
-    List<AbsTellerInfo> tellertPageList(IPage page,@Param("orgId") String orgId);
-    
+//    List<AbsTellerInfo> tellertPageList(IPage page,@Param("orgId") String orgId);
+    List<AbsTellerInfo> tellertPageList(@Param("orgId") String orgId);
+
     List<Map<String, Object>> queryOperation(@Param("branch") String branch, @Param("nowStr") String nowStr);
 
     /**

@@ -1,12 +1,10 @@
 package com.bank.manage.controller;
 
-import com.bank.core.entity.PageQueryModel;
 import com.bank.manage.service.BusinessPanelService;
 import com.bank.manage.vo.AbsTellerInfo;
 import com.bank.manage.vo.RankInfo;
 import com.bank.manage.vo.TellerOnlineInfo;
 import com.bank.manage.vo.TransCntInfo;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -75,23 +73,22 @@ public class BusinessPanelController {
     }
 
 
-    @PostMapping("/tellertPageList/{orgId}")
-    @ApiOperation(value = "柜面设备交易量Top5", notes = "分页可用参数只有：pageIndex，pageSize")
+    @GetMapping("/tellerList/{orgId}")
+    @ApiOperation(value = "柜面,柜员详情信息")
     @ApiImplicitParam(name = "orgId", value = "机构号", required = true, paramType = "path")
-    public IPage<AbsTellerInfo> tellertPageList(@PathVariable String orgId, @RequestBody PageQueryModel pageQueryModel) {
-        IPage<AbsTellerInfo> list = businessPanelService.tellertPageList(orgId, pageQueryModel);
-        return list;
+    public Object tellertPageList(@PathVariable String orgId) {
+        List<AbsTellerInfo> absTellerInfos = businessPanelService.tellertPageList(orgId);
+        return absTellerInfos;
     }
 
     @GetMapping("/RankInfo/{orgId}/{tellerId}")
-    @ApiOperation(value = "柜面设备交易量Top5")
+    @ApiOperation(value = "柜面：柜员排名信息")
     @ApiImplicitParams({
     @ApiImplicitParam(name = "orgId", value = "机构号", required = true, paramType = "path"),
     @ApiImplicitParam(name = "tellerId", value = "柜员号", required = true, paramType = "path")
     })
     public RankInfo rankInfo(@PathVariable String orgId, @PathVariable String tellerId) {
-        RankInfo list = businessPanelService.rankInfo(orgId,tellerId);
-        return list;
+        return businessPanelService.rankInfo(orgId,tellerId);
     }
 
 

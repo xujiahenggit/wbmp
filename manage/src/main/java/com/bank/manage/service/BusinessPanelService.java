@@ -1,12 +1,10 @@
 package com.bank.manage.service;
 
 
-import com.bank.core.entity.PageQueryModel;
 import com.bank.manage.vo.AbsTellerInfo;
 import com.bank.manage.vo.RankInfo;
 import com.bank.manage.vo.TellerOnlineInfo;
 import com.bank.manage.vo.TransCntInfo;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import java.util.List;
 import java.util.Map;
@@ -32,7 +30,7 @@ public interface BusinessPanelService {
 
     List<TransCntInfo> tradeVolumeTop5(String orgId);
 
-    IPage<AbsTellerInfo> tellertPageList(String orgId, PageQueryModel pageQueryModel);
+    List<AbsTellerInfo> tellertPageList(String orgId);
 
     List<Map<String, Object>> queryOperation(String branch);
 

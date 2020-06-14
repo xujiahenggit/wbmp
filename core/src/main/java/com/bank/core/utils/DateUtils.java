@@ -1,5 +1,8 @@
 package com.bank.core.utils;
 
+import cn.hutool.core.date.BetweenFormater;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.NumberUtil;
 import com.bank.core.entity.BizException;
 import lombok.extern.slf4j.Slf4j;
@@ -365,5 +368,37 @@ public class DateUtils {
                DateTimeFormatter.ofPattern("yyyy-MM-dd")).with(TemporalAdjusters.lastDayOfMonth());
        return monthOfLastDate.toString();
    }
+
+
+    public static String formatSeconds(Integer seconds){
+       if (seconds==null){
+           return "";
+       }
+        String str = DateUtil.formatBetween(seconds * 1000, BetweenFormater.Level.SECOND);
+        String[] level= {"小时","分","秒"};
+        String[] arr={"00","00","00"};
+        for (int i = 0; i < 3; i++) {
+            String dw = level[i];
+            if (str.indexOf(dw)!=-1){
+                String[] split = str.split(dw);
+                String tem = split[0];
+                if (tem.length()==1&&i!=0){
+                    //分钟或者秒补零
+                    arr[i] = "0"+tem;
+                }else {
+                    arr[i] = tem;
+                }
+
+                if (split.length==2){
+                    str = split[1];
+                }
+            }
+
+        }
+        return ArrayUtil.join(arr,":");
+    }
+
+
+
 
 }

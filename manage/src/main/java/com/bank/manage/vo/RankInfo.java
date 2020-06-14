@@ -30,7 +30,7 @@ public class RankInfo {
     private Integer onlineTimeRank;
 
 
-    @ApiModelProperty(value = "平均在线时长：秒")
+    @ApiModelProperty(value = "平均在线时长：分钟")
     private BigDecimal onlineTimeAverage;
 
 

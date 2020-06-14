@@ -35,7 +35,10 @@ public class AbsTellerInfo {
     private String tradeVolumeSum;
 
 
-    @ApiModelProperty(value = "在线时长，单位：秒")
+    @ApiModelProperty(value = "在线时长，单位：秒",hidden = true)
     private Integer onLineTime;
+
+    @ApiModelProperty(value = "在线时长")
+    private String onLineTimeStr;
 
 }
