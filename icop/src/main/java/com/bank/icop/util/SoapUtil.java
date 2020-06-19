@@ -1,6 +1,5 @@
 package com.bank.icop.util;
 
-import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
@@ -18,7 +17,10 @@ import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 发送soap请求工具类
@@ -30,29 +32,10 @@ public class SoapUtil {
 
     private static StringBuilder builder = new StringBuilder();
 
-    /**
-     * 测试使用cxf发送请求
-     */
-//    @Test
-    public void test() {
-        Object response = sendDynamic("getWork", "zz", 10);
-        System.out.println(response);
-    }
-
-    /**
-     * 测试http
-     */
-//    @Test
-    public void testSendReport() {
-        HashMap<String, Object> map = MapUtil.newHashMap();
-        map.put("name", "tom");
-        map.put("age", 5);
-
+    public static Map sendReport(String serviceCode, Map<String, Object> paramMap) {
         HeaderDO headerDO = new HeaderDO();
-        headerDO.setChannelId("chinelid");
-        headerDO.setUuid("jdskfljsdlafjdslaf");
-
-        System.out.println(sendReport(headerDO, map));
+        headerDO.setServiceCode(serviceCode);
+        return sendReport(headerDO,paramMap);
     }
 
     public static Map sendReport(HeaderDO headerDO, Map<String, Object> paramMap) {

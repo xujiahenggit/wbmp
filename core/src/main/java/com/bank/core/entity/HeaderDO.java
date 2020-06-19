@@ -2,19 +2,17 @@ package com.bank.core.entity;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.UUID;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-
-@Data
 @NoArgsConstructor
-@AllArgsConstructor
+@Data
 public class HeaderDO {
+
     private String ServiceCode;
     private String AuthorizerID;
-    private String ChannelId;
+    private String ChannelId="811";
     private String ExternalReference= UUID.randomUUID().toString();
     private String RequestTime= DateUtil.format(LocalDateTime.now(),"yyyyMMddHHmmssSSS");
     private String TradeDate= DateUtil.format(LocalDateTime.now(),"yyyyMMdd");

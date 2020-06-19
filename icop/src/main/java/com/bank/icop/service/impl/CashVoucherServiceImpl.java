@@ -1,6 +1,5 @@
 package com.bank.icop.service.impl;
 
-import com.bank.core.entity.HeaderDO;
 import com.bank.core.entity.PageQueryModel;
 import com.bank.core.entity.TokenUserInfo;
 import com.bank.icop.service.CashVoucherService;
@@ -120,15 +119,9 @@ public class CashVoucherServiceImpl implements CashVoucherService {
      */
     @Override
     public RoleInfoVo getRoleInfo(TokenUserInfo tokenUserInfo) {
-        HeaderDO headerDO = new HeaderDO();
-        headerDO.setServiceCode("VTMS0001");
-        headerDO.setChannelId("811");
-
         HashMap<String, Object> parmMap = new HashMap<>();
         parmMap.put("userId", tokenUserInfo.getUserId());
-
-        Map report = SoapUtil.sendReport(headerDO,parmMap);
-
+        Map report = SoapUtil.sendReport("VTMS0001",parmMap);
 
         RoleInfoVo roleInfoVo = new RoleInfoVo();
         roleInfoVo.setOrgId("10001");
