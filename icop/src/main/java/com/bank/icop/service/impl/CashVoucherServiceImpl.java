@@ -1,8 +1,10 @@
 package com.bank.icop.service.impl;
 
+import com.bank.core.entity.HeaderDO;
 import com.bank.core.entity.PageQueryModel;
 import com.bank.core.entity.TokenUserInfo;
 import com.bank.icop.service.CashVoucherService;
+import com.bank.icop.util.SoapUtil;
 import com.bank.icop.vo.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -10,6 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -117,6 +120,16 @@ public class CashVoucherServiceImpl implements CashVoucherService {
      */
     @Override
     public RoleInfoVo getRoleInfo(TokenUserInfo tokenUserInfo) {
+        HeaderDO headerDO = new HeaderDO();
+        headerDO.setServiceCode("VTMS0001");
+        headerDO.setChannelId("811");
+
+        HashMap<String, Object> parmMap = new HashMap<>();
+        parmMap.put("userId", tokenUserInfo.getUserId());
+
+        Map report = SoapUtil.sendReport(headerDO,parmMap);
+
+
         RoleInfoVo roleInfoVo = new RoleInfoVo();
         roleInfoVo.setOrgId("10001");
         roleInfoVo.setOrgName("总行领导");
