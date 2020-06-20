@@ -1,16 +1,11 @@
 package com.bank.icop.controller;
 
-import com.bank.core.entity.PageQueryModel;
 import com.bank.core.entity.TokenUserInfo;
+import com.bank.icop.dos.VoucherNumberDo;
+import com.bank.icop.dos.VoucherStockDo;
 import com.bank.icop.service.CashVoucherService;
-import com.bank.icop.vo.InputVoucherNumberVo;
-import com.bank.icop.vo.ReceiptInfoVo;
-import com.bank.icop.vo.UpdateOrderDetailVo;
-import com.bank.icop.vo.UpdateOrderStatusVo;
-import com.bank.icop.vo.VoucherStockVo;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-
 import com.bank.icop.vo.*;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -31,17 +26,17 @@ public class CashVoucherController extends BaseIcopController{
     private CashVoucherService cashVoucherService;
 
     @PostMapping("/queryVoucherStock")
-    @ApiImplicitParam(name = "pageQueryModel", value = "库存信息分页查询", required = true, paramType = "body", dataType = "PageQueryModel")
-    @ApiOperation(value = "凭证管理——库存信息分页查询", notes = "userId:交易用户ID，orgId:机构号，voucherStatus:凭证状态，voucherNo:凭证代码")
-    public IPage<VoucherStockVo> queryVoucherStock(@RequestBody PageQueryModel pageQueryModel) {
-        return this.cashVoucherService.queryVoucherStock(pageQueryModel);
+    @ApiImplicitParam(name = "voucherStockDo", value = "库存信息查询", required = true, paramType = "body", dataType = "VoucherStockDo")
+    @ApiOperation(value = "凭证管理——库存信息查询")
+    public List<VoucherStockVo> queryVoucherStock(@RequestBody VoucherStockDo voucherStockDo) {
+        return this.cashVoucherService.queryVoucherStock(voucherStockDo);
     }
 
     @PostMapping("/queryVoucherNumber")
-    @ApiOperation(value = "凭证管理--号段查看", notes = "userId:交易用户ID，orderId:订单id，voucherNo:凭证代码，orderDeatilId:订单明细id")
-    @ApiImplicitParam(name = "pageQueryModel", value = "号段信息分页查询", required = true, paramType = "body", dataType = "PageQueryModel")
-    public IPage queryVoucherNumber(@RequestBody PageQueryModel pageQueryModel) {
-        return this.cashVoucherService.queryVoucherNumber(pageQueryModel);
+    @ApiOperation(value = "凭证管理--号段查看")
+    @ApiImplicitParam(name = "voucherNumberDo", value = "号段信息查询", required = true, paramType = "body", dataType = "VoucherNumberDo")
+    public List queryVoucherNumber(@RequestBody VoucherNumberDo voucherNumberDo) {
+        return this.cashVoucherService.queryVoucherNumber(voucherNumberDo);
     }
 
     @PostMapping("/voucherNumberSave")

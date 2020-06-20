@@ -1,16 +1,17 @@
 package com.bank.icop.service;
 
-import com.bank.core.entity.PageQueryModel;
 import com.bank.core.entity.TokenUserInfo;
+import com.bank.icop.dos.VoucherNumberDo;
+import com.bank.icop.dos.VoucherStockDo;
 import com.bank.icop.vo.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import java.util.List;
 
 public interface CashVoucherService {
-    IPage<VoucherStockVo> queryVoucherStock(PageQueryModel pageQueryModel);
+    List<VoucherStockVo> queryVoucherStock(VoucherStockDo voucherStockDo);
 
-    IPage queryVoucherNumber(PageQueryModel pageQueryModel);
+    List queryVoucherNumber(VoucherNumberDo voucherNumberDo);
 
     Boolean voucherNumberSave(InputVoucherNumberVo inputVoucherNumberVo);
 

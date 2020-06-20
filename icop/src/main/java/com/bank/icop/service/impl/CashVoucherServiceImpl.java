@@ -1,13 +1,15 @@
 package com.bank.icop.service.impl;
 
-import com.bank.core.entity.PageQueryModel;
+import cn.hutool.core.collection.CollectionUtil;
+import com.bank.core.entity.BizException;
 import com.bank.core.entity.TokenUserInfo;
+import com.bank.icop.dos.VoucherNumberDo;
+import com.bank.icop.dos.VoucherStockDo;
 import com.bank.icop.service.CashVoucherService;
 import com.bank.icop.util.SoapUtil;
 import com.bank.icop.vo.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,96 +21,125 @@ import java.util.Map;
 public class CashVoucherServiceImpl implements CashVoucherService {
 
     @Override
-    public IPage<VoucherStockVo> queryVoucherStock(PageQueryModel pageQueryModel) {
-        Page<VoucherStockVo> page = new Page<>(pageQueryModel.getPageIndex(), pageQueryModel.getPageSize());
-
-        if (StringUtils.isNotBlank(pageQueryModel.getSort())) {
-            if (StringUtils.equalsIgnoreCase("DESC", pageQueryModel.getOrder())) {
-                page.setDesc(pageQueryModel.getSort());
-            } else {
-                page.setAsc(pageQueryModel.getSort());
-            }
-        }
-        Map<String, Object> params = pageQueryModel.getQueryParam();
-        String userId = (String) params.get("userId");
-        String orgId = (String) params.get("orgId");
-        String voucherStatus = (String) params.get("voucherStatus");
-        String voucherNo = (String) params.get("voucherNo");
-        //TODO 凭着管理---库存查询 分页查询假数据组装
-        VoucherStockVo vo = new VoucherStockVo();
-        vo.setNum(700);
-        vo.setVoucherName("凭证111111");
-        vo.setVoucherStatus("1");
-        vo.setVoucherNo("EC12456");
+    public List<VoucherStockVo> queryVoucherStock(VoucherStockDo voucherStockDo) {
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("userId",voucherStockDo.getUserId());
+        parmMap.put("orgId",voucherStockDo.getOrgId());
+        parmMap.put("voucherStatus",voucherStockDo.getVoucherStatus());
+        parmMap.put("voucherNo",voucherStockDo.getVoucherNo());
+        Map report = SoapUtil.sendReport("VTMS0016",parmMap);
         List<VoucherStockVo> list = new ArrayList<>();
-        list.add(vo);
-
-        page.setRecords(list);
-        page.setTotal(1L);
-
-
-        return page;
-    }
-
-    @Override
-    public IPage queryVoucherNumber(PageQueryModel pageQueryModel) {
-        Page<VoucherNumberVo> page = new Page<>(pageQueryModel.getPageIndex(), pageQueryModel.getPageSize());
-
-        if (StringUtils.isNotBlank(pageQueryModel.getSort())) {
-            if (StringUtils.equalsIgnoreCase("DESC", pageQueryModel.getOrder())) {
-                page.setDesc(pageQueryModel.getSort());
-            } else {
-                page.setAsc(pageQueryModel.getSort());
-            }
+        if(CollectionUtil.isNotEmpty(report)){
+            VoucherStockVo vo = new VoucherStockVo();
+            vo.setNum((Integer) report.get("num"));
+            vo.setVoucherName((String)report.get("voucherName"));
+            vo.setVoucherStatus((String)report.get("voucherStatus"));
+            vo.setVoucherNo((String)report.get("voucherNo"));
+            list.add(vo);
         }
-        Map<String, Object> params = pageQueryModel.getQueryParam();
-        String userId = (String) params.get("userId");
-        String orderId = (String) params.get("orderId");
-        String voucherNo = (String) params.get("voucherNo");
-        String orderDeatilId = (String) params.get("orderDeatilId");
-        //TODO 凭着管理---段号查看查询 分页查询假数据组装
-        VoucherNumberVo vo = new VoucherNumberVo();
-        vo.setStartNo("2345632245");
-        vo.setEndNo("23457874365");
-        vo.setNum(1000);
+        return list;
+    }
+
+    @Override
+    public List queryVoucherNumber(VoucherNumberDo voucherNumberDo) {
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("userId",voucherNumberDo.getUserId());
+        parmMap.put("orgId",voucherNumberDo.getOrderId());
+        parmMap.put("voucherNo",voucherNumberDo.getVoucherNo());
+        parmMap.put("orderDeatilId",voucherNumberDo.getOrderDeatilId());
+        Map report = SoapUtil.sendReport("VTMS0015",parmMap);
         List<VoucherNumberVo> list = new ArrayList<>();
-        list.add(vo);
-
-        page.setRecords(list);
-        page.setTotal(1L);
-
-        return page;
+        if(CollectionUtil.isNotEmpty(report)){
+            VoucherNumberVo vo = new VoucherNumberVo();
+            vo.setStartNo((String)report.get("startNo"));
+            vo.setEndNo((String)report.get("endNo"));
+            vo.setNum((Integer) report.get("num"));
+            list.add(vo);
+        }
+        return list;
     }
 
     @Override
-    public Boolean voucherNumberSave(InputVoucherNumberVo inputVoucherNumberVo) {
-        //TODO 号段录入
-
-
-        return true;
+    public Boolean voucherNumberSave(InputVoucherNumberVo vo) {
+        Map<String, Object> parmMap = new HashMap<>();
+        List<Map<String,Object>> list = new ArrayList<>();
+        parmMap.put("userId",vo.getUserId());
+        parmMap.put("orderId",vo.getOrderId());
+        parmMap.put("orderDeatilId",vo.getOrderDeatilId());
+        parmMap.put("voucherNo",vo.getVoucherNo());
+        List<VoucherNumberVo> data = vo.getData();
+        for (VoucherNumberVo numberVo : data) {
+            Map<String, Object> dataMap = new HashMap<>();
+            dataMap.put("startNo",numberVo.getStartNo());
+            dataMap.put("endNo",numberVo.getEndNo());
+            dataMap.put("num",numberVo.getNum());
+            list.add(dataMap);
+        }
+        parmMap.put("data",list);
+        Map report = SoapUtil.sendReport("VTMS0014",parmMap);
+        String repcode = (String)report.get("repcode");
+        String repmsg = (String)report.get("repmsg");
+        if("0".equals(repcode)){
+            return true;
+        }else{
+            throw new BizException(repmsg);
+        }
     }
 
     @Override
-    public Boolean updateOrderStatus(UpdateOrderStatusVo updateOrderStatusVo) {
-        //TODO 订单状态更新
-
-
-        return true;
+    public Boolean updateOrderStatus(UpdateOrderStatusVo vo) {
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("userId",vo.getUserId());
+        parmMap.put("userName",vo.getUserName());
+        parmMap.put("orderId",vo.getOrderId());
+        parmMap.put("operationObject",vo.getOperationObject());
+        parmMap.put("operationType",vo.getOperationType());
+        Map report = SoapUtil.sendReport("VTMS0013",parmMap);
+        String repcode = (String)report.get("repcode");
+        String repmsg = (String)report.get("repmsg");
+        if("0".equals(repcode)){
+            return true;
+        }else{
+            throw new BizException(repmsg);
+        }
     }
 
     @Override
     public Boolean deleteOrderDeatil(String userId, String orderId, String orderDeatild) {
-        //TODO 订单明细删除
-
-
-        return true;
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("userId",userId);
+        parmMap.put("orderId",orderId);
+        parmMap.put("orderDeatild",orderDeatild);
+        Map report = SoapUtil.sendReport("VTMS0012",parmMap);
+        String repcode = (String)report.get("repcode");
+        String repmsg = (String)report.get("repmsg");
+        if("0".equals(repcode)){
+            return true;
+        }else{
+            throw new BizException(repmsg);
+        }
     }
 
     @Override
-    public Boolean updateOrderDetail(UpdateOrderDetailVo updateOrderDetailVo) {
-        //TODO 订单明细修改
-
-        return true;
+    public Boolean updateOrderDetail(UpdateOrderDetailVo vo) {
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("userId",vo.getUserId());
+        parmMap.put("orderId",vo.getOrderId());
+        parmMap.put("orderDeatild",vo.getOrderDeatild());
+        parmMap.put("voucherName",vo.getVoucherName());
+        parmMap.put("voucherNo",vo.getVoucherNo());
+        parmMap.put("num",vo.getNum());
+        parmMap.put("cardName",vo.getCardName());
+        parmMap.put("cardNo",vo.getCardNo());
+        parmMap.put("remark",vo.getRemark());
+        Map report = SoapUtil.sendReport("VTMS0011",parmMap);
+        String repcode = (String)report.get("repcode");
+        String repmsg = (String)report.get("repmsg");
+        if("0".equals(repcode)){
+            return true;
+        }else{
+            throw new BizException(repmsg);
+        }
     }
 
     /**
