@@ -61,7 +61,7 @@ public class SoapUtil {
         String xml = builder.append(document)
                 .insert(builder.indexOf("</Header>"), beanToXmlStr(headerDO))
                 .insert(builder.indexOf("</Request>"), mapToXmlStr(paramMap)).toString();
-
+        log.info(xml);
         HttpResponse response = HttpRequest.post(remoteUrl).header("SOAPAction", "application/soap+xml;charset=utf-8")
                 .body(xml, "text/xml").execute();
 

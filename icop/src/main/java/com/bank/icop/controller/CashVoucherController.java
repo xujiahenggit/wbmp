@@ -1,6 +1,7 @@
 package com.bank.icop.controller;
 
 import com.bank.core.entity.TokenUserInfo;
+import com.bank.icop.dos.OrderDetailDo;
 import com.bank.icop.dos.VoucherNumberDo;
 import com.bank.icop.dos.VoucherStockDo;
 import com.bank.icop.service.CashVoucherService;
@@ -42,14 +43,14 @@ public class CashVoucherController extends BaseIcopController{
     @PostMapping("/voucherNumberSave")
     @ApiOperation(value = "凭证管理--号段录入")
     @ApiImplicitParam(name = "inputVoucherNumberVo", value = "号段录入模型", required = true, paramType = "body", dataType = "InputVoucherNumberVo")
-    public Boolean voucherNumberSave(@RequestBody InputVoucherNumberVo inputVoucherNumberVo) {
+    public Object voucherNumberSave(@RequestBody InputVoucherNumberVo inputVoucherNumberVo) {
         return this.cashVoucherService.voucherNumberSave(inputVoucherNumberVo);
     }
 
     @PutMapping("/updateOrderStatus")
     @ApiOperation(value = "凭证管理--订单状态更新")
     @ApiImplicitParam(name = "updateOrderStatusVo", value = "订单状态更新模型", required = true, paramType = "body", dataType = "UpdateOrderStatusVo")
-    public Boolean updateOrderStatus(@RequestBody UpdateOrderStatusVo updateOrderStatusVo) {
+    public Object updateOrderStatus(@RequestBody UpdateOrderStatusVo updateOrderStatusVo) {
         return this.cashVoucherService.updateOrderStatus(updateOrderStatusVo);
     }
 
@@ -60,14 +61,14 @@ public class CashVoucherController extends BaseIcopController{
             @ApiImplicitParam(name = "orderId", value = "订单编号", required = true, dataType = "String", paramType = "path"),
             @ApiImplicitParam(name = "orderDeatild", value = "订单明细id", required = true, dataType = "String", paramType = "path")
     })
-    public Boolean deleteOrderDeatil(@PathVariable("userId") String userId, @PathVariable("orderId") String orderId, @PathVariable("orderDeatild") String orderDeatild) {
+    public Object deleteOrderDeatil(@PathVariable("userId") String userId, @PathVariable("orderId") String orderId, @PathVariable("orderDeatild") String orderDeatild) {
         return this.cashVoucherService.deleteOrderDeatil(userId, orderId, orderDeatild);
     }
 
     @PutMapping("/updateOrderDetail")
     @ApiOperation("订单明细修改")
     @ApiImplicitParam(name = "updateOrderDetailVo", value = "订单明细更新模型", required = true, paramType = "body", dataType = "UpdateOrderDetailVo")
-    public Boolean updateOrderDetail(@RequestBody UpdateOrderDetailVo updateOrderDetailVo) {
+    public Object updateOrderDetail(@RequestBody UpdateOrderDetailVo updateOrderDetailVo) {
         return this.cashVoucherService.updateOrderDetail(updateOrderDetailVo);
     }
 
@@ -75,14 +76,7 @@ public class CashVoucherController extends BaseIcopController{
     @GetMapping("/getReceiptInfoByOrg")
     @ApiImplicitParam(name = "orgId", value = "机构号", required = true, dataType = "String")
     public ReceiptInfoVo getReceiptInfoByOrg(@RequestParam(value = "orgId", required = true) String orgId) {
-        return ReceiptInfoVo.builder().orgId("0101")
-                .orgName("长沙银行")
-                .receiptUser("张磊")
-                .receiptAddress("长沙银行二办15楼")
-                .phone("13838384380")
-                .invoiceType("电子发票")
-                .invoiceTitle("北京宇信科技集团股份有限公司")
-                .dutyParagraph("911101087921006070").build();
+        return cashVoucherService.getReceiptInfoByOrg(orgId);
     }
 
     @Resource
@@ -96,7 +90,7 @@ public class CashVoucherController extends BaseIcopController{
         return cashVoucherService.getRoleInfo(tokenUserInfo);
     }
 
-    @ApiOperation("获取凭证订单列表")
+    @ApiOperation("凭证订单列表查询")
     @PostMapping("/voucherorderlist")
     public IPage<VoucherListVo> getVoucherList(@RequestBody VoucherListQueryVo voucherListQueryVo){
         return cashVoucherService.getVoucherList(voucherListQueryVo);
@@ -104,13 +98,13 @@ public class CashVoucherController extends BaseIcopController{
 
     @PostMapping("/orderinfo")
     @ApiOperation("订单查询")
-    public OrderVo getOrderInfo(@RequestBody OrderQueryVo orderQueryVo){
+    public List<OrderVo> getOrderInfo(@RequestBody OrderQueryVo orderQueryVo){
         return cashVoucherService.getOrderInfo(orderQueryVo);
     }
 
     @PostMapping("/matterlist")
     @ApiOperation("事项列表查询")
-    public List<MatterListQueryVo> getMatterList(@RequestBody MatterListQueryVo matterListQueryVo){
+    public List<MatterListVo> getMatterList(@RequestBody MatterListQueryVo matterListQueryVo){
         return cashVoucherService.getMatterList(matterListQueryVo);
     }
 
@@ -122,9 +116,8 @@ public class CashVoucherController extends BaseIcopController{
 
     @ApiOperation("凭证名称列表查询")
     @GetMapping("/orderList/{orderType}")
-    @ApiImplicitParam(name = "orderType", value = "订单类型：01-重要空白凭证订单、02-非重要空白凭证订单、03-分行代理凭证订单", required = true, dataType = "String")
+    @ApiImplicitParam(name = "orderType", value = "订单类型：1-重要空白凭证订单、2-非重要空白凭证订单、3-分行代理凭证订单", required = true, dataType = "String")
     public Object orderList(@PathVariable String orderType) {
-
         return cashVoucherService.orderList(orderType);
     }
 
@@ -134,10 +127,16 @@ public class CashVoucherController extends BaseIcopController{
         return cashVoucherService.createOrderDetail(orderDetailVo);
     }
 
-    @ApiOperation("新建订单明细")
-    @PostMapping("/orderDetailList")
-    public Object orderDetailList(@RequestBody OrderDetailListVo orderDetailListVo) {
-        return cashVoucherService.orderDetailList(orderDetailListVo);
+    @ApiOperation("是否可以创建订单")
+    @PostMapping("/queryIsSure")
+    public Object queryIsSure(@RequestBody OrderDetailListVo orderDetailListVo) {
+        return cashVoucherService.queryIsSure(orderDetailListVo);
+    }
+
+    @PostMapping("/queryDetailList")
+    @ApiOperation("查询订单明细列表")
+    public List<OrderDetailDo> queryDetailList(@RequestBody OrderQueryDetailVo orderQueryDetailVo){
+        return cashVoucherService.queryDetailList(orderQueryDetailVo);
     }
 
 }

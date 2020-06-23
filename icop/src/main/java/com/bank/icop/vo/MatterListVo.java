@@ -4,11 +4,13 @@ import java.io.Serializable;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 /**
  * @Author: Andy
  * @Date: 2020/6/4 15:42
  */
+@Data
 @ApiModel(description = "事项列表")
 public class MatterListVo implements Serializable {
 

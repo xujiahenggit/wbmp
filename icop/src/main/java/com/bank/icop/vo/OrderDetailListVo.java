@@ -10,19 +10,16 @@ import lombok.Data;
  * @email
  */
 @Data
-@ApiModel(description = "订单明细列表")
+@ApiModel(description = "是否创建订单模型")
 public class OrderDetailListVo {
 
     @ApiModelProperty(value = "交易用户ID")
     private String userId;
 
-    @ApiModelProperty(value = "订单id")
-    private String orderId;
+    @ApiModelProperty(value = "机构id")
+    private String orgId;
 
-    @ApiModelProperty(value = "第几页")
-    private Integer pageIndex = 1;
-
-    @ApiModelProperty(value = "分页大小")
-    private Integer pageSize = 10;
+    @ApiModelProperty(value = "机构名称")
+    private String orgName;
 
 }

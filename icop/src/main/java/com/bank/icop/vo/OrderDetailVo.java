@@ -16,6 +16,9 @@ public class OrderDetailVo {
     @ApiModelProperty(value = "交易用户ID")
     private String userId;
 
+    @ApiModelProperty("凭证ID")
+    private String voucherId;
+
     @ApiModelProperty(value = "订单id")
     private String orderId;
 
