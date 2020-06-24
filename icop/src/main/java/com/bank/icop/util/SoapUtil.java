@@ -96,7 +96,7 @@ public class SoapUtil {
         elementTomap(list.get(0), headMap);
         Map<String, Object> response = (Map<String, Object>) headMap.get("Response");
         if (!response.get("ReturnCode").equals("00000000")){
-            throw new BizException(response.get("ErrorMsg").toString());
+            throw new BizException(response.get("ReturnMessage").toString());
         }
         elementTomap(list.get(1), map);
         return (Map<String, Object>) map.get("Response");

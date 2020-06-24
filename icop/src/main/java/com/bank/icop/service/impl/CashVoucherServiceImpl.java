@@ -11,6 +11,8 @@ import com.bank.icop.util.SoapUtil;
 import com.bank.icop.vo.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -32,7 +34,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         try {
             report = SoapUtil.sendReport("VTMS0016",parmMap);
         } catch (Exception e) {
-            throw new BizException("库存查询失败！");
+            throw new BizException("库存查询失败！"+e.getMessage());
         }
         List<VoucherStockVo> list = new ArrayList<>();
         if(CollectionUtil.isNotEmpty(report)){
@@ -57,7 +59,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         try {
             report = SoapUtil.sendReport("VTMS0015",parmMap);
         } catch (Exception e) {
-            throw new BizException("号段查看失败！");
+            throw new BizException("号段查看失败！"+e.getMessage());
         }
         List<VoucherNumberVo> list = new ArrayList<>();
         if(CollectionUtil.isNotEmpty(report)){
@@ -91,7 +93,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         try {
             report = SoapUtil.sendReport("VTMS0014",parmMap);
         } catch (Exception e) {
-            throw new BizException("号段录入失败！");
+            throw new BizException("号段录入失败！"+e.getMessage());
         }
         return report;
     }
@@ -108,7 +110,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         try {
             report = SoapUtil.sendReport("VTMS0013",parmMap);
         } catch (Exception e) {
-            throw new BizException("订单状态更新失败！");
+            throw new BizException("订单状态更新失败！"+e.getMessage());
         }
         return report;
     }
@@ -123,7 +125,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         try {
             report = SoapUtil.sendReport("VTMS0012",parmMap);
         } catch (Exception e) {
-            throw new BizException("订单明细删除失败！");
+            throw new BizException("订单明细删除失败！"+e.getMessage());
         }
         return report;
     }
@@ -144,7 +146,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         try {
             report = SoapUtil.sendReport("VTMS0011",parmMap);
         } catch (Exception e) {
-            throw new BizException("订单明细修改失败！");
+            throw new BizException("订单明细修改失败！"+e.getMessage());
         }
         return report;
     }
@@ -157,7 +159,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         try {
             report = SoapUtil.sendReport("VTMS0001",parmMap);
         } catch (Exception e) {
-            throw new BizException("角色信息查询失败！");
+            throw new BizException("角色信息查询失败！"+e.getMessage());
         }
         RoleInfoVo roleInfoVo = new RoleInfoVo();
         roleInfoVo.setOrgId((String)report.get("orgId"));
@@ -176,7 +178,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         try {
             report = SoapUtil.sendReport("VTMS0002",parmMap);
         } catch (Exception e) {
-            throw new BizException("事项列表查询失败！");
+            throw new BizException("事项列表查询失败！"+e.getMessage());
         }
         List<MatterListVo> list=new ArrayList<>();
         MatterListVo vo= new MatterListVo();
@@ -200,7 +202,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         try {
             report = SoapUtil.sendReport("VTMS0003",parmMap);
         } catch (Exception e) {
-            throw new BizException("凭证订单列表查询失败！");
+            throw new BizException("凭证订单列表查询失败！"+e.getMessage());
         }
         IPage<VoucherListVo> page = new Page<>();
         List<Map<String,Object>> dataList =(List<Map<String,Object>> )report.get("data");
@@ -262,58 +264,61 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         try {
             report = SoapUtil.sendReport("VTMS0004",parmMap);
         } catch (Exception e) {
-            throw new BizException("订单查询失败！");
+            throw new BizException("订单查询失败！"+e.getMessage());
         }
         List<OrderVo> list = new ArrayList<>();
-        Map<String,Object> dataMap =(Map<String,Object> )report.get("data");
-        Object data = dataMap.get("data");
-        if(data != null){//多条数据
-            List<Map<String,Object>> dataList = (List<Map<String,Object>>)data;
-            if(CollectionUtil.isNotEmpty(dataList)){
-                for (int i = 0; i < dataList.size(); i++) {
-                    OrderVo orderVo = new OrderVo();
-                    orderVo.setListType((String)dataList.get(i).get("listType"));
-                    orderVo.setOrderType((String)dataList.get(i).get("orderType"));
-                    orderVo.setOrderNo((String)dataList.get(i).get("orderNo"));
-                    orderVo.setOrderCycle((String)dataList.get(i).get("orderCycle"));
-                    orderVo.setOrderStatus((String)dataList.get(i).get("orderStatus"));
-                    orderVo.setOrgId((String)dataList.get(i).get("orgId"));
-                    orderVo.setOrgName((String)dataList.get(i).get("orgName"));
-                    orderVo.setCreateUser((String)dataList.get(i).get("createUser"));
-                    orderVo.setCreateDate((String)dataList.get(i).get("createDate"));
-                    orderVo.setVoucherCount((String)dataList.get(i).get("voucherCount"));
-                    orderVo.setVoucherAmt((String)dataList.get(i).get("voucherAmt"));
-                    orderVo.setConsignee((String)dataList.get(i).get("consignee"));
-                    orderVo.setAddress((String)dataList.get(i).get("address"));
-                    orderVo.setPhone((String)dataList.get(i).get("phone"));
-                    orderVo.setInvoiceType((String)dataList.get(i).get("invoiceType"));
-                    orderVo.setInvoiceTitle((String)dataList.get(i).get("invoiceTitle"));
-                    orderVo.setDutyPara((String)dataList.get(i).get("dutyPara"));
-                    orderVo.setRemark((String)dataList.get(i).get("remark"));
-                    list.add(orderVo);
+        Object objectData = report.get("data");//判断data节点是否为""
+        if(isObjectIsNotEmpty(objectData)){
+            Map<String,Object> dataMap =(Map<String,Object> )report.get("data");
+            Object data = dataMap.get("data");
+            if(data != null){//多条数据
+                List<Map<String,Object>> dataList = (List<Map<String,Object>>)data;
+                if(CollectionUtil.isNotEmpty(dataList)){
+                    for (int i = 0; i < dataList.size(); i++) {
+                        OrderVo orderVo = new OrderVo();
+                        orderVo.setListType((String)dataList.get(i).get("listType"));
+                        orderVo.setOrderType((String)dataList.get(i).get("orderType"));
+                        orderVo.setOrderNo((String)dataList.get(i).get("orderNo"));
+                        orderVo.setOrderCycle((String)dataList.get(i).get("orderCycle"));
+                        orderVo.setOrderStatus((String)dataList.get(i).get("orderStatus"));
+                        orderVo.setOrgId((String)dataList.get(i).get("orgId"));
+                        orderVo.setOrgName((String)dataList.get(i).get("orgName"));
+                        orderVo.setCreateUser((String)dataList.get(i).get("createUser"));
+                        orderVo.setCreateDate((String)dataList.get(i).get("createDate"));
+                        orderVo.setVoucherCount((String)dataList.get(i).get("voucherCount"));
+                        orderVo.setVoucherAmt((String)dataList.get(i).get("voucherAmt"));
+                        orderVo.setConsignee((String)dataList.get(i).get("consignee"));
+                        orderVo.setAddress((String)dataList.get(i).get("address"));
+                        orderVo.setPhone((String)dataList.get(i).get("phone"));
+                        orderVo.setInvoiceType((String)dataList.get(i).get("invoiceType"));
+                        orderVo.setInvoiceTitle((String)dataList.get(i).get("invoiceTitle"));
+                        orderVo.setDutyPara((String)dataList.get(i).get("dutyPara"));
+                        orderVo.setRemark((String)dataList.get(i).get("remark"));
+                        list.add(orderVo);
+                    }
                 }
+            }else{
+                OrderVo orderVo = new OrderVo();
+                orderVo.setListType((String)dataMap.get("listType"));
+                orderVo.setOrderType((String)dataMap.get("orderType"));
+                orderVo.setOrderNo((String)dataMap.get("orderNo"));
+                orderVo.setOrderCycle((String)dataMap.get("orderCycle"));
+                orderVo.setOrderStatus((String)dataMap.get("orderStatus"));
+                orderVo.setOrgId((String)dataMap.get("orgId"));
+                orderVo.setOrgName((String)dataMap.get("orgName"));
+                orderVo.setCreateUser((String)dataMap.get("createUser"));
+                orderVo.setCreateDate((String)dataMap.get("createDate"));
+                orderVo.setVoucherCount((String)dataMap.get("voucherCount"));
+                orderVo.setVoucherAmt((String)dataMap.get("voucherAmt"));
+                orderVo.setConsignee((String)dataMap.get("consignee"));
+                orderVo.setAddress((String)dataMap.get("address"));
+                orderVo.setPhone((String)dataMap.get("phone"));
+                orderVo.setInvoiceType((String)dataMap.get("invoiceType"));
+                orderVo.setInvoiceTitle((String)dataMap.get("invoiceTitle"));
+                orderVo.setDutyPara((String)dataMap.get("dutyPara"));
+                orderVo.setRemark((String)dataMap.get("remark"));
+                list.add(orderVo);
             }
-        }else{
-            OrderVo orderVo = new OrderVo();
-            orderVo.setListType((String)dataMap.get("listType"));
-            orderVo.setOrderType((String)dataMap.get("orderType"));
-            orderVo.setOrderNo((String)dataMap.get("orderNo"));
-            orderVo.setOrderCycle((String)dataMap.get("orderCycle"));
-            orderVo.setOrderStatus((String)dataMap.get("orderStatus"));
-            orderVo.setOrgId((String)dataMap.get("orgId"));
-            orderVo.setOrgName((String)dataMap.get("orgName"));
-            orderVo.setCreateUser((String)dataMap.get("createUser"));
-            orderVo.setCreateDate((String)dataMap.get("createDate"));
-            orderVo.setVoucherCount((String)dataMap.get("voucherCount"));
-            orderVo.setVoucherAmt((String)dataMap.get("voucherAmt"));
-            orderVo.setConsignee((String)dataMap.get("consignee"));
-            orderVo.setAddress((String)dataMap.get("address"));
-            orderVo.setPhone((String)dataMap.get("phone"));
-            orderVo.setInvoiceType((String)dataMap.get("invoiceType"));
-            orderVo.setInvoiceTitle((String)dataMap.get("invoiceTitle"));
-            orderVo.setDutyPara((String)dataMap.get("dutyPara"));
-            orderVo.setRemark((String)dataMap.get("remark"));
-            list.add(orderVo);
         }
         return list;
     }
@@ -327,7 +332,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         try {
             report = SoapUtil.sendReport("VTMS0005",parmMap);
         } catch (Exception e) {
-            throw new BizException("收货信息查询失败！");
+            throw new BizException("收货信息查询失败！"+e.getMessage());
         }
         ReceiptInfoVo vo = null;
         if(CollectionUtil.isNotEmpty(report)){
@@ -350,7 +355,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         try {
             report = SoapUtil.sendReport("VTMS0006",parmMap);
         } catch (Exception e) {
-            throw new BizException("是否可以创建订单查询失败！");
+            throw new BizException("是否可以创建订单查询失败！"+e.getMessage());
         }
         return report;
     }
@@ -373,7 +378,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         try {
             report = SoapUtil.sendReport("VTMS0007",parmMap);
         } catch (Exception e) {
-            throw new BizException("新建订单失败！");
+            throw new BizException("新建订单失败！"+e.getMessage());
         }
         return report;
     }
@@ -386,7 +391,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         try {
             report = SoapUtil.sendReport("VTMS0008",parmMap);
         } catch (Exception e) {
-            throw new BizException("凭证名称列表查询失败！");
+            throw new BizException("凭证名称列表查询失败！"+e.getMessage());
         }
         return report;
 
@@ -408,7 +413,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         try {
             report = SoapUtil.sendReport("VTMS0009",parmMap);
         } catch (Exception e) {
-            throw new BizException("新建订单明细失败！");
+            throw new BizException("新建订单明细失败！"+e.getMessage());
         }
         return report;
     }
@@ -424,47 +429,62 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         try {
             report = SoapUtil.sendReport("VTMS0010",parmMap);
         } catch (Exception e) {
-            throw new BizException("查询订单明细列表失败！");
+            throw new BizException("查询订单明细列表失败！"+e.getMessage());
         }
         List<OrderDetailDo> list = new ArrayList<>();
-        Map<String,Object> dataMap = (Map<String,Object>) report.get("data");
-        Object data = dataMap.get("data");
-        if(data != null){
-            List<Map<String,Object>> dataList = (List<Map<String,Object>>)data;
-            if(CollectionUtil.isNotEmpty(dataList)){
-                for (int i = 0; i < dataList.size(); i++) {
-                    OrderDetailDo orderDetailDo = new OrderDetailDo();
-                    orderDetailDo.setOrderDeatiId((String)dataList.get(i).get("orderDeatiId"));
-                    orderDetailDo.setDetailStatus((String)dataList.get(i).get("detailStatus"));
-                    orderDetailDo.setVoucherName((String)dataList.get(i).get("voucherName"));
-                    orderDetailDo.setVoucherNo((String)dataList.get(i).get("voucherNo"));
-                    orderDetailDo.setCardName((String)dataList.get(i).get("cardName"));
-                    orderDetailDo.setCardNo((String)dataList.get(i).get("cardNo"));
-                    orderDetailDo.setPrice((String)dataList.get(i).get("price"));
-                    orderDetailDo.setVoucherAmt((String)dataList.get(i).get("voucherAmt"));
-                    orderDetailDo.setNum((String)dataList.get(i).get("num"));
-                    orderDetailDo.setSpec((String)dataList.get(i).get("spec"));
-                    orderDetailDo.setRemark((String)dataList.get(i).get("remark"));
-                    orderDetailDo.setEnterNum((String)dataList.get(i).get("enterNum"));
-                    list.add(orderDetailDo);
+        Object ObjectData = report.get("data");
+        if(isObjectIsNotEmpty(ObjectData)){
+            Map<String,Object> dataMap = (Map<String,Object>) report.get("data");
+            Object data = dataMap.get("data");
+            if(data != null){
+                List<Map<String,Object>> dataList = (List<Map<String,Object>>)data;
+                if(CollectionUtil.isNotEmpty(dataList)){
+                    for (int i = 0; i < dataList.size(); i++) {
+                        OrderDetailDo orderDetailDo = new OrderDetailDo();
+                        orderDetailDo.setOrderDeatiId((String)dataList.get(i).get("orderDeatiId"));
+                        orderDetailDo.setDetailStatus((String)dataList.get(i).get("detailStatus"));
+                        orderDetailDo.setVoucherName((String)dataList.get(i).get("voucherName"));
+                        orderDetailDo.setVoucherNo((String)dataList.get(i).get("voucherNo"));
+                        orderDetailDo.setCardName((String)dataList.get(i).get("cardName"));
+                        orderDetailDo.setCardNo((String)dataList.get(i).get("cardNo"));
+                        orderDetailDo.setPrice((String)dataList.get(i).get("price"));
+                        orderDetailDo.setVoucherAmt((String)dataList.get(i).get("voucherAmt"));
+                        orderDetailDo.setNum((String)dataList.get(i).get("num"));
+                        orderDetailDo.setSpec((String)dataList.get(i).get("spec"));
+                        orderDetailDo.setRemark((String)dataList.get(i).get("remark"));
+                        orderDetailDo.setEnterNum((String)dataList.get(i).get("enterNum"));
+                        list.add(orderDetailDo);
+                    }
                 }
+            }else{
+                OrderDetailDo orderDetailDo = new OrderDetailDo();
+                orderDetailDo.setOrderDeatiId((String)dataMap.get("orderDeatiId"));
+                orderDetailDo.setDetailStatus((String)dataMap.get("detailStatus"));
+                orderDetailDo.setVoucherName((String)dataMap.get("voucherName"));
+                orderDetailDo.setVoucherNo((String)dataMap.get("voucherNo"));
+                orderDetailDo.setCardName((String)dataMap.get("cardName"));
+                orderDetailDo.setCardNo((String)dataMap.get("cardNo"));
+                orderDetailDo.setPrice((String)dataMap.get("price"));
+                orderDetailDo.setVoucherAmt((String)dataMap.get("voucherAmt"));
+                orderDetailDo.setNum((String)dataMap.get("num"));
+                orderDetailDo.setSpec((String)dataMap.get("spec"));
+                orderDetailDo.setRemark((String)dataMap.get("remark"));
+                orderDetailDo.setEnterNum((String)dataMap.get("enterNum"));
+                list.add(orderDetailDo);
             }
-        }else{
-            OrderDetailDo orderDetailDo = new OrderDetailDo();
-            orderDetailDo.setOrderDeatiId((String)dataMap.get("orderDeatiId"));
-            orderDetailDo.setDetailStatus((String)dataMap.get("detailStatus"));
-            orderDetailDo.setVoucherName((String)dataMap.get("voucherName"));
-            orderDetailDo.setVoucherNo((String)dataMap.get("voucherNo"));
-            orderDetailDo.setCardName((String)dataMap.get("cardName"));
-            orderDetailDo.setCardNo((String)dataMap.get("cardNo"));
-            orderDetailDo.setPrice((String)dataMap.get("price"));
-            orderDetailDo.setVoucherAmt((String)dataMap.get("voucherAmt"));
-            orderDetailDo.setNum((String)dataMap.get("num"));
-            orderDetailDo.setSpec((String)dataMap.get("spec"));
-            orderDetailDo.setRemark((String)dataMap.get("remark"));
-            orderDetailDo.setEnterNum((String)dataMap.get("enterNum"));
-            list.add(orderDetailDo);
         }
         return list;
     }
+
+    /**
+     * 判断Object对象是否为空或""
+     * @param object
+     * @return
+     */
+    public static Boolean isObjectIsNotEmpty(Object object){
+        String str = ObjectUtils.toString(object, "");
+        boolean flag = StringUtils.isNotBlank(str);
+        return flag;
+    }
+
 }
