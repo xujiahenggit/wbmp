@@ -62,12 +62,28 @@ public class CashVoucherServiceImpl implements CashVoucherService {
             throw new BizException("号段查看失败！"+e.getMessage());
         }
         List<VoucherNumberVo> list = new ArrayList<>();
-        if(CollectionUtil.isNotEmpty(report)){
-            VoucherNumberVo vo = new VoucherNumberVo();
-            vo.setStartNo((String)report.get("startNo"));
-            vo.setEndNo((String)report.get("endNo"));
-            vo.setNum((Integer) report.get("num"));
-            list.add(vo);
+        Object objectData = report.get("data");
+        if(isObjectIsNotEmpty(objectData)){
+            Map<String,Object> dataMap =(Map<String,Object> )report.get("data");
+            Object data = dataMap.get("data");
+            if(data != null){//多条数据
+                List<Map<String,Object>> dataList = (List<Map<String,Object>>)data;
+                if(CollectionUtil.isNotEmpty(dataList)){
+                    for (int i = 0; i < dataList.size(); i++) {
+                        VoucherNumberVo vo = new VoucherNumberVo();
+                        vo.setStartNo((String)report.get("startNo"));
+                        vo.setEndNo((String)report.get("endNo"));
+                        vo.setNum((Integer) report.get("num"));
+                        list.add(vo);
+                    }
+                }
+            }else{
+                VoucherNumberVo vo = new VoucherNumberVo();
+                vo.setStartNo((String)report.get("startNo"));
+                vo.setEndNo((String)report.get("endNo"));
+                vo.setNum((Integer) report.get("num"));
+                list.add(vo);
+            }
         }
         return list;
     }
