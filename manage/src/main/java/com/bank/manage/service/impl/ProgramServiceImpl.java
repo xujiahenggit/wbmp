@@ -5,10 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.bank.core.entity.BizException;
-import com.bank.core.utils.ConfigFileReader;
-import com.bank.core.utils.DateUtils;
-import com.bank.core.utils.HttpUtil;
-import com.bank.core.utils.MapUtils;
+import com.bank.core.utils.*;
 import com.bank.manage.dao.ProgramDao;
 import com.bank.manage.dos.MaterialDO;
 import com.bank.manage.dos.PlayAreaMaterialDO;
@@ -52,7 +49,8 @@ public class ProgramServiceImpl extends ServiceImpl<ProgramDao, ProgramDO> imple
     @Resource
     private PlayAreaMaterialService playAreaMaterialService;
 
-
+    @Resource
+    private NetUtil netUtil;
 
     @Autowired
     private ConfigFileReader configFileReader;
@@ -83,7 +81,7 @@ public class ProgramServiceImpl extends ServiceImpl<ProgramDao, ProgramDO> imple
         //绑定 素材地址前缀
         if (list.size() > 0) {
             for (MaterialDTO item : list) {
-                item.setMaterialPath(StrUtil.isNotBlank(item.getMaterialPath()) == true ? configFileReader.getHTTP_PATH() + item.getMaterialPath() : null);
+                item.setMaterialPath(StrUtil.isNotBlank(item.getMaterialPath()) == true ? netUtil.getUrlSuffix("") + item.getMaterialPath() : null);
             }
         }
         return list;
@@ -192,9 +190,10 @@ public class ProgramServiceImpl extends ServiceImpl<ProgramDao, ProgramDO> imple
     public Boolean changeProgram(Integer programId,String deviceId) {
         try{
             List<ProgramVo> programVoList = playAreaMaterialService.queryProgramListByPromId(programId,deviceId);
-            List<Map<String,Object>> listMap=ProgramUtil.getProgramMap(programVoList,configFileReader.getHTTP_PATH());
+            List<Map<String,Object>> listMap=ProgramUtil.getProgramMap(programVoList,netUtil.getUrlSuffix(""));
             for (Map<String,Object> item:listMap ) {
-                HttpUtil.sendPost(configFileReader.getMESSAGE_PATH(),item);
+                //HttpUtil.sendPost(configFileReader.getMESSAGE_PATH(),item);
+                HttpUtil.sendPost(netUtil.getUrlSuffix()+"/jms/topic",item);
             }
             return true;
         }catch (Exception e){
@@ -233,7 +232,7 @@ public class ProgramServiceImpl extends ServiceImpl<ProgramDao, ProgramDO> imple
         if(padProgramDto!=null){
             for(ProgramData data:padProgramDto.getData()){
                 for (ProgramContent content:data.getContentList()){
-                    content.setPath(StrUtil.isNotBlank(content.getPath()) == true ? configFileReader.getHTTP_PATH() + content.getPath() : null);
+                    content.setPath(StrUtil.isNotBlank(content.getPath()) == true ? netUtil.getUrlSuffix("") + content.getPath() : null);
                 }
             }
         }
@@ -262,11 +261,11 @@ public class ProgramServiceImpl extends ServiceImpl<ProgramDao, ProgramDO> imple
         ProgramUpdateDto programUpdateDto=programDao.getProgramInfo(programId,deviceId);
         if(programUpdateDto!=null){
             if(programUpdateDto.getStyleArea()!=null){
-                programUpdateDto.getStyleArea().setStylePath(StrUtil.isNotBlank(programUpdateDto.getStyleArea().getStylePath()) == true ? configFileReader.getHTTP_PATH() + programUpdateDto.getStyleArea().getStylePath() : null);
+                programUpdateDto.getStyleArea().setStylePath(StrUtil.isNotBlank(programUpdateDto.getStyleArea().getStylePath()) == true ? netUtil.getUrlSuffix("") + programUpdateDto.getStyleArea().getStylePath() : null);
                 if(programUpdateDto.getListMaterial().size()>0){
                     for (ProgramMaterialDto item:programUpdateDto.getListMaterial()){
                         for (MaterialDTO i:item.getListMaterial()) {
-                                i.setMaterialPath(StrUtil.isNotBlank(i.getMaterialPath()) == true ? configFileReader.getHTTP_PATH() + i.getMaterialPath() : null);
+                                i.setMaterialPath(StrUtil.isNotBlank(i.getMaterialPath()) == true ? netUtil.getUrlSuffix("") + i.getMaterialPath() : null);
                         }
                     }
                 }
@@ -288,12 +287,12 @@ public class ProgramServiceImpl extends ServiceImpl<ProgramDao, ProgramDO> imple
             //转layout
             programPreviewDTO.setLayout(JSONArray.parseArray(programPreviewDTO.getStyle()));
             programPreviewDTO.setCode("000000");
-            programPreviewDTO.setStylePath(StrUtil.isNotBlank(programPreviewDTO.getStylePath()) == true ? configFileReader.getHTTP_PATH() + programPreviewDTO.getStylePath() : null);
+            programPreviewDTO.setStylePath(StrUtil.isNotBlank(programPreviewDTO.getStylePath()) == true ? netUtil.getUrlSuffix() + programPreviewDTO.getStylePath() : null);
             if (programPreviewDTO.getData().size() > 0) {
                 for (ProgramData item : programPreviewDTO.getData()) {
                     if (item.getContentList().size() > 0) {
                         for (ProgramContent content : item.getContentList()) {
-                            content.setPath(StrUtil.isNotBlank(content.getPath()) == true ? configFileReader.getHTTP_PATH() + content.getPath() : null);
+                            content.setPath(StrUtil.isNotBlank(content.getPath()) == true ? netUtil.getUrlSuffix("") + content.getPath() : null);
                         }
                     }
                 }

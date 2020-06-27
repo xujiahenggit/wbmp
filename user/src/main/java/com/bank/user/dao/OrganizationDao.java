@@ -67,4 +67,10 @@ public interface OrganizationDao extends BaseMapper<OrganizationDO> {
      * 复制 核心机构零时表中的数据 到 核心机构表中
      */
     void copyNfrtData();
+
+    /**
+     * 获取所有网点名称
+     * @return
+     */
+    List<OrganizationDO> selectOutsiteList();
 }

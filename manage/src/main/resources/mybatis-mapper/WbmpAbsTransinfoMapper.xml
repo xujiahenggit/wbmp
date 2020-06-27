@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.WbmpAbsTransinfoDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.bank.manage.dos.WbmpAbsTransinfoDO">
+        <id column="ID" property="id"/>
+        <result column="ORG_ID" property="orgId"/>
+        <result column="TELLER_ID" property="tellerId"/>
+        <result column="TELLER_NAME" property="tellerName"/>
+        <result column="TRAN_CODE" property="tranCode"/>
+        <result column="TRAN_NAME" property="tranName"/>
+        <result column="TRAN_TYPE" property="tranType"/>
+        <result column="TRADE_VOLUME" property="tradeVolume"/>
+        <result column="FLAG" property="flag"/>
+        <result column="DATA_DT" property="dataDt"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        ID, ORG_ID, TELLER_ID, TELLER_NAME, TRAN_CODE, TRAN_NAME, TRAN_TYPE, TRADE_VOLUME, FLAG, DATA_DT
+    </sql>
+
+    <!--    查询交易量-->
+    <select id="getTranNumByOrgId" resultType="java.lang.Integer">
+        SELECT
+            IFNULL((SELECT TRADE_VOLUME
+        FROM
+            wbmp_abs_transinfo
+        WHERE
+            ORG_ID = #{orgId}
+        AND FLAG = 1
+        AND DATE_FORMAT(DATA_DT, '%Y-%m-%d') = #{date}),0)
+    </select>
+
+
+    <!--    查询 当月 柜面交易量-->
+    <select id="getCurrentMonthTrandNum" resultType="java.lang.Integer">
+        SELECT
+            IFNULL(
+                (
+                    SELECT
+                        SUM(TRADE_VOLUME)
+                    FROM
+                        wbmp_abs_transinfo
+                    WHERE
+                        FLAG = 1
+                    AND DATE_FORMAT(DATA_DT, '%Y-%m') = #{date}
+                    AND ORG_ID = #{orgId}
+                ),
+                0
+            )
+    </select>
+</mapper>

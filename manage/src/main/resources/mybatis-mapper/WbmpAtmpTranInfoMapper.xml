@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.WbmpAtmpTranInfoDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.bank.manage.dos.WbmpAtmpTranInfoDO">
+        <id column="term_no" property="termNo"/>
+        <result column="org_id" property="orgId"/>
+        <result column="trans_name" property="transName"/>
+        <result column="trans_cnt" property="transCnt"/>
+        <result column="data_dt" property="dataDt"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        org_id, term_no, trans_name, trans_cnt, data_dt
+    </sql>
+
+    <!--    查询交易量-->
+    <select id="getTranNumByOrgId" resultType="java.lang.Integer">
+        SELECT coalesce(SUM(trans_cnt),0) FROM wbmp_atmp_tran_info WHERE DATE_FORMAT(data_dt,'%Y-%m-%d')=#{date} AND org_id=#{orgId}
+    </select>
+
+    <!--    查询当月 自助交易量-->
+    <select id="getCurrentMonthAtmTranNum" resultType="java.lang.Integer">
+        SELECT coalesce(SUM(trans_cnt),0) FROM wbmp_atmp_tran_info WHERE DATE_FORMAT(data_dt,'%Y-%m')=#{date} AND org_id=#{orgId}
+    </select>
+
+</mapper>

@@ -6,6 +6,7 @@ import com.bank.core.entity.BizException;
 import com.bank.core.entity.PageQueryModel;
 import com.bank.core.utils.ConfigFileReader;
 import com.bank.core.utils.HttpUtil;
+import com.bank.core.utils.NetUtil;
 import com.bank.manage.dto.MaterialDTO;
 import com.bank.manage.dto.PlayAreaDTO;
 import com.bank.manage.service.PlayAreaMaterialService;
@@ -40,7 +41,8 @@ public class PlayAreaMaterialController {
     @Resource
     private ConfigFileReader configFileReader;
 
-
+    @Resource
+    NetUtil netUtil;
     @PostMapping("/save")
     @ApiOperation(value = "节目发布接口")
     @ApiImplicitParam(name = "playAreaDTO", value = "节目信息", required = true, paramType = "body", dataType = "PlayAreaDTO")
@@ -78,9 +80,9 @@ public class PlayAreaMaterialController {
     public void queryList(){
         List<ProgramVo> programVoList = playAreaMaterialService.queryProgramList();
         log.info("{}",programVoList);
-        List<Map<String,Object>> listMap= ProgramUtil.getProgramMap(programVoList,configFileReader.getHTTP_PATH());
+        List<Map<String,Object>> listMap= ProgramUtil.getProgramMap(programVoList,netUtil.getUrlSuffix(""));
         for (Map<String,Object> item:listMap ) {
-            HttpUtil.sendPost(configFileReader.getMESSAGE_PATH(),item);
+            HttpUtil.sendPost(netUtil.getUrlSuffix()+"/jms/topic",item);
             System.out.println(JSON.toJSON(item));
         }
         /*Map<Integer, List<ProgramVo>> map = programVoList.stream().collect(Collectors.groupingBy(ProgramVo::getProgramId));
@@ -123,7 +125,7 @@ public class PlayAreaMaterialController {
                     pv.setMaterialName(value.get(i).getMaterialName());
                     pv.setSort(value.get(i).getSort());
                     if(StringUtils.isNotBlank(value.get(i).getMaterialPath())){
-                        pv.setMaterialPath(configFileReader.getHTTP_PATH()+value.get(i).getMaterialPath());
+                        pv.setMaterialPath(netUtil.getUrlSuffix("")+value.get(i).getMaterialPath());
                     }
                     if(StringUtils.isNotBlank(value.get(i).getText())){
                         pv.setText(value.get(i).getText());

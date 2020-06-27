@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.WbmpOperateScoreDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.bank.manage.dos.WbmpOperateScoreDO">
+        <id column="WBMP_OPERATE_SCORE_ID" property="wbmpOperateScoreId" />
+        <result column="ORG_ID" property="orgId" />
+        <result column="ORG_NAME" property="orgName" />
+        <result column="OPERATE_SCORE" property="operateScore" />
+        <result column="OPERATE_DATE" property="operateDate" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        WBMP_OPERATE_SCORE_ID, ORG_ID, ORG_NAME, OPERATE_SCORE, OPERATE_DATE
+    </sql>
+
+
+    <!--查询月度日期最大一天的分数-->
+    <select id="findOperateOrgMouthScore" resultType="java.lang.Float">
+       select IFNULL(( SELECT   MANAGEMENT_SCORE FROM WBMP_MANGEMENT_SCORE WHERE ORG_ID=#{orgId} and DATE_FORMAT(MANAGEMENT_DATE,'%Y-%m')=#{mouth} ORDER BY MANAGEMENT_DATE desc LIMIT 1),0)
+    </select>
+
+    <!--查询年度日期最大一天的分数-->
+    <select id="findOperateYearOrgScore" resultType="java.lang.Float">
+     select IFNULL((SELECT  MANAGEMENT_SCORE FROM WBMP_MANGEMENT_SCORE WHERE ORG_ID=#{orgId} and DATE_FORMAT(MANAGEMENT_DATE,'%Y')=#{year} ORDER BY MANAGEMENT_DATE desc LIMIT 1),0)
+    </select>
+
+
+    <!--查询最近3年的分数-->
+
+
+
+
+
+
+</mapper>

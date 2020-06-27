@@ -35,4 +35,34 @@
         SELECT PARTORL_RECORD_ID,ORG_NAME,PARTORL_DATE FROM T_PARTORL_RECORD WHERE PARTORL_RECORD_ID=#{recordId}
     </select>
 
+    <!--    巡查记录-->
+    <resultMap id="PartorlRecord" type="com.bank.manage.dto.PartorlRecordDto" extends="BaseResultMap">
+        <result property="branchName" column="ORG_DEPART_NAME"/>
+    </resultMap>
+
+    <!--    查询巡查记录-->
+    <select id="selectRecordPage" resultMap="PartorlRecord">
+        SELECT PRD.*,O.ORG_DEPART_NAME FROM T_PARTORL_RECORD PRD
+        JOIN T_ORGANIZATION O ON PRD.ORG_ID = O.ORG_ID
+        JOIN T_PARTORL_PROCESS PP ON PRD.PARTORL_RECORD_ID=PP.PARTORL_RECORD_ID
+        WHERE 1 = 1
+        <if test="partorlRecordQueryVo.startTime!='' and partorlRecordQueryVo.endTime!=''">
+            AND PRD.PARTORL_DATE BETWEEN #{partorlRecordQueryVo.startTime} AND #{partorlRecordQueryVo.endTime}
+        </if>
+        <if test="partorlRecordQueryVo.partorlUser!=null and partorlRecordQueryVo.partorlUser!=''">
+            <bind name="username" value="'%'+partorlRecordQueryVo.partorlUser+'%'"/>
+            AND PRD.PARTORL_USER LIKE #{username}
+        </if>
+        <if test="partorlRecordQueryVo.partorlNomal!=null and partorlRecordQueryVo.partorlNomal!=''">
+            AND PRD.PARTORL_NOMAL=#{partorlRecordQueryVo.partorlNomal}
+        </if>
+        <if test="partorlRecordQueryVo.partorlOrvertime!=null and partorlRecordQueryVo.partorlOrvertime!=''">
+            AND PRD.PARTORL_ORVERTIME=#{partorlRecordQueryVo.partorlOrvertime}
+        </if>
+        <if test="partorlRecordQueryVo.orgId!=null and partorlRecordQueryVo.orgId!=''">
+            AND PRD.ORG_ID=#{partorlRecordQueryVo.orgId}
+        </if>
+        AND PP.PARTORL_PROCESS_STATE=20
+    </select>
+
 </mapper>

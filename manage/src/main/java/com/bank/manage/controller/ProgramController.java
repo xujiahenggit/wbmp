@@ -2,6 +2,7 @@ package com.bank.manage.controller;
 
 import com.bank.core.sysConst.ConstFile;
 import com.bank.core.utils.ConfigFileReader;
+import com.bank.core.utils.NetUtil;
 import com.bank.log.annotation.SystemLog;
 import com.bank.manage.dto.MaterialDTO;
 import com.bank.manage.dto.Progame.ProgramPreviewDTO;
@@ -34,7 +35,8 @@ public class ProgramController {
     private ProgramService programService;
     @Resource
     private ConfigFileReader configFileReader;
-
+    @Resource
+    NetUtil netUtil;
     @ApiOperation(value = "节目预览")
     @GetMapping("/{programId}/{deviceId}")
     @ApiImplicitParams({
@@ -80,7 +82,7 @@ public class ProgramController {
     public ProgramStyleDto getStyle(@PathVariable Integer programId, @PathVariable String deviceId){
         ProgramStyleDto styleAreaDO=programService.getStyle(programId,deviceId);
         if( styleAreaDO != null){
-            styleAreaDO.setStylePath(configFileReader.getHTTP_PATH()+styleAreaDO.getStylePath());
+            styleAreaDO.setStylePath(netUtil.getUrlSuffix("")+styleAreaDO.getStylePath());
         }
         return styleAreaDO;
     }

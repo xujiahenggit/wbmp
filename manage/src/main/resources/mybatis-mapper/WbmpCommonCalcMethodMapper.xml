@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.WbmpCommonCalcMethodDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="wbmpCommonCalcMethodResultMap" type="com.bank.manage.dos.WbmpCommonCalcMethodDO">
+        <id column="id" property="id"/>
+        <result column="bal_per" property="balPer"/>
+        <result column="avg_mouth_bal_per" property="avgMouthBalPer"/>
+        <result column="stand_avg_mouth_bal" property="standAvgMouthBal"/>
+        <result column="aum_per" property="aumPer"/>
+        <result column="stand_aum_num" property="standAumNum"/>
+        <result column="cus_per" property="cusPer"/>
+        <result column="normal_cus_per" property="normalCusPer"/>
+        <result column="stand_normal_cus_num" property="standNormalCusNum"/>
+        <result column="gold_cus_per" property="goldCusPer"/>
+        <result column="stand_gold_cus_num" property="standGoldCusNum"/>
+        <result column="platinum_cus_per" property="platinumCusPer"/>
+        <result column="stand_platinum_cus_num" property="standPlatinumCusNum"/>
+        <result column="diamon_cus_per" property="diamonCusPer"/>
+        <result column="stand_diamon_cus_num" property="standDiamonCusNum"/>
+        <result column="operat_view_per" property="operatViewPer"/>
+        <result column="operat_effect_per" property="operatEffectPer"/>
+        <result column="dayil_traffic_per" property="dayilTrafficPer"/>
+        <result column="stand_dayil_traffic_num" property="standDayilTrafficNum"/>
+        <result column="saimazhi_per" property="saimazhiPer"/>
+        <result column="smz_per" property="smzPer"/>
+        <result column="wzh_per" property="wzhPer"/>
+        <result column="yqdz_per" property="yqdzPer"/>
+        <result column="dzdz_per" property="dzdzPer"/>
+        <result column="dgzhxskh_per" property="dgzhxskhPer"/>
+        <result column="qykhxskt_per" property="qykhxsktPer"/>
+        <result column="xjywfl_per" property="xjywflPer"/>
+        <result column="zzsbywfd_per" property="zzsbywfdPer"/>
+        <result column="zzsbky_per" property="zzsbkyPer"/>
+        <result column="service_view_per" property="serviceViewPer"/>
+        <result column="service_level_per" property="serviceLevelPer"/>
+        <result column="ext_service_level_per" property="extServiceLevelPer"/>
+        <result column="cus_avg_wait_time_per" property="cusAvgWaitTimePer"/>
+        <result column="stand_avg_wait_time" property="standAvgWaitTime"/>
+    </resultMap>
+
+
+    <select id="listPage" resultMap="wbmpCommonCalcMethodResultMap">
+        select * from wbmp_common_calc_method
+        <where>
+                <if test="model!=null">
+                    <if test="model.id != null and model.id !=''">
+                        id = #{model.id}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.balPer != null and model.balPer !=''">
+ AND                         bal_per = #{model.balPer}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.avgMouthBalPer != null and model.avgMouthBalPer !=''">
+ AND                         avg_mouth_bal_per = #{model.avgMouthBalPer}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.standAvgMouthBal != null and model.standAvgMouthBal !=''">
+ AND                         stand_avg_mouth_bal = #{model.standAvgMouthBal}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.aumPer != null and model.aumPer !=''">
+ AND                         aum_per = #{model.aumPer}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.standAumNum != null and model.standAumNum !=''">
+ AND                         stand_aum_num = #{model.standAumNum}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.cusPer != null and model.cusPer !=''">
+ AND                         cus_per = #{model.cusPer}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.normalCusPer != null and model.normalCusPer !=''">
+ AND                         normal_cus_per = #{model.normalCusPer}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.standNormalCusNum != null and model.standNormalCusNum !=''">
+ AND                         stand_normal_cus_num = #{model.standNormalCusNum}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.goldCusPer != null and model.goldCusPer !=''">
+ AND                         gold_cus_per = #{model.goldCusPer}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.standGoldCusNum != null and model.standGoldCusNum !=''">
+ AND                         stand_gold_cus_num = #{model.standGoldCusNum}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.platinumCusPer != null and model.platinumCusPer !=''">
+ AND                         platinum_cus_per = #{model.platinumCusPer}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.standPlatinumCusNum != null and model.standPlatinumCusNum !=''">
+ AND                         stand_platinum_cus_num = #{model.standPlatinumCusNum}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.diamonCusPer != null and model.diamonCusPer !=''">
+ AND                         diamon_cus_per = #{model.diamonCusPer}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.standDiamonCusNum != null and model.standDiamonCusNum !=''">
+ AND                         stand_diamon_cus_num = #{model.standDiamonCusNum}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.operatViewPer != null and model.operatViewPer !=''">
+ AND                         operat_view_per = #{model.operatViewPer}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.operatEffectPer != null and model.operatEffectPer !=''">
+ AND                         operat_effect_per = #{model.operatEffectPer}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.dayilTrafficPer != null and model.dayilTrafficPer !=''">
+ AND                         dayil_traffic_per = #{model.dayilTrafficPer}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.standDayilTrafficNum != null and model.standDayilTrafficNum !=''">
+ AND                         stand_dayil_traffic_num = #{model.standDayilTrafficNum}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.saimazhiPer != null and model.saimazhiPer !=''">
+ AND                         saimazhi_per = #{model.saimazhiPer}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.smzPer != null and model.smzPer !=''">
+ AND                         smz_per = #{model.smzPer}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.wzhPer != null and model.wzhPer !=''">
+ AND                         wzh_per = #{model.wzhPer}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.yqdzPer != null and model.yqdzPer !=''">
+ AND                         yqdz_per = #{model.yqdzPer}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.dzdzPer != null and model.dzdzPer !=''">
+ AND                         dzdz_per = #{model.dzdzPer}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.dgzhxskhPer != null and model.dgzhxskhPer !=''">
+ AND                         dgzhxskh_per = #{model.dgzhxskhPer}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.qykhxsktPer != null and model.qykhxsktPer !=''">
+ AND                         qykhxskt_per = #{model.qykhxsktPer}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.xjywflPer != null and model.xjywflPer !=''">
+ AND                         xjywfl_per = #{model.xjywflPer}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.zzsbywfdPer != null and model.zzsbywfdPer !=''">
+ AND                         zzsbywfd_per = #{model.zzsbywfdPer}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.zzsbkyPer != null and model.zzsbkyPer !=''">
+ AND                         zzsbky_per = #{model.zzsbkyPer}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.serviceViewPer != null and model.serviceViewPer !=''">
+ AND                         service_view_per = #{model.serviceViewPer}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.serviceLevelPer != null and model.serviceLevelPer !=''">
+ AND                         service_level_per = #{model.serviceLevelPer}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.extServiceLevelPer != null and model.extServiceLevelPer !=''">
+ AND                         ext_service_level_per = #{model.extServiceLevelPer}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.cusAvgWaitTimePer != null and model.cusAvgWaitTimePer !=''">
+ AND                         cus_avg_wait_time_per = #{model.cusAvgWaitTimePer}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.standAvgWaitTime != null and model.standAvgWaitTime !=''">
+ AND                         stand_avg_wait_time = #{model.standAvgWaitTime}
+                    </if>
+                </if>
+        </where>
+    </select>
+
+
+</mapper>

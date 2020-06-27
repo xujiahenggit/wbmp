@@ -5,18 +5,24 @@ import com.bank.core.entity.BizException;
 import com.bank.core.entity.FileDo;
 import com.bank.core.entity.TokenUserInfo;
 import com.bank.core.sysConst.NewProcessStatusFile;
+import com.bank.core.sysConst.RolePermissionCode;
 import com.bank.core.sysConst.SysStatus;
 import com.bank.core.utils.ConfigFileReader;
 import com.bank.core.utils.DateUtils;
 import com.bank.core.utils.FileUploadUtils;
+import com.bank.core.utils.NetUtil;
 import com.bank.manage.dao.WorkSuppleDao;
 import com.bank.manage.dos.UsherDO;
 import com.bank.manage.dos.WorkSuppleDO;
+import com.bank.manage.dto.FacilitatorDto;
 import com.bank.manage.dto.WorkSuppleDto;
 import com.bank.manage.service.UsherService;
 import com.bank.manage.service.WorkSuppleService;
+import com.bank.manage.vo.FacilitatorVo;
 import com.bank.manage.vo.WorkSupplePassRejectVo;
 import com.bank.manage.vo.WorkSuppleQueryVo;
+import com.bank.role.dos.RoleDO;
+import com.bank.role.service.RoleService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -29,6 +35,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Author: Andy
@@ -36,7 +43,8 @@ import java.util.Date;
  */
 @Service
 public class WorkSuppleServiceImpl extends ServiceImpl<WorkSuppleDao, WorkSuppleDO> implements WorkSuppleService {
-
+    @Resource
+    NetUtil netUtil;
     @Resource
     private WorkSuppleDao workSuppleDao;
 
@@ -45,6 +53,10 @@ public class WorkSuppleServiceImpl extends ServiceImpl<WorkSuppleDao, WorkSupple
 
     @Resource
     private ConfigFileReader configFileReader;
+
+
+    @Resource
+    private RoleService roleService;
 
     /**
      * 待办列表
@@ -111,7 +123,7 @@ public class WorkSuppleServiceImpl extends ServiceImpl<WorkSuppleDao, WorkSupple
     public WorkSuppleDto getDetailInfo(Integer workSuppleId) {
         WorkSuppleDto workSuppleDto=workSuppleDao.getDetailInfo(workSuppleId);
         if(workSuppleDto!=null){
-            workSuppleDto.setWorkSuppleImg(configFileReader.getHTTP_PATH()+workSuppleDto.getWorkSuppleImg());
+            workSuppleDto.setWorkSuppleImg(netUtil.getUrlSuffix("")+workSuppleDto.getWorkSuppleImg());
         }
         return workSuppleDto;
     }
@@ -131,7 +143,7 @@ public class WorkSuppleServiceImpl extends ServiceImpl<WorkSuppleDao, WorkSupple
             //上传路径
             String uploadPath=configFileReader.getWORK_FILE_PATH()+"/"+fist_tab;
             //访问路径
-            String accessPath=configFileReader.getHTTP_PATH()+configFileReader.getWORK_ACCESS_PATH()+"/"+fist_tab;
+            String accessPath=netUtil.getUrlSuffix("")+configFileReader.getWORK_ACCESS_PATH()+"/"+fist_tab;
             //原文件名称
             String filename = file.getOriginalFilename();
             //用UUID
@@ -190,6 +202,46 @@ public class WorkSuppleServiceImpl extends ServiceImpl<WorkSuppleDao, WorkSupple
     @Override
     public float getRestWorkLenghth(Integer usherId, LocalDate satisfactAttendYear,Integer type) {
         return workSuppleDao.getRestWorkLenghth(usherId,satisfactAttendYear,type);
+    }
+
+
+    /**
+     * 引导员待办列表
+     * @param facilitatorVo 查询参数
+     * @param tokenUserInfo 当前登录用户
+     * @return
+     */
+    @Override
+    public IPage<FacilitatorDto> getAllWaitList(FacilitatorVo facilitatorVo,TokenUserInfo tokenUserInfo) {
+        return getAllList(facilitatorVo,NewProcessStatusFile.PROCESS_WAIT,tokenUserInfo.getOrgId(),tokenUserInfo);
+    }
+
+    /**
+     * 引导员 已办列表
+     * @param facilitatorVo 查询参数
+     * @param tokenUserInfo 当前登录用户
+     * @return
+     */
+    @Override
+    public IPage<FacilitatorDto> getAllAredyList(FacilitatorVo facilitatorVo, TokenUserInfo tokenUserInfo) {
+        return getAllList(facilitatorVo,NewProcessStatusFile.PROCESS_PASS,tokenUserInfo.getOrgId(),tokenUserInfo);
+    }
+
+    /**
+     * 查询所有的 引导员待办列表
+     * @param facilitatorVo 查询参数
+     * @param queryType 查询类型
+     * @param tokenUserInfo 当前登录用户信息
+     * @return
+     */
+    public IPage<FacilitatorDto> getAllList(FacilitatorVo facilitatorVo,String queryType,String orgId,TokenUserInfo tokenUserInfo){
+        Page<FacilitatorDto> page=new Page<>(facilitatorVo.getPageIndex(),facilitatorVo.getPageSize());
+        boolean flag=false;
+        List<RoleDO> listRole=roleService.getHeadOfficeUserRole(tokenUserInfo.getUserId(), RolePermissionCode.ROLE_USHER);
+        if(listRole.size()>0){
+            flag=true;
+        }
+        return workSuppleDao.getAllList(page,queryType,orgId,flag);
     }
 
     /**

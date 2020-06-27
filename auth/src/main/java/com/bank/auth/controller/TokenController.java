@@ -119,6 +119,11 @@ public class TokenController {
         if (userDO == null) {
             throw new BizException("该用户不存在");
         }
+
+        if(userDO.getUserWorkStatus().equals("辞职") || userDO.getUserWorkStatus().equals("退休") || userDO.getUserWorkStatus().equals("内退") || userDO.getUserWorkStatus().equals("辞退")){
+            throw new BizException("不在岗用户,禁止登录！");
+        }
+
         //不用盐值校验密码
         SimpleHash simpleHash = new SimpleHash(Md5Hash.ALGORITHM_NAME, password, null, 32);
         if (!simpleHash.toHex().equals(userDO.getPassword())) {

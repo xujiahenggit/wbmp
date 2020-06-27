@@ -10,7 +10,7 @@ public class StringSplitUtil {
     /**
      * 素材路径切割工具
      * @param materialPath 前端传值
-     * @param http_path     configFileReader.getHTTP_PATH()
+     * @param http_path     netUtil.getUrlSuffix("")
      * @return
      */
     public static String splitMaterialPath(String materialPath,String http_path){

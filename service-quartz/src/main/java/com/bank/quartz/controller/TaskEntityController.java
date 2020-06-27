@@ -40,7 +40,7 @@ public class TaskEntityController {
     /**
      * 此处为 容器启动初始化 所有的任务列表
      */
-    @PostConstruct
+    //@PostConstruct
     public void initialize() {
         reStartAllJob();
     }

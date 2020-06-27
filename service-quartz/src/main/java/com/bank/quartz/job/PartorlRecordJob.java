@@ -8,6 +8,8 @@ import com.bank.quartz.dos.TaskLogDO;
 import com.bank.quartz.service.TaskLogService;
 import com.bank.quartz.utils.GetTaskLogModel;
 import com.bank.user.dos.OrganizationDO;
+import com.bank.user.dto.OrgNftDto;
+import com.bank.user.service.NfrtOrgService;
 import com.bank.user.service.OrganizationService;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -37,6 +39,9 @@ public class PartorlRecordJob implements Job {
     @Autowired
     private PartorlProcessService partorlProcessService;
 
+    @Autowired
+    private NfrtOrgService nfrtOrgService;
+
     @Override
     public void execute(JobExecutionContext jobExecutionContext) {
         //系统当前时间
@@ -44,12 +49,13 @@ public class PartorlRecordJob implements Job {
         //开始时间
         long start=System.currentTimeMillis();
         try{
-            //对外营业机构
-            List<OrganizationDO> listOrg=organizationService.getOpenOrgList();
+            //所有网点列表
+            //List<OrganizationDO> listOrg=organizationService.getOpenOrgList();
+            List<OrgNftDto> listOrg=nfrtOrgService.getAllOutletsList();
             //待审核列表
             List<PartorlProcessDO> listProcess=new ArrayList<>();
             if(listOrg.size()>0){
-                for (OrganizationDO item:listOrg){
+                for (OrgNftDto item:listOrg){
                     for(int i=1;i<=2;i++){
                         PartorlProcessDO partorlProcessDO=new PartorlProcessDO();
                         //待办日期

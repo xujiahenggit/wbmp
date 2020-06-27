@@ -36,5 +36,5 @@ public class WbmpOperateBqmsQueueAvgDto implements Serializable {
      * 客户满意度
      */
     @ApiModelProperty(value = "客户满意度")
-    private String cunstomerAvg;
+    private float cunstomerAvg;
 }

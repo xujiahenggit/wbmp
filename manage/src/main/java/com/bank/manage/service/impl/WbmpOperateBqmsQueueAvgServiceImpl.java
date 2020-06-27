@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -33,7 +34,20 @@ public class WbmpOperateBqmsQueueAvgServiceImpl extends ServiceImpl<WbmpOperateB
         WbmpOperateBqmsQueueAvgDto wbmpOperateBqmsQueueAvgDto=wbmpOperateBqmsQueueAvgDao.getOperraInfo(orgId,date);
         if(wbmpOperateBqmsQueueAvgDto!=null){
             wbmpOperateBqmsQueueAvgDto.setCunstomerAvg(WbmpOperRateUtils.ComputeCustomerAvg(wbmpOperateBqmsQueueAvgDto.getAbandonedLv(),wbmpOperateBqmsQueueAvgDto.getIndexCnt()));
+        }else{
+            wbmpOperateBqmsQueueAvgDto=new WbmpOperateBqmsQueueAvgDto();
+            wbmpOperateBqmsQueueAvgDto.setCunstomerAvg(0);
+            wbmpOperateBqmsQueueAvgDto.setAbandonedLv(new BigDecimal(0));
+            wbmpOperateBqmsQueueAvgDto.setAvgAbandonedLv(new BigDecimal(0));
+            wbmpOperateBqmsQueueAvgDto.setIndexCnt(new BigDecimal(0));
         }
         return wbmpOperateBqmsQueueAvgDto;
+    }
+
+    @Override
+    public String getAvgAbondVe(String orgId) {
+        String date= DateUtil.today();
+        String avgAbandve = wbmpOperateBqmsQueueAvgDao.getOrgAvgAbandVe(orgId,date);
+        return avgAbandve;
     }
 }

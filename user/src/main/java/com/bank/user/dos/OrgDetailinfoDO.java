@@ -49,4 +49,14 @@ public class OrgDetailinfoDO extends Model<OrgDetailinfoDO> {
     @ApiModelProperty(value = "座机号码")
     private String orgTell;
 
+
+    /**
+     * 经度
+     */
+    private String orgLongitude;
+
+    /**
+     * 维度
+     */
+    private String orgDimesion;
 }

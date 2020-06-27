@@ -103,7 +103,7 @@ LOG:
   VERSION: 1
 # FTP 地址
 DAT:
-  FTP_IP: 10.0.128.206
+  FTP_IP: 10.0.65.210
   #FTP 端口号
   FTP_PORT: 21
   #FTP 用户名
@@ -163,24 +163,7 @@ MATERIAL:
   #二维码生成路径
   qrImages: /qrImages
   #http素材临时路径-共享
-  HTTP_PATH: http://39.104.146.218:8080
-  #素材临时存储FTP_IP
-  FILE_FTP_IP: 39.105.86.51
-  #素材临时存储FTP_PORT
-  FILE_FTP_PORT: 21
-  #素材临时存储FTP_USER
-  FILE_FTP_USER: yusys
-  #素材临时存储FTP_PASS
-  FILE_FTP_PASS: abcd1234
-  #素材临时存储路径-FTP
-  FILE_FTP_PATH: /material
-  #http素材临时路径-FTP
-  FILE_FTP_HTTP_PATH: http://39.105.86.51:8080/material
+ # HTTP_PATH: http://39.104.146.218:8080
 GAME:
   HTTP_DDL: /multimedia/diandianle/index.html#/?id=
   HTTP_XQDZ: /multimedia/starwar/index.html#/?id=
-
-#mq 发送报文地址
-MESSAGE:
-  #测试地址用
-  PATH: http://39.104.146.218:8080/wbmp-server/jms/topic

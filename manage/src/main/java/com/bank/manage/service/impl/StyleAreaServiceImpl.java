@@ -3,6 +3,7 @@ package com.bank.manage.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.bank.core.entity.TokenUserInfo;
 import com.bank.core.utils.ConfigFileReader;
+import com.bank.core.utils.NetUtil;
 import com.bank.core.utils.StringSplitUtil;
 import com.bank.manage.dao.StyleAreaDao;
 import com.bank.manage.dos.StyleAreaDO;
@@ -31,7 +32,7 @@ public class StyleAreaServiceImpl implements StyleAreaService {
     public Boolean saveStyleArea(StyleAreaDTO styleAreaDTO, TokenUserInfo tokenUserInfo) {
         Boolean flag = null;
         String style = JSON.toJSONString(styleAreaDTO.getStyle());
-        String splitStylePath = StringSplitUtil.splitMaterialPath(styleAreaDTO.getStylePath(), configFileReader.getHTTP_PATH());
+        String splitStylePath = StringSplitUtil.splitMaterialPath(styleAreaDTO.getStylePath(), netUtil.getUrlSuffix(""));
         try {
             StyleAreaDO styleAreaDO = StyleAreaDO.builder()
                     .styleName(styleAreaDTO.getStyleName())
@@ -55,13 +56,17 @@ public class StyleAreaServiceImpl implements StyleAreaService {
         return flag;
     }
 
+    @Resource
+    NetUtil netUtil;
+
     @Override
     public List<StyleAreaDO> queryStyle(String deviceType) {
         QueryWrapper<StyleAreaDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("DEVICE_TYPE",deviceType);
         List<StyleAreaDO> styleAreaDOList = styleAreaDao.selectList(queryWrapper);
+        String suffix = netUtil.getUrlSuffix();
         for (StyleAreaDO styleAreaDO:styleAreaDOList) {
-            styleAreaDO.setStylePath(configFileReader.getHTTP_PATH()+styleAreaDO.getStylePath());
+            styleAreaDO.setStylePath(suffix+styleAreaDO.getStylePath());
         }
         return styleAreaDOList;
     }

@@ -27,4 +27,11 @@ public class WbmpOperateBqmsQueueAvgController {
     public WbmpOperateBqmsQueueAvgDto getOperraInfo(@PathVariable String orgId){
         return wbmpOperateBqmsQueueAvgService.getOperraInfo(orgId);
     }
+
+
+    @ApiOperation("机构月平均弃号率")
+    @GetMapping("/orgAbandVe/{orgId}/")
+    public String getAvgAbondVe(@PathVariable String orgId){
+        return wbmpOperateBqmsQueueAvgService.getAvgAbondVe(orgId);
+    }
 }

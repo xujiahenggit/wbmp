@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.WbmpOrgBalanceDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="wbmpOrgBalanceResultMap" type="com.bank.manage.dos.WbmpOrgBalanceDO">
+        <id column="ORG_NO" property="orgNo"/>
+        <result column="CURR_CD" property="currCd"/>
+        <result column="PRIVATE_BAL" property="privateBal"/>
+        <result column="PUBLIC_BAL" property="publicBal"/>
+        <result column="GENERALITY_BAL" property="generalityBal"/>
+        <result column="DATA_DT" property="dataDt"/>
+    </resultMap>
+
+
+    <select id="listPage" resultMap="wbmpOrgBalanceResultMap">
+        select * from wbmp_org_balance
+        <where>
+                <if test="model!=null">
+                    <if test="model.orgNo != null and model.orgNo !=''">
+                        ORG_NO = #{model.orgNo}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.currCd != null and model.currCd !=''">
+ AND                         CURR_CD = #{model.currCd}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.privateBal != null and model.privateBal !=''">
+ AND                         PRIVATE_BAL = #{model.privateBal}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.publicBal != null and model.publicBal !=''">
+ AND                         PUBLIC_BAL = #{model.publicBal}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.generalityBal != null and model.generalityBal !=''">
+ AND                         GENERALITY_BAL = #{model.generalityBal}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.dataDt != null and model.dataDt !=''">
+ AND                         DATA_DT = #{model.dataDt}
+                    </if>
+                </if>
+        </where>
+    </select>
+
+
+</mapper>

@@ -36,4 +36,10 @@ public interface NfrtOrgService extends IService<NfrtOrgDO> {
      * @return
      */
     List<OrgNftDto> getOutletsList(String orgId, String type);
+
+    /**
+     * 获取所有的网点列表
+     * @return
+     */
+    List<OrgNftDto> getAllOutletsList();
 }

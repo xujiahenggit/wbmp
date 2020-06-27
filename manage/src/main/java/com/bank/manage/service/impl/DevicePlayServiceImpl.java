@@ -3,6 +3,7 @@ package com.bank.manage.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.bank.core.entity.BizException;
 import com.bank.core.entity.PageQueryModel;
+import com.bank.core.utils.NetUtil;
 import com.bank.manage.dao.DeviceDao;
 import com.bank.manage.dao.DevicePlayDao;
 import com.bank.manage.dos.DeviceDO;
@@ -21,7 +22,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -98,8 +98,10 @@ public class DevicePlayServiceImpl extends ServiceImpl<DevicePlayDao,DevicePlayD
     @Resource
     private MaterialService materialService;
 
-    @Value("${MATERIAL.HTTP_PATH}")
-    private String basePath;
+    /*@Value("${MATERIAL.HTTP_PATH}")
+    private String basePath;*/
+    @Resource
+    NetUtil netUtil;
 
     @Override
     public List<Map<String, Object>> queryPlayLatestTwo() {
@@ -125,7 +127,7 @@ public class DevicePlayServiceImpl extends ServiceImpl<DevicePlayDao,DevicePlayD
         }
 
         return   list.stream().map(map -> {
-            map.put("materialPath", basePath + map.get("materialPath"));
+            map.put("materialPath", netUtil.getUrlSuffix("") + map.get("materialPath"));
             return map;
         }).collect(Collectors.toList());
     }

@@ -76,6 +76,11 @@ public class UserDO extends Model<UserDO> {
     private String userStatus;
 
     /**
+     * 在岗状态
+     */
+    private String userWorkStatus;
+
+    /**
      * 手机号码
      */
     private String userPhone;

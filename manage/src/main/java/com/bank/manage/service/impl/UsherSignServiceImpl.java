@@ -169,6 +169,8 @@ public class UsherSignServiceImpl implements UsherSignService {
         List<UsherSignDO> usherSignList =  usherSignDao.selInfoByMonth(usherId,month);//签到盘日历
         if(CollectionUtil.isNotEmpty(usherSignList)){
             map.put("usherSign",usherSignList);
+        }else{
+            map.put("usherSign","");
         }
         return map;
     }
@@ -270,7 +272,9 @@ public class UsherSignServiceImpl implements UsherSignService {
                     String singDate = DateUtil.format(signDO.getSignDate(), DatePattern.NORM_DATE_PATTERN);
                     singDateList.add(singDate);//获取所有签到的日期
                 }
-                List<String> subtract = (List<String>)CollectionUtil.subtract(sub, singDateList);
+                sub.removeAll(singDateList);
+                List<String> subtract  = sub;
+                //List<String> subtract = (List<String>)CollectionUtil.subtract(sub, singDateList);
                 List<String> restDaysList = new ArrayList<>();
                 for (int i = 0; i < subtract.size(); i++) {
                     String s = subtract.get(i);
@@ -298,6 +302,9 @@ public class UsherSignServiceImpl implements UsherSignService {
             }
         }
         if(CollectionUtil.isNotEmpty(map)){
+            list.add(map);
+        }else {
+            map.put("restTotal",0);
             list.add(map);
         }
         return list;
@@ -339,6 +346,9 @@ public class UsherSignServiceImpl implements UsherSignService {
             rquDaysMap.put("total",rquDays);
         }
         if(CollectionUtil.isNotEmpty(rquDaysMap)){
+            list.add(rquDaysMap);
+        }else{
+            rquDaysMap.put("total",0);
             list.add(rquDaysMap);
         }
         return list;

@@ -17,4 +17,11 @@ public interface WbmpOperateBqmsQueueAvgDao extends BaseMapper<WbmpOperateBqmsQu
      * @return
      */
     WbmpOperateBqmsQueueAvgDto getOperraInfo(@Param(value = "orgId") String orgId,@Param(value = "date") String date);
+
+    /**
+     *
+     * @param orgId
+     * @return
+     */
+    String getOrgAvgAbandVe(@Param(value = "orgId") String orgId,@Param(value = "date") String date);
 }

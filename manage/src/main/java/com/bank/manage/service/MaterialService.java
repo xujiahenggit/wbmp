@@ -1,5 +1,7 @@
 package com.bank.manage.service;
 
+import java.util.List;
+
 import com.bank.core.entity.PageQueryModel;
 import com.bank.core.entity.TokenUserInfo;
 import com.bank.manage.dos.MaterialDO;
@@ -9,9 +11,8 @@ import com.bank.manage.vo.MaterialVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
-import java.util.List;
-
 public interface MaterialService extends IService<MaterialDO> {
+
     /**
      * 保存素材信息
      * @param materialDTO
@@ -56,4 +57,10 @@ public interface MaterialService extends IService<MaterialDO> {
      * @return
      */
     boolean updateForcePlayState(List<ForcePlayVo> list);
+
+    /**
+     * 查询手机app轮播图素材
+     * @return
+     */
+    List<MaterialVo> queryAppMaterialList();
 }

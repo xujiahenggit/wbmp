@@ -19,6 +19,16 @@
 
     <!--    查询客户满意度数据-->
     <select id="getOperraInfo" resultType="com.bank.manage.dto.WbmpOperateBqmsQueueAvgDto">
-        SELECT INDEX_CNT,AVG_ABANDONED_LV,ABANDONED_LV,'0' AS CUSTOMER_AVG  FROM wbmp_operate_bqms_queue_avg WHERE ORG_ID=#{orgId} AND DATA_DT=#{date }
+        SELECT INDEX_CNT,AVG_ABANDONED_LV,ABANDONED_LV,'0' AS CUSTOMER_AVG  FROM wbmp_operate_bqms_queue_avg WHERE ORG_ID=#{orgId} AND DATE_FORMAT (DATA_DT, '%Y-%m-%d' )=#{date}
     </select>
+
+    <!--获取月度的平均弃号率-->
+    <select id="getOrgAvgAbandVe" resultType="String">
+        SELECT AVG(AVG_ABANDONED_LV) AVG_ABANDONED_LV
+        FROM wbmp_operate_bqms_queue_avg
+        WHERE  ORG_ID=#{orgId}
+         AND  DATE_FORMAT (DATA_DT, '%Y-%m' )=#{date}
+    </select>
+
+
 </mapper>

@@ -9,6 +9,7 @@ import com.bank.core.sysConst.NewProcessStatusFile;
 import com.bank.core.sysConst.SysStatus;
 import com.bank.core.utils.ConfigFileReader;
 import com.bank.core.utils.FileUploadUtils;
+import com.bank.core.utils.NetUtil;
 import com.bank.manage.dao.CardSuppleDao;
 import com.bank.manage.dos.CardSuppleDO;
 import com.bank.manage.dos.UsherDO;
@@ -51,7 +52,8 @@ public class CardSuppleServiceImpl extends ServiceImpl<CardSuppleDao, CardSupple
     @Resource
     private WorkSuppleService workSuppleService;
 
-
+    @Resource
+    NetUtil netUtil;
     @Resource
     private UsherService usherService;
 
@@ -168,7 +170,7 @@ public class CardSuppleServiceImpl extends ServiceImpl<CardSuppleDao, CardSupple
     public CardSuppleDto getInfo(Integer cardSuppleId) {
         CardSuppleDto cardSuppleDto=cardSuppleDao.getInfo(cardSuppleId);
         if(cardSuppleDto!=null){
-            cardSuppleDto.setCardSuppleImg(configFileReader.getHTTP_PATH()+cardSuppleDto.getCardSuppleImg());
+            cardSuppleDto.setCardSuppleImg(netUtil.getUrlSuffix("")+cardSuppleDto.getCardSuppleImg());
         }
         return cardSuppleDao.getInfo(cardSuppleId);
     }
@@ -188,7 +190,7 @@ public class CardSuppleServiceImpl extends ServiceImpl<CardSuppleDao, CardSupple
             //上传路径
             String uploadPath=configFileReader.getCARD_FILE_PATH()+"/"+fist_tab;
             //访问路径
-            String accessPath=configFileReader.getHTTP_PATH()+configFileReader.getCARD_ACCESS_PATH()+"/"+fist_tab;
+            String accessPath=netUtil.getUrlSuffix("")+configFileReader.getCARD_ACCESS_PATH()+"/"+fist_tab;
             //原文件名称
             String filename = file.getOriginalFilename();
             //用UUID

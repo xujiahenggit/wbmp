@@ -87,6 +87,8 @@ public class GetDataUtils {
             userDO.setDepartId(arrayList[5].toString());
             //设置部门名称
             userDO.setDepartName(arrayList[6].toString());
+            //设置在岗状态
+            userDO.setUserWorkStatus(arrayList[26].toString());
             //设置是否在岗
             userDO.setUserStatus("1");
             //设置手机号码

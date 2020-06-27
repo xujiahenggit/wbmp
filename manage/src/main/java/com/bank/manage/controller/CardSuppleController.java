@@ -6,6 +6,7 @@ import com.bank.core.entity.BizException;
 import com.bank.core.entity.FileDo;
 import com.bank.core.utils.ConfigFileReader;
 import com.bank.core.utils.FileUploadUtils;
+import com.bank.core.utils.NetUtil;
 import com.bank.core.utils.StringSplitUtil;
 import com.bank.log.annotation.SystemLog;
 import com.bank.manage.dos.CardSuppleDO;
@@ -22,6 +23,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import io.swagger.annotations.ApiImplicitParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,7 +41,8 @@ public class CardSuppleController extends BaseController {
     @Autowired
     private CardSuppleService cardSuppleService;
 
-
+    @Resource
+    NetUtil netUtil;
     @Autowired
     private ConfigFileReader configFileReader;
 
@@ -77,7 +80,7 @@ public class CardSuppleController extends BaseController {
     @PostMapping("/saveCardSupple")
     @ApiOperation(value = "新增外包人员补卡申请")
     public Boolean saveCardSupple(@RequestBody CardSuppleDO cardSuppleDO){
-        String path =  StringSplitUtil.splitMaterialPath(cardSuppleDO.getCardSuppleImg(),configFileReader.getHTTP_PATH());
+        String path =  StringSplitUtil.splitMaterialPath(cardSuppleDO.getCardSuppleImg(),netUtil.getUrlSuffix(""));
         cardSuppleDO.setCardSuppleState("10");
         cardSuppleDO.setCardSuppleCreatetime(LocalDateTime.now());
         cardSuppleDO.setCardSuppleDeleteFlag("0");

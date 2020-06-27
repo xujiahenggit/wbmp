@@ -17,7 +17,7 @@
     </resultMap>
 
 
-    <select id="queryExcelData" resultMap="excelDataResultMap">
+    <select id="queryExcelData" resultType="com.bank.manage.dto.ExcelDataDTO">
         select * from T_EXCEL_DATA E
         where 1=1
         <if test="dataType != null and dataType != ''">

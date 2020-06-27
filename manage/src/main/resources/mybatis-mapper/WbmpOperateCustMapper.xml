@@ -4,22 +4,72 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.bank.manage.dos.WbmpOperateCustDO">
-        <result column="ETL_TIME" property="etlTime" />
-        <result column="ORG_ID" property="orgId" />
-        <result column="GROUP_NO" property="groupNo" />
-        <result column="INDEX_NO" property="indexNo" />
-        <result column="INDEX_NAME" property="indexName" />
-        <result column="INDEX_VAL" property="indexVal" />
-        <result column="COMP_LASTD" property="compLastd" />
-        <result column="COMP_LASTM" property="compLastm" />
-        <result column="COMP_LASTQ" property="compLastq" />
-        <result column="COMP_LASTY" property="compLasty" />
-        <result column="DATA_DT" property="dataDt" />
+        <result column="ETL_TIME" property="etlTime"/>
+        <result column="ORG_ID" property="orgId"/>
+        <result column="GROUP_NO" property="groupNo"/>
+        <result column="INDEX_NO" property="indexNo"/>
+        <result column="INDEX_NAME" property="indexName"/>
+        <result column="INDEX_VAL" property="indexVal"/>
+        <result column="COMP_LASTD" property="compLastd"/>
+        <result column="COMP_LASTM" property="compLastm"/>
+        <result column="COMP_LASTQ" property="compLastq"/>
+        <result column="COMP_LASTY" property="compLasty"/>
+        <result column="DATA_DT" property="dataDt"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         ETL_TIME, ORG_ID, GROUP_NO, INDEX_NO, INDEX_NAME, INDEX_VAL, COMP_LASTD, COMP_LASTM, COMP_LASTQ, COMP_LASTY, DATA_DT
     </sql>
+
+    <!--    按日统计-->
+    <select id="getCustomerImgByDay" resultType="java.lang.Integer">
+        SELECT IFNULL((SELECT
+        INDEX_VAL
+        FROM
+        wbmp_operate_cust
+        WHERE
+        CONCAT(ORG_ID, GROUP_NO) =#{orgId}
+        AND DATA_DT=#{day}
+        AND INDEX_NO = #{customerType}),0)
+    </select>
+
+
+    <!--    按月统计-->
+    <select id="getCustomerImgByMonth" resultType="java.lang.Integer">
+        SELECT IFNULL((SELECT
+            SUM(COMP_LASTM)
+        FROM
+            wbmp_operate_cust
+        WHERE
+            CONCAT(ORG_ID, GROUP_NO) = #{orgId}
+        AND DATE_FORMAT(DATA_DT,'%Y-%m')=#{month}
+        AND INDEX_NO =#{customerType}),0)
+    </select>
+
+    <!--    按年统计-->
+    <select id="getCustomerImgByYear" resultType="java.lang.Integer">
+        SELECT IFNULL((SELECT
+            SUM(COMP_LASTY)
+        FROM
+            wbmp_operate_cust
+        WHERE
+            CONCAT(ORG_ID, GROUP_NO) = #{orgId}
+        AND DATE_FORMAT(DATA_DT,'%Y')=#{year}
+        AND INDEX_NO =#{customerType}),0)
+    </select>
+
+
+    <!-- 按条件统计机构某天的客群量-->
+    <select id="getOrgCustTypeNum" resultType="java.lang.Integer">
+        SELECT
+            INDEX_VAL
+        FROM
+            wbmp_operate_cust
+        WHERE
+        CONCAT(ORG_ID, GROUP_NO) = #{orgId}
+        AND INDEX_NO = #{customerTypeCode}
+        AND DATE_FORMAT(DATA_DT,'%Y-%m-%d') = DATE_FORMAT(#{date},'%Y-%m-%d')
+    </select>
 
 </mapper>

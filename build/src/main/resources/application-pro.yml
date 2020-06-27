@@ -1,10 +1,11 @@
 application:
-  ip: 192.168.1.150
-  port: 8080
+  ip: wbmp.mis.bcs # pro使用此参数 域名
+  port: 8080 #tomcat启动端口
+  contextPath: /wbmp-server
 server:
   tomcat:
     basedir: /file
-  port: 8088
+  port: 8080
 spring:
   resources:
     static-locations: classpath:/static/
@@ -14,7 +15,7 @@ spring:
   activemq:
     user: admin
     password: Admin#@888
-    broker-url: tcp://${application.ip}:61616
+    broker-url: tcp://localhost:61616
     pool:
       enabled: true
       max-connections: 10000
@@ -28,17 +29,11 @@ spring:
     # 如果存在多个数据源，监控的时候可以通过名字来区分开来
     name: mysql
     # 连接数据库的url
-    url: jdbc:mysql://${application.ip}:3306/wbmp?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true&failOverReadOnly=false&serverTimezone=GMT%2B8
+    url: jdbc:mysql://192.168.4.183:3308/wbmp?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true&failOverReadOnly=false&serverTimezone=GMT%2B8
     # 连接数据库的账号
-    username: root
+    username: wbmp
     #  连接数据库的密码
-    password: root78
-      # 连接数据库的url
-      #    url: jdbc:mysql://127.0.0.1:3306/ssp?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true&failOverReadOnly=false&serverTimezone=GMT%2B8
-      # 连接数据库的账号
-    #    username: root
-    #  连接数据库的密码
-    #    password: 123456
+    password: wbmp
     # 使用druid数据源
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
@@ -71,7 +66,7 @@ spring:
       max-open-prepared-statements: -1
   #redis 配置
   redis:
-    host: ${application.ip}
+    host: 192.168.6.42
     port: 6379
     password: redisAdmin888
     expireTime: 10 #设置token过期时间（分钟)
@@ -83,7 +78,7 @@ spring:
         min-idle: 32
     sentinel:
       master: mymaster
-      nodes: 162.16.14.77:26379,162.16.14.77:26380,${application.ip}:26379,${application.ip}:26380
+      nodes: 192.168.6.42:26379,192.168.6.42:26380,192.168.6.43:26379,192.168.6.43:26380
 mybatis-plus:
   #如果将来整个项目启动较慢，可把此处扫描包位置写到每个依赖的具体dao层，缺点为每添加一个新模块，就需要在此处重新添加，优点为项目启动速度快
   type-aliases-package: com.bank
@@ -102,19 +97,19 @@ LOG:
   VERSION: 1
 # FTP 地址
 DAT:
-  FTP_IP: 162.16.8.202
+  FTP_IP: 172.16.1.89
   #FTP 端口号
   FTP_PORT: 21
   #FTP 用户名
-  FTP_USER_NAME: ftpuser
+  FTP_USER_NAME: newfrt
   #FTP 密码
-  FTP_PASS_WORD: abc@1234
+  FTP_PASS_WORD: newfrt
   #FTP 文件路径
   FTP_FILE_PATH: /nhr/
   #FTP 核心文件 文件
   FTP_FILE_HX_PATH: /hxdata/
   #大数据文件 本地服务器路径
-  LOCALPATH: /home/bgm/bankdata/
+  LOCALPATH: /home/tomcat/bankdata/
   #大数据 机构文件名称
   ORGFILE_NAME: NHR_ORGANIZATION_?.dat
   #大数据 用户文件名称
@@ -152,7 +147,7 @@ CARDSUPPLE:
   CARD_ACCESS_PATH: /video/cardsupple
   WORK_FILE_PATH: /video/worksupple
   WORK_ACCESS_PATH: /video/worksupple
-##################素材上传配置################
+#素材上传配置
 MATERIAL:
   #素材临时存储路径-共享
   UPLOAD_FILE_PATH: /video/material
@@ -161,30 +156,6 @@ MATERIAL:
   #二维码生成路径
   qrImages: /qrImages
   #http素材临时路径-共享
-  HTTP_PATH: http://${application.ip}:${application.port}
-  #素材临时存储FTP_IP
-  FILE_FTP_IP: ${application.ip}
-  #素材临时存储FTP_PORT
-  FILE_FTP_PORT: 21
-  #素材临时存储FTP_USER
-  FILE_FTP_USER: bgm
-  #素材临时存储FTP_PASS
-  FILE_FTP_PASS: em_bank
-  #素材临时存储路径-FTP
-  FILE_FTP_PATH: /material
-  #http素材临时路径-FTP
-  FILE_FTP_HTTP_PATH: http://${application.ip}/material
 GAME:
   HTTP_DDL: /multimedia/diandianle/index.html#/?id=
   HTTP_XQDZ: /multimedia/starwar/index.html#/?id=
-
-#mq 发送报文地址
-MESSAGE:
-  #测试地址用
-  PATH: http://${application.ip}:${application.port}/${tomcat.contextPath}/jms/topic
-  #PATH: http://localhost:8088/jms/topic
-
-tomcat:
-  baseIp: http://${application.ip}:${application.port} #应用服务器地址
-  port: ${application.port} #tomcat启动端口
-  contextPath: /wbmp-server #webSocket分布式使用

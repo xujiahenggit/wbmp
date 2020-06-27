@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.WbmpBatchBalanceDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="wbmpBatchBalanceResultMap" type="com.bank.manage.dos.WbmpBatchBalanceDO">
+        <id column="id" property="id"/>
+        <result column="curr_cd" property="currCd"/>
+        <result column="org_no" property="orgNo"/>
+        <result column="private_bal" property="privateBal"/>
+        <result column="public_bal" property="publicBal"/>
+        <result column="generality_bal" property="generalityBal"/>
+        <result column="bank_bal" property="bankBal"/>
+        <result column="lsdkjdk_bal" property="lsdkjdkBal"/>
+        <result column="dg_bal" property="dgBal"/>
+        <result column="dg_dd_bal" property="dgDdBal"/>
+        <result column="update_date" property="updateDate"/>
+    </resultMap>
+
+
+    <select id="listPage" resultMap="wbmpBatchBalanceResultMap">
+        select * from wbmp_batch_balance
+        <where>
+                <if test="model!=null">
+                    <if test="model.id != null and model.id !=''">
+                        id = #{model.id}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.currCd != null and model.currCd !=''">
+ AND                         curr_cd = #{model.currCd}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.orgNo != null and model.orgNo !=''">
+ AND                         org_no = #{model.orgNo}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.privateBal != null and model.privateBal !=''">
+ AND                         private_bal = #{model.privateBal}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.publicBal != null and model.publicBal !=''">
+ AND                         public_bal = #{model.publicBal}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.generalityBal != null and model.generalityBal !=''">
+ AND                         generality_bal = #{model.generalityBal}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.bankBal != null and model.bankBal !=''">
+ AND                         bank_bal = #{model.bankBal}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.lsdkjdkBal != null and model.lsdkjdkBal !=''">
+ AND                         lsdkjdk_bal = #{model.lsdkjdkBal}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.dgBal != null and model.dgBal !=''">
+ AND                         dg_bal = #{model.dgBal}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.dgDdBal != null and model.dgDdBal !=''">
+ AND                         dg_dd_bal = #{model.dgDdBal}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.updateDate != null and model.updateDate !=''">
+ AND                         update_date = #{model.updateDate}
+                    </if>
+                </if>
+        </where>
+    </select>
+
+    <!-- 按条件统计机构某天的储蓄存款+对公存款+一般性存款的总额-->
+    <select id="getOrgLastDayBal" resultType="java.lang.String">
+        SELECT
+            (private_bal+public_bal+generality_bal) as sum_bal
+        FROM
+            wbmp_batch_balance
+        WHERE
+            ORG_ID = #{orgId}
+        AND DATE_FORMAT(DATA_DT,'%Y-%m-%d') = DATE_FORMAT(#{date},'%Y-%m-%d')
+    </select>
+
+</mapper>

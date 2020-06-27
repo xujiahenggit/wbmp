@@ -91,4 +91,11 @@ public interface OrganizationService extends IService<OrganizationDO> {
      * @return
      */
     List<OrgDemandDto> getChild(String orgId);
+
+    /**
+     * 用机构号或者机构名称 模糊查询机构列表
+     * @param key
+     * @return
+     */
+    List<OrganizationDO> getSearchOrgList(String key);
 }

@@ -22,6 +22,6 @@ public class TransCntInfo {
     @ApiModelProperty(value = "设备交易量")
     private Integer sum;
 
-    @ApiModelProperty(value = "百分比")
-    private BigDecimal percent;
+    @ApiModelProperty(value = "百分比,保存四位小数")
+    private BigDecimal percent=BigDecimal.ZERO;
 }

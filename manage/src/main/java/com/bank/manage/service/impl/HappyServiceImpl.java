@@ -1,5 +1,7 @@
 package com.bank.manage.service.impl;
 
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import com.bank.core.entity.BizException;
 import com.bank.manage.dao.HappyDao;
@@ -51,9 +53,40 @@ public class HappyServiceImpl implements HappyService {
     }
 
     @Override
-    public List<Map<String, Integer>> starStatus(HappyParam param) {
+    public List<Map> starStatus(HappyParam param) {
         checkAndSetDefaultParam(param);
-        return happyDao.starStatus(param);
+        List<HashMap<Object, Object>> dict = ListUtil.toList(MapUtil.of(new Object[][]{
+                {"star", "一星级"},
+                {"count", 0}
+        }), MapUtil.of(new Object[][]{
+                {"star", "二星级"},
+                {"count", 0}
+        }), MapUtil.of(new Object[][]{
+                {"star", "三星级"},
+                {"count", 0}
+        }), MapUtil.of(new Object[][]{
+                {"star", "四星级"},
+                {"count", 0}
+        }), MapUtil.of(new Object[][]{
+                {"star", "五星级"},
+                {"count", 0}
+        }));
+        List<Map<String, Integer>> data = happyDao.starStatus(param);
+        return (List<Map>)fillDictData(dict, data, "star", "count");
+    }
+
+    private List<? extends Map> fillDictData(List<? extends Map> dict, List<? extends Map> data, String type, String count) {
+        HashMap<Object, Object> temMap = MapUtil.newHashMap();
+        for (Map<Object, Object> dataList : data) {
+            temMap.put(dataList.get(type),dataList.get(count));
+        }
+        for (Map<Object, Object> dictList : dict) {
+            Object value = dictList.get(type);
+            if (temMap.containsKey(value)){
+                dictList.put(count, temMap.get(value));
+            }
+        }
+        return dict;
     }
 
     @Override

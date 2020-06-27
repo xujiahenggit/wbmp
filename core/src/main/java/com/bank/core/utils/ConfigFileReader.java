@@ -84,8 +84,8 @@ public class ConfigFileReader {
     /**
      * http素材临时路径--共享
      */
-    @Value("${MATERIAL.HTTP_PATH}")
-    private String HTTP_PATH;
+    /*@Value("${MATERIAL.HTTP_PATH}")
+    private String HTTP_PATH;*/
 
     /**
      * 素材临时存储路径-共享
@@ -99,52 +99,12 @@ public class ConfigFileReader {
     @Value("${MATERIAL.FILE_PATH_FILE}")
     private String FILE_PATH_FILE;
 
-    /**
-     * 素材临时存储FTP_IP
-     */
-    @Value("${MATERIAL.FILE_FTP_IP}")
-    private String FILE_FTP_IP;
-
-    /**
-     * 素材临时存储FTP_PORT
-     */
-    @Value("${MATERIAL.FILE_FTP_PORT}")
-    private String FILE_FTP_PORT;
-
-    /**
-     * 素材临时存储FTP_USER
-     */
-    @Value("${MATERIAL.FILE_FTP_USER}")
-    private String FILE_FTP_USER;
-
-    /**
-     * 素材临时存储FTP_PASS
-     */
-    @Value("${MATERIAL.FILE_FTP_PASS}")
-    private String FILE_FTP_PASS;
-
-    /**
-     * 素材临时存储路径-FTP_PATH
-     */
-    @Value("${MATERIAL.FILE_FTP_PATH}")
-    private String FILE_FTP_PATH;
-
-    /**
-     * http素材临时路径-FTP
-     */
-    @Value("${MATERIAL.FILE_FTP_HTTP_PATH}")
-    private String FILE_FTP_HTTP_PATH;
-
 
     @Value("${GAME.HTTP_DDL}")
     private String HTTP_DDL;
 
     @Value("${GAME.HTTP_XQDZ}")
     private String HTTP_XQDZ;
-
-    @Value("${MESSAGE.PATH}")
-    private String MESSAGE_PATH;
-
     /**
      * 巡查证明文件 上传路径
      */

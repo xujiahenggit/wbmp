@@ -109,4 +109,17 @@ public class OrganizationController extends BaseUserController {
     public List<OrgDemandDto> getChild(@PathVariable String orgId){
         return organizationService.getChild(orgId);
     }
+
+
+    @GetMapping("/search/{key}")
+    public List<OrganizationDO> getSearchOrgList(@PathVariable String key){
+//        //输入数据大于3
+//        if(key.length()>3){
+//
+//        }else{
+//            return null;
+//        }
+
+        return organizationService.getSearchOrgList(key);
+    }
 }

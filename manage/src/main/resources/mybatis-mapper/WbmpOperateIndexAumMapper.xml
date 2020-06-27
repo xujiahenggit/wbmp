@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.WbmpOperateIndexAumDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="wbmpOperateIndexAumResultMap" type="com.bank.manage.dos.WbmpOperateIndexAumDO">
+        <result column="ETL_TIME" property="etlTime"/>
+        <result column="ORG_ID" property="orgId"/>
+        <result column="INDEX_NO" property="indexNo"/>
+        <result column="INDEX_NAME" property="indexName"/>
+        <result column="INDEX_VAL" property="indexVal"/>
+        <result column="DATA_DT" property="dataDt"/>
+    </resultMap>
+
+
+    <select id="listPage" resultMap="wbmpOperateIndexAumResultMap">
+        select * from wbmp_operate_index_aum
+        <where>
+                <if test="model!=null">
+                    <if test="model.etlTime != null and model.etlTime !=''">
+                        ETL_TIME = #{model.etlTime}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.orgId != null and model.orgId !=''">
+ AND                         ORG_ID = #{model.orgId}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.indexNo != null and model.indexNo !=''">
+ AND                         INDEX_NO = #{model.indexNo}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.indexName != null and model.indexName !=''">
+ AND                         INDEX_NAME = #{model.indexName}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.indexVal != null and model.indexVal !=''">
+ AND                         INDEX_VAL = #{model.indexVal}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.dataDt != null and model.dataDt !=''">
+ AND                         DATA_DT = #{model.dataDt}
+                    </if>
+                </if>
+        </where>
+    </select>
+
+    <!-- 按条件统计机构某天的AUM值-->
+    <select id="getOrgDaysAum" resultType="java.lang.String">
+        SELECT
+            INDEX_VAL
+        FROM
+            wbmp_operate_index_aum
+        WHERE
+            ORG_ID = #{orgId}
+        AND DATE_FORMAT(DATA_DT,'%Y-%m-%d') = DATE_FORMAT(#{date},'%Y-%m-%d')
+    </select>
+
+
+</mapper>

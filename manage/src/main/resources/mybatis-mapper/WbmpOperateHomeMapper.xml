@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.WbmpOperateHomeDao">
+
+	<select id="queyDepositDay" resultType="map">
+		SELECT org_no, private_bal, public_bal, generality_bal FROM wbmp_org_balance
+		WHERE org_no = #{orgId} AND data_dt = DATE_FORMAT( CURRENT_DATE, '%Y%m%d' )
+	</select>
+
+	<!---->
+	<select id="queyDepositDay30" resultType="map">
+		SELECT org_no, private_bal, public_bal, generality_bal, DATE_FORMAT( data_dt, '%m月%d日' ) date_str
+		FROM wbmp_org_balance
+		WHERE org_no = #{orgId} 
+		AND data_dt BETWEEN DATE_FORMAT( DATE_SUB( CURRENT_DATE, INTERVAL 30 DAY ), '%Y%m%d' )
+		AND DATE_FORMAT( CURRENT_DATE, '%Y%m%d' ) ORDER BY data_dt
+	</select>
+</mapper>

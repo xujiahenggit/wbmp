@@ -58,6 +58,9 @@ public class SatisfactAttendJob implements Job {
                     satisfactAttendDO.setSatisfactAttendScore(100);
                     //默认状态为 未提交 10
                     satisfactAttendDO.setSatisfactAttendSubmitState(NewProcessStatusFile.PROCESS_WAIT);
+                    //创建时间
+                    satisfactAttendDO.setSatisfactAttendSubmitTime(LocalDateTime.now());
+
                     listattend.add(satisfactAttendDO);
                 }
                 satisfactAttendService.saveBatch(listattend);

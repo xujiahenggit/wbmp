@@ -3,6 +3,7 @@ package com.bank.quartz.job;
 import com.alibaba.fastjson.JSON;
 import com.bank.core.utils.ConfigFileReader;
 import com.bank.core.utils.HttpUtil;
+import com.bank.core.utils.NetUtil;
 import com.bank.manage.service.PlayAreaMaterialService;
 import com.bank.manage.util.ProgramUtil;
 import com.bank.manage.vo.ProgramVo;
@@ -34,6 +35,9 @@ public class SendProgramJob implements Job {
     @Resource
     private ConfigFileReader configFileReader;
 
+    @Resource
+    NetUtil netUtil;
+
     @Override
     public void execute(JobExecutionContext jobExecutionContext) {
         LocalDateTime localDateTime = LocalDateTime.now();
@@ -52,9 +56,9 @@ public class SendProgramJob implements Job {
     private void sendProgram() {
         List<ProgramVo> programVoList = playAreaMaterialService.queryProgramList();
         log.info("{}",programVoList);
-        List<Map<String,Object>> listMap= ProgramUtil.getProgramMap(programVoList,configFileReader.getHTTP_PATH());
+        List<Map<String,Object>> listMap= ProgramUtil.getProgramMap(programVoList,netUtil.getUrlSuffix(""));
         for (Map<String,Object> item:listMap ) {
-            HttpUtil.sendPost(configFileReader.getMESSAGE_PATH(),item);
+            HttpUtil.sendPost(netUtil.getUrlSuffix()+"/jms/topic",item);
             //System.out.println(JSON.toJSON(item));
             log.info("发送的节目信息：{}",item);
         }

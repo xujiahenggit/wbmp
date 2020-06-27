@@ -6,7 +6,6 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.bank.manage.vo.MaterialVo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -21,6 +20,7 @@ import com.bank.core.entity.TokenUserInfo;
 import com.bank.core.enums.ConstantEnum;
 import com.bank.core.sysConst.NewProcessStatusFile;
 import com.bank.core.utils.ConfigFileReader;
+import com.bank.core.utils.NetUtil;
 import com.bank.core.utils.StringSplitUtil;
 import com.bank.manage.dao.CatalogMaterialDao;
 import com.bank.manage.dao.MaterialDao;
@@ -33,6 +33,7 @@ import com.bank.manage.dto.MaterialDTO;
 import com.bank.manage.service.MaterialService;
 import com.bank.manage.service.NewProcessService;
 import com.bank.manage.vo.ForcePlayVo;
+import com.bank.manage.vo.MaterialVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -60,6 +61,9 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialDao, MaterialDO> im
     @Autowired
     private PlayAreaMaterialDao playAreaMaterialDao;
 
+    @Resource
+    NetUtil netUtil;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean insertMaterial(List<MaterialDTO> materialDTO, String catalogId, TokenUserInfo tokenUserInfo) {
@@ -68,7 +72,7 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialDao, MaterialDO> im
             for (MaterialDTO material : materialDTO) {
                 if (!"03".equals(material.getMaterialType())) {//非文字素材
                     String materialPath = material.getMaterialPath();
-                    String splitMaterialPath = StringSplitUtil.splitMaterialPath(materialPath, this.configFileReader.getHTTP_PATH());
+                    String splitMaterialPath = StringSplitUtil.splitMaterialPath(materialPath, this.netUtil.getUrlSuffix(""));
                     MaterialDO materialDO = MaterialDO.builder()
                             .materialName(material.getMaterialName())
                             .materialType(material.getMaterialType())
@@ -159,7 +163,7 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialDao, MaterialDO> im
         NewProcessDO newProcessDO = this.newProcessService.getOne(queryWrapper1);
 
         String status = newProcessDO.getStatus();
-        if("30".equals(status) || "40".equals(status)){
+        if ("30".equals(status) || "40".equals(status)) {
             throw new BizException("素材已被驳回或撤销，请勿修改！");
         }
 
@@ -199,7 +203,7 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialDao, MaterialDO> im
         NewProcessDO newProcessDO = this.newProcessService.getOne(queryWrapper1);
 
         String status = newProcessDO.getStatus();
-        if("10".equals(status) || "20".equals(status)){
+        if ("10".equals(status) || "20".equals(status)) {
             throw new BizException("素材在审核过程中，请勿删除！");
         }
         try {
@@ -226,7 +230,7 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialDao, MaterialDO> im
         if (materialDO == null) {
             throw new BizException("查无此记录");
         }
-        materialDO.setMaterialPath(this.configFileReader.getHTTP_PATH() + materialDO.getMaterialPath());
+        materialDO.setMaterialPath(this.netUtil.getUrlSuffix("") + materialDO.getMaterialPath());
         return materialDO;
     }
 
@@ -283,10 +287,24 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialDao, MaterialDO> im
             for (int i = 0; i < records.size(); i++) {
                 String materialType = records.get(i).getMaterialType();
                 if (!ConstantEnum.MATERIAL_TYPE_TEXT.getType().equals(materialType)) {//非文字素材
-                    records.get(i).setMaterialPath(this.configFileReader.getHTTP_PATH() + records.get(i).getMaterialPath());
+                    records.get(i).setMaterialPath(this.netUtil.getUrlSuffix("") + records.get(i).getMaterialPath());
                 }
             }
         }
         return pageList;
+    }
+
+    @Override
+    public List<MaterialVo> queryAppMaterialList() {
+        List<MaterialVo> records = this.materialDao.queryListByCatalogId("6");
+        if (records != null && records.size() > 0) {
+            for (int i = 0; i < records.size(); i++) {
+                String materialType = records.get(i).getMaterialType();
+                if (!ConstantEnum.MATERIAL_TYPE_TEXT.getType().equals(materialType)) {//非文字素材
+                    records.get(i).setMaterialPath(this.netUtil.getUrlSuffix("") + records.get(i).getMaterialPath());
+                }
+            }
+        }
+        return records;
     }
 }

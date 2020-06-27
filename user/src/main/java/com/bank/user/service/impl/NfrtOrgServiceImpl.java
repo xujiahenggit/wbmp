@@ -69,7 +69,15 @@ public class NfrtOrgServiceImpl extends ServiceImpl<NfrtOrgDao, NfrtOrgDO> imple
         }else if(SysStatus.ORG_TYPE_CZ.equals(type)){
             listOrg=nfrtOrgDao.getContryOutsitList(orgId+"03");
         }
-
         return listOrg;
+    }
+
+    /**
+     * 获取所有的 网点列表
+     * @return
+     */
+    @Override
+    public List<OrgNftDto> getAllOutletsList(){
+        return nfrtOrgDao.getAllOutletList();
     }
 }

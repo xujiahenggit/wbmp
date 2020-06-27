@@ -70,4 +70,94 @@
         AND WORK_SUPPLE_STATE = 20
         AND WORK_SUPPLE_TYPE = #{type}
     </select>
+
+
+    <!--    引导员-待办列表-->
+    <resultMap id="Facilitator" type="com.bank.manage.dto.FacilitatorDto">
+        <result column="ID" property="id"/>
+        <result column="NAME" property="name"/>
+        <result column="CONTENT" property="content"/>
+        <result column="TYPE" property="type"/>
+        <result column="DATE" property="date"/>
+    </resultMap>
+
+    <!--    查引导员 待办列表-->
+    <select id="getAllList" resultMap="Facilitator">
+        SELECT
+            NEW_TABLE.ID,
+            NEW_TABLE. NAME,
+            NEW_TABLE.CONTENT,
+            NEW_TABLE.TYPE,
+            NEW_TABLE.DATE
+        FROM
+            (
+                SELECT
+                    WS.WORK_SUPPLE_ID AS ID,
+                    '引导员加班时长申请' AS NAME,
+                    CONCAT(
+                        WORK_SUPPLE_DATE,
+                        U.USHER_NAME,
+                        '的加班时长申请'
+                    ) AS CONTENT,
+                    'TYPE_01' AS TYPE,
+                    WS.WORK_SUPPLE_TIME AS DATE
+                FROM
+                    T_WORK_SUPPLE WS
+                JOIN T_USHER U ON WS.USHER_ID = U.USHER_ID
+                WHERE
+                    WS.WORK_SUPPLE_STATE = #{queryType}
+                AND U.ORG_ID = #{orgId}
+                UNION ALL
+                    SELECT
+                        CS.CARD_SUPPLE_ID AS ID,
+                        '引导员补卡申请' AS NAME,
+                        CONCAT(
+                            CARD_SUPPLE_DATE,
+                            U.USHER_NAME,
+                            '的补卡申请'
+                        ) AS CONTENT,
+                        'TYPE_02' AS TYPE,
+                        CS.CARD_SUPPLE_CREATETIME AS DATE
+                    FROM
+                        T_CARD_SUPPLE CS
+                    JOIN T_USHER U ON CS.USHER_ID = U.USHER_ID
+                    WHERE
+                        CS.CARD_SUPPLE_STATE = #{queryType}
+                    AND U.ORG_ID =  #{orgId}
+                    <if test="roleType==true">
+                        UNION ALL
+                        SELECT
+                        SA.SATISFACT_ATTEND_ID AS ID,
+                        '引导员月度满意度考核' AS NAME,
+                        CONCAT(
+                        SA.SATISFACT_ATTEND_YEAR,
+                        U.USHER_NAME,
+                        '月度满意度考核'
+                        ) AS CONTENT,
+                        'TYPE_03' AS TYPE,
+                        SA.SATISFACT_ATTEND_SUBMIT_TIME AS DATE
+                        FROM
+                        T_SATISFACT_ATTEND SA
+                        JOIN T_USHER U ON SA.USHER_ID = U.USHER_ID
+                        WHERE
+                        SA.SATISFACT_ATTEND_SUBMIT_STATE = #{queryType}
+                        AND U.ORG_ID =  #{orgId}
+                    </if>
+                        UNION ALL
+                            SELECT
+                                MA.MONTH_ATTEND_ID AS ID,
+                                '引导员月度考勤考核' AS NAME,
+                                CONCAT(
+                                    MA.MONTH_ATTEND_YEAR,
+                                    '的月度考勤考核'
+                                ) AS CONTENT,
+                                'TYPE_04' AS TYPE,
+                                MA.MONTH_ATTEND_CREATE_TIME AS DATE
+                            FROM
+                                T_MONTH_ATTEND MA
+                            WHERE
+                                MA.MONTH_ATTEND_STATE = #{queryType}
+                            AND MA.MONTH_ATTEND_ORG_ID =  #{orgId}
+            ) AS NEW_TABLE
+    </select>
 </mapper>

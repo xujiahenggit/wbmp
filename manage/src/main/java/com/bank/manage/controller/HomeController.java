@@ -2,6 +2,7 @@ package com.bank.manage.controller;
 
 import com.bank.auth.base.BaseController;
 import com.bank.auth.service.PermissionService;
+import com.bank.core.utils.NetUtil;
 import com.bank.manage.service.DevicePlayService;
 import com.bank.manage.service.HomeService;
 import com.bank.role.service.RoleService;
@@ -43,14 +44,17 @@ public class HomeController extends BaseController {
         return data;
     }
 
-    @Value("${MATERIAL.HTTP_PATH}")
-    private String basePath;
+    /*@Value("${MATERIAL.HTTP_PATH}")
+    private String basePath;*/
+
+    @Resource
+    NetUtil netUtil;
 
     @GetMapping("/queryNewMaterial/{orgId}")
     @ApiOperation(value = "获取首页最新编辑")
     public Object queryNewMaterial(@PathVariable String orgId) {
         List<Map<String, Object>> data = this.homeService.getNewMaterial(this.day, orgId).stream().map(map -> {
-            map.put("MATERIAL_PATH", this.basePath + map.get("MATERIAL_PATH"));
+            map.put("MATERIAL_PATH", this.netUtil.getUrlSuffix("") + map.get("MATERIAL_PATH"));
             return map;
         }).collect(Collectors.toList());
         return data;

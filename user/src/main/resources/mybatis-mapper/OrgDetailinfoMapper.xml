@@ -9,11 +9,13 @@
         <result column="ORG_CONTACT_MAN" property="orgContactMan"/>
         <result column="ORG_PHONE" property="orgPhone"/>
         <result column="ORG_TELL" property="orgTell"/>
+        <result column="ORG_LONGITUDE" property="orgLongitude" />
+        <result column="ORG_DIMESION" property="orgDimesion" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        ORG_ID, ORG_ADDRESS, ORG_CONTACT_MAN, ORG_PHONE, ORG_TELL
+        ORG_ID, ORG_ADDRESS, ORG_CONTACT_MAN, ORG_PHONE, ORG_TELL,ORG_LONGITUDE, ORG_DIMESION
     </sql>
 
     <resultMap id="OrgDetaiInfo" type="com.bank.user.dto.OrgDetailDto" extends="BaseResultMap">

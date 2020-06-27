@@ -43,10 +43,10 @@
 		AND EL.EXCEL_DATE BETWEEN #{startYear} AND #{endYear}
 		AND EL.EXCEL_QUARTER BETWEEN #{startQuarter} AND #{endQuarter}
 		<if test="branchOrgId != null and branchOrgId != ''">
-			AND EL.ORG_ID = #{branchOrgId}
+			AND ER.ORG_ID = #{branchOrgId}
 		</if>
 		<if test="outOrgId != null and outOrgId != ''">
-			AND ER.ORG_ID = #{outOrgId}
+			AND EL.ORG_ID = #{outOrgId}
 		</if>
 	</select>
 

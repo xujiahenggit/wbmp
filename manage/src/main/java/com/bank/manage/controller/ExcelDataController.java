@@ -12,6 +12,7 @@ import com.bank.core.entity.PageQueryModel;
 import com.bank.core.entity.TokenUserInfo;
 import com.bank.core.utils.ConfigFileReader;
 import com.bank.core.utils.FileUploadUtils;
+import com.bank.core.utils.NetUtil;
 import com.bank.manage.dto.ExcelDataDTO;
 import com.bank.manage.handler.SpinnerWriteHandler;
 import com.bank.manage.service.CountModuleService;
@@ -38,8 +39,6 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static org.apache.poi.ss.usermodel.CellStyle.*;
-
 
 /**
  * Excel数据导入记录表  控制器
@@ -61,6 +60,8 @@ public class ExcelDataController extends BaseController {
 	@Autowired
 	private CountModuleService countModuleService;
 
+	@javax.annotation.Resource
+	NetUtil netUtil;
 
 	@PostMapping("/delExcelData/{id}/{dataType}")
 	@ApiOperation(value = "快乐服务--报表列表删除")
@@ -314,7 +315,7 @@ public class ExcelDataController extends BaseController {
         //上传路径
         String uploadPath=configFileReader.getHAPPY_FILE_PATH()+"/"+fist_tab;
         //访问路径
-        String accessPath=configFileReader.getHTTP_PATH()+configFileReader.getHAPPY_ACCESS_PATH()+"/"+fist_tab;
+        String accessPath=netUtil.getUrlSuffix("")+configFileReader.getHAPPY_ACCESS_PATH()+"/"+fist_tab;
         //原文件名称
         String filename = file.getOriginalFilename();
         //用UUID
@@ -348,7 +349,7 @@ public class ExcelDataController extends BaseController {
 		headTitle4.add("标杆网点统计数据");
 		headTitle4.add("网点机构号");
 		headTitle5.add("标杆网点统计数据");
-		headTitle5.add("失效日期('年份'或'长期有效')");
+		headTitle5.add("失效日期('年份'或'永久有效')");
 
 		headList.add(headTitle0);
 		headList.add(headTitle1);

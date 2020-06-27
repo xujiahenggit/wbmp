@@ -2,14 +2,13 @@ package com.bank.manage.service;
 
 import com.bank.core.entity.TokenUserInfo;
 import com.bank.manage.dos.PartorlRecordDO;
+import com.bank.manage.dto.PartorlRecordDto;
 import com.bank.manage.dto.PartorlRecordHeadDto;
 import com.bank.manage.excel.partorl.PartorlExcelEntity;
 import com.bank.manage.vo.PartorlRecordQueryVo;
 import com.bank.manage.vo.partorlRecord.PartorlRecordVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @Author: Andy
@@ -21,7 +20,7 @@ public interface PartorlRecordService extends IService<PartorlRecordDO> {
      * @param partorlRecordQueryVo 查询参数
      * @return
      */
-    IPage<PartorlRecordDO> getPageRecord(PartorlRecordQueryVo partorlRecordQueryVo);
+    IPage<PartorlRecordDto> getPageRecord(PartorlRecordQueryVo partorlRecordQueryVo);
 
     /**
      * 保存巡查内容信息

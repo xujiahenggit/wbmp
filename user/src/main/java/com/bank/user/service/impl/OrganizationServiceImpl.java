@@ -144,10 +144,7 @@ public class OrganizationServiceImpl extends ServiceImpl<OrganizationDao, Organi
      */
     @Override
     public List<OrganizationDO> getOpenOrgList() {
-        QueryWrapper<OrganizationDO> queryWrapper=new QueryWrapper<>();
-        queryWrapper.eq("ORG_TYPE",3);
-        queryWrapper.eq("ORG_STATUS",1);
-        return organizationDao.selectList(queryWrapper);
+        return organizationDao.selectOutsiteList();
     }
 
     /**
@@ -191,6 +188,14 @@ public class OrganizationServiceImpl extends ServiceImpl<OrganizationDao, Organi
     @Override
     public List<OrgDemandDto> getChild(String orgId) {
         return organizationDao.getChild(orgId);
+    }
+
+    @Override
+    public List<OrganizationDO> getSearchOrgList(String key) {
+        QueryWrapper<OrganizationDO> queryWrapper=new QueryWrapper<>();
+        queryWrapper.select("ORG_ID,ORG_NAME");
+        queryWrapper.like("ORG_ID",key).or().like("ORG_NAME",key);
+        return this.list(queryWrapper);
     }
 
 

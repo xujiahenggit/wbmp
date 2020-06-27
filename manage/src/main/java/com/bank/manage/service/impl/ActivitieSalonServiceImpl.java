@@ -11,6 +11,7 @@ import java.util.concurrent.Executors;
 import javax.annotation.Resource;
 
 import com.alibaba.fastjson.JSON;
+import com.bank.core.utils.NetUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,12 +53,16 @@ public class ActivitieSalonServiceImpl extends ServiceImpl<ActivitieSalonDao, Ac
     @Autowired
     private ConfigFileReader configFileReader;
 
-    @Autowired
+    @Resource
     private ActivitieSalonImageDao activitieSalonImageDao;
 
     @Autowired
     private ActivitieSalonImageService activitieSalonImageService;
 
+
+
+    @Resource
+    NetUtil netUtil;
     @Override
     public IPage<ActivitieSalonVO> listPage(PageQueryModel pageQueryModel) {
         Page<ActivitieSalonVO> page = new Page<>(pageQueryModel.getPageIndex(), pageQueryModel.getPageSize());
@@ -79,7 +84,7 @@ public class ActivitieSalonServiceImpl extends ServiceImpl<ActivitieSalonDao, Ac
         List<ActivitieSalonVO> records = iPage.getRecords();
         if (CollectionUtil.isNotEmpty(records)) {
             for (ActivitieSalonVO record : records) {
-                record.setActivitiePath(this.configFileReader.getHTTP_PATH() + record.getActivitiePath());
+                record.setActivitiePath(this.netUtil.getUrlSuffix("") + record.getActivitiePath());
             }
         }
         return iPage;
@@ -106,7 +111,7 @@ public class ActivitieSalonServiceImpl extends ServiceImpl<ActivitieSalonDao, Ac
         List<ActivitieSalonDO> records = iPage.getRecords();
         if (CollectionUtil.isNotEmpty(records)) {
             for (ActivitieSalonDO record : records) {
-                record.setActivitiePath(this.configFileReader.getHTTP_PATH() + record.getActivitiePath());
+                record.setActivitiePath(this.netUtil.getUrlSuffix("") + record.getActivitiePath());
             }
         }
         return iPage;
@@ -129,7 +134,7 @@ public class ActivitieSalonServiceImpl extends ServiceImpl<ActivitieSalonDao, Ac
             }
             Integer sort = (Integer) salonDO.get(i).get("SORT");
             Map<String, Object> pathMap = new HashMap<>();
-            pathMap.put("imagePath", this.configFileReader.getHTTP_PATH() + imagePath);
+            pathMap.put("imagePath", this.netUtil.getUrlSuffix("") + imagePath);
             pathMap.put("sort", sort);
             list.add(pathMap);
         }
@@ -138,7 +143,7 @@ public class ActivitieSalonServiceImpl extends ServiceImpl<ActivitieSalonDao, Ac
         msg.put("activitiePath", list);
         map.put("msg", msg);
         log.info("活动沙龙切换信息：{}", JSON.toJSONString(map));
-        HttpUtil.sendPost(this.configFileReader.getMESSAGE_PATH(), map);
+        HttpUtil.sendPost(netUtil.getUrlSuffix()+"/jms/topic", map);
     }
 
     private static ExecutorService executorService = Executors.newSingleThreadExecutor();

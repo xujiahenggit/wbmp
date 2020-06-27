@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.WbmpTellerTransactionDao">
+
+
+    <select id="queryTransaction" resultType="com.bank.manage.vo.TellerTransactionVo">
+        SELECT a.TRADE_VOLUME,a.TRAN_NAME,
+        (SELECT a.TRADE_VOLUME FROM wbmp_abs_transinfo a WHERE a.ORG_ID = #{orgId} and a.FLAG = '1' AND
+            DATE_FORMAT(a.DATA_DT,'%Y-%m-%d') = DATE_FORMAT(CURDATE(),'%Y-%m-%d')) AS count
+        FROM wbmp_abs_transinfo a WHERE a.ORG_ID = #{orgId} and a.TELLER_ID=#{tellerId} and a.FLAG = '4'
+        AND DATE_FORMAT(a.DATA_DT,'%Y-%m-%d') = DATE_FORMAT(CURDATE(),'%Y-%m-%d')
+        ORDER BY TRADE_VOLUME DESC
+    </select>
+</mapper>

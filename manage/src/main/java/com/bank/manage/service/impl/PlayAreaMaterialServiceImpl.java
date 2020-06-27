@@ -4,6 +4,7 @@ import com.bank.core.entity.BizException;
 import com.bank.core.entity.PageQueryModel;
 import com.bank.core.enums.ConstantEnum;
 import com.bank.core.utils.ConfigFileReader;
+import com.bank.core.utils.NetUtil;
 import com.bank.manage.dao.MaterialDao;
 import com.bank.manage.dao.PlayAreaMaterialDao;
 import com.bank.manage.dao.ProgramDao;
@@ -41,7 +42,8 @@ import java.util.Map;
 @Slf4j
 public class PlayAreaMaterialServiceImpl extends ServiceImpl<PlayAreaMaterialDao,PlayAreaMaterialDO> implements PlayAreaMaterialService {
 
-
+    @Resource
+    NetUtil netUtil;
     @Autowired
     private PlayAreaMaterialDao playAreaMaterialDao;
 
@@ -154,7 +156,7 @@ public class PlayAreaMaterialServiceImpl extends ServiceImpl<PlayAreaMaterialDao
             for (int i = 0; i < records.size(); i++) {
                 String materialType = records.get(i).getMaterialType();
                 if (!ConstantEnum.MATERIAL_TYPE_TEXT.getType().equals(materialType)) {//非文字素材
-                    records.get(i).setMaterialPath(configFileReader.getHTTP_PATH() + records.get(i).getMaterialPath());
+                    records.get(i).setMaterialPath(netUtil.getUrlSuffix("") + records.get(i).getMaterialPath());
                 }
             }
         }

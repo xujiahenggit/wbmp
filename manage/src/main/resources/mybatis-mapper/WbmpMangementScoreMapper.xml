@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.WbmpMangementScoreDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.bank.manage.dos.WbmpMangementScoreDO">
+        <id column="WBMP_MANAGEMENT_ID" property="wbmpManagementId"/>
+        <result column="ORG_ID" property="orgId"/>
+        <result column="ORG_NAME" property="orgName"/>
+        <result column="MANAGEMENT_SCORE" property="managementScore"/>
+        <result column="MANAGEMENT_DATE" property="managementDate"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        WBMP_MANAGEMENT_ID, ORG_ID, ORG_NAME, MANAGEMENT_SCORE, MANAGEMENT_DATE
+    </sql>
+
+    <!--    红灰榜-->
+    <resultMap id="RedGreyRank" type="com.bank.manage.vo.OperateRankVO">
+        <result property="orgId" column="ORG_ID"/>
+        <result property="orgName" column="ORG_NAME"/>
+        <result property="percent" column="OPERATE_SCORE"/>
+    </resultMap>
+
+    <!--    查询红榜-->
+    <select id="findRedTop" resultMap="RedGreyRank">
+        SELECT  ORG_ID,ORG_NAME,OPERATE_SCORE FROM WBMP_OPERATE_SCORE WHERE OPERATE_DATE=#{now} ORDER BY OPERATE_SCORE DESC LIMIT 5
+    </select>
+
+    <!--    查询灰榜-->
+    <select id="findGreyTop" resultMap="RedGreyRank">
+        SELECT  ORG_ID,ORG_NAME,OPERATE_SCORE FROM WBMP_OPERATE_SCORE WHERE OPERATE_DATE=#{now} ORDER BY OPERATE_SCORE ASC LIMIT 5
+    </select>
+
+    <!--查询月度日期最大一天的分数-->
+    <select id="findOrgMouthScore" resultType="java.lang.Float">
+       select IFNULL(( SELECT   OPERATE_SCORE FROM WBMP_OPERATE_SCORE WHERE ORG_ID=#{orgId} and DATE_FORMAT(OPERATE_DATE,'%Y-%m')=#{mouth}   ORDER BY OPERATE_DATE desc LIMIT 1),0)
+    </select>
+
+    <!--查询年度日期最大一天的分数-->
+    <select id="findYearOrgScore" resultType="java.lang.Float">
+     select IFNULL((SELECT  OPERATE_SCORE FROM WBMP_OPERATE_SCORE WHERE ORG_ID=#{orgId} and DATE_FORMAT(OPERATE_DATE,'%Y')=#{year}   ORDER BY OPERATE_DATE desc LIMIT 1),0)
+    </select>
+
+</mapper>

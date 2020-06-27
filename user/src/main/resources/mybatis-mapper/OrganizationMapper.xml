@@ -25,6 +25,8 @@
         <result column="ORG_CONTACT_MAN" property="orgContactMan"/>
         <result column="ORG_PHONE" property="orgPhone"/>
         <result column="ORG_TELL" property="orgTell"/>
+        <result column="ORG_LONGITUDE" property="orgLongitude"/>
+        <result column="ORG_DIMESION" property="orgDimesion"/>
     </resultMap>
 
 
@@ -33,6 +35,8 @@
         <result column="ORG_CONTACT_MAN" property="orgContactMan"/>
         <result column="ORG_PHONE" property="orgPhone"/>
         <result column="ORG_TELL" property="orgTell"/>
+        <result column="ORG_LONGITUDE" property="orgLongitude"/>
+        <result column="ORG_DIMESION" property="orgDimesion"/>
         <collection property="listPositonPeople" ofType="com.bank.user.dto.PositionPeopleNum" column="{orgId=ORG_ID}"
                     select="SelectPosition">
             <result column="POSITION_NAME" property="positionName"/>
@@ -74,7 +78,9 @@
             ORG_D.ORG_ADDRESS,
             ORG_D.ORG_CONTACT_MAN,
             ORG_D.ORG_PHONE,
-            ORG_D.ORG_TELL
+            ORG_D.ORG_TELL,
+            ORG_D.ORG_LONGITUDE,
+            ORG_D.ORG_DIMESION
     </sql>
 
     <!--    多维度查询 机构列表-->
@@ -140,4 +146,6 @@
     <select id="getChild" resultType="com.bank.user.dto.OrgDemandDto">
         SELECT ORG_ID,ORG_NAME,ORG_LASTFLAG FROM T_ORGANIZATION WHERE PARENT_ID=#{orgId}
     </select>
+
+
 </mapper>

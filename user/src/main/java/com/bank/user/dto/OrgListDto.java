@@ -41,6 +41,19 @@ public class OrgListDto extends OrganizationDO implements Serializable {
     @ApiModelProperty(value = "座机号码")
     private String orgTell;
 
+
+    /**
+     * 经度
+     */
+    @ApiModelProperty(value = "经度")
+    private String orgLongitude;
+
+    /**
+     * 纬度
+     */
+    @ApiModelProperty(value = "维度")
+    private String orgDimesion;
+
     /**
      * 机构岗位人数列表
      */

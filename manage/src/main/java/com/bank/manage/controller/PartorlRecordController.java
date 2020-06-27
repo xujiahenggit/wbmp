@@ -2,7 +2,7 @@ package com.bank.manage.controller;
 
 import com.bank.auth.base.BaseController;
 import com.bank.core.entity.TokenUserInfo;
-import com.bank.manage.dos.PartorlRecordDO;
+import com.bank.manage.dto.PartorlRecordDto;
 import com.bank.manage.dto.PartorlRecordHeadDto;
 import com.bank.manage.service.PartorlRecordService;
 import com.bank.manage.vo.PartorlRecordQueryVo;
@@ -29,7 +29,7 @@ public class PartorlRecordController extends BaseController {
 
     @ApiOperation("获取巡查记录列表")
     @PostMapping("/list")
-    public IPage<PartorlRecordDO> getList(@RequestBody PartorlRecordQueryVo partorlRecordQueryVo){
+    public IPage<PartorlRecordDto> getList(@RequestBody PartorlRecordQueryVo partorlRecordQueryVo){
         return partorlRecordService.getPageRecord(partorlRecordQueryVo);
     }
 

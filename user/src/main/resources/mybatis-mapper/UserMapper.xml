@@ -71,6 +71,7 @@
         <if test="userVO.roleId!=null and userVO.roleId!=''">
             AND UR.ROLE_ID=#{userVO.roleId}
         </if>
+        AND U.USER_WORK_STATUS IN ('正式在岗','借调','待岗培训','其他','总行备员','见习','待岗清收','病休','休产假')
     </select>
 
     <select id="SelectUserRoles" resultType="java.lang.String">

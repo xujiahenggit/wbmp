@@ -11,14 +11,14 @@
 
     <artifactId>core</artifactId>
 
-    <dependencies>
 
+    <dependencies>
         <!-- WebSocket -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
-		
+
 		<!-- 二维码生成 -->
 		<dependency>
 		    <groupId>com.google.zxing</groupId>

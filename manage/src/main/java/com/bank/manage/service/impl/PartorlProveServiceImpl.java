@@ -6,6 +6,7 @@ import com.bank.core.entity.BizException;
 import com.bank.core.entity.FileDo;
 import com.bank.core.utils.ConfigFileReader;
 import com.bank.core.utils.FileUploadUtils;
+import com.bank.core.utils.NetUtil;
 import com.bank.manage.dao.PartorlProveDao;
 import com.bank.manage.dos.PartorlProveDO;
 import com.bank.manage.service.PartorlProveService;
@@ -28,7 +29,8 @@ public class PartorlProveServiceImpl extends ServiceImpl<PartorlProveDao, Partor
 
     @Autowired
     private ConfigFileReader configFileReader;
-
+    @Resource
+    NetUtil netUtil;
     @Resource
     private PartorlProveDao partorlProveDao;
     /**
@@ -45,7 +47,7 @@ public class PartorlProveServiceImpl extends ServiceImpl<PartorlProveDao, Partor
             //上传路径
             String uploadPath=configFileReader.getPROVE_FILE_PATH()+"/"+fist_tab;
             //访问路径
-            String accessPath=configFileReader.getHTTP_PATH()+configFileReader.getPROVE_ACCESS_PATH()+"/"+fist_tab;
+            String accessPath=netUtil.getUrlSuffix("")+configFileReader.getPROVE_ACCESS_PATH()+"/"+fist_tab;
             //原文件名称
             String filename = file.getOriginalFilename();
             //用UUID

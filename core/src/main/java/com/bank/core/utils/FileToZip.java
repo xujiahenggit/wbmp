@@ -41,6 +41,7 @@ public class FileToZip {
             fos = new FileOutputStream(zipFile);
             zos = new ZipOutputStream(new BufferedOutputStream(fos));;
             for (File item : files) {
+                log.info("压缩文件名称："+item.getPath()+"  "+item.getName());
                 byte[] buf = new byte[BUFFER_SIZE];
                 //创建ZIP实体，并添加进压缩包
                 ZipEntry zipEntry = new ZipEntry(item.getName());
@@ -57,6 +58,7 @@ public class FileToZip {
             System.out.println("压缩完成，耗时：" + (end - start) + " ms");
             return zipFile.getPath();
         } catch (Exception e) {
+            log.info("文件压缩异常："+e);
             throw new BizException("压缩文件失败！");
         } finally {
             //关闭流
@@ -74,6 +76,7 @@ public class FileToZip {
                     fis.close();
                 }
             } catch (Exception e) {
+                log.info("压缩文件异常信息："+e);
                 throw new BizException("文件压缩失败");
             }
         }

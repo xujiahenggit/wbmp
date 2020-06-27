@@ -8,6 +8,7 @@ import com.bank.core.utils.ConfigFileReader;
 import com.bank.core.utils.FileToZip;
 import com.bank.manage.dao.PartorlDownloadRecordDao;
 import com.bank.manage.dos.PartorlDownloadRecordDO;
+import com.bank.manage.dos.PartorlRecordDO;
 import com.bank.manage.excel.partorl.PartorlContentExcelEntity;
 import com.bank.manage.excel.partorl.PartorlExcelEntity;
 import com.bank.manage.excel.partorl.PartorlModualExcelEntity;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -88,8 +90,13 @@ public class PartorlDownloadRecordServiceImpl extends ServiceImpl<PartorlDownloa
                     //2.2 查询 证明文件
                     List<String> prveFileList = partorlProveService.selectFilePathByRecordId(partorlRecordId);
                     if(prveFileList.size()>0){
+                        PartorlRecordDO partorlRecordDO=partorlRecordService.getById(partorlIds.get(i));
+                        String zipFileName="证明文件";
+                        if(partorlRecordDO!=null){
+                            zipFileName=partorlRecordDO.getOrgName()+"_"+partorlRecordDO.getPartorlDate()+"_"+partorlRecordDO.getPartorlRecordId()+"_"+"证明文件";
+                        }
                         //打包文件
-                        zipfile=FileToZip.toZip(prveFileList,configFileReader.getRECORD_PROVE_ZIP_PATH(),"证明文件"+i);
+                        zipfile=FileToZip.toZip(prveFileList,configFileReader.getRECORD_PROVE_ZIP_PATH(),zipFileName);
                         listFile.add(zipfile);
                     }
                     //保存下载记录
@@ -161,7 +168,7 @@ public class PartorlDownloadRecordServiceImpl extends ServiceImpl<PartorlDownloa
             partorlRecordExcelEntity.setPartorlContentExcelEntity(listRecordItems);
             list.add(partorlRecordExcelEntity);
         }
-        String title = "大堂经理巡查_" + partorlExcelEntity.getSubBranchName() + "_" + partorlExcelEntity.getOutlets() + "_" + partorlExcelEntity.getPartorlDate();
+        String title = "大堂经理巡查_" + partorlExcelEntity.getSubBranchName() + "_" + partorlExcelEntity.getOutlets() + "_" + partorlExcelEntity.getPartorlDate()+"_"+partorlExcelEntity.getRecordId();
         String sheetName = partorlExcelEntity.getPartorlDate() + "_巡查记录";
         List<PartorlRecordExcelEntity> listRecord = list;
         String fileName=configFileReader.getRECORD_EXCEL()+title+".xls";
@@ -182,9 +189,7 @@ public class PartorlDownloadRecordServiceImpl extends ServiceImpl<PartorlDownloa
             FileOutputStream fos = null;
             Workbook workbook = null;
             ExportParams exportParams = new ExportParams(title, sheetName);
-            synchronized (this) {
-                workbook = ExcelExportUtil.exportExcel(exportParams, PartorlRecordExcelEntity.class, listRecord);
-            }
+            workbook = ExcelExportUtil.exportExcel(exportParams, PartorlRecordExcelEntity.class, listRecord);
             fos = new FileOutputStream(fileName);
             workbook.write(fos);
             workbook.close();

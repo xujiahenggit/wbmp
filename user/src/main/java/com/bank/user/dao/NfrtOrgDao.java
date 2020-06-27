@@ -47,4 +47,10 @@ public interface NfrtOrgDao extends BaseMapper<NfrtOrgDO> {
      * @return
      */
     List<OrgNftDto> getContryOutsitList(@Param(value = "orgId") String orgId);
+
+    /**
+     * 获取所有的网点列表
+     * @return
+     */
+    List<OrgNftDto> getAllOutletList();
 }

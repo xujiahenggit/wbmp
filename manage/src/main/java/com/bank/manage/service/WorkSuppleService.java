@@ -3,14 +3,18 @@ package com.bank.manage.service;
 import com.bank.core.entity.FileDo;
 import com.bank.core.entity.TokenUserInfo;
 import com.bank.manage.dos.WorkSuppleDO;
+import com.bank.manage.dto.FacilitatorDto;
 import com.bank.manage.dto.WorkSuppleDto;
+import com.bank.manage.vo.FacilitatorVo;
 import com.bank.manage.vo.WorkSupplePassRejectVo;
 import com.bank.manage.vo.WorkSuppleQueryVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * @Author: Andy
@@ -77,4 +81,20 @@ public interface WorkSuppleService extends IService<WorkSuppleDO> {
      * @return
      */
     float getRestWorkLenghth(Integer usherId, LocalDate satisfactAttendYear,Integer type);
+
+    /**
+     * 引导员 -待办列表
+     * @param facilitatorVo 查询参数
+     * @param tokenUserInfo 当前登录用户
+     * @return
+     */
+    IPage<FacilitatorDto> getAllWaitList(FacilitatorVo facilitatorVo, TokenUserInfo tokenUserInfo);
+
+    /**
+     * 引导员 已办列表
+     * @param facilitatorVo 查询参数
+     * @param tokenUserInfo 当前登录用户
+     * @return
+     */
+    IPage<FacilitatorDto> getAllAredyList(FacilitatorVo facilitatorVo, TokenUserInfo tokenUserInfo);
 }

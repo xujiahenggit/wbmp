@@ -29,7 +29,7 @@
 
     <!--    复制中间表数据 到核心机构表中-->
     <update id="copyTempData">
-        INSERT INTO T_NFRT_ORG SELECT * FROM T_NFRT_ORG
+        INSERT INTO T_NFRT_ORG SELECT * FROM T_NFRT_ORG_TEMP
     </update>
 
     <!--    分支行/网点列表用-->
@@ -94,5 +94,19 @@
         WHERE
             PARENT_ID = #{orgId}
         AND ORG_STATUS = 1
+    </select>
+
+    <!--    查询所有的网点列表-->
+    <select id="getAllOutletList" resultMap="nftOrgDto">
+        SELECT DISTINCT O.ORG_ID AS NFRT_ORGID,
+         O.ORG_NAME AS NFRT_ORGNAME
+        FROM
+            T_ORGANIZATION O
+        INNER JOIN T_NFRT_ORG NFRT ON CONCAT(
+            NFRT.NFRT_ORG_ID,
+            NFRT.NFRT_ORG_NO
+        ) = O.ORG_CODE
+        WHERE
+            O.ORG_STATUS = '1'
     </select>
 </mapper>

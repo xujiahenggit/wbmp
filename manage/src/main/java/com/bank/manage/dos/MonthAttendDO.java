@@ -75,4 +75,8 @@ public class MonthAttendDO extends Model<MonthAttendDO> {
      */
     @ApiModelProperty(value = "驳回原因")
     private String monthAttendRejectResion;
+
+
+    @ApiModelProperty(value = "创建时间")
+    private LocalDateTime monthAttendCreateTime;
 }

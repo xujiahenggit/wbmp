@@ -5,7 +5,7 @@ application:
 server:
   tomcat:
     basedir: /file
-    port: 8088
+  port: 8088
 spring:
   resources:
     static-locations: classpath:/static/
@@ -141,46 +141,28 @@ ATTEND:
   DOWN_EXCEL_ACCESS_PATH: /video/attend/
 #快乐服务
 HAPPYSERVICE:
-  HAPPY_FILE_PATH: /home/bgm/video/happy
+  HAPPY_FILE_PATH: /video/happy
   HAPPY_ACCESS_PATH: /video/happy
 #活动沙龙
 ACTIVITIE:
-  ACTIVITIE_FILE_PATH: /home/bgm/video/activitie
+  ACTIVITIE_FILE_PATH: /video/activitie
   ACTIVITIE_ACCESS_PATH: /video/activitie
 #外包人员
 CARDSUPPLE:
-  CARD_FILE_PATH: /home/bgm/video/cardsupple
+  CARD_FILE_PATH: /video/cardsupple
   CARD_ACCESS_PATH: /video/cardsupple
   WORK_FILE_PATH: /video/worksupple
   WORK_ACCESS_PATH: /video/worksupple
-##################素材上传配置################
+#素材上传配置
 MATERIAL:
   #素材临时存储路径-共享
-  UPLOAD_FILE_PATH: /home/bgm/video/material
+  UPLOAD_FILE_PATH: /video/material
   #http素材访问路径
   FILE_PATH_FILE: /video/material
   #二维码生成路径
   qrImages: /qrImages
   #http素材临时路径-共享
-  HTTP_PATH: http://162.16.14.78:9080
-  #素材临时存储FTP_IP
-  FILE_FTP_IP: 162.16.14.78
-  #素材临时存储FTP_PORT
-  FILE_FTP_PORT: 21
-  #素材临时存储FTP_USER
-  FILE_FTP_USER: bgm
-  #素材临时存储FTP_PASS
-  FILE_FTP_PASS: em_bank
-  #素材临时存储路径-FTP
-  FILE_FTP_PATH: /material
-  #http素材临时路径-FTP
-  FILE_FTP_HTTP_PATH: http://162.16.14.78:9080/material
+  #HTTP_PATH: http://162.16.14.78:9080
 GAME:
   HTTP_DDL: /multimedia/diandianle/index.html#/?id=
   HTTP_XQDZ: /multimedia/starwar/index.html#/?id=
-
-#mq 发送报文地址
-MESSAGE:
-  #测试地址用
-  PATH: http://162.16.14.78:9080/wbmp-server/jms/topic
-

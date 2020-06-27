@@ -17,7 +17,7 @@ public interface HappyService {
 
     List<DeductDTO> deductStatus(HappyParam param);
 
-    List<Map<String, Integer>> starStatus(HappyParam param);
+    List<Map> starStatus(HappyParam param);
 
     List<Map<String, Integer>>  serviceLevelStatus(HappyParam param);
 }

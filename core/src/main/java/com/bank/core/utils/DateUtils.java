@@ -16,10 +16,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @Author: Andy
@@ -29,13 +26,14 @@ import java.util.List;
 @Slf4j
 public class DateUtils {
 
-    private static final String DATE_yyyyMMdd = "yyyyMMdd" ;
+    private static final String DATE_yyyyMMdd = "yyyyMMdd";
 
-    private static final String DATE_yyyyMMddWithT = "yyyy-MM-DD" ;
 
-    private static final String DATE_yyyyMMddHHmm = "yyyy-MM-dd HH:mm" ;
+    private static final String DATE_yyyyMMddWithT = "yyyy-MM-DD";
 
-    private static final String DATE_yyyyMMddHHmmss = "yyyy-MM-dd HH:mm:ss" ;
+    private static final String DATE_yyyyMMddHHmm = "yyyy-MM-dd HH:mm";
+
+    private static final String DATE_yyyyMMddHHmmss = "yyyy-MM-dd HH:mm:ss";
 
     /**
      * 日期格式化 yyyyMMdd
@@ -52,7 +50,6 @@ public class DateUtils {
     }
 
 
-
     /**
      * 节目 更新时日期格式化
      *
@@ -63,7 +60,7 @@ public class DateUtils {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat(DATE_yyyyMMddHHmm);
             Date d = sdf.parse(date);
-            return sdf.format(d) + ":00" ;
+            return sdf.format(d) + ":00";
         } catch (Exception e) {
             throw new BizException("日期参数异常");
         }
@@ -98,7 +95,7 @@ public class DateUtils {
         // 计算指定月有多少工作日
         int workDays = 0;
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.DAY_OF_MONTH,1);
+        cal.set(Calendar.DAY_OF_MONTH, 1);
         int days = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
         for (int i = 0; i < days; i++) {
             int day = cal.get(Calendar.DAY_OF_WEEK);
@@ -113,8 +110,10 @@ public class DateUtils {
     public static Date asDate(LocalDateTime localDateTime) {
         return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
+
     /**
      * java获取 当月所有的日期集合
+     *
      * @return
      */
     public static List<String> getDayListOfMonth() {
@@ -123,20 +122,20 @@ public class DateUtils {
         int year = aCalendar.get(Calendar.YEAR);//年份
         int month = aCalendar.get(Calendar.MONTH) + 1;//月份
         int day = aCalendar.getActualMaximum(Calendar.DATE);
-        String monthStr="0";
-        if(month<10){
-            monthStr="0"+month;
-        }else{
-            monthStr=String.valueOf(month);
+        String monthStr = "0";
+        if (month < 10) {
+            monthStr = "0" + month;
+        } else {
+            monthStr = String.valueOf(month);
         }
         for (int i = 1; i <= day; i++) {
-            String days="0";
-            if(i<10){
-                days="0"+i;
-            }else {
-                days=String.valueOf(i);
+            String days = "0";
+            if (i < 10) {
+                days = "0" + i;
+            } else {
+                days = String.valueOf(i);
             }
-            String aDate = String.valueOf(year)+"-"+monthStr+"-"+days;
+            String aDate = String.valueOf(year) + "-" + monthStr + "-" + days;
             try {
                 list.add(aDate);
             } catch (Exception e) {
@@ -146,6 +145,7 @@ public class DateUtils {
         }
         return list;
     }
+
     //获取指定年份 月份的全部日期
     public static List<String> geDaysInMonth(int year, int month) {
         List list = new ArrayList();
@@ -157,17 +157,17 @@ public class DateUtils {
         for (int i = 0; i < daySize; i++) {
             calendar.add(Calendar.DATE, 1);//在第一天的基础上加1
             int day = calendar.get(Calendar.DAY_OF_MONTH);
-            if (day < 10){
-                if(month<10){
-                    list.add(year+"-0"+month+"-0"+day);// 得到当天是一个月的第几天
-                }else{
-                    list.add(year+"-"+month+"-0"+day);// 得到当天是一个月的第几天
+            if (day < 10) {
+                if (month < 10) {
+                    list.add(year + "-0" + month + "-0" + day);// 得到当天是一个月的第几天
+                } else {
+                    list.add(year + "-" + month + "-0" + day);// 得到当天是一个月的第几天
                 }
-            }else{
-                if(month<10){
-                    list.add(year+"-0"+month+"-"+day);// 得到当天是一个月的第几天
-                }else{
-                    list.add(year+"-"+month+"-"+day);// 得到当天是一个月的第几天
+            } else {
+                if (month < 10) {
+                    list.add(year + "-0" + month + "-" + day);// 得到当天是一个月的第几天
+                } else {
+                    list.add(year + "-" + month + "-" + day);// 得到当天是一个月的第几天
                 }
             }
         }
@@ -177,6 +177,7 @@ public class DateUtils {
 
     /**
      * 获取当月的所有周末
+     *
      * @param year
      * @param month
      * @return
@@ -188,11 +189,11 @@ public class DateUtils {
         calendar.set(Calendar.MONTH, month - 1);// 设置月份
         calendar.set(Calendar.DAY_OF_MONTH, 1);// 设置为当月第一天
         int daySize = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);// 当月最大天数
-        for (int i = 0; i < daySize-1; i++) {
+        for (int i = 0; i < daySize - 1; i++) {
             calendar.add(Calendar.DATE, 1);//在第一天的基础上加1
             int week = calendar.get(Calendar.DAY_OF_WEEK);
             if (week == Calendar.SATURDAY || week == Calendar.SUNDAY) {// 1代表周日，7代表周六 判断这是一个星期的第几天从而判断是否是周末
-                list.add(year+"-"+month+"-"+calendar.get(Calendar.DAY_OF_MONTH));// 得到当天是一个月的第几天
+                list.add(year + "-" + month + "-" + calendar.get(Calendar.DAY_OF_MONTH));// 得到当天是一个月的第几天
             }
         }
         return list;
@@ -200,12 +201,13 @@ public class DateUtils {
 
     /**
      * 获取当前日期之前所有工作日
+     *
      * @param year
      * @param month
      * @param day
      * @return
      */
-    public static List getWorkInMonthByday(int year, int month,int day) {
+    public static List getWorkInMonthByday(int year, int month, int day) {
         List list = new ArrayList();
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, year);// 不设置的话默认为当年
@@ -215,19 +217,19 @@ public class DateUtils {
         for (int i = 0; i < daySize; i++) {
             calendar.add(Calendar.DATE, 1);//在第一天的基础上加1
             int week = calendar.get(Calendar.DAY_OF_WEEK);
-            if(calendar.get(Calendar.DAY_OF_MONTH) <= day){
+            if (calendar.get(Calendar.DAY_OF_MONTH) <= day) {
                 if (!(week == Calendar.SATURDAY || week == Calendar.SUNDAY)) {// 1代表周日，7代表周六 判断这是一个星期的第几天从而判断是否是周末
-                    if(calendar.get(Calendar.DAY_OF_MONTH) <10){
-                        if(month<10){
-                            list.add(year+"-"+"0"+month+"-"+"0"+calendar.get(Calendar.DAY_OF_MONTH));
-                        }else{
-                            list.add(year+"-"+month+"-"+"0"+calendar.get(Calendar.DAY_OF_MONTH));
+                    if (calendar.get(Calendar.DAY_OF_MONTH) < 10) {
+                        if (month < 10) {
+                            list.add(year + "-" + "0" + month + "-" + "0" + calendar.get(Calendar.DAY_OF_MONTH));
+                        } else {
+                            list.add(year + "-" + month + "-" + "0" + calendar.get(Calendar.DAY_OF_MONTH));
                         }
-                    }else{
-                        if(month<10){
-                            list.add(year+"-"+"0"+month+"-"+calendar.get(Calendar.DAY_OF_MONTH));
-                        }else{
-                            list.add(year+"-"+month+"-"+calendar.get(Calendar.DAY_OF_MONTH));
+                    } else {
+                        if (month < 10) {
+                            list.add(year + "-" + "0" + month + "-" + calendar.get(Calendar.DAY_OF_MONTH));
+                        } else {
+                            list.add(year + "-" + month + "-" + calendar.get(Calendar.DAY_OF_MONTH));
                         }
                     }
                 }
@@ -239,6 +241,7 @@ public class DateUtils {
 
     /**
      * 获取当月的所有工作日
+     *
      * @param year
      * @param month
      * @return
@@ -247,22 +250,22 @@ public class DateUtils {
         List dates = new ArrayList<>();
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, year);
-        cal.set(Calendar.MONTH,  month - 1);
+        cal.set(Calendar.MONTH, month - 1);
         cal.set(Calendar.DATE, 1);
-        while(cal.get(Calendar.YEAR) == year && cal.get(Calendar.MONTH) < month){
+        while (cal.get(Calendar.YEAR) == year && cal.get(Calendar.MONTH) < month) {
             int day = cal.get(Calendar.DAY_OF_WEEK);
-            if(!(day == Calendar.SUNDAY || day == Calendar.SATURDAY)){
-                if(cal.get(Calendar.DAY_OF_MONTH) <10){
-                    if(month<10){
-                        dates.add(year+"-"+"0"+month+"-"+"0"+cal.get(Calendar.DAY_OF_MONTH));
-                    }else{
-                        dates.add(year+"-"+month+"-"+"0"+cal.get(Calendar.DAY_OF_MONTH));
+            if (!(day == Calendar.SUNDAY || day == Calendar.SATURDAY)) {
+                if (cal.get(Calendar.DAY_OF_MONTH) < 10) {
+                    if (month < 10) {
+                        dates.add(year + "-" + "0" + month + "-" + "0" + cal.get(Calendar.DAY_OF_MONTH));
+                    } else {
+                        dates.add(year + "-" + month + "-" + "0" + cal.get(Calendar.DAY_OF_MONTH));
                     }
-                }else{
-                    if(month<10){
-                        dates.add(year+"-"+"0"+month+"-"+cal.get(Calendar.DAY_OF_MONTH));
-                    }else{
-                        dates.add(year+"-"+month+"-"+cal.get(Calendar.DAY_OF_MONTH));
+                } else {
+                    if (month < 10) {
+                        dates.add(year + "-" + "0" + month + "-" + cal.get(Calendar.DAY_OF_MONTH));
+                    } else {
+                        dates.add(year + "-" + month + "-" + cal.get(Calendar.DAY_OF_MONTH));
                     }
                 }
             }
@@ -273,7 +276,8 @@ public class DateUtils {
 
     /**
      * 获取两个时间差
-     * @param lastTime 结束时间
+     *
+     * @param lastTime  结束时间
      * @param firstTime 开始时间
      * @return 小时数  小数点保存2位
      */
@@ -300,22 +304,23 @@ public class DateUtils {
         return NumberUtil.round(hour + temHout, 2);
     }
 
-    public static String dateToWeek(String datetime)  {
+    public static String dateToWeek(String datetime) {
         SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
-        String[] weekDays = { "星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六" };
+        String[] weekDays = {"星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"};
         Calendar cal = Calendar.getInstance(); // 获得一个日历
         Date datet = null;
         try {
             datet = (Date) f.parse(datetime);
-        } catch (ParseException e) {e.printStackTrace(); }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         cal.setTime(datet);
         int w = cal.get(Calendar.DAY_OF_WEEK) - 1; // 指示一个星期中的某天。
-        if (w < 0){
+        if (w < 0) {
             w = 0;
         }
         return weekDays[w];
     }
-
 
 
     /**
@@ -332,11 +337,12 @@ public class DateUtils {
 
     /**
      * LocalDate转Date
+     *
      * @param localDate
      * @return
      */
     public static Date localDate2Date(LocalDate localDate) {
-        if(null == localDate) {
+        if (null == localDate) {
             return null;
         }
         ZonedDateTime zonedDateTime = localDate.atStartOfDay(ZoneId.systemDefault());
@@ -346,59 +352,176 @@ public class DateUtils {
 
     /**
      * 获取 月初 日期
+     *
      * @param date
      * @return
      */
-   public static String getFirstDayOfMounth(String date){
-       //获取月初
-       LocalDate monthOfFirstDate=LocalDate.parse(date,
-               DateTimeFormatter.ofPattern("yyyy-MM-dd")).with(TemporalAdjusters.firstDayOfMonth());
-       return monthOfFirstDate.toString();
-   }
+    public static String getFirstDayOfMounth(String date) {
+        //获取月初
+        LocalDate monthOfFirstDate = LocalDate.parse(date,
+                DateTimeFormatter.ofPattern("yyyy-MM-dd")).with(TemporalAdjusters.firstDayOfMonth());
+        return monthOfFirstDate.toString();
+    }
 
     /**
      * 获取 月末日期
+     *
      * @param date
      * @return
      */
-   public static String getLastDayOfMonth(String date){
-       //获取月初
-       //获取月末
-       LocalDate monthOfLastDate=LocalDate.parse(date,
-               DateTimeFormatter.ofPattern("yyyy-MM-dd")).with(TemporalAdjusters.lastDayOfMonth());
-       return monthOfLastDate.toString();
-   }
+    public static String getLastDayOfMonth(String date) {
+        //获取月初
+        //获取月末
+        LocalDate monthOfLastDate = LocalDate.parse(date,
+                DateTimeFormatter.ofPattern("yyyy-MM-dd")).with(TemporalAdjusters.lastDayOfMonth());
+        return monthOfLastDate.toString();
+    }
 
 
-    public static String formatSeconds(Integer seconds){
-       if (seconds==null){
-           return "";
-       }
+    public static String formatSeconds(Integer seconds) {
+        if (seconds == null) {
+            return "";
+        }
         String str = DateUtil.formatBetween(seconds * 1000, BetweenFormater.Level.SECOND);
-        String[] level= {"小时","分","秒"};
-        String[] arr={"00","00","00"};
+        String[] level = {"小时", "分", "秒"};
+        String[] arr = {"00", "00", "00"};
         for (int i = 0; i < 3; i++) {
             String dw = level[i];
-            if (str.indexOf(dw)!=-1){
+            if (str.indexOf(dw) != -1) {
                 String[] split = str.split(dw);
                 String tem = split[0];
-                if (tem.length()==1&&i!=0){
+                if (tem.length() == 1 && i != 0) {
                     //分钟或者秒补零
-                    arr[i] = "0"+tem;
-                }else {
+                    arr[i] = "0" + tem;
+                } else {
                     arr[i] = tem;
                 }
 
-                if (split.length==2){
+                if (split.length == 2) {
                     str = split[1];
                 }
             }
 
         }
-        return ArrayUtil.join(arr,":");
+        return ArrayUtil.join(arr, ":");
     }
 
 
+    /**
+     * 获取当前日期 前15天 不包含当天
+     *
+     * @return
+     */
+    public static List<String> getDateBefor15() {
+        SimpleDateFormat sf = new SimpleDateFormat(DATE_yyyyMMdd);
+        List<String> dates = new ArrayList<>();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        Date dateBeforeDate = calendar.getTime();
+        for (int i = 0; i < 15; i++) {
+            String time = sf.format(dateBeforeDate.getTime() - i * 24 * 60 * 60 * 1000);
+            dates.add(time);
+        }
+        Collections.reverse(dates);
+        return dates;
+    }
 
 
+    /**
+     * 获取 最近12个月 不包含本月
+     *
+     * @return
+     */
+    public static List<String> getLatest12Month() {
+        List<String> listMounth = new ArrayList<>();
+        LocalDate today = LocalDate.now();
+        for (long i = 1L; i <= 12L; i++) {
+            LocalDate localDate = today.minusMonths(i);
+            String ss = localDate.toString().substring(0, 7);
+            listMounth.add(ss);
+        }
+        Collections.reverse(listMounth);
+        return listMounth;
+    }
+
+    /**
+     * 取前3年  包含本年
+     *
+     * @return
+     */
+    public static List<String> getLatest3Year() {
+        List<String> listYear = new ArrayList<>();
+        LocalDate today = LocalDate.now();
+        for (int i = 0; i < 3; i++) {
+            LocalDate localDate = today.minusYears(i);
+            String ss = localDate.toString().substring(0, 4);
+            listYear.add(ss);
+        }
+        Collections.reverse(listYear);
+        return listYear;
+    }
+
+
+    public static String formartToMonthDay(String datestr) {
+        String temp = datestr.substring(4, 8);
+        return temp.substring(0, 2) + "月" + temp.substring(2, 4) + "日";
+    }
+
+    /**
+     * 获取上月 最后一天
+     *
+     * @return
+     */
+    public static String getLastMonthLastDay() {
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+
+        Calendar calendar = Calendar.getInstance();
+
+        int month = calendar.get(Calendar.MONTH);
+
+        calendar.set(Calendar.MONTH, month - 1);
+
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        return sf.format(calendar.getTime());
+    }
+
+    /**
+     * 获取上个季度 最后一天
+     *
+     * @return
+     */
+    public static String getLastQuarterLastDay() {
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.set(Calendar.MONTH, ((int) endCalendar.get(Calendar.MONTH) / 3 - 1) * 3 + 2);
+        endCalendar.set(Calendar.DAY_OF_MONTH, endCalendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        setMaxTime(endCalendar);
+        return sf.format(endCalendar.getTime());
+    }
+
+    private static void setMaxTime(Calendar calendar) {
+        calendar.set(Calendar.HOUR_OF_DAY, calendar.getActualMaximum(Calendar.HOUR_OF_DAY));
+        calendar.set(Calendar.MINUTE, calendar.getActualMaximum(Calendar.MINUTE));
+        calendar.set(Calendar.SECOND, calendar.getActualMaximum(Calendar.SECOND));
+        calendar.set(Calendar.MILLISECOND, calendar.getActualMaximum(Calendar.MILLISECOND));
+    }
+
+    /**
+     * 获取上年 最后一天
+     * @return
+     */
+    public static String getLastYearLastDay(){
+        SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
+        Calendar c = Calendar.getInstance(Locale.CHINA);
+        c.add(Calendar.YEAR, -1);
+        c.set(Calendar.DAY_OF_YEAR, c.getActualMaximum(Calendar.DAY_OF_YEAR));
+        return f.format(c.getTime());
+    }
+
+    public static void main(String[] args) {
+        DateTimeFormatter dateTimeFormatter=DateTimeFormatter.ofPattern("yyyy-mm");
+        String date= LocalDate.now().minusDays(1).toString().substring(0, 7);
+        System.out.println(date);
+    }
 }
