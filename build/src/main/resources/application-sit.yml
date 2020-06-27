@@ -5,7 +5,7 @@ application:
 server:
   tomcat:
     basedir: /file
-  port: 8088
+    port: 8088
 spring:
   resources:
     static-locations: classpath:/static/
