@@ -1,22 +1,29 @@
 package com.bank.core.entity;
 
-import lombok.AllArgsConstructor;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.UUID;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
+import java.time.LocalDateTime;
 @NoArgsConstructor
-@AllArgsConstructor
+@Data
 public class HeaderDO {
+
     private String ServiceCode;
-    private String ChannelId;
-    private String ExternalReference;
-    private String RequestTime;
-    private String TradeDate;
-    private String Version;
+    private String AuthorizerID;
+    private String ChannelId="811";
+    private String ExternalReference= UUID.randomUUID().toString();
+    private String RequestTime= DateUtil.format(LocalDateTime.now(),"yyyyMMddHHmmssSSS");
+    private String TradeDate= DateUtil.format(LocalDateTime.now(),"yyyyMMdd");
+    private String Version="1.0";
     private String RequestBranchCode;
     private String RequestOperatorId;
-    private String Encrypt;
+    private String RequestOperatorType;
     private String Uuid;
     private String CliPhysicAddr;
+    private String TermType="00000";
+    private String TermNo="0000000000";
+    private String Encrypt="0";
+    private String RequestType="1";
 }
