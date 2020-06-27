@@ -1,6 +1,5 @@
 package com.bank.icop.service;
 
-import com.bank.core.entity.PageQueryModel;
 import com.bank.core.entity.TokenUserInfo;
 import com.bank.icop.dos.OrderDetailDo;
 import com.bank.icop.dos.VoucherNumberDo;
@@ -15,13 +14,13 @@ public interface CashVoucherService {
 
     List queryVoucherNumber(VoucherNumberDo voucherNumberDo);
 
-    Boolean voucherNumberSave(InputVoucherNumberVo inputVoucherNumberVo);
+    Object voucherNumberSave(InputVoucherNumberVo inputVoucherNumberVo);
 
-    Boolean updateOrderStatus(UpdateOrderStatusVo updateOrderStatusVo);
+    Object updateOrderStatus(UpdateOrderStatusVo updateOrderStatusVo);
 
-    Boolean deleteOrderDeatil(String userId, String orderId, String orderDeatild);
+    Object deleteOrderDeatil(String userId, String orderId, String orderDeatild);
 
-    Boolean updateOrderDetail(UpdateOrderDetailVo updateOrderDetailVo);
+    Object updateOrderDetail(UpdateOrderDetailVo updateOrderDetailVo);
 
     /**
      * 获取角色信息
@@ -57,9 +56,9 @@ public interface CashVoucherService {
 
     Object orderList(String orderType);
 
-    ReceiptInfoVo getReceiptInfoByOrg(String orgId);
-
     Object queryIsSure(OrderDetailListVo orderDetailListVo);
+
+    ReceiptInfoVo getReceiptInfoByOrg(String orgId);
 
     List<OrderDetailDo> queryDetailList(OrderQueryDetailVo orderQueryDetailVo);
 }
