@@ -39,7 +39,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         List<VoucherStockVo> list = new ArrayList<>();
         if(CollectionUtil.isNotEmpty(report)){
             VoucherStockVo vo = new VoucherStockVo();
-            vo.setNum((Integer) report.get("num"));
+            vo.setNum((String) report.get("num"));
             vo.setVoucherName((String)report.get("voucherName"));
             vo.setVoucherStatus((String)report.get("voucherStatus"));
             vo.setVoucherNo((String)report.get("voucherNo"));
