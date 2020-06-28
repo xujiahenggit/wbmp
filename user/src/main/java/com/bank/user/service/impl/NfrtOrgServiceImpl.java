@@ -114,7 +114,8 @@ public class NfrtOrgServiceImpl extends ServiceImpl<NfrtOrgDao, NfrtOrgDO> imple
         //如果不是总行 则查询他所在的机构
         //查询当前用户 所在的机构号
         OrganizationDO organizationDO=organizationService.getById(tokenUserInfo.getOrgId());
-        return nfrtOrgDao.getOrgListByUser(organizationDO.getOrgDepartId());
+        String depateId=organizationDO.getOrgUnitId();
+        return nfrtOrgDao.getOrgListByUser(depateId);
     }
 
     /**

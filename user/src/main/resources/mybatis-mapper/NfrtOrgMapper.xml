@@ -141,7 +141,7 @@
         ) = O.ORG_CODE
         WHERE
             O.ORG_STATUS = '1'
-        AND O.ORG_ID NOT LIKE '17%' AND O.ORG_DEPART_ID=#{orgDepartId}
+        AND O.ORG_ID NOT LIKE '17%' AND O.ORG_UNIT_ID=#{orgDepartId}
     </select>
 
 
@@ -157,7 +157,7 @@
                 ) = O.ORG_CODE
                 WHERE
         O.ORG_STATUS = '1'
-        AND O.ORG_DEPART_ID =#{departId}
+        AND O.ORG_UNIT_ID =#{departId}
         AND O.ORG_ID =#{orgId}
     </select>
 </mapper>

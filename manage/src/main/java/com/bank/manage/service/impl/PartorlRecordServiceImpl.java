@@ -86,7 +86,12 @@ public class PartorlRecordServiceImpl extends ServiceImpl<PartorlRecordDao, Part
         boolean flag=organizationService.isHeadOffice(tokenUserInfo.getOrgId());
         List<String> outSiteOrgList=new ArrayList<>();
         //如果不是总行的
-        if(!flag){
+        if(flag){
+            if(StrUtil.isNotBlank(partorlRecordQueryVo.getBranchNo())){
+                //分行下面 所有的机构号
+                outSiteOrgList=nfrtOrgService.getSubOutSiteList(partorlRecordQueryVo.getBranchNo());
+            }
+        }else{
             if(StrUtil.isNotBlank(partorlRecordQueryVo.getBranchNo())){
                 //分行下面 所有的机构号
                 outSiteOrgList=nfrtOrgService.getSubOutSiteList(partorlRecordQueryVo.getBranchNo());
