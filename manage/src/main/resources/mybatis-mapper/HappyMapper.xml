@@ -28,7 +28,7 @@
             </otherwise>
         </choose>
         WHERE EXCEL_QUARTER = #{quarter} AND EXCEL_DATE = #{year} AND EXAMINE_ID IS NULL
-        <if test="orgids!=null">
+        <if test="orgids!=''">
            AND ORG_ID IN (#{orgids})
         </if>
         GROUP BY ORG_ID,ORG_NAME ORDER BY EXAMINE_SCORE DESC
@@ -84,7 +84,7 @@
         </choose>
         ON b.ID = a.EXAMINE_ID
         WHERE b.EXCEL_DATE = #{year} AND b.EXCEL_QUARTER = #{quarter}
-        <if test="orgids!=null">
+        <if test="orgids!=''">
             AND ORG_ID IN (#{orgids})
         </if>
         GROUP BY a.TWO_MODULE ORDER BY DEDUCTION DESC
@@ -102,13 +102,13 @@
         </choose>
             WHERE START_YEAR = #{year}
             <choose>
-                <when test="orgids!=null and networks!=null">
+                <when test="orgids!='' and networks!=''">
                     AND (BRANCH_ORG_ID IN (#{orgids}) OR OUT_ORG_ID IN (#{networks}))
                 </when>
-                <when test="orgids!=null and networks==null">
+                <when test="orgids!='' and networks==''">
                     AND BRANCH_ORG_ID IN (#{orgids})
                 </when>
-                <when test="orgids==null and networks!=null">
+                <when test="orgids=='' and networks!=''">
                     AND OUT_ORG_ID IN (#{networks})
                 </when>
             </choose>
@@ -135,7 +135,7 @@
                 </otherwise>
             </choose>
             WHERE EXCEL_QUARTER = #{quarter} AND EXCEL_DATE = #{year}
-            <if test="orgids!=null">
+            <if test="orgids!=''">
                 AND ORG_ID IN (#{orgids})
             </if>
         )a GROUP BY a.level
