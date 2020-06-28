@@ -65,4 +65,39 @@ public class WbmpConstFile {
     public static final String CASH_ACCEPTOR_CASSFULL="CASSFULL";
     public static final String CASH_ACCEPTOR_CASSFULL_NAME="钞箱满";
 
+
+    /**
+     * 取消无纸化比率
+     */
+    public static final String SMZ_RACING_001="RACING_001";
+    /**
+     * 自助设备可用率
+     */
+    public static final String SMZ_RACING_002="RACING_002";
+
+    /**
+     * 银企对账率
+     */
+    public static final String SMZ_RACING_003="RACING_003";
+    /**
+     *电子对账率
+     */
+    public static final String SMZ_RACING_004="RACING_004";
+
+    /**
+     * 现金业务分流率
+     */
+    public static final String SMZ_RACING_005="RACING_005";
+    /**
+     * 自助设备业务分担率
+     */
+    public static final String SMZ_RACING_006="RACING_006";
+    /**
+     * 对公账户线上开户率
+     */
+    public static final String SMZ_RACING_007="RACING_007";
+    /**
+     * 个人及企业客户线上开通率
+     */
+    public static final String SMZ_RACING_008="RACING_008";
 }

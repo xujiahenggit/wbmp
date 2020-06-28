@@ -204,6 +204,8 @@ public class TranslateUserDataJob implements Job {
         userDO.setUserGender("男");
         //身份证号码
         userDO.setUserIdentiyno("111111111111111111");
+        //设置在岗状态
+        userDO.setUserWorkStatus("正式在岗");
         return userDO;
     }
 }

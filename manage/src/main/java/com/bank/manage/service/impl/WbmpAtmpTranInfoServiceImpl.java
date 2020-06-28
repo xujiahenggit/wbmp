@@ -23,4 +23,16 @@ public class WbmpAtmpTranInfoServiceImpl extends ServiceImpl<WbmpAtmpTranInfoDao
     public int getCurrentMonthAtmTranNum(String orgId, String date) {
         return 0;
     }
+
+    /**
+     * 查询 业务流水量
+     *
+     * @param orgId 机构号
+     * @param date  日期
+     * @return
+     */
+    @Override
+    public int getFlowNum(String orgId, String date) {
+        return 0;
+    }
 }

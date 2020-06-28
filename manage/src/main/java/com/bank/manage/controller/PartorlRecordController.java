@@ -29,8 +29,9 @@ public class PartorlRecordController extends BaseController {
 
     @ApiOperation("获取巡查记录列表")
     @PostMapping("/list")
-    public IPage<PartorlRecordDto> getList(@RequestBody PartorlRecordQueryVo partorlRecordQueryVo){
-        return partorlRecordService.getPageRecord(partorlRecordQueryVo);
+    public IPage<PartorlRecordDto> getList(@RequestBody PartorlRecordQueryVo partorlRecordQueryVo,HttpServletRequest request){
+        TokenUserInfo tokenUserInfo=getCurrentUserInfo(request);
+        return partorlRecordService.getPageRecord(partorlRecordQueryVo,tokenUserInfo);
     }
 
 

@@ -62,6 +62,12 @@
         <if test="partorlRecordQueryVo.orgId!=null and partorlRecordQueryVo.orgId!=''">
             AND PRD.ORG_ID=#{partorlRecordQueryVo.orgId}
         </if>
+        <if test="outSiteOrgList!=null and outSiteOrgList.size>0">
+            AND PRD.ORG_ID IN
+            <foreach collection="outSiteOrgList" item="id" index="index" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
         AND PP.PARTORL_PROCESS_STATE=20
     </select>
 

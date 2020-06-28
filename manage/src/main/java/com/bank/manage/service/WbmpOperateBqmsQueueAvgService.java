@@ -22,4 +22,12 @@ public interface WbmpOperateBqmsQueueAvgService extends IService<WbmpOperateBqms
      * 获取月度平均弃号率
      */
     String getAvgAbondVe(String orgId);
+
+    /**
+     * 查询客户 平均等待时长
+     * @param orgId 机构号
+     * @param date 时间
+     * @return
+     */
+    float getCustmerWaitTime(String orgId, String date);
 }

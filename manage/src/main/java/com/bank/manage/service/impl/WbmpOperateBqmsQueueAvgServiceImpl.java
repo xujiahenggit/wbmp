@@ -50,4 +50,15 @@ public class WbmpOperateBqmsQueueAvgServiceImpl extends ServiceImpl<WbmpOperateB
         String avgAbandve = wbmpOperateBqmsQueueAvgDao.getOrgAvgAbandVe(orgId,date);
         return avgAbandve;
     }
+
+    /**
+     * 客户平均等待时长
+     * @param orgId 机构号
+     * @param date 时间
+     * @return
+     */
+    @Override
+    public float getCustmerWaitTime(String orgId, String date) {
+        return wbmpOperateBqmsQueueAvgDao.getCustmerWaitTime(orgId,date);
+    }
 }

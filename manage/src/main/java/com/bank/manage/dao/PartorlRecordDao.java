@@ -9,6 +9,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * @Author: Andy
  * @Date: 2020/5/12 15:07
@@ -27,5 +29,5 @@ public interface PartorlRecordDao extends BaseMapper<PartorlRecordDO> {
      * @param partorlRecordQueryVo 查询参数
      * @return
      */
-    IPage<PartorlRecordDto> selectRecordPage(Page<PartorlRecordDto> page,@Param(value = "partorlRecordQueryVo") PartorlRecordQueryVo partorlRecordQueryVo);
+    IPage<PartorlRecordDto> selectRecordPage(Page<PartorlRecordDto> page, @Param(value = "partorlRecordQueryVo") PartorlRecordQueryVo partorlRecordQueryVo,@Param(value = "outSiteOrgList") List<String> outSiteOrgList);
 }

@@ -45,4 +45,7 @@ public class PartorlRecordQueryVo implements Serializable {
 
     @ApiModelProperty("机构编号")
     private String orgId;
+
+    @ApiModelProperty("分行机构号")
+    private String branchNo;
 }

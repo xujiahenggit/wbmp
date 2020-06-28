@@ -20,7 +20,7 @@ public interface PartorlRecordService extends IService<PartorlRecordDO> {
      * @param partorlRecordQueryVo 查询参数
      * @return
      */
-    IPage<PartorlRecordDto> getPageRecord(PartorlRecordQueryVo partorlRecordQueryVo);
+    IPage<PartorlRecordDto> getPageRecord(PartorlRecordQueryVo partorlRecordQueryVo, TokenUserInfo tokenUserInfo);
 
     /**
      * 保存巡查内容信息
@@ -51,5 +51,5 @@ public interface PartorlRecordService extends IService<PartorlRecordDO> {
      * @param tokenUserInfo 当前登录用户
      * @return
      */
-    PartorlRecordHeadDto getHeadInfo(Integer processId,TokenUserInfo tokenUserInfo);
+    PartorlRecordHeadDto getHeadInfo(Integer processId, TokenUserInfo tokenUserInfo);
 }

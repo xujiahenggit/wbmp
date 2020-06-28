@@ -109,4 +109,55 @@
         WHERE
             O.ORG_STATUS = '1'
     </select>
+
+
+    <!--    获取分行下面的所有的网点列表-->
+    <select id="getSubOutSiteList" resultType="java.lang.String">
+             SELECT DISTINCT
+                O.ORG_ID AS NFRT_ORGID,
+                O.ORG_NAME AS NFRT_ORGNAME
+            FROM
+                T_ORGANIZATION O
+            INNER JOIN T_NFRT_ORG NFRT ON CONCAT(
+                NFRT.NFRT_ORG_ID,
+                NFRT.NFRT_ORG_NO
+            ) = O.ORG_CODE
+            WHERE
+                O.ORG_STATUS = '1'
+            AND O.ORG_UNIT_ID=#{branchNo}
+    </select>
+
+    <!--    查询用户所在的分行-->
+    <select id="getOrgListByUser" resultMap="nftOrgDto">
+        SELECT DISTINCT
+            O.ORG_UNIT_ID AS NFRT_ORGID,
+            O.ORG_UNIT_NAME AS NFRT_ORGNAME,
+            'TYPE_N' TYPE
+        FROM
+            T_ORGANIZATION O
+        INNER JOIN T_NFRT_ORG NFRT ON CONCAT(
+            NFRT.NFRT_ORG_ID,
+            NFRT.NFRT_ORG_NO
+        ) = O.ORG_CODE
+        WHERE
+            O.ORG_STATUS = '1'
+        AND O.ORG_ID NOT LIKE '17%' AND O.ORG_DEPART_ID=#{orgDepartId}
+    </select>
+
+
+    <!--    查询用户所在的分行列表-->
+    <select id="getOutlegetOutSitListByUsertsList" resultMap="nftOrgDto">
+        SELECT DISTINCT O.ORG_ID AS NFRT_ORGID,
+                 O.ORG_NAME AS NFRT_ORGNAME
+                FROM
+                    T_ORGANIZATION O
+                INNER JOIN T_NFRT_ORG NFRT ON CONCAT(
+                    NFRT.NFRT_ORG_ID,
+                    NFRT.NFRT_ORG_NO
+                ) = O.ORG_CODE
+                WHERE
+        O.ORG_STATUS = '1'
+        AND O.ORG_DEPART_ID =#{departId}
+        AND O.ORG_ID =#{orgId}
+    </select>
 </mapper>

@@ -53,4 +53,26 @@ public interface NfrtOrgDao extends BaseMapper<NfrtOrgDO> {
      * @return
      */
     List<OrgNftDto> getAllOutletList();
+
+    /**
+     * 获取分行下面的所有的机构列表
+     * @param branchNo 分行编号
+     * @return
+     */
+    List<String> getSubOutSiteList(@Param(value = "branchNo") String branchNo);
+
+    /**
+     * 根绝  用户所在机构号 查询分行列表
+     * @param orgDepartId 用户所在的分行号
+     * @return
+     */
+    List<OrgNftDto> getOrgListByUser(@Param(value = "orgDepartId") String orgDepartId);
+
+    /**
+     * 根据 用户所在的机构号 查询 网点列表
+     * @param departId 分行机构号
+     * @param orgId 用户所在的机构号
+     * @return
+     */
+    List<OrgNftDto> getOutlegetOutSitListByUsertsList(@Param(value = "departId") String departId, @Param(value = "orgId") String orgId);
 }

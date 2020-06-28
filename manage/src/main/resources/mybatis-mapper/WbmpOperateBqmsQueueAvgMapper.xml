@@ -30,5 +30,9 @@
          AND  DATE_FORMAT (DATA_DT, '%Y-%m' )=#{date}
     </select>
 
+    <!--    客户平均等待时长-->
+    <select id="getCustmerWaitTime" resultType="java.lang.Float">
+        SELECT IFNULL((SELECT INDEX_CNT FROM wbmp_operate_bqms_queue_avg WHERE ORG_ID=#{orgId} AND DATE_FORMAT(DATA_DT,'%Y-%m-%d')=#{date}),0)
+    </select>
 
 </mapper>

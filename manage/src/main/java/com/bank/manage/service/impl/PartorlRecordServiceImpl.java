@@ -13,6 +13,9 @@ import com.bank.core.utils.NetUtil;
 import com.bank.core.utils.StringSplitUtil;
 import com.bank.manage.dos.*;
 import com.bank.manage.dto.PartorlRecordDto;
+import com.bank.user.dos.NfrtOrgDO;
+import com.bank.user.service.NfrtOrgService;
+import com.bank.user.service.OrganizationService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,6 +64,13 @@ public class PartorlRecordServiceImpl extends ServiceImpl<PartorlRecordDao, Part
     @Resource
     private NetUtil netUtil;
 
+    @Resource
+    private NfrtOrgService nfrtOrgService;
+
+
+    @Resource
+    private OrganizationService organizationService;
+
     /**
      * 分页查询 巡查记录
      *
@@ -68,10 +78,23 @@ public class PartorlRecordServiceImpl extends ServiceImpl<PartorlRecordDao, Part
      * @return
      */
     @Override
-    public IPage<PartorlRecordDto> getPageRecord(PartorlRecordQueryVo partorlRecordQueryVo) {
+    public IPage<PartorlRecordDto> getPageRecord(PartorlRecordQueryVo partorlRecordQueryVo,TokenUserInfo tokenUserInfo) {
         Page<PartorlRecordDto> page = new Page<>(partorlRecordQueryVo.getPageIndex(), partorlRecordQueryVo.getPageSize());
-        return this.partorlRecordDao.selectRecordPage(page, partorlRecordQueryVo);
+
+        //检查是不是总行的人
+        //如果是总行的人 则显示所有的数据
+        boolean flag=organizationService.isHeadOffice(tokenUserInfo.getOrgId());
+        List<String> outSiteOrgList=new ArrayList<>();
+        //如果不是总行的
+        if(!flag){
+            if(StrUtil.isNotBlank(partorlRecordQueryVo.getBranchNo())){
+                //分行下面 所有的机构号
+                outSiteOrgList=nfrtOrgService.getSubOutSiteList(partorlRecordQueryVo.getBranchNo());
+            }
+        }
+        return this.partorlRecordDao.selectRecordPage(page, partorlRecordQueryVo,outSiteOrgList);
     }
+
 
     /**
      * 保存巡查内容信息
@@ -182,12 +205,12 @@ public class PartorlRecordServiceImpl extends ServiceImpl<PartorlRecordDao, Part
     public PartorlRecordHeadDto getHeadInfo(Integer processId, TokenUserInfo tokenUserInfo) {
         PartorlProcessDO partorlProcessDO = this.partorlProcessService.getById(processId);
         PartorlRecordHeadDto partorlRecordHeadDto = new PartorlRecordHeadDto();
-        partorlRecordHeadDto.setOrgName(partorlProcessDO.getPartorlProcessOrgName());
-        partorlRecordHeadDto.setPartorlProcessDate(partorlProcessDO.getPartorlProcessDate());
-        partorlRecordHeadDto.setSaveUserName(tokenUserInfo.getUserName());
         //如果是已办理的则需要从数据库读取 如果是新填的则与当前时间对比
         if(partorlProcessDO.getPartorlRecordId()!=0){
             PartorlRecordDO partorlRecordDO=this.getById(partorlProcessDO.getPartorlRecordId());
+            partorlRecordHeadDto.setOrgName(partorlRecordDO.getOrgName());
+            partorlRecordHeadDto.setPartorlProcessDate(partorlRecordDO.getPartorlDate());
+            partorlRecordHeadDto.setSaveUserName(partorlRecordDO.getCreateUser());
             if(partorlRecordDO!=null){
                 if(partorlRecordDO.getPartorlOrvertime()=="0"){
                     partorlRecordHeadDto.setIsOverTime("已超时");
@@ -196,6 +219,9 @@ public class PartorlRecordServiceImpl extends ServiceImpl<PartorlRecordDao, Part
                 }
             }
         }else{
+            partorlRecordHeadDto.setOrgName(partorlProcessDO.getPartorlProcessOrgName());
+            partorlRecordHeadDto.setPartorlProcessDate(partorlProcessDO.getPartorlProcessDate());
+            partorlRecordHeadDto.setSaveUserName(tokenUserInfo.getUserName());
             Date dateCurrent = new Date();
             Date processDate = DateUtils.localDate2Date(partorlProcessDO.getPartorlProcessDate());
             if (dateCurrent.getTime() >= processDate.getTime()) {
@@ -205,7 +231,6 @@ public class PartorlRecordServiceImpl extends ServiceImpl<PartorlRecordDao, Part
                 partorlRecordHeadDto.setIsOverTime("未超时");
             }
         }
-
         return partorlRecordHeadDto;
     }
 
