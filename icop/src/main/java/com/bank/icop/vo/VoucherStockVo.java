@@ -19,7 +19,7 @@ public class VoucherStockVo implements Serializable {
     private String voucherNo;
 
     @ApiModelProperty(value = "凭证数量  ")
-    private Integer num;
+    private String num;
 
     @ApiModelProperty(value = "凭证状态  ")
     private String voucherStatus;
