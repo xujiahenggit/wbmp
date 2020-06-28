@@ -29,6 +29,9 @@ public class OnSiteInspectionTaskItemVO extends OnSiteInspectionTaskVO {
      */
     private static final long serialVersionUID = -3770434313423022359L;
 
+    @ApiModelProperty(value = "任务ID")
+    private String taskId;
+
     @ApiModelProperty(value = "检查任务项ID")
     private String taskItemId;
 
@@ -43,4 +46,16 @@ public class OnSiteInspectionTaskItemVO extends OnSiteInspectionTaskVO {
 
     @ApiModelProperty(value = "检查任务项-执行检查状态名称")
     private String stateName;
+
+    @ApiModelProperty(value = "执行检查人")
+    private String examinUser;
+
+    @ApiModelProperty(value = "执行检查所属机构")
+    private String examinUserOrg;
+
+    @ApiModelProperty(value = "是否存在问题")
+    private String isQusetion;
+
+    @ApiModelProperty(value = "再分配人员")
+    private String assignationUser;
 }

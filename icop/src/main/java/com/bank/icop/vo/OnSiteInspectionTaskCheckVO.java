@@ -17,6 +17,9 @@ public class OnSiteInspectionTaskCheckVO extends OnSiteInspectionTaskItemVO {
      */
     private static final long serialVersionUID = 6292316280910445814L;
 
+    @ApiModelProperty(value = "检查任务项-执行检查信息ID")
+    private String inspectionInfoId;
+
     @ApiModelProperty(value = "检查过程")
     private CheckProcessVO checkProcessVO;
 
@@ -28,4 +31,13 @@ public class OnSiteInspectionTaskCheckVO extends OnSiteInspectionTaskItemVO {
 
     @ApiModelProperty(value = "检查附件列表")
     private List<CheckAccessoryVO> checkAccessoryVOList;
+
+    @ApiModelProperty(value = "审核结论")
+    private String result;
+
+    @ApiModelProperty(value = "备注意见")
+    private String remarkOpinion;
+
+    @ApiModelProperty(value = "整改反馈期限")
+    private String rectifyTimeLimit;
 }

@@ -3,6 +3,7 @@ package com.bank.icop.vo;
 import java.io.Serializable;
 
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -28,4 +29,15 @@ public class CheckAccessoryVO implements Serializable {
     */
     private static final long serialVersionUID = 1039677450331764133L;
 
+    @ApiModelProperty(value = "附件名称")
+    private String accessoryName;
+    
+    @ApiModelProperty(value = "附件路径")
+    private String accessoryPath;
+    
+    @ApiModelProperty(value = "附件大小")
+    private String accessorySize;
+    
+    @ApiModelProperty(value = "附件http路径")
+    private String accessoryHttpPath;
 }
