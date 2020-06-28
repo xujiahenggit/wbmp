@@ -138,12 +138,16 @@ q.ABANDONED_LV as abandoned_lv,q.INDEX_CNT as index_cnt from wbmp_operate_bqms_q
 
     <select id="tellertPageList" resultType="com.bank.manage.vo.AbsTellerInfo">
        SELECT
-            a.*,-- b.lj_take_cnt callNum,
+            a.*,
+            b.callNum,
             c.trade_volume,
             d.trade_volume trade_volume_sum,
             e.onLineTime
         FROM
-            wbmp_abs_teller_info a -- LEFT JOIN wbmp_bqms_queue b ON a.TELLER_ID=b.TELLER_ID AND b.flag='3' AND b.DATA_DT=CURDATE()
+            wbmp_abs_teller_info a
+            LEFT JOIN (
+            SELECT TELLER_ID,COUNT(queue_num) callNum FROM wbmp_bqms_queue WHERE TELLER_ID is NOT NULL AND queue_status='2' AND data_dt=CURDATE() GROUP BY TELLER_ID
+            ) b ON a.TELLER_ID=b.TELLER_ID
             LEFT JOIN wbmp_abs_transinfo c ON a.TELLER_ID = c.TELLER_ID
             AND c.flag = '3'
             AND c.DATA_DT = CURDATE()

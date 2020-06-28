@@ -6,8 +6,6 @@ import cn.hutool.http.HttpResponse;
 import com.bank.core.entity.BizException;
 import com.bank.core.entity.HeaderDO;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.cxf.endpoint.Client;
-import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -176,23 +174,5 @@ public class SoapUtil {
             throw new BizException(errMsg);
         }
         return builder.toString();
-    }
-
-    public static Object sendDynamic(String methodName, Object... params) {
-        // 创建动态客户端
-        JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();
-        Client client = dcf.createClient(remoteUrl);
-        // 需要密码的情况需要加上用户名和密码
-        // client.getOutInterceptors().add(new ClientLoginInterceptor(USER_NAME, PASS_WORD));
-        Object[] objects;
-        try {
-            //如果有命名空间的话
-//            QName operationName = new QName("http://service.webservice.zhao.com/",methodName); //如果有命名空间需要加上这个，第一个参数为命名空间名称，第二个参数为WebService方法名称
-            objects = client.invoke(methodName, params);
-            return objects[0];
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "";
     }
 }
