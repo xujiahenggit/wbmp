@@ -17,32 +17,32 @@ public class NetUtil {
 
     public String getUrlSuffix(String contextPath) {
         String ip = "";
-        if (this.configFileReader.getSpringProfile().equals("dev")) {
-            ip = this.configFileReader.getApplicationIp();
+        if (configFileReader.getSpringProfile().equals("dev")) {
+            ip = configFileReader.getApplicationIp();
         }
-        //生产环境使用域名
-        else if (this.configFileReader.getSpringProfile().equals("pro")) {
-            return "http://" + this.configFileReader.getApplicationIp() + "/" + contextPath;
+        //生产环境与sit环境使用域名
+        else if (StringUtils.indexOf("pro,sit", configFileReader.getSpringProfile()) > 0) {
+            return "http://" + configFileReader.getApplicationIp() + "/" + contextPath;
         }
         else {
             ip = cn.hutool.core.net.NetUtil.getLocalhostStr();
         }
-        return "http://" + ip + ":" + this.configFileReader.getApplicationPort() + contextPath;
+        return "http://" + ip + ":" + configFileReader.getApplicationPort() + contextPath;
     }
 
     public String getUrlSuffix() {
         String ip = "";
-        if (this.configFileReader.getSpringProfile().equals("dev")) {
-            ip = this.configFileReader.getApplicationIp();
+        if (configFileReader.getSpringProfile().equals("dev")) {
+            ip = configFileReader.getApplicationIp();
         }
-        //生产环境使用域名
-        else if (this.configFileReader.getSpringProfile().equals("pro")) {
-            return "http://" + this.configFileReader.getApplicationIp() + "/" + this.configFileReader.getApplicationContextPath();
+        //生产环境与sit环境使用域名
+        else if (StringUtils.indexOf("pro,sit", configFileReader.getSpringProfile()) > 0) {
+            return "http://" + configFileReader.getApplicationIp() + "/" + configFileReader.getApplicationContextPath();
         }
         else {
             ip = cn.hutool.core.net.NetUtil.getLocalhostStr();
         }
-        return "http://" + ip + ":" + this.configFileReader.getApplicationPort() + this.configFileReader.getApplicationContextPath();
+        return "http://" + ip + ":" + configFileReader.getApplicationPort() + configFileReader.getApplicationContextPath();
     }
 
     private String getProIp() {

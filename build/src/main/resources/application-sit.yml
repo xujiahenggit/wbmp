@@ -1,5 +1,5 @@
 application:
-  ip: 162.16.14.77 #sit,uit,不使用此参数
+  ip: sit-wbmp.mis.bcs:14073 
   port: 9080 #tomcat启动端口
   contextPath: /wbmp-server
 server:
