@@ -90,9 +90,26 @@ public class HappyServiceImpl implements HappyService {
     }
 
     @Override
-    public List<Map<String, Integer>> serviceLevelStatus(HappyParam param) {
+    public List<Map> serviceLevelStatus(HappyParam param) {
         checkAndSetDefaultParam(param);
-        return happyDao.serviceLevelStatus(param);
+        List<HashMap<Object, Object>> dict = ListUtil.toList(MapUtil.of(new Object[][]{
+                {"level", "卓越"},
+                {"count", 0}
+        }), MapUtil.of(new Object[][]{
+                {"level", "优秀"},
+                {"count", 0}
+        }), MapUtil.of(new Object[][]{
+                {"level", "一般"},
+                {"count", 0}
+        }), MapUtil.of(new Object[][]{
+                {"level", "关注"},
+                {"count", 0}
+        }), MapUtil.of(new Object[][]{
+                {"level", "重点关注"},
+                {"count", 0}
+        }));
+        List<Map<String, Integer>> data = happyDao.serviceLevelStatus(param);
+        return (List<Map>)fillDictData(dict, data, "level", "count");
     }
 
     private void checkAndSetDefaultParam(HappyParam param) {
@@ -127,41 +144,26 @@ public class HappyServiceImpl implements HappyService {
     public Map<String, Object> checkStatus(HappyParam param) {
         checkAndSetDefaultParam(param);
         HashMap<String, Object> map = new HashMap<>();
-        String yearAndQuarter = getLastYearQuarter(param.getYear(), param.getQuarter());
+        Integer quarter = param.getQuarter();
+        String yearAndQuarter = getLastYearQuarter(param.getYear(), quarter);
         Integer paramYear = param.getYear();
         int queryYear = paramYear;
         map.put("detail", happyDao.checkStatusDetails(param));
 
         boolean isAdmin = param.isHasAdmin();
-        List<StatisticsDTO> year = happyDao.checkStatusStatisticsYear(isAdmin);
-
-        int YearScore = 0;
-        if (year.size() > 0) {
-            YearScore = getYearScore(year, queryYear);
-        }
-        map.put("year", YearScore);
-
         //上一季度的值
         int lastQuarterYear = Integer.valueOf(yearAndQuarter.substring(0, 4));
         int lastQuarter = Integer.valueOf(yearAndQuarter.substring(4));
         List<StatisticsDTO> quarterData = happyDao.checkStatusStatisticsQuarter(isAdmin);
-        year.clear();
-        YearScore = 0;
-        quarterData.stream().filter(vo -> {
-            int voYear = vo.getYear();
-            int voQuarter = vo.getQuarter();
-            if (voYear == paramYear && voQuarter == param.getQuarter()) {
-                year.add(new StatisticsDTO(paramYear, vo.getScore()));
-            } else if (voYear == lastQuarterYear && voQuarter == lastQuarter) {
-                year.add(new StatisticsDTO(queryYear - 1, vo.getScore()));
-            } else {
-                return false;
-            }
-            return true;
-        }).forEach(System.out::println);
-        if (year.size() > 0) {
-            YearScore = getYearScore(year, queryYear);
+
+        int YearScore = 0;
+        if (quarterData.size() > 0) {
+            YearScore = getYearScore(quarterData, queryYear,queryYear-1,quarter);
         }
+        map.put("year", YearScore);
+
+        YearScore = 0;
+        YearScore = getYearScore(quarterData,queryYear,lastQuarterYear, lastQuarter);
         map.put("quarter", YearScore);
         return map;
     }
@@ -173,11 +175,10 @@ public class HappyServiceImpl implements HappyService {
     }
 
     @SuppressWarnings("all")
-    private int getYearScore(List<StatisticsDTO> year, int thisYear) {
-        int lastYear = thisYear - 1;
+    private int getYearScore(List<StatisticsDTO> year, int thisYear,int lastYear, Integer quarter) {
         int YearScore = 0;
-        Optional<Integer> currentYearScore = year.stream().filter(vo -> vo.getYear() == thisYear).map(StatisticsDTO::getScore).findFirst();
-        Optional<Integer> lastYearScore = year.stream().filter(vo -> vo.getYear() == lastYear).map(StatisticsDTO::getScore).findFirst();
+        Optional<Integer> currentYearScore = year.stream().filter(vo -> vo.getYear() == thisYear && vo.getQuarter()==quarter).map(StatisticsDTO::getScore).findFirst();
+        Optional<Integer> lastYearScore = year.stream().filter(vo -> vo.getYear() == lastYear && vo.getQuarter()==quarter).map(StatisticsDTO::getScore).findFirst();
         boolean currentYearScorePresent = currentYearScore.isPresent();
         boolean lastYearScorePresent = lastYearScore.isPresent();
 

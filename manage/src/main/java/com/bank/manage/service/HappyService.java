@@ -19,5 +19,5 @@ public interface HappyService {
 
     List<Map> starStatus(HappyParam param);
 
-    List<Map<String, Integer>>  serviceLevelStatus(HappyParam param);
+    List<Map> serviceLevelStatus(HappyParam param);
 }

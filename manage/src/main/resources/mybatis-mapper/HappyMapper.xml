@@ -44,7 +44,7 @@
                 T_EXAMINE_DATA_BRANCH
             </otherwise>
         </choose>
-    WHERE EXAMINE_ID IS NULL
+    WHERE EXAMINE_ID IS NULL AND EXCEL_QUARTER = #{quarter}
     GROUP BY EXCEL_DATE
     </select>
 
