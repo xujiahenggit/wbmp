@@ -63,4 +63,13 @@ public class OnSiteInspectionTaskVO implements Serializable {
 
     @ApiModelProperty(value = "任务创建时间")
     private LocalDateTime taskCreateDate;
+    
+    @ApiModelProperty(value = "任务创建机构")
+    private String taskCreateOrg;
+    
+    @ApiModelProperty(value = "任务创建人")
+    private String taskCreateUser;
+    
+    @ApiModelProperty(value = "任务状态")
+    private String taskSatus;
 }

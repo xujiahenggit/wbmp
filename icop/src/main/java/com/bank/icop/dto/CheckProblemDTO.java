@@ -1,16 +1,14 @@
-package com.bank.icop.vo;
+package com.bank.icop.dto;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.List;
 
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
- * 检查问题
- * ClassName: CheckProblemVO
+ *
+ * ClassName: CheckProblemDTO
  *
  * @author Yanwen D. Ding
  *
@@ -20,22 +18,27 @@ import lombok.Data;
  *
  * http://www.yusys.com.cn
  *
- * Create Time: 2020/06/23 19:06:59
+ * Create Time: 2020/06/28 10:38:21
  */
 @Data
-@ApiModel(description = "登记检查-检查问题VO")
-public class CheckProblemVO implements Serializable {
+public class CheckProblemDTO implements Serializable {
 
     /**
-    *
-    */
-    private static final long serialVersionUID = -8361160875644196001L;
+     *
+     */
+    private static final long serialVersionUID = -2056550328884797969L;
+
+    @ApiModelProperty(value = "检查任务ID")
+    private String taskId;
+
+    @ApiModelProperty(value = "检查任务项ID")
+    private String taskItemId;
 
     @ApiModelProperty(value = "问题Id")
     private String problemId;
 
     @ApiModelProperty(value = "问题登记时间")
-    private LocalDateTime problemDate;
+    private String problemDate;
 
     @ApiModelProperty(value = "问题类型")
     private String problemType;
@@ -49,6 +52,6 @@ public class CheckProblemVO implements Serializable {
     @ApiModelProperty(value = "问题描述")
     private String problemDes;
 
-    @ApiModelProperty(value = "问题审核反馈")
+    @ApiModelProperty(value = "审核反馈")
     private String auditFeedback;
 }
