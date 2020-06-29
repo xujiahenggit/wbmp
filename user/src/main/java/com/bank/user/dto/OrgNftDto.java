@@ -1,10 +1,10 @@
 package com.bank.user.dto;
 
+import java.io.Serializable;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
-import java.io.Serializable;
 
 /**
  * @Author: Andy
@@ -13,6 +13,7 @@ import java.io.Serializable;
 @Data
 @ApiModel("分支行网点用")
 public class OrgNftDto implements Serializable {
+
     /**
      * 机构号  分支行时 显示核心机构号  网点时 显示 人力资源机构号
      */
@@ -30,4 +31,7 @@ public class OrgNftDto implements Serializable {
      */
     @ApiModelProperty("类型 网点列表时 无返回")
     private String type;
+
+    @ApiModelProperty("核心机构号")
+    private String orgCode;
 }

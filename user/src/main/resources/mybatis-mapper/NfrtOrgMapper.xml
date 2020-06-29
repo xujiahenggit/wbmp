@@ -72,7 +72,7 @@
     <select id="getOutletsList" resultMap="nftOrgDto">
         SELECT DISTINCT
             O.ORG_ID AS NFRT_ORGID,
-            O.ORG_NAME AS NFRT_ORGNAME
+            O.ORG_NAME AS NFRT_ORGNAME, O.ORG_CODE
         FROM
             T_ORGANIZATION O
         INNER JOIN T_NFRT_ORG NFRT ON CONCAT(
