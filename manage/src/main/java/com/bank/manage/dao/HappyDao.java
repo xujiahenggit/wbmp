@@ -28,9 +28,10 @@ public interface HappyDao {
     /**
      * 按年，季度统计考核分数
      * @param isAdmin
+     * @param param
      * @return
      */
-    List<StatisticsDTO> checkStatusStatisticsQuarter(@Param("hasAdmin") boolean isAdmin);
+    List<StatisticsDTO> checkStatusStatisticsQuarter(@Param("hasAdmin") boolean isAdmin,@Param("param") HappyParam param);
 
     List<ExamineDataTempAdminDO> deductStatus(HappyParam param);
 

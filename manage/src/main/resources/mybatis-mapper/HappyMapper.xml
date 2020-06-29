@@ -68,6 +68,21 @@
                 T_EXAMINE_DATA_BRANCH
             </otherwise>
         </choose>
+        <where>
+            <choose>
+                <when test="param.networks!=''">
+                    ORG_ID IN (#{param.networks})
+                </when>
+                <otherwise>
+                    <if test="param.orgs!=null">
+                        ORG_ID IN
+                        <foreach item="orgid" collection="param.orgs" index="index" open="(" separator="," close=")">
+                            #{orgid}
+                        </foreach>
+                    </if>
+                </otherwise>
+            </choose>
+        </where>
         GROUP BY EXCEL_DATE,EXCEL_QUARTER
     </select>
     
