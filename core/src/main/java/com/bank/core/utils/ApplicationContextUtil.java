@@ -3,11 +3,13 @@ package com.bank.core.utils;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 
 /**
  * @Author: Andy
  * @Date: 2020/4/7 18:53
  */
+@Component
 public class ApplicationContextUtil implements ApplicationContextAware {
     private static ApplicationContext context;
 
