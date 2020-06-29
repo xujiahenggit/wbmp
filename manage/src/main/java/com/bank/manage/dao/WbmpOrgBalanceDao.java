@@ -28,7 +28,7 @@ public interface WbmpOrgBalanceDao extends BaseMapper<WbmpOrgBalanceDO> {
 	 * @param orgId
 	 * @return
 	 */
-	String getOrgDaysBal(@Param(value = "orgId") String orgId,@Param(value = "date") String date);
+	String getOrgHistoryBal(@Param(value = "orgId") String orgId,@Param(value = "date") String date);
 
 
 }

@@ -52,7 +52,7 @@ public class OperaCurveServiceImpl  implements OperateCurveService {
         //aum百分比
         BigDecimal aumPer = wbmpCommonCalcMethodDO.getAumPer();
         //获取机构余额
-        String orgBal = wbmpOrgBalanceDao.getOrgDaysBal(orgId,date);
+        String orgBal = wbmpOrgBalanceDao.getOrgHistoryBal(orgId,date);
         BigDecimal orgBalNum = new BigDecimal(orgBal);
         //获取机构的AUM值
         String orgAum = wbmpOperateIndexAumDao.getOrgDaysAum(orgId,date);
