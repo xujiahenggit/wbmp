@@ -44,4 +44,6 @@ public class CheckItemVO implements Serializable {
     @ApiModelProperty(value = "检查要点")
     private String sunPonitValue;
 
+    @ApiModelProperty(value = "登记问题数")
+    private int problemNum;
 }

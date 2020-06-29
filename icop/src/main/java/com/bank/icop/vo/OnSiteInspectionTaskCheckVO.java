@@ -32,6 +32,12 @@ public class OnSiteInspectionTaskCheckVO extends OnSiteInspectionTaskItemVO {
     @ApiModelProperty(value = "检查附件列表")
     private List<CheckAccessoryVO> checkAccessoryVOList;
 
+    @ApiModelProperty(value = "执行检查人")
+    private String examinUser;
+
+    @ApiModelProperty(value = "执行检查所属机构")
+    private String examinUserOrg;
+
     @ApiModelProperty(value = "审核结论")
     private String result;
 
