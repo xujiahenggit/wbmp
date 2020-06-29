@@ -26,7 +26,7 @@
 
     <!--    获取赛马制名称-->
     <select id="getItemNames" resultMap="ItemNames">
-            SELECT INDEX_NO,INDEX_NAME,'100' AS MAX FROM WBMP_OPERATE_RACING_INDEX_M WHERE ORG_ID=#{orgId}  AND DATE_FORMAT(DATA_DT,'%Y-%m')=#{date}
+            SELECT INDEX_NO,INDEX_NAME,'100' AS MAX FROM WBMP_OPERATE_RACING_INDEX_M  GROUP BY INDEX_NO,INDEX_NAME
     </select>
 
     <!--    获取数值-->
