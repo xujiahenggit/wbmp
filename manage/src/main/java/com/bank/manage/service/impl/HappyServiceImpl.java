@@ -164,7 +164,7 @@ public class HappyServiceImpl implements HappyService {
         //上一季度的值
         int lastQuarterYear = Integer.valueOf(yearAndQuarter.substring(0, 4));
         int lastQuarter = Integer.valueOf(yearAndQuarter.substring(4));
-        List<StatisticsDTO> quarterData = happyDao.checkStatusStatisticsQuarter(isAdmin);
+        List<StatisticsDTO> quarterData = happyDao.checkStatusStatisticsQuarter(isAdmin,param);
 
         int YearScore = 0;
         if (quarterData.size() > 0) {
