@@ -35,7 +35,7 @@
             IFNULL(
                 (
                     SELECT
-                        INDEX_VAL
+                          (INDEX_VAL *100) AS INDEX_VAL
                     FROM
                         WBMP_OPERATE_RACING_INDEX_M
                     WHERE
