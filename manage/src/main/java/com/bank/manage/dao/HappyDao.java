@@ -39,4 +39,6 @@ public interface HappyDao {
     List<Map<String, Integer>> serviceLevelStatus(HappyParam param);
 
     List<CountModuleTempDO> getModuleScore(HappyParam param);
+
+    List<String> getOrgIds(@Param("orgids") String orgids);
 }

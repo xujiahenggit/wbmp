@@ -130,11 +130,17 @@ public class ExamineDataAdminServiceImpl implements ExamineDataAdminService {
         String endQuarter = (String) queryParam.get("endQuarter");//统计结束季度
         String excelType = (String) queryParam.get("excelType");//报表类型 0 分支行 1 网点
         IPage<ExamineDataRankVo> examineDataRankVoPage = null;
+        Integer pageIndex = pageQueryModel.getPageIndex();
+        Integer pageSize = pageQueryModel.getPageSize();
         if("0".equals(excelType)){//分行
             examineDataRankVoPage = examineDataAdminDao.queryExamineDataRankByFH(page,startYear,startQuarter,endYear,endQuarter);
             if(CollectionUtil.isNotEmpty(examineDataRankVoPage.getRecords())){
                 for (int i = 0; i < examineDataRankVoPage.getRecords().size(); i++) {
-                    examineDataRankVoPage.getRecords().get(i).setSort(i+1);
+                    if(pageIndex==1){
+                        examineDataRankVoPage.getRecords().get(i).setSort(i+1);
+                    }else{
+                        examineDataRankVoPage.getRecords().get(i).setSort(((pageIndex-1)*pageSize)+i+1);
+                    }
                 }
             }
         }
@@ -142,7 +148,12 @@ public class ExamineDataAdminServiceImpl implements ExamineDataAdminService {
             examineDataRankVoPage = examineDataAdminDao.queryExamineDataRankByWD(page,startYear,startQuarter,endYear,endQuarter);
             if(CollectionUtil.isNotEmpty(examineDataRankVoPage.getRecords())){
                 for (int i = 0; i < examineDataRankVoPage.getRecords().size(); i++) {
-                    examineDataRankVoPage.getRecords().get(i).setSort(i+1);
+                    if(pageIndex==1){
+                        examineDataRankVoPage.getRecords().get(i).setSort(i+1);
+                    }else{
+                        examineDataRankVoPage.getRecords().get(i).setSort(((pageIndex-1)*pageSize)+i+1);
+                    }
+
                 }
             }
         }

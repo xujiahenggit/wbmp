@@ -91,50 +91,65 @@ public class SoapUtil {
         Element rootElement = doc.getRootElement();
         List<Element> list = rootElement.selectNodes("//Response");
         Map<String, Object> headMap = new HashMap<>();
-        elementTomap(list.get(0), headMap);
-        Map<String, Object> response = (Map<String, Object>) headMap.get("Response");
-        if (!response.get("ReturnCode").equals("00000000")){
-            throw new BizException(response.get("ReturnMessage").toString());
+        headMap=elementTomap(list.get(0));
+        if (!headMap.get("ReturnCode").equals("00000000")){
+            throw new BizException(headMap.get("ReturnMessage").toString());
         }
-        elementTomap(list.get(1), map);
-        return (Map<String, Object>) map.get("Response");
+        map = elementTomap(list.get(1));
+        return map;
     }
 
     /***
      * XmlToMap核心方法，里面有递归调用
      */
     @SuppressWarnings("unchecked")
-    public static Map<String, Object> elementTomap(Element outele,
-                                                   Map<String, Object> outmap) {
-        List<Element> list = outele.elements();
-        int size = list.size();
-        if (size == 0) {
-            outmap.put(outele.getName(), outele.getTextTrim());
-        } else {
-            Map<String, Object> innermap = new HashMap<String, Object>();
-            for (Element ele1 : list) {
-                String eleName = ele1.getName();
-                Object obj = innermap.get(eleName);
-                if (obj == null) {
-                    elementTomap(ele1, innermap);
-                } else {
-                    if (obj instanceof java.util.Map) {
-                        List<Map<String, Object>> list1 = new ArrayList<Map<String, Object>>();
-                        list1.add((Map<String, Object>) innermap
-                                .remove(eleName));
-                        elementTomap(ele1, innermap);
-                        list1.add((Map<String, Object>) innermap
-                                .remove(eleName));
-                        innermap.put(eleName, list1);
+    public static Map<String, Object> elementTomap(Element e) {
+        Map map = new HashMap();
+        List list = e.elements();
+        if (list.size() > 0) {
+            for (int i = 0; i < list.size(); i++) {
+                Element iter = (Element) list.get(i);
+                List mapList = new ArrayList();
+
+                if (iter.elements().size() > 0) {
+                    Map m = elementTomap(iter);
+                    if (map.get(iter.getName()) != null) {
+                        Object obj = map.get(iter.getName());
+                        if (!obj.getClass().getName().equals("java.util.ArrayList")) {
+                            mapList = new ArrayList();
+                            mapList.add(obj);
+                            mapList.add(m);
+                        }
+                        if (obj.getClass().getName().equals("java.util.ArrayList")) {
+                            mapList = (List) obj;
+                            mapList.add(m);
+                        }
+                        map.put(iter.getName(), mapList);
                     } else {
-                        elementTomap(ele1, innermap);
-                        ((List<Map<String, Object>>) obj).add(innermap);
+                        map.put(iter.getName(), m);
+                    }
+                } else {
+                    if (map.get(iter.getName()) != null) {
+                        Object obj = map.get(iter.getName());
+                        if (!obj.getClass().getName().equals("java.util.ArrayList")) {
+                            mapList = new ArrayList();
+                            mapList.add(obj);
+                            mapList.add(iter.getText());
+                        }
+                        if (obj.getClass().getName().equals("java.util.ArrayList")) {
+                            mapList = (List) obj;
+                            mapList.add(iter.getText());
+                        }
+                        map.put(iter.getName(), mapList);
+                    } else {
+                        map.put(iter.getName(), iter.getText());
                     }
                 }
             }
-            outmap.put(outele.getName(), innermap);
+        } else {
+            map.put(e.getName(), e.getText());
         }
-        return outmap;
+        return map;
     }
 
 

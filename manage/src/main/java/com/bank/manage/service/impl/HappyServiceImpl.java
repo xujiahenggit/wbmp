@@ -2,9 +2,11 @@ package com.bank.manage.service.impl;
 
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import com.bank.core.entity.BizException;
 import com.bank.manage.dao.HappyDao;
+import com.bank.manage.dos.ExamineDataAdminDO;
 import com.bank.manage.dos.ExamineDataTempAdminDO;
 import com.bank.manage.dto.DeductDTO;
 import com.bank.manage.dto.StatisticsDTO;
@@ -20,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -48,7 +49,7 @@ public class HappyServiceImpl implements HappyService {
         List<DeductDTO> data = new ArrayList<>();
         List<ExamineDataTempAdminDO> list = happyDao.deductStatus(param);
         long total = list.stream().map(ExamineDataTempAdminDO::getDeduction).reduce(0, (a, b) -> a + b);
-        list.stream().limit(3).forEach(e ->data.add(DeductDTO.builder().name(e.getTwoModule()).total(total).deduct(e.getDeduction()).build()));
+        list.stream().limit(3).forEach(e -> data.add(DeductDTO.builder().name(e.getTwoModule()).total(total).deduct(e.getDeduction()).build()));
         return data;
     }
 
@@ -72,17 +73,17 @@ public class HappyServiceImpl implements HappyService {
                 {"count", 0}
         }));
         List<Map<String, Integer>> data = happyDao.starStatus(param);
-        return (List<Map>)fillDictData(dict, data, "star", "count");
+        return (List<Map>) fillDictData(dict, data, "star", "count");
     }
 
     private List<? extends Map> fillDictData(List<? extends Map> dict, List<? extends Map> data, String type, String count) {
         HashMap<Object, Object> temMap = MapUtil.newHashMap();
         for (Map<Object, Object> dataList : data) {
-            temMap.put(dataList.get(type),dataList.get(count));
+            temMap.put(dataList.get(type), dataList.get(count));
         }
         for (Map<Object, Object> dictList : dict) {
             Object value = dictList.get(type);
-            if (temMap.containsKey(value)){
+            if (temMap.containsKey(value)) {
                 dictList.put(count, temMap.get(value));
             }
         }
@@ -109,7 +110,7 @@ public class HappyServiceImpl implements HappyService {
                 {"count", 0}
         }));
         List<Map<String, Integer>> data = happyDao.serviceLevelStatus(param);
-        return (List<Map>)fillDictData(dict, data, "level", "count");
+        return (List<Map>) fillDictData(dict, data, "level", "count");
     }
 
     private void checkAndSetDefaultParam(HappyParam param) {
@@ -124,9 +125,16 @@ public class HappyServiceImpl implements HappyService {
         }
         param.setHasAdmin(hasAdminPermission(param.getUserId()));
         String orgids = param.getOrgids();
-        if (!StrUtil.isBlankIfStr(orgids)) {
-            param.setOrgids(Arrays.stream(orgids.split(",")).collect(Collectors.joining("','")));
+        String networks = param.getNetworks();
+        if (StrUtil.isBlankIfStr(networks)) {
+            if (!StrUtil.isBlankIfStr(orgids)) {
+                List<String> orgIds = happyDao.getOrgIds(orgids);
+                param.setOrgs(orgIds);
+//                param.setOrgids(orgIds.stream().collect(Collectors.joining("','")));
+            }
         }
+
+
     }
 
     /**
@@ -148,8 +156,10 @@ public class HappyServiceImpl implements HappyService {
         String yearAndQuarter = getLastYearQuarter(param.getYear(), quarter);
         Integer paramYear = param.getYear();
         int queryYear = paramYear;
-        map.put("detail", happyDao.checkStatusDetails(param));
+        List<ExamineDataAdminDO> list = happyDao.checkStatusDetails(param);
+        map.put("detail", list);
 
+        Integer count = list.size();
         boolean isAdmin = param.isHasAdmin();
         //上一季度的值
         int lastQuarterYear = Integer.valueOf(yearAndQuarter.substring(0, 4));
@@ -158,14 +168,27 @@ public class HappyServiceImpl implements HappyService {
 
         int YearScore = 0;
         if (quarterData.size() > 0) {
-            YearScore = getYearScore(quarterData, queryYear,queryYear-1,quarter);
+            YearScore = getYearScore(quarterData, queryYear, queryYear - 1, quarter);
         }
-        map.put("year", YearScore);
+        map.put("year", getAverage(YearScore, count));
 
         YearScore = 0;
-        YearScore = getYearScore(quarterData,queryYear,lastQuarterYear, lastQuarter);
-        map.put("quarter", YearScore);
+        YearScore = getYearScore(quarterData, queryYear, lastQuarterYear, lastQuarter);
+        map.put("quarter", getAverage(YearScore, count));
         return map;
+    }
+
+    private Object getAverage(int yearScore, Integer count) {
+        if (count == null || count == 0) {
+            return 0;
+        } else {
+            double div = NumberUtil.div((float) yearScore, (float) count, 2);
+            if (Math.abs(div - 0d) == 0) {
+                return 0;
+            }
+            return div;
+        }
+
     }
 
     @Override
@@ -175,10 +198,10 @@ public class HappyServiceImpl implements HappyService {
     }
 
     @SuppressWarnings("all")
-    private int getYearScore(List<StatisticsDTO> year, int thisYear,int lastYear, Integer quarter) {
+    private int getYearScore(List<StatisticsDTO> year, int thisYear, int lastYear, Integer quarter) {
         int YearScore = 0;
-        Optional<Integer> currentYearScore = year.stream().filter(vo -> vo.getYear() == thisYear && vo.getQuarter()==quarter).map(StatisticsDTO::getScore).findFirst();
-        Optional<Integer> lastYearScore = year.stream().filter(vo -> vo.getYear() == lastYear && vo.getQuarter()==quarter).map(StatisticsDTO::getScore).findFirst();
+        Optional<Integer> currentYearScore = year.stream().filter(vo -> vo.getYear() == thisYear && vo.getQuarter() == quarter).map(StatisticsDTO::getScore).findFirst();
+        Optional<Integer> lastYearScore = year.stream().filter(vo -> vo.getYear() == lastYear && vo.getQuarter() == quarter).map(StatisticsDTO::getScore).findFirst();
         boolean currentYearScorePresent = currentYearScore.isPresent();
         boolean lastYearScorePresent = lastYearScore.isPresent();
 
