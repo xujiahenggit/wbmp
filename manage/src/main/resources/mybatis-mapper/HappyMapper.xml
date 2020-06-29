@@ -27,9 +27,12 @@
                 T_EXAMINE_DATA_BRANCH
             </otherwise>
         </choose>
-        WHERE EXCEL_QUARTER = #{quarter} AND EXCEL_DATE = #{year} AND EXAMINE_ID IS NULL
-        <if test="orgids!=''">
-           AND ORG_ID IN (#{orgids})
+        WHERE EXCEL_QUARTER = #{quarter} AND EXCEL_DATE = #{year}
+        <if test="orgs!=null">
+           AND ORG_ID IN
+           <foreach item="orgid" collection="orgs" index="index" open="(" separator="," close=")">
+               #{orgid}
+           </foreach>
         </if>
         GROUP BY ORG_ID,ORG_NAME ORDER BY EXAMINE_SCORE DESC
     </select>
@@ -44,7 +47,7 @@
                 T_EXAMINE_DATA_BRANCH
             </otherwise>
         </choose>
-    WHERE EXAMINE_ID IS NULL AND EXCEL_QUARTER = #{quarter}
+    WHERE  EXCEL_QUARTER = #{quarter}
     GROUP BY EXCEL_DATE
     </select>
 
@@ -58,7 +61,6 @@
                 T_EXAMINE_DATA_BRANCH
             </otherwise>
         </choose>
-        WHERE EXAMINE_ID IS NULL
         GROUP BY EXCEL_DATE,EXCEL_QUARTER
     </select>
     
@@ -84,8 +86,11 @@
         </choose>
         ON b.ID = a.EXAMINE_ID
         WHERE b.EXCEL_DATE = #{year} AND b.EXCEL_QUARTER = #{quarter}
-        <if test="orgids!=''">
-            AND ORG_ID IN (#{orgids})
+        <if test="orgs!=null">
+            AND ORG_ID IN
+            <foreach item="orgid" collection="orgs" index="index" open="(" separator="," close=")">
+                #{orgid}
+            </foreach>
         </if>
         GROUP BY a.TWO_MODULE ORDER BY DEDUCTION DESC
     </select>
@@ -101,16 +106,23 @@
             </otherwise>
         </choose>
             WHERE START_YEAR = #{year}
+
             <choose>
-                <when test="orgids!='' and networks!=''">
-                    AND (BRANCH_ORG_ID IN (#{orgids}) OR OUT_ORG_ID IN (#{networks}))
-                </when>
-                <when test="orgids!='' and networks==''">
-                    AND BRANCH_ORG_ID IN (#{orgids})
-                </when>
-                <when test="orgids=='' and networks!=''">
+                <when test="networks!=''">
                     AND OUT_ORG_ID IN (#{networks})
                 </when>
+                <otherwise>
+                    <if test="orgs!=null">
+                        AND BRANCH_ORG_ID IN
+                        <foreach item="orgid" collection="orgs" index="index" open="(" separator="," close=")">
+                            #{orgid}
+                        </foreach>
+                        AND OUT_ORG_ID IN
+                        <foreach item="orgid" collection="orgs" index="index" open="(" separator="," close=")">
+                            #{orgid}
+                        </foreach>
+                    </if>
+                </otherwise>
             </choose>
             GROUP BY ASSESS_STAR
     </select>
@@ -135,8 +147,11 @@
                 </otherwise>
             </choose>
             WHERE EXCEL_QUARTER = #{quarter} AND EXCEL_DATE = #{year}
-            <if test="orgids!=''">
-                AND ORG_ID IN (#{orgids})
+            <if test="orgs!=null">
+                AND ORG_ID IN
+                <foreach item="orgid" collection="orgs" index="index" open="(" separator="," close=")">
+                    #{orgid}
+                </foreach>
             </if>
         )a GROUP BY a.level
     </select>
@@ -145,6 +160,10 @@
     <select id="getModuleScore" resultType="com.bank.manage.dos.CountModuleTempDO">
         SELECT a.* FROM T_COUNT_MODULE_TEMP a
         LEFT JOIN T_COUNT_MODULE b ON a.MODULE_ID = b.ID WHERE b.MODULE_YEAR = #{year}
+    </select>
+
+    <select id="getOrgIds" resultType="java.lang.String">
+        select ORG_ID FROM t_organization WHERE ORG_ID LIKE concat(#{orgids},'%')
     </select>
 
 </mapper>

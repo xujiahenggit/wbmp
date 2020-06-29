@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,6 +29,10 @@ public class HappyParam {
 
     @ApiModelProperty(hidden = true)
     private boolean hasAdmin;
+
+    @ApiModelProperty(hidden = true)
+    private List<String> orgs;
+
     @ApiModelProperty(hidden = true)
     private String userId;
     @ApiModelProperty(hidden = true)

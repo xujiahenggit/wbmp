@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -124,9 +123,16 @@ public class HappyServiceImpl implements HappyService {
         }
         param.setHasAdmin(hasAdminPermission(param.getUserId()));
         String orgids = param.getOrgids();
-        if (!StrUtil.isBlankIfStr(orgids)) {
-            param.setOrgids(Arrays.stream(orgids.split(",")).collect(Collectors.joining("','")));
+        String networks = param.getNetworks();
+        if (StrUtil.isBlankIfStr(networks)){
+            if (!StrUtil.isBlankIfStr(orgids)) {
+                List<String> orgIds = happyDao.getOrgIds(orgids);
+                param.setOrgs(orgIds);
+//                param.setOrgids(orgIds.stream().collect(Collectors.joining("','")));
+            }
         }
+
+
     }
 
     /**
