@@ -5,6 +5,7 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import com.bank.core.entity.BizException;
 import com.bank.core.entity.HeaderDO;
+import com.bank.core.utils.YmlUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -26,7 +27,7 @@ import java.util.Map;
 @Slf4j
 public class SoapUtil {
 
-    private static final String remoteUrl = "http://dev-icop-qdzh.prod.bcs:43294/icop/services/JTService?wsdl";
+    private static final String remoteUrl = YmlUtil.getValue("ICOP.PATH");
 
     private static StringBuilder builder = new StringBuilder();
 
