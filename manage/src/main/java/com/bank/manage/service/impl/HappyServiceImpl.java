@@ -168,12 +168,12 @@ public class HappyServiceImpl implements HappyService {
 
         int YearScore = 0;
         if (quarterData.size() > 0) {
-            YearScore = getYearScore(quarterData, queryYear, queryYear - 1, quarter);
+            YearScore = getYearScore(quarterData, queryYear,quarter, queryYear - 1, quarter);
         }
         map.put("year", getAverage(YearScore, count));
 
         YearScore = 0;
-        YearScore = getYearScore(quarterData, queryYear, lastQuarterYear, lastQuarter);
+        YearScore = getYearScore(quarterData, queryYear,quarter, lastQuarterYear, lastQuarter);
         map.put("quarter", getAverage(YearScore, count));
         return map;
     }
@@ -198,10 +198,10 @@ public class HappyServiceImpl implements HappyService {
     }
 
     @SuppressWarnings("all")
-    private int getYearScore(List<StatisticsDTO> year, int thisYear, int lastYear, Integer quarter) {
+    private int getYearScore(List<StatisticsDTO> year, int thisYear, Integer thisQuarter, int lastYear, Integer lastQuarter) {
         int YearScore = 0;
-        Optional<Integer> currentYearScore = year.stream().filter(vo -> vo.getYear() == thisYear && vo.getQuarter() == quarter).map(StatisticsDTO::getScore).findFirst();
-        Optional<Integer> lastYearScore = year.stream().filter(vo -> vo.getYear() == lastYear && vo.getQuarter() == quarter).map(StatisticsDTO::getScore).findFirst();
+        Optional<Integer> currentYearScore = year.stream().filter(vo -> vo.getYear() == thisYear && vo.getQuarter() == thisQuarter).map(StatisticsDTO::getScore).findFirst();
+        Optional<Integer> lastYearScore = year.stream().filter(vo -> vo.getYear() == lastYear && vo.getQuarter() == lastQuarter).map(StatisticsDTO::getScore).findFirst();
         boolean currentYearScorePresent = currentYearScore.isPresent();
         boolean lastYearScorePresent = lastYearScore.isPresent();
 
