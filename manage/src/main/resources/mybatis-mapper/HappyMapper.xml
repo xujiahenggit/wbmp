@@ -87,7 +87,7 @@
         ON b.ID = a.EXAMINE_ID
         WHERE b.EXCEL_DATE = #{year} AND b.EXCEL_QUARTER = #{quarter}
         <if test="orgs!=null">
-            AND ORG_ID IN
+            AND b.ORG_ID IN
             <foreach item="orgid" collection="orgs" index="index" open="(" separator="," close=")">
                 #{orgid}
             </foreach>
