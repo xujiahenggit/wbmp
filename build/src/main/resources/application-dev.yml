@@ -125,45 +125,31 @@ DAT:
 #巡查证明文件上传路径
 PARTORAL:
   PROVE_FILE_PATH: /vedio/prove
-  PROVE_ACCESS_PATH: /vedio/prove
   #巡查记录生成excel 存放路径
   RECORD_EXCEL: /vedio/record/excel/
-  RECORD_EXCEL_ACCESS_PATH: /vedio/record/excel/
   #巡查记录证明文件打包zip路径
   RECORD_PROVE_ZIP_PATH: /vedio/record/provezip/
-  RECORD_PROVE_ZIP_ACCESS_PATH: /vedio/record/provezip/
   #巡查记录生成 zip 存放路径
   RECORD_DOWNLOAD_PATH: /vedio/record/download/
-  RECORD_DOWNLOAD_ACCESS_PATH: /vedio/record/download/
 #考勤记录
 ATTEND:
   DOWN_EXCEL_PATH: /vedio/attend/
-  DOWN_EXCEL_ACCESS_PATH: /vedio/attend/
 #快乐服务
 HAPPYSERVICE:
   HAPPY_FILE_PATH: /vedio/happy
-  HAPPY_ACCESS_PATH: /vedio/happy
 #活动沙龙
 ACTIVITIE:
   ACTIVITIE_FILE_PATH: /vedio/activitie
-  ACTIVITIE_ACCESS_PATH: /vedio/activitie
 #外包人员
 CARDSUPPLE:
   CARD_FILE_PATH: /vedio/cardsupple
-  CARD_ACCESS_PATH: /vedio/cardsupple
   WORK_FILE_PATH: /vedio/worksupple
-  WORK_ACCESS_PATH: /vedio/worksupple
-##################素材上传配置################
-#素材临时存储路径-共享
+#素材上传配置
 MATERIAL:
-  #素材临时存储路径-共享
-  UPLOAD_FILE_PATH: /vedio
-  #http素材访问路径
+  #素材路径
   FILE_PATH_FILE: /vedio
   #二维码生成路径
   qrImages: /qrImages
-  #http素材临时路径-共享
- # HTTP_PATH: http://39.104.146.218:8080
 GAME:
   HTTP_DDL: /multimedia/diandianle/index.html#/?id=
   HTTP_XQDZ: /multimedia/starwar/index.html#/?id=

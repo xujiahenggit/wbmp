@@ -82,40 +82,22 @@ public class ConfigFileReader {
     private String HX_ORGFILE_NAME;
 
     /**
-     * http素材临时路径--共享
-     */
-    /*@Value("${MATERIAL.HTTP_PATH}")
-    private String HTTP_PATH;*/
-
-    /**
-     * 素材临时存储路径-共享
-     */
-    @Value("${MATERIAL.UPLOAD_FILE_PATH}")
-    private String UPLOAD_FILE_PATH;
-
-    /**
      * 素材临时存储路径-共享
      */
     @Value("${MATERIAL.FILE_PATH_FILE}")
     private String FILE_PATH_FILE;
-
 
     @Value("${GAME.HTTP_DDL}")
     private String HTTP_DDL;
 
     @Value("${GAME.HTTP_XQDZ}")
     private String HTTP_XQDZ;
+
     /**
      * 巡查证明文件 上传路径
      */
     @Value("${PARTORAL.PROVE_FILE_PATH}")
     private String PROVE_FILE_PATH;
-
-    /**
-     * 巡查证明文件 访问路径
-     */
-    @Value("${PARTORAL.PROVE_ACCESS_PATH}")
-    private String PROVE_ACCESS_PATH;
 
     /**
      * 快乐服务 上传路径
@@ -124,22 +106,10 @@ public class ConfigFileReader {
     private String HAPPY_FILE_PATH;
 
     /**
-     * 快乐服务 访问路径
-     */
-    @Value("${HAPPYSERVICE.HAPPY_ACCESS_PATH}")
-    private String HAPPY_ACCESS_PATH;
-
-    /**
      * 活动沙龙 上传路径
      */
     @Value("${ACTIVITIE.ACTIVITIE_FILE_PATH}")
     private String ACTIVITIE_FILE_PATH;
-
-    /**
-     * 活动沙龙 访问路径
-     */
-    @Value("${ACTIVITIE.ACTIVITIE_ACCESS_PATH}")
-    private String ACTIVITIE_ACCESS_PATH;
 
     /**
      * 外包人员 上传路径
@@ -148,21 +118,13 @@ public class ConfigFileReader {
     private String CARD_FILE_PATH;
 
     /**
-     * 外包人员 访问路径
-     */
-    @Value("${CARDSUPPLE.CARD_ACCESS_PATH}")
-    private String CARD_ACCESS_PATH;
-
-    /**
      * 应用ip，仅开发环境使用此参数
      */
     @Value("${application.ip}")
     private String applicationIp;
 
-
     @Value("${application.port}")
     private String applicationPort;
-
 
     @Value("${application.contextPath}")
     private String applicationContextPath;
@@ -183,22 +145,10 @@ public class ConfigFileReader {
     private String RECORD_EXCEL;
 
     /**
-     * 巡查记录excel访问路径
-     */
-    @Value("${PARTORAL.RECORD_EXCEL_ACCESS_PATH}")
-    private String RECORD_EXCEL_ACCESS_PATH;
-
-    /**
      * 巡查记录证明文件打包zip路径
      */
     @Value("${PARTORAL.RECORD_PROVE_ZIP_PATH}")
     private String RECORD_PROVE_ZIP_PATH;
-
-    /**
-     * 巡查记录证明文件打包zip 访问路径
-     */
-    @Value("${PARTORAL.RECORD_PROVE_ZIP_ACCESS_PATH}")
-    private String RECORD_PROVE_ZIP_ACCESS_PATH;
 
     /**
      * 巡查记录 zip 文件地址
@@ -207,22 +157,10 @@ public class ConfigFileReader {
     private String RECORD_DOWNLOAD_PATH;
 
     /**
-     * 巡查记录zip 访问路径
-     */
-    @Value("${PARTORAL.RECORD_DOWNLOAD_ACCESS_PATH}")
-    private String RECORD_DOWNLOAD_ACCESS_PATH;
-
-    /**
      * 加班申请 存储路径
      */
     @Value("${CARDSUPPLE.WORK_FILE_PATH}")
     private String WORK_FILE_PATH;
-
-    /**
-     * 加班申请 存储路径
-     */
-    @Value("${CARDSUPPLE.WORK_ACCESS_PATH}")
-    private String WORK_ACCESS_PATH;
 
     /**
      * 月度考勤excel目录
@@ -230,9 +168,4 @@ public class ConfigFileReader {
     @Value("${ATTEND.DOWN_EXCEL_PATH}")
     private String DOWN_EXCEL_PATH;
 
-    /**
-     * 月度考勤excel访问路径
-     */
-    @Value("${ATTEND.DOWN_EXCEL_ACCESS_PATH}")
-    private String DOWN_EXCEL_ACCESS_PATH;
 }

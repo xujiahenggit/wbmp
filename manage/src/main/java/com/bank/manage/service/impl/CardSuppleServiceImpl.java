@@ -1,10 +1,20 @@
 package com.bank.manage.service.impl;
 
-import cn.hutool.core.util.IdUtil;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.bank.core.entity.BizException;
 import com.bank.core.entity.FileDo;
 import com.bank.core.entity.TokenUserInfo;
-import com.bank.core.sysConst.ConstFile;
 import com.bank.core.sysConst.NewProcessStatusFile;
 import com.bank.core.sysConst.SysStatus;
 import com.bank.core.utils.ConfigFileReader;
@@ -25,16 +35,8 @@ import com.bank.manage.vo.CardSuppleQueryVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
+import cn.hutool.core.util.IdUtil;
 
 /**
  * @Author: Andy
@@ -54,6 +56,7 @@ public class CardSuppleServiceImpl extends ServiceImpl<CardSuppleDao, CardSupple
 
     @Resource
     NetUtil netUtil;
+
     @Resource
     private UsherService usherService;
 
@@ -65,12 +68,12 @@ public class CardSuppleServiceImpl extends ServiceImpl<CardSuppleDao, CardSupple
     @Override
     public IPage<CardSuppleDto> getList(CardSuppleQueryVo cardSuppleQueryVo) {
         // 用手机号码查询 引导员 机构号
-        UsherDO usherDO=usherService.selectUsherByPhone(cardSuppleQueryVo.getUserPhone());
-        if(usherDO==null){
+        UsherDO usherDO = usherService.selectUsherByPhone(cardSuppleQueryVo.getUserPhone());
+        if (usherDO == null) {
             throw new BizException("未查到引导员信息");
         }
-        Page<CardSuppleDto> page=new Page<>(cardSuppleQueryVo.getPageIndex(),cardSuppleQueryVo.getPageSize());
-        return cardSuppleDao.getList(page,usherDO.getOrgId());
+        Page<CardSuppleDto> page = new Page<>(cardSuppleQueryVo.getPageIndex(), cardSuppleQueryVo.getPageSize());
+        return cardSuppleDao.getList(page, usherDO.getOrgId());
     }
 
     /**
@@ -80,12 +83,12 @@ public class CardSuppleServiceImpl extends ServiceImpl<CardSuppleDao, CardSupple
      */
     @Override
     public IPage<InfoMessageDto> getInfomationList(CardSuppleQueryVo cardSuppleQueryVo) {
-        Page<CardSuppleDto> page=new Page<>(cardSuppleQueryVo.getPageIndex(),cardSuppleQueryVo.getPageSize());
-        UsherDO usherDO=usherService.selectUsherByPhone(cardSuppleQueryVo.getUserPhone());
-        if(usherDO==null){
+        Page<CardSuppleDto> page = new Page<>(cardSuppleQueryVo.getPageIndex(), cardSuppleQueryVo.getPageSize());
+        UsherDO usherDO = usherService.selectUsherByPhone(cardSuppleQueryVo.getUserPhone());
+        if (usherDO == null) {
             throw new BizException("没有查到引导员信息！");
         }
-        return cardSuppleDao.getInfomationList(page,usherDO.getUsherId());
+        return cardSuppleDao.getInfomationList(page, usherDO.getUsherId());
     }
 
     /**
@@ -97,13 +100,14 @@ public class CardSuppleServiceImpl extends ServiceImpl<CardSuppleDao, CardSupple
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean passProcess(CardSupplePassRejectVo cardSupplePassRejectVo, TokenUserInfo tokenUserInfo) {
-       try{
-           CardSuppleDO cardSuppleDO=getCardUpdateModel(cardSupplePassRejectVo,tokenUserInfo,NewProcessStatusFile.CHECK_TYPE_PASS);
-           this.updateById(cardSuppleDO);
-           return true;
-       }catch (Exception e){
-           throw new BizException("审批失败");
-       }
+        try {
+            CardSuppleDO cardSuppleDO = getCardUpdateModel(cardSupplePassRejectVo, tokenUserInfo, NewProcessStatusFile.CHECK_TYPE_PASS);
+            this.updateById(cardSuppleDO);
+            return true;
+        }
+        catch (Exception e) {
+            throw new BizException("审批失败");
+        }
     }
 
     /**
@@ -114,15 +118,15 @@ public class CardSuppleServiceImpl extends ServiceImpl<CardSuppleDao, CardSupple
      */
     @Override
     public boolean rejectProcess(CardSupplePassRejectVo cardSupplePassRejectVo, TokenUserInfo tokenUserInfo) {
-        try{
-            CardSuppleDO cardSuppleDO=getCardUpdateModel(cardSupplePassRejectVo,tokenUserInfo,NewProcessStatusFile.CHECK_TYPE_REJECT);
+        try {
+            CardSuppleDO cardSuppleDO = getCardUpdateModel(cardSupplePassRejectVo, tokenUserInfo, NewProcessStatusFile.CHECK_TYPE_REJECT);
             this.updateById(cardSuppleDO);
             return true;
-        }catch (Exception e){
+        }
+        catch (Exception e) {
             throw new BizException("审批失败");
         }
     }
-
 
     /**
      * 删除消息通知
@@ -132,30 +136,34 @@ public class CardSuppleServiceImpl extends ServiceImpl<CardSuppleDao, CardSupple
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean deleteInfomation(List<CardSuppleDeleteVo> list) {
-        try{
-            if(list.size()>0){
-                for (CardSuppleDeleteVo item:list){
+        try {
+            if (list.size() > 0) {
+                for (CardSuppleDeleteVo item : list) {
                     //补卡申请
-                    if(SysStatus.MESSAGE_TYPE_CARD.equals(item.getType())){
-                        CardSuppleDO cardSuppleDO=new CardSuppleDO();
+                    if (SysStatus.MESSAGE_TYPE_CARD.equals(item.getType())) {
+                        CardSuppleDO cardSuppleDO = new CardSuppleDO();
                         cardSuppleDO.setCardSuppleId(item.getId());
                         cardSuppleDO.setCardSuppleDeleteFlag(SysStatus.FLAG_DELETE);
                         this.updateById(cardSuppleDO);
-                    }else if(SysStatus.MESSAGE_TYPE_WORD.equals(item.getType())){
-                        WorkSuppleDO workSuppleDO=new WorkSuppleDO();
+                    }
+                    else if (SysStatus.MESSAGE_TYPE_WORD.equals(item.getType())) {
+                        WorkSuppleDO workSuppleDO = new WorkSuppleDO();
                         workSuppleDO.setWorkSuppleId(item.getId());
                         workSuppleDO.setWorkSuppleDeleteFlag(SysStatus.FLAG_DELETE);
                         workSuppleService.updateById(workSuppleDO);
                     }
                 }
-            }else{
+            }
+            else {
                 throw new BizException("请选择删除列表！");
             }
             return true;
-        }catch (Exception e){
-            if(e instanceof BizException){
+        }
+        catch (Exception e) {
+            if (e instanceof BizException) {
                 throw new BizException(((BizException) e).getErrorMsg());
-            }else {
+            }
+            else {
                 throw new BizException("删除失败");
             }
         }
@@ -168,9 +176,9 @@ public class CardSuppleServiceImpl extends ServiceImpl<CardSuppleDao, CardSupple
      */
     @Override
     public CardSuppleDto getInfo(Integer cardSuppleId) {
-        CardSuppleDto cardSuppleDto=cardSuppleDao.getInfo(cardSuppleId);
-        if(cardSuppleDto!=null){
-            cardSuppleDto.setCardSuppleImg(netUtil.getUrlSuffix("")+cardSuppleDto.getCardSuppleImg());
+        CardSuppleDto cardSuppleDto = cardSuppleDao.getInfo(cardSuppleId);
+        if (cardSuppleDto != null) {
+            cardSuppleDto.setCardSuppleImg(netUtil.getUrlSuffix("") + cardSuppleDto.getCardSuppleImg());
         }
         return cardSuppleDao.getInfo(cardSuppleId);
     }
@@ -182,22 +190,23 @@ public class CardSuppleServiceImpl extends ServiceImpl<CardSuppleDao, CardSupple
      */
     @Override
     public FileDo upLoadFile(MultipartFile file) {
-        FileDo fileDo=null;
+        FileDo fileDo = null;
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
             //第一层目录 按 日期创建
-            String fist_tab=sdf.format(new Date());
+            String fist_tab = sdf.format(new Date());
             //上传路径
-            String uploadPath=configFileReader.getCARD_FILE_PATH()+"/"+fist_tab;
+            String uploadPath = configFileReader.getCARD_FILE_PATH() + "/" + fist_tab;
             //访问路径
-            String accessPath=netUtil.getUrlSuffix("")+configFileReader.getCARD_ACCESS_PATH()+"/"+fist_tab;
+            String accessPath = netUtil.getUrlSuffix("") + configFileReader.getCARD_FILE_PATH() + "/" + fist_tab;
             //原文件名称
             String filename = file.getOriginalFilename();
             //用UUID
-            String c_fileName= IdUtil.randomUUID()+filename.substring(filename.lastIndexOf("."));
-            fileDo = FileUploadUtils.FileUpload(file,uploadPath,accessPath,c_fileName);
+            String c_fileName = IdUtil.randomUUID() + filename.substring(filename.lastIndexOf("."));
+            fileDo = FileUploadUtils.FileUpload(file, uploadPath, accessPath, c_fileName);
             return fileDo;
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new BizException("图片上传失败！");
         }
     }
@@ -210,12 +219,12 @@ public class CardSuppleServiceImpl extends ServiceImpl<CardSuppleDao, CardSupple
     @Override
     public IPage<CardSuppleDto> getAreadyList(CardSuppleQueryVo cardSuppleQueryVo) {
         // 用手机号码查询 引导员 机构号
-        UsherDO usherDO=usherService.selectUsherByPhone(cardSuppleQueryVo.getUserPhone());
-        if(usherDO==null){
+        UsherDO usherDO = usherService.selectUsherByPhone(cardSuppleQueryVo.getUserPhone());
+        if (usherDO == null) {
             throw new BizException("未查到引导员信息");
         }
-        Page<CardSuppleDto> page=new Page<>(cardSuppleQueryVo.getPageIndex(),cardSuppleQueryVo.getPageSize());
-        return cardSuppleDao.getAreadyList(page,usherDO.getOrgId());
+        Page<CardSuppleDto> page = new Page<>(cardSuppleQueryVo.getPageIndex(), cardSuppleQueryVo.getPageSize());
+        return cardSuppleDao.getAreadyList(page, usherDO.getOrgId());
     }
 
     /**
@@ -225,15 +234,16 @@ public class CardSuppleServiceImpl extends ServiceImpl<CardSuppleDao, CardSupple
      * @param updateType 审批类型 通过  驳回
      * @return
      */
-    private CardSuppleDO getCardUpdateModel(CardSupplePassRejectVo cardSupplePassRejectVo, TokenUserInfo tokenUserInfo,String updateType){
-        try{
-            CardSuppleDO cardSuppleDO=new CardSuppleDO();
+    private CardSuppleDO getCardUpdateModel(CardSupplePassRejectVo cardSupplePassRejectVo, TokenUserInfo tokenUserInfo, String updateType) {
+        try {
+            CardSuppleDO cardSuppleDO = new CardSuppleDO();
             //设置编号
             cardSuppleDO.setCardSuppleId(cardSupplePassRejectVo.getCardSuppleId());
-            if(NewProcessStatusFile.CHECK_TYPE_PASS.equals(updateType)){
+            if (NewProcessStatusFile.CHECK_TYPE_PASS.equals(updateType)) {
                 //设置状态为 审核通过
                 cardSuppleDO.setCardSuppleState(NewProcessStatusFile.PROCESS_PASS);
-            }else if(NewProcessStatusFile.CHECK_TYPE_REJECT.equals(updateType)){
+            }
+            else if (NewProcessStatusFile.CHECK_TYPE_REJECT.equals(updateType)) {
                 //设置状态为 驳回
                 cardSuppleDO.setCardSuppleState(NewProcessStatusFile.PROCESS_REJECT);
                 //设置驳回理由
@@ -246,7 +256,8 @@ public class CardSuppleServiceImpl extends ServiceImpl<CardSuppleDao, CardSupple
             //设置审批时间
             cardSuppleDO.setCardSuppleProcessTime(LocalDateTime.now());
             return cardSuppleDO;
-        }catch (Exception e){
+        }
+        catch (Exception e) {
             throw new BizException("操作异常");
         }
     }

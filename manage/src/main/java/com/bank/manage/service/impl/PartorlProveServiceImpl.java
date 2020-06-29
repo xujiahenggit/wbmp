@@ -1,7 +1,15 @@
 package com.bank.manage.service.impl;
 
-import cn.hutool.core.util.IdUtil;
-import cn.hutool.core.util.RandomUtil;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.bank.core.entity.BizException;
 import com.bank.core.entity.FileDo;
 import com.bank.core.utils.ConfigFileReader;
@@ -11,14 +19,8 @@ import com.bank.manage.dao.PartorlProveDao;
 import com.bank.manage.dos.PartorlProveDO;
 import com.bank.manage.service.PartorlProveService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import cn.hutool.core.util.IdUtil;
 
 /**
  * @Author: Andy
@@ -29,10 +31,13 @@ public class PartorlProveServiceImpl extends ServiceImpl<PartorlProveDao, Partor
 
     @Autowired
     private ConfigFileReader configFileReader;
+
     @Resource
     NetUtil netUtil;
+
     @Resource
     private PartorlProveDao partorlProveDao;
+
     /**
      * 证明文件上传
      * @param file 文件
@@ -42,19 +47,20 @@ public class PartorlProveServiceImpl extends ServiceImpl<PartorlProveDao, Partor
     public FileDo proveFileUpload(MultipartFile file) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         //第一层目录 按 日期创建
-        String fist_tab=sdf.format(new Date());
-        try{
+        String fist_tab = sdf.format(new Date());
+        try {
             //上传路径
-            String uploadPath=configFileReader.getPROVE_FILE_PATH()+"/"+fist_tab;
+            String uploadPath = configFileReader.getPROVE_FILE_PATH() + "/" + fist_tab;
             //访问路径
-            String accessPath=netUtil.getUrlSuffix("")+configFileReader.getPROVE_ACCESS_PATH()+"/"+fist_tab;
+            String accessPath = netUtil.getUrlSuffix("") + configFileReader.getPROVE_FILE_PATH() + "/" + fist_tab;
             //原文件名称
             String filename = file.getOriginalFilename();
             //用UUID
-            String c_fileName= IdUtil.randomUUID()+filename.substring(filename.lastIndexOf("."));;
-            FileDo fileDo=FileUploadUtils.FileUpload(file,uploadPath,accessPath,c_fileName);
+            String c_fileName = IdUtil.randomUUID() + filename.substring(filename.lastIndexOf("."));;
+            FileDo fileDo = FileUploadUtils.FileUpload(file, uploadPath, accessPath, c_fileName);
             return fileDo;
-        }catch (Exception e){
+        }
+        catch (Exception e) {
             throw new BizException("证明文件上传失败！");
         }
     }

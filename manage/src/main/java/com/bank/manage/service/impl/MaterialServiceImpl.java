@@ -72,14 +72,14 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialDao, MaterialDO> im
             for (MaterialDTO material : materialDTO) {
                 if (!"03".equals(material.getMaterialType())) {//非文字素材
                     String materialPath = material.getMaterialPath();
-                    String splitMaterialPath = StringSplitUtil.splitMaterialPath(materialPath, this.netUtil.getUrlSuffix(""));
+                    String splitMaterialPath = StringSplitUtil.splitMaterialPath(materialPath, netUtil.getUrlSuffix(""));
                     MaterialDO materialDO = MaterialDO.builder()
                             .materialName(material.getMaterialName())
                             .materialType(material.getMaterialType())
                             .materialFormat(material.getMaterialFormat())
                             .materialSpec(material.getMaterialSpec())
                             .materialPath(splitMaterialPath)
-                            .materialSize(StringSplitUtil.getMaterialSize(StringUtils.replace(splitMaterialPath, this.configFileReader.getFILE_PATH_FILE(), this.configFileReader.getUPLOAD_FILE_PATH())))
+                            .materialSize(StringSplitUtil.getMaterialSize(splitMaterialPath))
                             .orgId(tokenUserInfo.getOrgId())
                             .createdUser(tokenUserInfo.getUserId())
                             .createdTime(LocalDateTime.now())
@@ -87,7 +87,7 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialDao, MaterialDO> im
                             .deviceType(material.getDeviceType())
                             .orgName(material.getOrgName()).build();
                     log.info("插入素材表信息：{}", materialDO);
-                    this.materialDao.insert(materialDO);
+                    materialDao.insert(materialDO);
 
                     NewProcessDO newProcessDO = NewProcessDO.builder()
                             .status(NewProcessStatusFile.PROCESS_WAIT)
@@ -101,13 +101,13 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialDao, MaterialDO> im
                             .tradingModule("素材管理")
                             .tradingType(ConstantEnum.TRADE_TYPE_SCWJ.getType()).build();
                     log.info("插入流程表信息：{}", newProcessDO);
-                    this.newProcessService.createProcess(newProcessDO, tokenUserInfo);
+                    newProcessService.createProcess(newProcessDO, tokenUserInfo);
 
                     CatalogMaterialDO catalogMaterialDO = CatalogMaterialDO.builder()
                             .catalogId(Integer.parseInt(catalogId))
                             .materialId(materialDO.getMaterialId()).build();
                     log.info("插入素材目录中间表信息：{}", catalogMaterialDO);
-                    this.catalogMaterialDao.insert(catalogMaterialDO);
+                    catalogMaterialDao.insert(catalogMaterialDO);
                 }
                 else {
                     MaterialDO materialDO = MaterialDO.builder()
@@ -122,7 +122,7 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialDao, MaterialDO> im
                             .deviceType(material.getDeviceType())
                             .text(material.getText()).build();
                     log.info("插入素材表信息：{}", materialDO);
-                    this.materialDao.insert(materialDO);
+                    materialDao.insert(materialDO);
 
                     NewProcessDO newProcessDO = NewProcessDO.builder()
                             .status(NewProcessStatusFile.PROCESS_WAIT)
@@ -136,13 +136,13 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialDao, MaterialDO> im
                             .createTime(LocalDateTime.now())
                             .orgId(tokenUserInfo.getOrgId()).build();
                     log.info("插入流程表信息：{}", newProcessDO);
-                    this.newProcessService.createProcess(newProcessDO, tokenUserInfo);
+                    newProcessService.createProcess(newProcessDO, tokenUserInfo);
 
                     CatalogMaterialDO catalogMaterialDO = CatalogMaterialDO.builder()
                             .catalogId(Integer.parseInt(catalogId))
                             .materialId(materialDO.getMaterialId()).build();
                     log.info("插入素材目录中间表信息：{}", catalogMaterialDO);
-                    this.catalogMaterialDao.insert(catalogMaterialDO);
+                    catalogMaterialDao.insert(catalogMaterialDO);
                 }
             }
             return Boolean.TRUE;
@@ -160,7 +160,7 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialDao, MaterialDO> im
         QueryWrapper<NewProcessDO> queryWrapper1 = new QueryWrapper<>();
         queryWrapper1.eq("TRADING_ID", materialDTO.getMaterialId())
                 .eq("TRADING_TYPE", "T_MATERIAL");
-        NewProcessDO newProcessDO = this.newProcessService.getOne(queryWrapper1);
+        NewProcessDO newProcessDO = newProcessService.getOne(queryWrapper1);
 
         String status = newProcessDO.getStatus();
         if ("30".equals(status) || "40".equals(status)) {
@@ -177,7 +177,7 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialDao, MaterialDO> im
                 .forcePlay(materialDTO.getForcePlay()).build();
         log.info("素材修改信息：{}", materialDO);
         try {
-            this.materialDao.updateById(materialDO);
+            materialDao.updateById(materialDO);
             flag = true;
         }
         catch (Exception e) {
@@ -193,14 +193,14 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialDao, MaterialDO> im
         Boolean flag = null;
         QueryWrapper<PlayAreaMaterialDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("MATERIAL_ID", id);
-        Integer i = this.playAreaMaterialDao.selectCount(queryWrapper);
+        Integer i = playAreaMaterialDao.selectCount(queryWrapper);
         if (i > 0) {
             throw new BizException("该素材正在被使用，请勿删除");
         }
         QueryWrapper<NewProcessDO> queryWrapper1 = new QueryWrapper<>();
         queryWrapper1.eq("TRADING_ID", id)
                 .eq("TRADING_TYPE", "T_MATERIAL");
-        NewProcessDO newProcessDO = this.newProcessService.getOne(queryWrapper1);
+        NewProcessDO newProcessDO = newProcessService.getOne(queryWrapper1);
 
         String status = newProcessDO.getStatus();
         if ("10".equals(status) || "20".equals(status)) {
@@ -211,7 +211,7 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialDao, MaterialDO> im
                     .active("0")
                     .processId(newProcessDO.getProcessId())
                     .build();
-            this.newProcessService.updateById(newProcessDO1);
+            newProcessService.updateById(newProcessDO1);
 
             //materialDao.deleteById(id);
             flag = true;
@@ -226,11 +226,11 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialDao, MaterialDO> im
 
     @Override
     public MaterialDO queryMaterialById(Integer id) {
-        MaterialDO materialDO = this.materialDao.selectById(id);
+        MaterialDO materialDO = materialDao.selectById(id);
         if (materialDO == null) {
             throw new BizException("查无此记录");
         }
-        materialDO.setMaterialPath(this.netUtil.getUrlSuffix("") + materialDO.getMaterialPath());
+        materialDO.setMaterialPath(netUtil.getUrlSuffix("") + materialDO.getMaterialPath());
         return materialDO;
     }
 
@@ -250,7 +250,7 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialDao, MaterialDO> im
                             .materialId(forcePlayVo.getMaterialId())
                             //强制状态
                             .forcePlay(forcePlayVo.getForcePlay()).build();
-                    this.materialDao.updateById(materialDO);
+                    materialDao.updateById(materialDO);
                 }
             }
             return true;
@@ -280,14 +280,14 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialDao, MaterialDO> im
         String deviceType = (String) queryParam.get("deviceType");
         String forcePlay = (String) queryParam.get("forcePlay");
         String materialName = (String) queryParam.get("materialName");
-        IPage<MaterialVo> pageList = this.materialDao.selectPageListByCatalogType(page, catalogId, createdUser, orgId,
+        IPage<MaterialVo> pageList = materialDao.selectPageListByCatalogType(page, catalogId, createdUser, orgId,
                 deviceType, forcePlay, materialName);
         List<MaterialVo> records = pageList.getRecords();
         if (records != null && records.size() > 0) {
             for (int i = 0; i < records.size(); i++) {
                 String materialType = records.get(i).getMaterialType();
                 if (!ConstantEnum.MATERIAL_TYPE_TEXT.getType().equals(materialType)) {//非文字素材
-                    records.get(i).setMaterialPath(this.netUtil.getUrlSuffix("") + records.get(i).getMaterialPath());
+                    records.get(i).setMaterialPath(netUtil.getUrlSuffix("") + records.get(i).getMaterialPath());
                 }
             }
         }
@@ -296,12 +296,12 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialDao, MaterialDO> im
 
     @Override
     public List<MaterialVo> queryAppMaterialList() {
-        List<MaterialVo> records = this.materialDao.queryListByCatalogId("6");
+        List<MaterialVo> records = materialDao.queryListByCatalogId("6");
         if (records != null && records.size() > 0) {
             for (int i = 0; i < records.size(); i++) {
                 String materialType = records.get(i).getMaterialType();
                 if (!ConstantEnum.MATERIAL_TYPE_TEXT.getType().equals(materialType)) {//非文字素材
-                    records.get(i).setMaterialPath(this.netUtil.getUrlSuffix("") + records.get(i).getMaterialPath());
+                    records.get(i).setMaterialPath(netUtil.getUrlSuffix("") + records.get(i).getMaterialPath());
                 }
             }
         }

@@ -10,18 +10,18 @@ import java.util.concurrent.Executors;
 
 import javax.annotation.Resource;
 
-import com.alibaba.fastjson.JSON;
-import com.bank.core.utils.NetUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSON;
 import com.bank.core.entity.BizException;
 import com.bank.core.entity.PageQueryModel;
 import com.bank.core.entity.TokenUserInfo;
 import com.bank.core.utils.ConfigFileReader;
 import com.bank.core.utils.HttpUtil;
+import com.bank.core.utils.NetUtil;
 import com.bank.manage.dao.ActivitieSalonDao;
 import com.bank.manage.dao.ActivitieSalonImageDao;
 import com.bank.manage.dos.ActivitieSalonDO;
@@ -59,10 +59,9 @@ public class ActivitieSalonServiceImpl extends ServiceImpl<ActivitieSalonDao, Ac
     @Autowired
     private ActivitieSalonImageService activitieSalonImageService;
 
-
-
     @Resource
     NetUtil netUtil;
+
     @Override
     public IPage<ActivitieSalonVO> listPage(PageQueryModel pageQueryModel) {
         Page<ActivitieSalonVO> page = new Page<>(pageQueryModel.getPageIndex(), pageQueryModel.getPageSize());
@@ -80,11 +79,11 @@ public class ActivitieSalonServiceImpl extends ServiceImpl<ActivitieSalonDao, Ac
         String activitieType = (String) queryParam.get("activitieType");
         String startTime = (String) queryParam.get("startTime");
         String endTime = (String) queryParam.get("endTime");
-        IPage<ActivitieSalonVO> iPage = this.activitieSalonDao.queryActivitiesPage(page, activitieName, activitieType, startTime, endTime);
+        IPage<ActivitieSalonVO> iPage = activitieSalonDao.queryActivitiesPage(page, activitieName, activitieType, startTime, endTime);
         List<ActivitieSalonVO> records = iPage.getRecords();
         if (CollectionUtil.isNotEmpty(records)) {
             for (ActivitieSalonVO record : records) {
-                record.setActivitiePath(this.netUtil.getUrlSuffix("") + record.getActivitiePath());
+                record.setActivitiePath(netUtil.getUrlSuffix("") + record.getActivitiePath());
             }
         }
         return iPage;
@@ -107,11 +106,11 @@ public class ActivitieSalonServiceImpl extends ServiceImpl<ActivitieSalonDao, Ac
         QueryWrapper<ActivitieSalonDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("ORG_ID", orgId);
         queryWrapper.eq("STATUS", 0);
-        IPage<ActivitieSalonDO> iPage = this.activitieSalonDao.selectPage(page, queryWrapper);
+        IPage<ActivitieSalonDO> iPage = activitieSalonDao.selectPage(page, queryWrapper);
         List<ActivitieSalonDO> records = iPage.getRecords();
         if (CollectionUtil.isNotEmpty(records)) {
             for (ActivitieSalonDO record : records) {
-                record.setActivitiePath(this.netUtil.getUrlSuffix("") + record.getActivitiePath());
+                record.setActivitiePath(netUtil.getUrlSuffix("") + record.getActivitiePath());
             }
         }
         return iPage;
@@ -119,7 +118,7 @@ public class ActivitieSalonServiceImpl extends ServiceImpl<ActivitieSalonDao, Ac
 
     @Override
     public void cutActivitieSalon(CutActivitieSalonVo cutActivitieSalonVo) {
-        List<Map<String, Object>> salonDO = this.activitieSalonDao.selectActivitieSalonById(cutActivitieSalonVo.getActivitieSalonId());
+        List<Map<String, Object>> salonDO = activitieSalonDao.selectActivitieSalonById(cutActivitieSalonVo.getActivitieSalonId());
         Map<String, Object> map = new HashMap<>();
         map.put("orgId", cutActivitieSalonVo.getOrgId());
         map.put("deviceNo", cutActivitieSalonVo.getDeviceNo());
@@ -134,7 +133,7 @@ public class ActivitieSalonServiceImpl extends ServiceImpl<ActivitieSalonDao, Ac
             }
             Integer sort = (Integer) salonDO.get(i).get("SORT");
             Map<String, Object> pathMap = new HashMap<>();
-            pathMap.put("imagePath", this.netUtil.getUrlSuffix("") + imagePath);
+            pathMap.put("imagePath", netUtil.getUrlSuffix("") + imagePath);
             pathMap.put("sort", sort);
             list.add(pathMap);
         }
@@ -143,7 +142,7 @@ public class ActivitieSalonServiceImpl extends ServiceImpl<ActivitieSalonDao, Ac
         msg.put("activitiePath", list);
         map.put("msg", msg);
         log.info("活动沙龙切换信息：{}", JSON.toJSONString(map));
-        HttpUtil.sendPost(netUtil.getUrlSuffix()+"/jms/topic", map);
+        HttpUtil.sendPost(netUtil.getUrlSuffix() + "/jms/topic", map);
     }
 
     private static ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -164,8 +163,8 @@ public class ActivitieSalonServiceImpl extends ServiceImpl<ActivitieSalonDao, Ac
             salonDO.setCreatedTime(LocalDateTime.now());
             salonDO.setCreatedBy(tokenUserInfo.getUserId());
             salonDO.setStatus(1);
-            this.activitieSalonDao.insert(salonDO);
-            String pdfPath = StringUtils.replace(activitieSalon.getActivitiePath(), this.configFileReader.getACTIVITIE_ACCESS_PATH(), this.configFileReader.getACTIVITIE_FILE_PATH());
+            activitieSalonDao.insert(salonDO);
+            String pdfPath = activitieSalon.getActivitiePath();
             log.info("活动沙龙pdf文件服务器存储目录{}", pdfPath);
             executorService.execute(() -> convert2Image(pdfPath, salonDO.getId()));
         }
@@ -184,8 +183,8 @@ public class ActivitieSalonServiceImpl extends ServiceImpl<ActivitieSalonDao, Ac
             for (String s : imageList) {
                 ActivitieSalonImageDO imageDO = new ActivitieSalonImageDO();
                 imageDO.setActivitieId(id);
-                String imgPath = StringUtils.replace(s, this.configFileReader.getACTIVITIE_FILE_PATH(), this.configFileReader.getACTIVITIE_ACCESS_PATH());
-                imageDO.setImagePath(imgPath);
+                //String imgPath = StringUtils.replace(s, this.configFileReader.getACTIVITIE_FILE_PATH(), this.configFileReader.getACTIVITIE_ACCESS_PATH());
+                imageDO.setImagePath(s);
                 String[] s1 = s.split("_");
                 String s2 = s1[1];
                 String substring = s2.substring(0, s2.lastIndexOf("."));
@@ -193,12 +192,12 @@ public class ActivitieSalonServiceImpl extends ServiceImpl<ActivitieSalonDao, Ac
                 list.add(imageDO);
             }
             try {
-                this.activitieSalonImageService.saveBatch(list);
+                activitieSalonImageService.saveBatch(list);
 
                 ActivitieSalonDO salonDO = new ActivitieSalonDO();
                 salonDO.setId(id);
                 salonDO.setStatus(0);
-                this.activitieSalonDao.updateById(salonDO);
+                activitieSalonDao.updateById(salonDO);
             }
             catch (Exception e) {
                 throw new BizException("数据解析失败！");
@@ -210,8 +209,8 @@ public class ActivitieSalonServiceImpl extends ServiceImpl<ActivitieSalonDao, Ac
     @Transactional(rollbackFor = Exception.class)
     public Boolean removeActivitieSalonByIds(List<Integer> ids) {
         try {
-            this.activitieSalonDao.deleteBatchIds(ids);
-            this.activitieSalonImageDao.removeActivitieSalonImageByIds(ids);
+            activitieSalonDao.deleteBatchIds(ids);
+            activitieSalonImageDao.removeActivitieSalonImageByIds(ids);
             return true;
         }
         catch (Exception e) {

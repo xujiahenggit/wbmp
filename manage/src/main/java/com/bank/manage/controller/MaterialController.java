@@ -69,14 +69,14 @@ public class MaterialController extends BaseController {
         String path = null;
 
         /**文件上传开始**/
-        File f = new File(this.configFileReader.getUPLOAD_FILE_PATH() + "/" + sdf.format(new Date()));
+        File f = new File(configFileReader.getFILE_PATH_FILE() + "/" + sdf.format(new Date()));
         if (!f.exists()) {
             f.mkdirs();
         }
-        File fileUp = new File(new File(this.configFileReader.getUPLOAD_FILE_PATH() + "/" + sdf.format(new Date())).getAbsolutePath() + "/" + name);
+        File fileUp = new File(new File(configFileReader.getFILE_PATH_FILE() + "/" + sdf.format(new Date())).getAbsolutePath() + "/" + name);
         try {
             file.transferTo(fileUp);
-            path = this.netUtil.getUrlSuffix("") + this.configFileReader.getFILE_PATH_FILE() + "/" + sdf.format(new Date()) + "/" + name;
+            path = netUtil.getUrlSuffix("") + configFileReader.getFILE_PATH_FILE() + "/" + sdf.format(new Date()) + "/" + name;
             log.info("***************素材上传临时目录成功**************");
         }
         catch (IOException e) {
@@ -94,14 +94,14 @@ public class MaterialController extends BaseController {
     @ApiImplicitParam(name = "type", value = "素材类型", required = true, paramType = "query")
     public Map<String,String> upFileForShare(@RequestParam(value = "file") MultipartFile file, @RequestParam(value = "type")String type){
         *//*Subject subject = SecurityUtils.getSubject();
-               AuthDTO authDTO = (AuthDTO)subject.getPrincipal();*//*
-                                                                        Map<String,String> map = new HashMap<>();
-                                                                        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-                                                                        String filename = file.getOriginalFilename();
-                                                                        String name ="sj9033"+System.currentTimeMillis()+filename.substring(filename.lastIndexOf("."));
-                                                                        String path = null;
-                                                                        
-                                                                        *//**文件上传开始**/
+                AuthDTO authDTO = (AuthDTO)subject.getPrincipal();*//*
+                                                                          Map<String,String> map = new HashMap<>();
+                                                                          SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+                                                                          String filename = file.getOriginalFilename();
+                                                                          String name ="sj9033"+System.currentTimeMillis()+filename.substring(filename.lastIndexOf("."));
+                                                                          String path = null;
+                                                                          
+                                                                          *//**文件上传开始**/
 
     /*
     File f = new File(configFileReader.getFILE_PATH_FILE()+"/"+sdf.format(new Date()));
@@ -126,14 +126,14 @@ public class MaterialController extends BaseController {
     map.put("vedioImagePath",fetchFrame);
     }
     }
-    
+
     } catch (IOException e) {
     log.error("***************素材上传临时目录失败："+e.getMessage());
     }
     *//**文件上传结束**//*
-                       log.info("**************素材上传返回路劲：{}",map);
-                       return map;
-                       }*/
+                        log.info("**************素材上传返回路劲：{}",map);
+                        return map;
+                        }*/
 
     @PostMapping("insertMaterial")
     @ApiOperation(value = "素材新增")
@@ -142,7 +142,7 @@ public class MaterialController extends BaseController {
     })
     public Boolean insertMaterial(@RequestBody @ApiParam(value = "materialDTOList列表") List<MaterialDTO> materialDTO, @RequestParam("catalogId") String catalogId, HttpServletRequest request) {
         TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
-        return this.materialService.insertMaterial(materialDTO, catalogId, tokenUserInfo);
+        return materialService.insertMaterial(materialDTO, catalogId, tokenUserInfo);
     }
 
     @PostMapping("updateMaterial")
@@ -150,34 +150,34 @@ public class MaterialController extends BaseController {
     @ApiImplicitParam(name = "materialDTO", value = "素材信息", required = true, paramType = "body", dataType = "MaterialDTO")
     public Boolean updateMaterial(@RequestBody MaterialDTO materialDTO, HttpServletRequest request) {
         TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
-        return this.materialService.updateMaterial(materialDTO, tokenUserInfo);
+        return materialService.updateMaterial(materialDTO, tokenUserInfo);
     }
 
     @DeleteMapping("/{id}")
     @ApiOperation(value = "删除素材")
     @ApiImplicitParam(name = "id", value = "素材唯一标识", required = true, paramType = "path")
     public Boolean deleteMaterial(@PathVariable Integer id) {
-        return this.materialService.deleteMaterial(id);
+        return materialService.deleteMaterial(id);
     }
 
     @PostMapping("/queryMaterial")
     @ApiOperation(value = "查询素材列表")
     @ApiImplicitParam(name = "pageQueryModel", value = "素材信息分页查询", required = true, paramType = "body", dataType = "PageQueryModel")
     public IPage<MaterialVo> queryMaterialList(@RequestBody PageQueryModel pageQueryModel) {
-        return this.materialService.queryMaterialList(pageQueryModel);
+        return materialService.queryMaterialList(pageQueryModel);
     }
 
     @GetMapping("/{id}")
     @ApiOperation(value = "根据素材ID查询素材信息")
     @ApiImplicitParam(name = "id", value = "素材编号", required = true, paramType = "path")
     public MaterialDO queryMaterialById(@PathVariable Integer id) {
-        return this.materialService.queryMaterialById(id);
+        return materialService.queryMaterialById(id);
     }
 
     @GetMapping("/queryAppMaterial")
     @ApiOperation(value = "查询手机app轮播图素材")
     public List<MaterialVo> queryAppMaterialList() {
-        return this.materialService.queryAppMaterialList();
+        return materialService.queryAppMaterialList();
     }
 
     /*@PostMapping("/upFileForFtp")
