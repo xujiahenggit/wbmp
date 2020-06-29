@@ -28,12 +28,19 @@
             </otherwise>
         </choose>
         WHERE EXCEL_QUARTER = #{quarter} AND EXCEL_DATE = #{year}
-        <if test="orgs!=null">
-           AND ORG_ID IN
-           <foreach item="orgid" collection="orgs" index="index" open="(" separator="," close=")">
-               #{orgid}
-           </foreach>
-        </if>
+        <choose>
+            <when test="networks!=''">
+                AND ORG_ID IN (#{networks})
+            </when>
+            <otherwise>
+                <if test="orgs!=null">
+                    AND ORG_ID IN
+                    <foreach item="orgid" collection="orgs" index="index" open="(" separator="," close=")">
+                        #{orgid}
+                    </foreach>
+                </if>
+            </otherwise>
+        </choose>
         GROUP BY ORG_ID,ORG_NAME ORDER BY EXAMINE_SCORE DESC
     </select>
 
@@ -86,12 +93,19 @@
         </choose>
         ON b.ID = a.EXAMINE_ID
         WHERE b.EXCEL_DATE = #{year} AND b.EXCEL_QUARTER = #{quarter}
-        <if test="orgs!=null">
-            AND b.ORG_ID IN
-            <foreach item="orgid" collection="orgs" index="index" open="(" separator="," close=")">
-                #{orgid}
-            </foreach>
-        </if>
+        <choose>
+            <when test="networks!=''">
+                AND ORG_ID IN (#{networks})
+            </when>
+            <otherwise>
+                <if test="orgs!=null">
+                    AND ORG_ID IN
+                    <foreach item="orgid" collection="orgs" index="index" open="(" separator="," close=")">
+                        #{orgid}
+                    </foreach>
+                </if>
+            </otherwise>
+        </choose>
         GROUP BY a.TWO_MODULE ORDER BY DEDUCTION DESC
     </select>
 
@@ -147,12 +161,19 @@
                 </otherwise>
             </choose>
             WHERE EXCEL_QUARTER = #{quarter} AND EXCEL_DATE = #{year}
-            <if test="orgs!=null">
-                AND ORG_ID IN
-                <foreach item="orgid" collection="orgs" index="index" open="(" separator="," close=")">
-                    #{orgid}
-                </foreach>
-            </if>
+            <choose>
+                <when test="networks!=''">
+                    AND ORG_ID IN (#{networks})
+                </when>
+                <otherwise>
+                    <if test="orgs!=null">
+                        AND ORG_ID IN
+                        <foreach item="orgid" collection="orgs" index="index" open="(" separator="," close=")">
+                            #{orgid}
+                        </foreach>
+                    </if>
+                </otherwise>
+            </choose>
         )a GROUP BY a.level
     </select>
 
