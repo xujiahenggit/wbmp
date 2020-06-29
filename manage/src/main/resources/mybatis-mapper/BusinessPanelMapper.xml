@@ -5,11 +5,11 @@
 
     <select id="queryOperation" resultType="map">
 SELECT
-(select count(b.queue_seq) from wbmp_bqms_queue b WHERE b.queue_status = '0' and b.branch = #{branch} and DATE_FORMAT(b.data_dt,'%Y%m%d') = #{nowStr}) as queue_cnt,
-(select count(b.queue_seq) from wbmp_bqms_queue b WHERE b.queue_status = '1' and b.branch = #{branch} and DATE_FORMAT(b.data_dt,'%Y%m%d') = #{nowStr}) as progress_handle_cnt,
-(select count(b.queue_seq) from wbmp_bqms_queue b WHERE b.queue_status = '2' and b.branch = #{branch} and DATE_FORMAT(b.data_dt,'%Y%m%d') = #{nowStr}) as already_handle_cnt,
-(select count(b.queue_seq) from wbmp_bqms_queue b WHERE b.queue_status = '3' and b.branch = #{branch} and DATE_FORMAT(b.data_dt,'%Y%m%d') = #{nowStr}) as abandoned_cnt,
-(SELECT COUNT( DISTINCT wbn.win_num ) FROM wbmp_bqms_win wbn WHERE wbn.branch = #{branch} AND wbn.status1 = '1') as num,
+(select count(b.queue_seq) from wbmp_bqms_queue b WHERE b.queue_status = '0' and concat(substr(b.branch,1,6),'01') = #{branch} and DATE_FORMAT(b.data_dt,'%Y%m%d') = #{nowStr}) as queue_cnt,
+(select count(b.queue_seq) from wbmp_bqms_queue b WHERE b.queue_status = '1' and concat(substr(b.branch,1,6),'01') = #{branch} and DATE_FORMAT(b.data_dt,'%Y%m%d') = #{nowStr}) as progress_handle_cnt,
+(select count(b.queue_seq) from wbmp_bqms_queue b WHERE b.queue_status = '2' and concat(substr(b.branch,1,6),'01') = #{branch} and DATE_FORMAT(b.data_dt,'%Y%m%d') = #{nowStr}) as already_handle_cnt,
+(select count(b.queue_seq) from wbmp_bqms_queue b WHERE b.queue_status = '3' and concat(substr(b.branch,1,6),'01') = #{branch} and DATE_FORMAT(b.data_dt,'%Y%m%d') = #{nowStr}) as abandoned_cnt,
+(SELECT COUNT( DISTINCT wbn.win_num ) FROM wbmp_bqms_win wbn WHERE concat(substr(wbn.branch,1,6),'01') = #{branch} AND wbn.status1 = '1') as num,
 q.ABANDONED_LV as abandoned_lv,q.INDEX_CNT as index_cnt from wbmp_operate_bqms_queue_avg q where q.ORG_ID = #{branch} and DATE_FORMAT(q.DATA_DT,'%Y%m%d') = #{nowStr}
     </select>
 
