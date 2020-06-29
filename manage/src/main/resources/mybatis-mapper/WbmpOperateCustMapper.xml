@@ -6,7 +6,6 @@
     <resultMap id="BaseResultMap" type="com.bank.manage.dos.WbmpOperateCustDO">
         <result column="ETL_TIME" property="etlTime"/>
         <result column="ORG_ID" property="orgId"/>
-        <result column="GROUP_NO" property="groupNo"/>
         <result column="INDEX_NO" property="indexNo"/>
         <result column="INDEX_NAME" property="indexName"/>
         <result column="INDEX_VAL" property="indexVal"/>
@@ -19,7 +18,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        ETL_TIME, ORG_ID, GROUP_NO, INDEX_NO, INDEX_NAME, INDEX_VAL, COMP_LASTD, COMP_LASTM, COMP_LASTQ, COMP_LASTY, DATA_DT
+        ETL_TIME, ORG_ID, INDEX_NO, INDEX_NAME, INDEX_VAL, COMP_LASTD, COMP_LASTM, COMP_LASTQ, COMP_LASTY, DATA_DT
     </sql>
 
     <!--    按日统计-->
@@ -29,7 +28,7 @@
         FROM
         wbmp_operate_cust
         WHERE
-        CONCAT(ORG_ID, GROUP_NO) =#{orgId}
+        ORG_ID =#{orgId}
         AND DATA_DT=#{day}
         AND INDEX_NO = #{customerType}),0)
     </select>
@@ -42,7 +41,7 @@
         FROM
             wbmp_operate_cust
         WHERE
-            CONCAT(ORG_ID, GROUP_NO) = #{orgId}
+            ORG_ID = #{orgId}
         AND DATE_FORMAT(DATA_DT,'%Y-%m')=#{month}
         AND INDEX_NO =#{customerType}),0)
     </select>
@@ -54,7 +53,7 @@
         FROM
             wbmp_operate_cust
         WHERE
-            CONCAT(ORG_ID, GROUP_NO) = #{orgId}
+           ORG_ID = #{orgId}
         AND DATE_FORMAT(DATA_DT,'%Y')=#{year}
         AND INDEX_NO =#{customerType}),0)
     </select>
@@ -67,7 +66,7 @@
         FROM
             wbmp_operate_cust
         WHERE
-        CONCAT(ORG_ID, GROUP_NO) = #{orgId}
+        ORG_ID = #{orgId}
         AND INDEX_NO = #{customerTypeCode}
         AND DATE_FORMAT(DATA_DT,'%Y-%m-%d') = DATE_FORMAT(#{date},'%Y-%m-%d')
     </select>

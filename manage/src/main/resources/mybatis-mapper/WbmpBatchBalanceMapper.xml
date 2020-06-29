@@ -52,9 +52,7 @@
                     </if>
                 </if>
                 <if test="model!=null">
-                    <if test="model.bankBal != null and model.bankBal !=''">
- AND                         bank_bal = #{model.bankBal}
-                    </if>
+
                 </if>
                 <if test="model!=null">
                     <if test="model.lsdkjdkBal != null and model.lsdkjdkBal !=''">

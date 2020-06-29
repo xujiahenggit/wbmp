@@ -27,10 +27,6 @@ public class WbmpOperateCustDO extends Model<WbmpOperateCustDO> {
      */
     private String orgId;
 
-    /**
-     * 柜组
-     */
-    private String groupNo;
 
     /**
      * 指标编号 CUST_001-普通客户数,CUST_002-金卡客户数,CUST_003-白金客户数，CUST_004-钻石客户数
