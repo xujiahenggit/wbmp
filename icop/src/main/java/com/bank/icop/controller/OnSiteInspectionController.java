@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bank.core.entity.TokenUserInfo;
 import com.bank.core.utils.PropertyUtil;
+import com.bank.icop.dto.CheckProblemDTO;
 import com.bank.icop.dto.CheckProcessDTO;
 import com.bank.icop.vo.OnSiteInspectionTaskCheckVO;
 import com.bank.icop.vo.OnSiteInspectionTaskItemVO;
@@ -51,18 +53,18 @@ public class OnSiteInspectionController extends BaseIcopController {
     @Resource
     HttpServletRequest request;
 
-    private OnSiteInspectionTaskVO vo1 = new OnSiteInspectionTaskVO("1", "2019", "20200202-3214", "常规任务（系统自动生成）", "现场检查任务", "社区支行行长日检查任务", LocalDateTime.now(), LocalDateTime.now(), 2, LocalDateTime.now());
+    private OnSiteInspectionTaskVO vo1 = new OnSiteInspectionTaskVO("1", "2019", "20200202-3214", "常规任务（系统自动生成）", "现场检查任务", "社区支行行长日检查任务", LocalDateTime.now(), LocalDateTime.now(), 2, LocalDateTime.now(), "", "", "");
 
-    private OnSiteInspectionTaskVO vo2 = new OnSiteInspectionTaskVO("2", "2020", "20200202-3215", "常规任务（系统自动生成）", "现场检查任务", "2020结算监督员周检查任务", LocalDateTime.now(), LocalDateTime.now(), 3, LocalDateTime.now());
+    private OnSiteInspectionTaskVO vo2 = new OnSiteInspectionTaskVO("2", "2020", "20200202-3215", "常规任务（系统自动生成）", "现场检查任务", "2020结算监督员周检查任务", LocalDateTime.now(), LocalDateTime.now(), 3, LocalDateTime.now(), "", "", "");
 
     @ApiOperation("获取现场检查任务")
     @GetMapping("/inspectionTaskList")
     public List<OnSiteInspectionTaskVO> inspectionTaskList() {
-        TokenUserInfo tokenUserInfo = getCurrentUserInfo(this.request);
+        TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
 
         List<OnSiteInspectionTaskVO> data = new ArrayList<>();
-        data.add(this.vo1);
-        data.add(this.vo2);
+        data.add(vo1);
+        data.add(vo2);
 
         return data;
     }
@@ -79,17 +81,17 @@ public class OnSiteInspectionController extends BaseIcopController {
     })
     public List<OnSiteInspectionTaskItemVO> taskItemList(@RequestParam(value = "taskId", required = false) String taskId, @RequestParam(value = "createOrgId", required = false) String createOrgId, @RequestParam(value = "executeOrgId",
             required = false) String executeOrgId, @RequestParam(value = "taskName", required = false) String taskName, @RequestParam(value = "taskStartDate", required = false) String taskStartDate, @RequestParam(value = "taskEndDate", required = false) String taskEndDate) {
-        TokenUserInfo tokenUserInfo = getCurrentUserInfo(this.request);
+        TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
 
         List<OnSiteInspectionTaskItemVO> data = new ArrayList<>();
         OnSiteInspectionTaskItemVO itemvo1 = new OnSiteInspectionTaskItemVO();
         OnSiteInspectionTaskItemVO itemvo2 = new OnSiteInspectionTaskItemVO();
         OnSiteInspectionTaskItemVO itemvo3 = new OnSiteInspectionTaskItemVO();
         OnSiteInspectionTaskItemVO itemvo4 = new OnSiteInspectionTaskItemVO();
-        PropertyUtil.copyProperties(this.vo1, itemvo1);
-        PropertyUtil.copyProperties(this.vo1, itemvo2);
-        PropertyUtil.copyProperties(this.vo2, itemvo3);
-        PropertyUtil.copyProperties(this.vo2, itemvo4);
+        PropertyUtil.copyProperties(vo1, itemvo1);
+        PropertyUtil.copyProperties(vo1, itemvo2);
+        PropertyUtil.copyProperties(vo2, itemvo3);
+        PropertyUtil.copyProperties(vo2, itemvo4);
 
         itemvo1.setTaskItemId("1");
         itemvo1.setTaskItemName("同城清算管理");
@@ -139,7 +141,7 @@ public class OnSiteInspectionController extends BaseIcopController {
             @ApiImplicitParam(name = "inspectionInfoId", value = "执行检查信息ID", required = false, defaultValue = "", dataType = "String")
     })
     public List<OnSiteInspectionTaskCheckVO> registerCheck(@RequestParam(value = "taskItemId") String taskItemId, @RequestParam(value = "inspectionInfoId") String inspectionInfoId) {
-        TokenUserInfo tokenUserInfo = getCurrentUserInfo(this.request);
+        TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
 
         return null;
     }
@@ -169,5 +171,58 @@ public class OnSiteInspectionController extends BaseIcopController {
     @ApiImplicitParam(name = "checkProcessDTO", value = "检查过程数据", required = true, dataType = "CheckProcessDTO", paramType = "body")
     public boolean processSubmit(@RequestBody CheckProcessDTO checkProcessDTO) {
         return true;
+    }
+
+    @ApiOperation("现场检查任务-问题提交")
+    @GetMapping("/problemSubmit")
+    @ApiImplicitParam(name = "checkProblemDTO", value = "检查问题数据", required = true, dataType = "CheckProblemDTO", paramType = "body")
+    public boolean problemSubmit(@RequestBody CheckProblemDTO checkProblemDTO) {
+        return true;
+    }
+
+    @ApiOperation("现场检查任务-问题编辑")
+    @PutMapping("/problemEdit")
+    @ApiImplicitParam(name = "checkProblemDTO", value = "检查问题数据", required = true, dataType = "CheckProblemDTO", paramType = "body")
+    public boolean problemEdit(@RequestBody CheckProblemDTO checkProblemDTO) {
+        return true;
+    }
+
+    @ApiOperation("现场检查任务-问题删除")
+    @DeleteMapping("/problemDelete/{problemId}")
+    @ApiImplicitParam(name = "problemId", value = "检查问题ID", required = true, dataType = "String", paramType = "path")
+    public boolean problemDelete(@PathVariable("problemId") String problemId) {
+        return true;
+    }
+
+    @ApiOperation("现场检查任务查看列表")
+    @GetMapping("/taskExaminList")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "createOrgId", value = "创建机构", required = false, defaultValue = "", dataType = "String"),
+            @ApiImplicitParam(name = "executeOrgId", value = "执行机构", required = false, defaultValue = "", dataType = "String"),
+            @ApiImplicitParam(name = "taskName", value = "任务名称", required = false, defaultValue = "", dataType = "String"),
+            @ApiImplicitParam(name = "taskStartDate", value = "任务开始时间", required = false, defaultValue = "", dataType = "String"),
+            @ApiImplicitParam(name = "taskEndDate", value = "任务结束时间", required = false, defaultValue = "", dataType = "String")
+    })
+    public List<OnSiteInspectionTaskVO> taskExaminList(@RequestParam(value = "createOrgId", required = false) String createOrgId, @RequestParam(value = "executeOrgId", required = false) String executeOrgId, @RequestParam(value = "taskName", required = false) String taskName, @RequestParam(
+            value = "taskStartDate", required = false) String taskStartDate, @RequestParam(value = "taskEndDate",
+                    required = false) String taskEndDate) {
+        List<OnSiteInspectionTaskVO> data = new ArrayList<>();
+        data.add(vo1);
+
+        return data;
+    }
+
+    @ApiOperation("现场检查任务查看-检查内容")
+    @GetMapping("/examinContent/{taskId}")
+    @ApiImplicitParam(name = "taskId", value = "检查任务ID", required = true, dataType = "String", paramType = "path")
+    public List<OnSiteInspectionTaskItemVO> examinContent(@PathVariable("taskId") String taskId) {
+        return null;
+    }
+
+    @ApiOperation("现场检查任务查看-问题查看")
+    @GetMapping("/examinProblem/{taskId}")
+    @ApiImplicitParam(name = "taskId", value = "检查任务ID", required = true, dataType = "String", paramType = "path")
+    public List<OnSiteInspectionTaskItemVO> examinProblem(@PathVariable("taskId") String taskId) {
+        return null;
     }
 }
