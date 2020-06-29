@@ -5,12 +5,13 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import com.bank.core.entity.BizException;
 import com.bank.core.entity.HeaderDO;
-import com.bank.core.utils.YmlUtil;
+import com.bank.core.utils.ApplicationContextUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.springframework.core.env.Environment;
 
 import java.beans.BeanInfo;
 import java.beans.Introspector;
@@ -27,8 +28,6 @@ import java.util.Map;
 @Slf4j
 public class SoapUtil {
 
-    private static final String remoteUrl = YmlUtil.getValue("ICOP.PATH");
-
     private static StringBuilder builder = new StringBuilder();
 
     public static Map sendReport(String serviceCode, Map<String, Object> paramMap) {
@@ -38,6 +37,7 @@ public class SoapUtil {
     }
 
     public static Map sendReport(HeaderDO headerDO, Map<String, Object> paramMap) {
+        Environment env = (Environment) ApplicationContextUtil.getBeanByClass(Environment.class);
         StringBuilder builder = new StringBuilder();
         String document = "<soapenv:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ser=\"http://service.framework.platform\">\n" +
                 "   <soapenv:Header/>\n" +
@@ -61,7 +61,7 @@ public class SoapUtil {
                 .insert(builder.indexOf("</Header>"), beanToXmlStr(headerDO))
                 .insert(builder.indexOf("</Request>"), mapToXmlStr(paramMap)).toString();
         log.info(xml);
-        HttpResponse response = HttpRequest.post(remoteUrl).header("SOAPAction", "application/soap+xml;charset=utf-8")
+        HttpResponse response = HttpRequest.post(env.getProperty("ICOP.PATH")).header("SOAPAction", "application/soap+xml;charset=utf-8")
                 .body(xml, "text/xml").execute();
 
 
