@@ -23,6 +23,14 @@
         <result property="percent" column="OPERATE_SCORE"/>
     </resultMap>
 
+    <!--分数榜-->
+    <resultMap id="ManageScore" type="com.bank.manage.vo.OrgScoreVo">
+        <result property="orgId" column="org_id"/>
+        <result property="score" column="score"/>
+        <result property="dateDt" column="date_dt"/>
+    </resultMap>
+
+
     <!--    查询红榜-->
     <select id="findRedTop" resultMap="RedGreyRank">
         SELECT  ORG_ID,ORG_NAME,OPERATE_SCORE FROM WBMP_OPERATE_SCORE WHERE OPERATE_DATE=#{now} ORDER BY OPERATE_SCORE DESC LIMIT 5
@@ -38,9 +46,51 @@
        select IFNULL(( SELECT   OPERATE_SCORE FROM WBMP_OPERATE_SCORE WHERE ORG_ID=#{orgId} and DATE_FORMAT(OPERATE_DATE,'%Y-%m')=#{mouth}   ORDER BY OPERATE_DATE desc LIMIT 1),0)
     </select>
 
-    <!--查询年度日期最大一天的分数-->
+    <!--查询年度日期最大一天的分数[运营]-->
     <select id="findYearOrgScore" resultType="java.lang.Float">
      select IFNULL((SELECT  OPERATE_SCORE FROM WBMP_OPERATE_SCORE WHERE ORG_ID=#{orgId} and DATE_FORMAT(OPERATE_DATE,'%Y')=#{year}   ORDER BY OPERATE_DATE desc LIMIT 1),0)
+    </select>
+
+
+    <!--查询最近12个月的数据-->
+    <select id="queryByMonth" resultMap="ManageScore">
+        SELECT s.ORG_ID AS org_id,s.OPERATE_SCORE AS score,DATE_FORMAT(s.OPERATE_DATE,'%Y-%m') AS date_dt FROM `wbmp_operate_score` s
+        INNER  JOIN
+        (SELECT ORG_ID,MAX(OPERATE_DATE)as OPERATE_DATE FROM `wbmp_operate_score` GROUP BY ORG_ID, DATE_FORMAT(OPERATE_DATE,'%Y-%m') ORDER BY OPERATE_DATE DESC LIMIT 10000 ) a
+        on
+        s.ORG_ID = a.ORG_ID
+        and s.OPERATE_DATE = a.OPERATE_DATE
+        where a.ORG_ID = #{orgId}
+        and (s.OPERATE_DATE &lt;= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m')
+        and s.OPERATE_DATE  &gt;=  DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 13 MONTH),'%Y-%m'))
+        ORDER BY s.OPERATE_DATE desc
+    </select>
+
+    <!--查询最近四个季度的数据[运营]-->
+    <select id="queryByQuart" resultMap="ManageScore">
+        SELECT s.ORG_ID AS org_id,s.OPERATE_SCORE AS score, CONCAT(year(s.OPERATE_DATE),'-', quarter(s.OPERATE_DATE))  AS date_dt FROM `wbmp_operate_score` s
+        INNER  JOIN
+        (SELECT ORG_ID,MAX(OPERATE_DATE)as OPERATE_DATE FROM `wbmp_operate_score` GROUP BY ORG_ID, CONCAT(year(OPERATE_DATE),'-', quarter(OPERATE_DATE)) ORDER BY OPERATE_DATE DESC LIMIT 10000 ) a
+        on
+        s.ORG_ID = a.ORG_ID
+        and s.OPERATE_DATE = a.OPERATE_DATE
+        where
+        a.ORG_ID = #{orgId}
+        ORDER BY s.OPERATE_DATE
+        LIMIT 5
+    </select>
+
+    <!--查询最近3年的数据[运营]-->
+    <select id="queryByYear" resultMap="ManageScore">
+       SELECT s.ORG_ID AS org_id,s.OPERATE_SCORE AS score ,DATE_FORMAT(s.OPERATE_DATE,'%Y') AS date_dt FROM `wbmp_operate_score` s
+        INNER  JOIN
+        (SELECT ORG_ID,MAX(OPERATE_DATE)as OPERATE_DATE FROM `wbmp_operate_score` GROUP BY ORG_ID, DATE_FORMAT(OPERATE_DATE,'%Y') ORDER BY OPERATE_DATE DESC LIMIT 10000 ) a
+        on
+        s.ORG_ID = a.ORG_ID
+        and s.OPERATE_DATE = a.OPERATE_DATE
+        and a.ORG_ID = #{orgId}
+        ORDER BY s.OPERATE_DATE desc
+        LIMIT 3
     </select>
 
 </mapper>

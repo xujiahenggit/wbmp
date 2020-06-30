@@ -19,7 +19,7 @@ public interface WbmpOperateScoreService extends IService<WbmpOperateScoreDO> {
      * @param queryType 查询的条件【年-02，季-03，月-01】
      * @return
      */
-    List<Float> calcOperateScore(String orgId, List<String>times, String queryType);
+    List<String> calcOperateScore(String orgId, List<String>times, String queryType);
     /**
      * 保存综合得分
      * @param listManagement 经营得分数据

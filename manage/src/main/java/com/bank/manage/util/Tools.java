@@ -80,15 +80,15 @@ public class Tools {
                 break;
             case WbmpConstFile.DATE_TYPE_JIDU:
                 DateRange range = getLastQuarter(new Date());
-                Date endDate =   range.getEnd();
-                int month = DateUtil.month(endDate);
-                int jidu =   (month+1)/3;
+                Date start =   range.getStart();
+                int month = DateUtil.month(start);
+                int jidu =   (month+3)/3;
                 xAxis.add(numFormatJd(jidu));
                    for(int i=3;i>0;i--){
-                       range =  getLastQuarter(endDate);
-                       endDate = range.getEnd();
-                       month = DateUtil.month(endDate);
-                       jidu =   (month+1)/3;
+                       range =  getLastQuarter(start);
+                       start = range.getStart();
+                       month = DateUtil.month(start);
+                       jidu =   (month+3)/3;
                        xAxis.add(numFormatJd(jidu));
                    }
                 break;
@@ -114,6 +114,7 @@ public class Tools {
     public static List<String> getXDateDetail(String tpye) {
         List<String> xDateDetail = new ArrayList<String>();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM");
+        SimpleDateFormat formatYear = new SimpleDateFormat("yyyy");
         switch (tpye) {
             case WbmpConstFile.DATE_TYPE_YEAR:
                 int year = DateUtil.year(new Date());
@@ -122,17 +123,24 @@ public class Tools {
                 }
                 break;
             case WbmpConstFile.DATE_TYPE_JIDU:
+
                 DateRange range = getLastQuarter(new Date());
-                Date endDate =   range.getEnd();
-                String date = format.format(endDate);
-                xDateDetail.add(date);
+                Date start =   range.getStart();
+                int month = DateUtil.month(start);
+                String jidu =   String.valueOf((month+3)/3);
+                String date  = formatYear.format(start);
+                xDateDetail.add(date+"-"+jidu);
+
                 for(int i=3;i>0;i--){
-                    range =  getLastQuarter(endDate);
-                    endDate = range.getEnd();
-                    date = format.format(endDate);
-                    xDateDetail.add(date);
+                    range =  getLastQuarter(start);
+                    start = range.getStart();
+                    month = DateUtil.month(start);
+                     jidu =   String.valueOf((month+3)/3);
+                    date = formatYear.format(start);
+                    xDateDetail.add(date+"-"+jidu);
                 }
                 break;
+
             case WbmpConstFile.DATE_TYPE_MONTH:
                 Calendar c = Calendar.getInstance();
                 c.setTime(new Date());
@@ -321,12 +329,17 @@ public class Tools {
 //
 //        System.out.println(format(rage.getStart()));
 //        System.out.println(format(rage.getEnd()));
-        int num = (DateUtil.month(new Date())+1)%3;
-        System.out.println("num:"+num);
-        int jidu =   ((DateUtil.month(new Date())+1)%3)+1;
-        System.out.println("jidu:"+jidu);
+//        int num = (DateUtil.month(new Date())+1)%3;
+//        System.out.println("num:"+num);
+//        int jidu =   ((DateUtil.month(new Date())+1)%3)+1;
+//        System.out.println("jidu:"+jidu);
+//
+//        int e =   1/3;
+//        System.out.println("e:"+e);
 
-        int e =   1/3;
-        System.out.println("e:"+e);
+
+        List<String> list = getXAxis("03");
+
+        System.out.println(Arrays.toString(list.toArray()));
     }
 }

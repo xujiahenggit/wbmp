@@ -1,8 +1,11 @@
 package com.bank.manage.dao;
 
 import com.bank.manage.dos.WbmpOperateScoreDO;
+import com.bank.manage.vo.OrgScoreVo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * @Author: Andy
@@ -27,5 +30,21 @@ public interface WbmpOperateScoreDao extends BaseMapper<WbmpOperateScoreDO> {
      * @return
      */
     Float findOperateYearOrgScore(@Param(value = "orgId")String orgId,@Param(value = "year")String year);
+
+
+    /**
+     *查询最近三年的数据[wbmp_mangement_score]
+     */
+    List<OrgScoreVo> queryManageByYear(@Param(value = "orgId")String orgId);
+
+    /**
+     *查询最近12个月的数据【不包含当月记录】
+     */
+    List<OrgScoreVo> queryManageByMonth(@Param(value = "orgId")String orgId);
+
+    /**
+     *查询最近五个季度的数据【包含当季度的数据】
+     */
+    List<OrgScoreVo> queryManageByQuart(@Param(value = "orgId")String orgId);
 
 }

@@ -33,7 +33,7 @@ public class WbmpOperateBqmsQueueAvgServiceImpl extends ServiceImpl<WbmpOperateB
         String date= DateUtil.today();
         WbmpOperateBqmsQueueAvgDto wbmpOperateBqmsQueueAvgDto=wbmpOperateBqmsQueueAvgDao.getOperraInfo(orgId,date);
         if(wbmpOperateBqmsQueueAvgDto!=null){
-            wbmpOperateBqmsQueueAvgDto.setCunstomerAvg(WbmpOperRateUtils.ComputeCustomerAvg(wbmpOperateBqmsQueueAvgDto.getAbandonedLv(),wbmpOperateBqmsQueueAvgDto.getIndexCnt()));
+            wbmpOperateBqmsQueueAvgDto.setCunstomerAvg(WbmpOperRateUtils.ComputeCustomerAvg(wbmpOperateBqmsQueueAvgDto.getAvgAbandonedLv(),wbmpOperateBqmsQueueAvgDto.getIndexCnt()));
         }else{
             wbmpOperateBqmsQueueAvgDto=new WbmpOperateBqmsQueueAvgDto();
             wbmpOperateBqmsQueueAvgDto.setCunstomerAvg(0);

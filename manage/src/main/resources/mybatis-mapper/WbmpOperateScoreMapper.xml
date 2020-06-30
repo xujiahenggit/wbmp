@@ -11,6 +11,15 @@
         <result column="OPERATE_DATE" property="operateDate" />
     </resultMap>
 
+
+    <!--分数榜-->
+    <resultMap id="ManageScore" type="com.bank.manage.vo.OrgScoreVo">
+        <result property="orgId" column="org_id"/>
+        <result property="score" column="score"/>
+        <result property="dateDt" column="date_dt"/>
+    </resultMap>
+
+
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         WBMP_OPERATE_SCORE_ID, ORG_ID, ORG_NAME, OPERATE_SCORE, OPERATE_DATE
@@ -28,10 +37,49 @@
     </select>
 
 
-    <!--查询最近3年的分数-->
+    <!--查询最近12个月的数据[经营分数表]-->
+    <select id="queryManageByMonth" resultMap="ManageScore">
+        SELECT s.ORG_ID AS org_id,s.MANAGEMENT_SCORE AS score,DATE_FORMAT(s.MANAGEMENT_DATE,'%Y-%m') AS date_dt FROM `wbmp_mangement_score` s
+        INNER  JOIN
+        (SELECT ORG_ID,MAX(MANAGEMENT_DATE)as date_dt FROM `wbmp_mangement_score` GROUP BY ORG_ID, DATE_FORMAT(MANAGEMENT_DATE,'%Y-%m') ORDER BY MANAGEMENT_DATE DESC LIMIT 10000 ) a
+        on
+        s.ORG_ID = a.ORG_ID
+        and s.MANAGEMENT_DATE = a.date_dt
+        where a.ORG_ID = #{orgId}
+        and (s.MANAGEMENT_DATE &lt;= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m')
+        and s.MANAGEMENT_DATE  &gt;=  DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 13 MONTH),'%Y-%m'))
+        ORDER BY s.MANAGEMENT_DATE desc
+    </select>
+
+    <!--查询最近四个季度的数据[经营分数表]-->
+    <select id="queryManageByQuart" resultMap="ManageScore">
+         SELECT s.ORG_ID AS org_id,s.MANAGEMENT_SCORE AS score, CONCAT(year(s.MANAGEMENT_DATE),'-', quarter(s.MANAGEMENT_DATE))  AS date_dt FROM `wbmp_mangement_score` s
+        INNER  JOIN
+        (SELECT ORG_ID,MAX(MANAGEMENT_DATE)as MANAGEMENT_DATE FROM `wbmp_mangement_score` GROUP BY ORG_ID, CONCAT(year(MANAGEMENT_DATE),'-', quarter(MANAGEMENT_DATE)) ORDER BY MANAGEMENT_DATE DESC LIMIT 10000 ) a
+        on
+        s.ORG_ID = a.ORG_ID
+        and s.MANAGEMENT_DATE = a.MANAGEMENT_DATE
+        where
+        a.ORG_ID = #{orgId}
+        ORDER BY s.MANAGEMENT_DATE
+        LIMIT 5
 
 
+    </select>
 
+    <!--查询最近3年的数据[经营分数表]-->
+    <select id="queryManageByYear" resultMap="ManageScore">
+         SELECT s.ORG_ID AS org_id,s.MANAGEMENT_SCORE AS score ,DATE_FORMAT(s.MANAGEMENT_DATE,'%Y') AS date_dt FROM `wbmp_mangement_score` s
+        INNER  JOIN
+        (SELECT ORG_ID,MAX(MANAGEMENT_DATE)as MANAGEMENT_DATE FROM `wbmp_mangement_score` GROUP BY ORG_ID, DATE_FORMAT(MANAGEMENT_DATE,'%Y') ORDER BY MANAGEMENT_DATE DESC LIMIT 10000 ) a
+        on
+        s.ORG_ID = a.ORG_ID
+        and s.MANAGEMENT_DATE = a.MANAGEMENT_DATE
+        and a.ORG_ID = #{orgId}
+        ORDER BY s.MANAGEMENT_DATE desc
+        LIMIT 3
+
+    </select>
 
 
 

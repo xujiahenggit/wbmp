@@ -9,6 +9,7 @@ import com.bank.manage.dos.WbmpMangementScoreDO;
 import com.bank.manage.dos.WbmpOperateRacingIndexMDO;
 import com.bank.manage.dos.WbmpOperateScoreDO;
 import com.bank.manage.service.*;
+import com.bank.manage.vo.OrgScoreVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
@@ -170,16 +171,29 @@ public class WbmpOperateScoreServiceImpl extends ServiceImpl<WbmpOperateScoreDao
 
 
     @Override
-    public List<Float> calcOperateScore(String orgId, List<String> times, String queryType) {
-        List<Float> scores = new ArrayList<Float>();
-        for (String str : times) {
-            if (WbmpConstFile.DATE_TYPE_YEAR.equals(queryType)) {
-                Float score = wbmpOperateScoreDao.findOperateYearOrgScore(orgId, str);
-                scores.add(score);
-            } else {
-                Float score = wbmpOperateScoreDao.findOperateOrgMouthScore(orgId, str);
-                scores.add(score);
+    public List<String> calcOperateScore(String orgId, List<String> times, String queryType) {
+        List<String> scores = new ArrayList<String>();
+        List<OrgScoreVo> queryResult = new ArrayList<OrgScoreVo>();
+        if(WbmpConstFile.DATE_TYPE_YEAR.equals(queryType)){
+
+            queryResult = wbmpOperateScoreDao.queryManageByYear(orgId);
+
+        }else if(WbmpConstFile.DATE_TYPE_JIDU.equals(queryType)){
+
+            queryResult = wbmpOperateScoreDao.queryManageByQuart(orgId);
+
+        }else if(WbmpConstFile.DATE_TYPE_MONTH.equals(queryType)){
+
+            queryResult =wbmpOperateScoreDao.queryManageByMonth(orgId);
+        }
+        for (String str:times){
+            String scoreStr = "0";
+            for(OrgScoreVo scoreVo:queryResult){
+                if(str.equals(scoreVo.getDateDt())){
+                    scoreStr = scoreVo.getScore();
+                }
             }
+            scores.add(scoreStr);
         }
         return scores;
     }
