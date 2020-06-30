@@ -3,7 +3,6 @@ package com.bank.icop.util;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
-import com.alibaba.fastjson.JSON;
 import com.bank.core.entity.BizException;
 import com.bank.core.entity.HeaderDO;
 import com.bank.core.utils.ApplicationContextUtil;
@@ -61,7 +60,7 @@ public class SoapUtil {
         String xml = builder.append(document)
                 .insert(builder.indexOf("</Header>"), beanToXmlStr(headerDO))
                 .insert(builder.indexOf("</Request>"), mapToXmlStr(paramMap)).toString();
-        log.info("ICOP请求流水：[{}]，请求参数：[{}]",headerDO.getExternalReference(),mapToXmlStr(paramMap));
+        log.info(xml);
         HttpResponse response = HttpRequest.post(env.getProperty("ICOP.PATH")).header("SOAPAction", "application/soap+xml;charset=utf-8")
                 .body(xml, "text/xml").execute();
 
@@ -69,7 +68,6 @@ public class SoapUtil {
         Map<String, Object> domParse = null;
         try {
             domParse = domParse(response.body());
-            log.info("ICOP返回数据：[{}]", JSON.toJSONString(mapToXmlStr(paramMap)));
         } catch (DocumentException e) {
             throw new BizException("解析dom失败");
         }
