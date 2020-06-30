@@ -7,10 +7,12 @@ import com.bank.manage.dao.WbmpOperateBqmsQueueAvgDao;
 import com.bank.manage.dos.WbmpOperateBqmsQueueAvgDO;
 import com.bank.manage.dto.WbmpOperateBqmsQueueAvgDto;
 import com.bank.manage.service.WbmpOperateBqmsQueueAvgService;
+import com.bank.manage.util.Tools;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.tools.Tool;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -33,12 +35,19 @@ public class WbmpOperateBqmsQueueAvgServiceImpl extends ServiceImpl<WbmpOperateB
         String date= DateUtil.today();
         WbmpOperateBqmsQueueAvgDto wbmpOperateBqmsQueueAvgDto=wbmpOperateBqmsQueueAvgDao.getOperraInfo(orgId,date);
         if(wbmpOperateBqmsQueueAvgDto!=null){
-            wbmpOperateBqmsQueueAvgDto.setCunstomerAvg(WbmpOperRateUtils.ComputeCustomerAvg(wbmpOperateBqmsQueueAvgDto.getAvgAbandonedLv(),wbmpOperateBqmsQueueAvgDto.getIndexCnt()));
+            BigDecimal avgAbandonedLv = new BigDecimal(wbmpOperateBqmsQueueAvgDto.getAvgAbandonedLv());
+            BigDecimal abandonedLv = new BigDecimal(wbmpOperateBqmsQueueAvgDto.getAbandonedLv());
+            //平均弃号率
+            wbmpOperateBqmsQueueAvgDto.setAvgAbandonedLv(Tools.formatBigdecimal(avgAbandonedLv));
+            //弃号率
+            wbmpOperateBqmsQueueAvgDto.setAbandonedLv(Tools.formatBigdecimal(abandonedLv));
+
+            wbmpOperateBqmsQueueAvgDto.setCunstomerAvg(WbmpOperRateUtils.ComputeCustomerAvg(avgAbandonedLv,wbmpOperateBqmsQueueAvgDto.getIndexCnt()));
         }else{
             wbmpOperateBqmsQueueAvgDto=new WbmpOperateBqmsQueueAvgDto();
             wbmpOperateBqmsQueueAvgDto.setCunstomerAvg(0);
-            wbmpOperateBqmsQueueAvgDto.setAbandonedLv(new BigDecimal(0));
-            wbmpOperateBqmsQueueAvgDto.setAvgAbandonedLv(new BigDecimal(0));
+            wbmpOperateBqmsQueueAvgDto.setAbandonedLv("0");
+            wbmpOperateBqmsQueueAvgDto.setAvgAbandonedLv("0");
             wbmpOperateBqmsQueueAvgDto.setIndexCnt(new BigDecimal(0));
         }
         return wbmpOperateBqmsQueueAvgDto;

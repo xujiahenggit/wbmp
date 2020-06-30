@@ -2,6 +2,7 @@ package com.bank.manage.service.impl;
 
 import cn.hutool.core.date.DateUtil;
 import com.bank.core.entity.BizException;
+import com.bank.core.utils.WbmpOperRateUtils;
 import com.bank.manage.dao.WbmpAbsTransinfoDao;
 import com.bank.manage.dao.WbmpAtmpTranInfoDao;
 import com.bank.manage.dos.WbmpAbsTransinfoDO;
@@ -51,14 +52,14 @@ public class WbmpAbsTransinfoServiceImpl extends ServiceImpl<WbmpAbsTransinfoDao
 
             if(0!=totalTranum){
                 //计算自助交易占比
-                atmRate=(float)(Math.round((atmTranNum/totalTranum)*100))/100;
-                //计算柜面交易占比
-                absRate=(float)(Math.round((absTranNum/totalTranum)*100))/100;
+                atmRate=WbmpOperRateUtils.Maht2digit((float) (atmTranNum/totalTranum)*100);
+                absRate=WbmpOperRateUtils.Maht2digit((float) (absTranNum/totalTranum)*100);
             }
             wbmpAbsAtmTranInfoDto.setAbsTranNum(absTranNum);
-            wbmpAbsAtmTranInfoDto.setAbsTranRate(absRate*100);
+            wbmpAbsAtmTranInfoDto.setAbsTranRate(absRate);
+
             wbmpAbsAtmTranInfoDto.setAtmTranNum(atmTranNum);
-            wbmpAbsAtmTranInfoDto.setAtmTranRate(atmRate*100);
+            wbmpAbsAtmTranInfoDto.setAtmTranRate(atmRate);
         }catch (Exception e){
             throw new BizException("查询失败");
         }

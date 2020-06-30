@@ -46,9 +46,8 @@
         s.ORG_ID = a.ORG_ID
         and s.MANAGEMENT_DATE = a.date_dt
         where a.ORG_ID = #{orgId}
-        and (s.MANAGEMENT_DATE &lt;= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m')
-        and s.MANAGEMENT_DATE  &gt;=  DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 13 MONTH),'%Y-%m'))
         ORDER BY s.MANAGEMENT_DATE desc
+        limit 13
     </select>
 
     <!--查询最近四个季度的数据[经营分数表]-->

@@ -8,6 +8,7 @@ import com.bank.manage.dto.HouseRaceCharts;
 import com.bank.manage.dto.HouseRaceDto;
 import com.bank.manage.dto.HouseRaceItem;
 import com.bank.manage.service.WbmpOperateRacingIndexMService;
+import com.bank.manage.util.Tools;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -70,7 +71,7 @@ public class WbmpOperateRacingIndexMServiceImpl extends ServiceImpl<WbmpOperateR
         if(listItem.size()>0){
             for(HouseRaceItem item:sortItem){
 
-                float dataNumber=wbmpOperateRacingIndexMDao.getData(orgId,date,item.getId());
+                float dataNumber= Tools.formatBigdecimal(wbmpOperateRacingIndexMDao.getData(orgId,date,item.getId()));
                 data.add(dataNumber);
 
             }

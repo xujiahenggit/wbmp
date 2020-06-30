@@ -4,6 +4,8 @@ import cn.hutool.core.date.DateUtil;
 import com.bank.core.sysConst.WbmpConstFile;
 import oracle.sql.DATE;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -324,6 +326,26 @@ public class Tools {
         return  cal;
     }
 
+
+    /**
+     * Bigdecimal 保留四位小数点
+     * @param bigDecimal
+     */
+    public static String formatBigdecimal(BigDecimal bigDecimal){
+        DecimalFormat df = new DecimalFormat("0.0000");
+       return df.format(bigDecimal);
+    }
+
+    /**
+     * float 保留两位小数点
+     * @param f
+     */
+    public static float formatBigdecimal(float f){
+        DecimalFormat df = new DecimalFormat("0.00");
+        BigDecimal bigDecimal = new BigDecimal(f);
+        return Float.parseFloat( df.format(bigDecimal));
+    }
+
     public static void main(String[] args) {
 //        DateRange rage = getThisQuarter(null);
 //
@@ -337,9 +359,9 @@ public class Tools {
 //        int e =   1/3;
 //        System.out.println("e:"+e);
 
+         float f = 0.4586412f;
+        System.out.println("ss:"+formatBigdecimal(f));
 
-        List<String> list = getXAxis("03");
 
-        System.out.println(Arrays.toString(list.toArray()));
     }
 }

@@ -3,6 +3,7 @@ package com.bank.core.utils;
 import cn.hutool.core.util.NumberUtil;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
 /**
  * @Author: Andy
@@ -18,8 +19,10 @@ public class WbmpOperRateUtils {
      */
     public static float Maht2digit(float num){
         BigDecimal b_num=new BigDecimal(num);
-        float t_num=b_num.setScale(2, BigDecimal.ROUND_HALF_UP).floatValue(); ;
-        return t_num;
+        DecimalFormat df = new DecimalFormat("0.00");
+        String score =  df.format(b_num);
+        float f = Float.parseFloat(score);
+        return f;
     }
 
 
