@@ -1,44 +1,27 @@
 package com.bank.manage.controller;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.bank.core.enums.ConstantEnum;
 import com.bank.core.sysConst.WbmpConstFile;
 import com.bank.manage.dto.CustomerAvgDto;
 import com.bank.manage.dto.HouseRaceDto;
 import com.bank.manage.dto.WbmpAbsAtmTranInfoDto;
 import com.bank.manage.dto.WbmpOperateBqmsQueueAvgDto;
-import com.bank.manage.service.WbmpAbsTransinfoService;
-import com.bank.manage.service.WbmpMangementScoreService;
-import com.bank.manage.service.WbmpOperateBqmsQueueAvgService;
-import com.bank.manage.service.WbmpOperateCustService;
-import com.bank.manage.service.WbmpOperateHomeService;
-import com.bank.manage.service.WbmpOperateRacingIndexMService;
-import com.bank.manage.service.WbmpOperateScoreService;
+import com.bank.manage.service.*;
 import com.bank.manage.util.Tools;
-import com.bank.manage.vo.BranchDepositBalanceVO;
-import com.bank.manage.vo.CustomerAvgVo;
-import com.bank.manage.vo.OperateChartsData;
-import com.bank.manage.vo.OperateCurveVo;
-import com.bank.manage.vo.OperateRankVO;
-
+import com.bank.manage.vo.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Api(tags = "运营看板首页接口")
 @RestController
@@ -82,9 +65,9 @@ public class WbmpOperateHomeController {
         //X轴具体时间
         List<String> xDetailDate = new ArrayList<String>();
         //经营数据
-        List<Float> engagedData = new ArrayList<Float>();
+        List<String> engagedData = new ArrayList<String>();
         //运营数据
-        List<Float> operationData = new ArrayList<Float>();
+        List<String> operationData = new ArrayList<String>();
 
         if (operateCurveVo.getQueryType() != null) {
             String queryType = operateCurveVo.getQueryType();
