@@ -124,14 +124,14 @@
         </choose>
         ON b.ID = a.EXAMINE_ID
         WHERE b.EXCEL_DATE = #{year} AND b.EXCEL_QUARTER = #{quarter}
-        <choose>
-            <when test="orgids==''">
-                AND b.EXAMINE_ID IS NULL
-            </when>
-            <otherwise>
-                AND b.EXAMINE_ID IS NOT NULL
-            </otherwise>
-        </choose>
+<!--        <choose>-->
+<!--            <when test="orgids==''">-->
+<!--                AND b.EXAMINE_ID IS NULL-->
+<!--            </when>-->
+<!--            <otherwise>-->
+<!--                AND b.EXAMINE_ID IS NOT NULL-->
+<!--            </otherwise>-->
+<!--        </choose>-->
         <choose>
             <when test="networks!=''">
                 AND ORG_ID = #{networks}
@@ -199,14 +199,15 @@
                 </otherwise>
             </choose>
             WHERE EXCEL_QUARTER = #{quarter} AND EXCEL_DATE = #{year}
-            <choose>
-                <when test="orgids==''">
-                    EXAMINE_ID IS NULL
-                </when>
-                <otherwise>
-                    EXAMINE_ID IS NOT NULL
-                </otherwise>
-            </choose>
+<!--            AND-->
+<!--            <choose>-->
+<!--                <when test="orgids==''">-->
+<!--                    EXAMINE_ID IS NULL-->
+<!--                </when>-->
+<!--                <otherwise>-->
+<!--                    EXAMINE_ID IS NOT NULL-->
+<!--                </otherwise>-->
+<!--            </choose>-->
             <choose>
                 <when test="networks!=''">
                     AND ORG_ID = #{networks}
