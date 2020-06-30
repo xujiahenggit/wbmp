@@ -107,13 +107,20 @@ public class BusinessPanelServiceImpl implements BusinessPanelService {
                 Number index_cnt =  (Number)objectMap.get("index_cnt");//平均等待时长-秒
                 Number avg_abandoned_lv =  (Number)objectMap.get("avg_abandoned_lv");//平均弃号率
                 //排队预计等待时长=（等待人数/窗口数）*历史平均等待时长*历史1个月平均弃号率
-                BigDecimal a = NumberUtil.div(String.valueOf(queue_cnt), String.valueOf(num));
-                BigDecimal wait_time = NumberUtil.mul(a, index_cnt, avg_abandoned_lv);
-                BigDecimal abandoned_lv = NumberUtil.div(String.valueOf(queue_status_3), String.valueOf(queue_seq_count));
+                BigDecimal wait_time = null;
+                BigDecimal abandoned_lv =null;
+                if(queue_cnt != 0 && num != 0){
+                    BigDecimal a = NumberUtil.div(String.valueOf(queue_cnt), String.valueOf(num));
+                    wait_time = NumberUtil.mul(a, index_cnt, avg_abandoned_lv);
+                }
+                if(queue_status_3 != 0 && queue_seq_count != 0){
+                    abandoned_lv  = NumberUtil.div(String.valueOf(queue_status_3), String.valueOf(queue_seq_count));
+                }
+
                 Map<String, Object> panelMap = new HashMap<>();
                 panelMap.put("queue_cnt", queue_cnt);
-                panelMap.put("wait_time", wait_time);
-                panelMap.put("abandoned_lv", abandoned_lv);
+                panelMap.put("wait_time", wait_time == null ? 0 : wait_time);
+                panelMap.put("abandoned_lv", abandoned_lv == null ? 0 : abandoned_lv);
                 map.put("panelMap", panelMap);
 
                 Map<String, Object> bargraphMap = new HashMap<>();
