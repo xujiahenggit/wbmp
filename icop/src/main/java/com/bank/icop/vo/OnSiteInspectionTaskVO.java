@@ -1,13 +1,11 @@
 package com.bank.icop.vo;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 /**
  * 现场检查任务VO
@@ -25,9 +23,26 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @ApiModel(description = "现场检查任务代办VO")
 public class OnSiteInspectionTaskVO implements Serializable {
+
+    /**
+     * 获取运营检查任务列表
+     * @param taskId
+     * @param taskYear
+     * @param taskName
+     * @param taskStartDate
+     * @param taskEndDate
+     * @param number
+     */
+    public OnSiteInspectionTaskVO(Object taskId, Object taskYear, Object taskName, Object taskStartDate, Object taskEndDate, Object number) {
+        this.taskId = taskId;
+        this.taskYear = taskYear;
+        this.taskName = taskName;
+        this.taskStartDate = taskStartDate;
+        this.taskEndDate = taskEndDate;
+        this.number = number;
+    }
 
     /**
      *
@@ -35,41 +50,41 @@ public class OnSiteInspectionTaskVO implements Serializable {
     private static final long serialVersionUID = -3770434313423022359L;
 
     @ApiModelProperty(value = "任务ID")
-    private String taskId;
+    private Object taskId;
 
     @ApiModelProperty(value = "任务年度")
-    private String taskYear;
+    private Object taskYear;
 
     @ApiModelProperty(value = "任务编号")
-    private String taskNo;
+    private Object taskNo;
 
     @ApiModelProperty(value = "任务类型")
-    private String taskType;
+    private Object taskType;
 
     @ApiModelProperty(value = "任务名称")
-    private String taskName;
+    private Object taskName;
 
     @ApiModelProperty(value = "任务内容")
-    private String taskContent;
+    private Object taskContent;
 
     @ApiModelProperty(value = "任务开始时间")
-    private LocalDateTime taskStartDate;
+    private Object taskStartDate;
 
     @ApiModelProperty(value = "任务结束时间")
-    private LocalDateTime taskEndDate;
+    private Object taskEndDate;
 
     @ApiModelProperty(value = "任务检查项数量")
-    private int number;
+    private Object number;
 
     @ApiModelProperty(value = "任务创建时间")
-    private LocalDateTime taskCreateDate;
+    private Object taskCreateDate;
     
     @ApiModelProperty(value = "任务创建机构")
-    private String taskCreateOrg;
+    private Object taskCreateOrg;
     
     @ApiModelProperty(value = "任务创建人")
-    private String taskCreateUser;
+    private Object taskCreateUser;
     
     @ApiModelProperty(value = "任务状态")
-    private String taskSatus;
+    private Object taskSatus;
 }

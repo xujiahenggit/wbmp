@@ -31,6 +31,13 @@ public class SoapUtil {
 
     private static StringBuilder builder = new StringBuilder();
 
+    public static Map sendReport(String serviceCode,String channelId, Map<String, Object> paramMap) {
+        HeaderDO headerDO = new HeaderDO();
+        headerDO.setServiceCode(serviceCode);
+        headerDO.setChannelId(channelId);
+        return sendReport(headerDO,paramMap);
+    }
+
     public static Map sendReport(String serviceCode, Map<String, Object> paramMap) {
         HeaderDO headerDO = new HeaderDO();
         headerDO.setServiceCode(serviceCode);

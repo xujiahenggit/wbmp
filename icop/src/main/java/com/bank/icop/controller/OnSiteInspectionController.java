@@ -1,37 +1,25 @@
 package com.bank.icop.controller;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.bank.core.entity.TokenUserInfo;
-import com.bank.core.utils.PropertyUtil;
 import com.bank.icop.dto.CheckProblemDTO;
 import com.bank.icop.dto.CheckProcessDTO;
 import com.bank.icop.dto.TaskCheckAuditDTO;
+import com.bank.icop.service.OnSiteInspectionService;
 import com.bank.icop.vo.CheckProblemVO;
 import com.bank.icop.vo.OnSiteInspectionTaskCheckVO;
 import com.bank.icop.vo.OnSiteInspectionTaskItemVO;
 import com.bank.icop.vo.OnSiteInspectionTaskVO;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 现场检查接口Controller
@@ -55,19 +43,15 @@ public class OnSiteInspectionController extends BaseIcopController {
     @Resource
     HttpServletRequest request;
 
-    private OnSiteInspectionTaskVO vo1 = new OnSiteInspectionTaskVO("1", "2019", "20200202-3214", "常规任务（系统自动生成）", "现场检查任务", "社区支行行长日检查任务", LocalDateTime.now(), LocalDateTime.now(), 2, LocalDateTime.now(), "", "", "");
+    @Resource
+    OnSiteInspectionService onSiteInspectionService;
 
-    private OnSiteInspectionTaskVO vo2 = new OnSiteInspectionTaskVO("2", "2020", "20200202-3215", "常规任务（系统自动生成）", "现场检查任务", "2020结算监督员周检查任务", LocalDateTime.now(), LocalDateTime.now(), 3, LocalDateTime.now(), "", "", "");
 
-    @ApiOperation("获取现场检查任务")
+    @ApiOperation("获取现场检查任务列表")
     @GetMapping("/inspectionTaskList")
     public List<OnSiteInspectionTaskVO> inspectionTaskList() {
         TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
-
-        List<OnSiteInspectionTaskVO> data = new ArrayList<>();
-        data.add(vo1);
-        data.add(vo2);
-
+        List<OnSiteInspectionTaskVO> data = onSiteInspectionService.inspectionTaskList(tokenUserInfo.getUserId());
         return data;
     }
 
@@ -90,10 +74,7 @@ public class OnSiteInspectionController extends BaseIcopController {
         OnSiteInspectionTaskItemVO itemvo2 = new OnSiteInspectionTaskItemVO();
         OnSiteInspectionTaskItemVO itemvo3 = new OnSiteInspectionTaskItemVO();
         OnSiteInspectionTaskItemVO itemvo4 = new OnSiteInspectionTaskItemVO();
-        PropertyUtil.copyProperties(vo1, itemvo1);
-        PropertyUtil.copyProperties(vo1, itemvo2);
-        PropertyUtil.copyProperties(vo2, itemvo3);
-        PropertyUtil.copyProperties(vo2, itemvo4);
+
 
         itemvo1.setTaskItemId("1");
         itemvo1.setTaskItemName("同城清算管理");
@@ -209,7 +190,6 @@ public class OnSiteInspectionController extends BaseIcopController {
             value = "taskStartDate", required = false) String taskStartDate, @RequestParam(value = "taskEndDate",
                     required = false) String taskEndDate) {
         List<OnSiteInspectionTaskVO> data = new ArrayList<>();
-        data.add(vo1);
 
         return data;
     }
@@ -242,8 +222,8 @@ public class OnSiteInspectionController extends BaseIcopController {
         TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
 
         List<OnSiteInspectionTaskVO> data = new ArrayList<>();
-        data.add(vo1);
-        data.add(vo2);
+//        data.add(vo1);
+//        data.add(vo2);
 
         return data;
     }
