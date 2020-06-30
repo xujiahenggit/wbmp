@@ -8,7 +8,7 @@
 	</select>
 
 	<select id="queyDepositDay30" resultType="map">
-		SELECT org_no, private_bal, public_bal, generality_bal, curr_cd, DATE_FORMAT( update_date, '%m月%d日' ) date_str FROM (
+		SELECT org_no, curr_cd, private_bal, public_bal, generality_bal, DATE_FORMAT( update_date, '%m月%d日' ) date_str FROM (
 			SELECT t1.ORG_NO AS org_no, 'CN' AS curr_cd,
 			SUM(CASE WHEN t1.curr_cd = 'CNY' THEN t1.private_bal ELSE t1.private_bal * t2.zhebhuil END) AS private_bal,
 			SUM(CASE WHEN t1.curr_cd = 'CNY' THEN t1.PUBLIC_BAL ELSE t1.PUBLIC_BAL * t2.zhebhuil END) AS PUBLIC_BAL,
@@ -27,7 +27,7 @@
 			GROUP BY t1.update_date,t1.org_no
 		) a
 		UNION ALL
-		SELECT ORG_NO,CURR_CD,PRIVATE_BAL,PUBLIC_BAL,GENERALITY_BAL,UPDATE_DATE FROM (
+		SELECT org_no, curr_cd, private_bal, public_bal, generality_bal, DATE_FORMAT( update_date, '%m月%d日' ) date_str FROM (
 			SELECT t1.org_no AS org_no, 'CN' AS curr_cd,
 			SUM(CASE WHEN t1.curr_cd = 'CNY' THEN t1.private_bal ELSE t1.private_bal * t2.zhebhuil END) AS private_bal,
 			SUM(CASE WHEN t1.curr_cd = 'CNY' THEN t1.PUBLIC_BAL ELSE t1.PUBLIC_BAL * t2.zhebhuil END) AS PUBLIC_BAL,
@@ -49,7 +49,7 @@
 			GROUP BY t1.update_date,t1.org_no
 		) b
 		UNION ALL
-		SELECT ORG_NO,CURR_CD,PRIVATE_BAL,PUBLIC_BAL,GENERALITY_BAL,UPDATE_DATE FROM (
+		SELECT org_no, curr_cd, private_bal, public_bal, generality_bal, DATE_FORMAT( update_date, '%m月%d日' ) date_str FROM (
 			SELECT t1.org_no AS org_no, 'CN' AS curr_cd,
 			SUM(CASE WHEN t1.curr_cd = 'CNY' THEN t1.private_bal ELSE t1.private_bal * t2.zhebhuil END) AS private_bal,
 			SUM(CASE WHEN t1.curr_cd = 'CNY' THEN t1.PUBLIC_BAL ELSE t1.PUBLIC_BAL * t2.zhebhuil END) AS PUBLIC_BAL,
