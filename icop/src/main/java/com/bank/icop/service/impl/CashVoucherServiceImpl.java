@@ -27,7 +27,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
     public List<VoucherStockVo> queryVoucherStock(VoucherStockDo voucherStockDo) {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("userId",voucherStockDo.getUserId());
-        parmMap.put("orgId",voucherStockDo.getOrgId());
+        parmMap.put("orgId",getOrgId(voucherStockDo.getOrgId()));
         parmMap.put("voucherStatus",voucherStockDo.getVoucherStatus());
         parmMap.put("voucherNo",voucherStockDo.getVoucherNo());
         Map report = null;
@@ -52,7 +52,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
     public List queryVoucherNumber(VoucherNumberDo voucherNumberDo) {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("userId",voucherNumberDo.getUserId());
-        parmMap.put("orgId",voucherNumberDo.getOrderId());
+        parmMap.put("orgId",getOrgId(voucherNumberDo.getOrderId()));
         parmMap.put("voucherNo",voucherNumberDo.getVoucherNo());
         parmMap.put("orderDeatilId",voucherNumberDo.getOrderDeatilId());
         Map report = null;
@@ -211,7 +211,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
     public IPage<VoucherListVo> getVoucherList(VoucherListQueryVo vo) {
         HashMap<String, Object> parmMap = new HashMap<>();
         parmMap.put("userId", vo.getUserId());
-        parmMap.put("orgId", vo.getOrgId());
+        parmMap.put("orgId", getOrgId(vo.getOrgId()));
         parmMap.put("pageIndex", vo.getPageIndex());
         parmMap.put("pageSize", vo.getPageSize());
         Map report = null;
@@ -316,7 +316,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
     @Override
     public ReceiptInfoVo getReceiptInfoByOrg(String orgId) {
         Map<String, Object> parmMap = new HashMap<>();
-        parmMap.put("orgId",orgId);
+        parmMap.put("orgId",getOrgId(orgId));
         Map report = null;
         try {
             report = SoapUtil.sendReport("VTMS0005",parmMap);
@@ -338,7 +338,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
     public Object queryIsSure(OrderDetailListVo orderDetailListVo) {
         HashMap<String, Object> parmMap = new HashMap<>();
         parmMap.put("userId" ,orderDetailListVo.getUserId());
-        parmMap.put("orgId" ,orderDetailListVo.getOrgId());
+        parmMap.put("orgId" ,getOrgId(orderDetailListVo.getOrgId()));
         parmMap.put("orgName" ,orderDetailListVo.getOrgName());
         Map report = null;
         try {
@@ -354,7 +354,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         HashMap<String, Object> parmMap = new HashMap<>();
         parmMap.put("userId",orderInfoVo.getUserId());
         parmMap.put("orderType",orderInfoVo.getOrderType());
-        parmMap.put("orgId",orderInfoVo.getOrgId());
+        parmMap.put("orgId",getOrgId(orderInfoVo.getOrgId()));
         parmMap.put("orgName",orderInfoVo.getOrgName());
         parmMap.put("consignee",orderInfoVo.getConsignee());
         parmMap.put("address",orderInfoVo.getAddress());
@@ -464,6 +464,19 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         }
         return list;
     }
+
+    /**
+     * 核心机构号判断是否为6位、6为+01
+     * @param orgId
+     * @return
+     */
+    public static String getOrgId(String orgId){
+        if(orgId.length() ==6){
+            return orgId+"01";
+        }
+        return orgId;
+    }
+
 
     /**
      * 判断Object对象是否为空或""
