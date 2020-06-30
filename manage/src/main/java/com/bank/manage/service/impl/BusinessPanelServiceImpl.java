@@ -101,13 +101,15 @@ public class BusinessPanelServiceImpl implements BusinessPanelService {
                 long progress_handle_cnt = (Long) objectMap.get("progress_handle_cnt");//办理中总数
                 long abandoned_cnt = (Long) objectMap.get("abandoned_cnt");//弃号总数
                 long num = (Long) objectMap.get("num");//窗口数
-                Number abandoned_lv =  (Number)objectMap.get("abandoned_lv");//弃号率
+                //Number abandoned_lv =  (Number)objectMap.get("abandoned_lv");//弃号率
+                long queue_status_3 =  (long)objectMap.get("queue_status_3");
+                long queue_seq_count =  (long)objectMap.get("queue_seq_count");
                 Number index_cnt =  (Number)objectMap.get("index_cnt");//平均等待时长-秒
                 Number avg_abandoned_lv =  (Number)objectMap.get("avg_abandoned_lv");//平均弃号率
                 //排队预计等待时长=（等待人数/窗口数）*历史平均等待时长*历史1个月平均弃号率
                 BigDecimal a = NumberUtil.div(String.valueOf(queue_cnt), String.valueOf(num));
                 BigDecimal wait_time = NumberUtil.mul(a, index_cnt, avg_abandoned_lv);
-
+                BigDecimal abandoned_lv = NumberUtil.div(String.valueOf(queue_status_3), String.valueOf(queue_seq_count));
                 Map<String, Object> panelMap = new HashMap<>();
                 panelMap.put("queue_cnt", queue_cnt);
                 panelMap.put("wait_time", wait_time);
