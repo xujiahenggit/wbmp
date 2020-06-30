@@ -221,26 +221,10 @@ public class CashVoucherServiceImpl implements CashVoucherService {
             throw new BizException("凭证订单列表查询失败！"+e.getMessage());
         }
         IPage<VoucherListVo> page = new Page<>();
-        List<Map<String,Object>> dataList =(List<Map<String,Object>> )report.get("data");
         List<VoucherListVo> list = new ArrayList<>();
-        if(CollectionUtil.isNotEmpty(dataList)){
-            for (int i = 0; i < dataList.size(); i++) {
-                VoucherListVo voucherListVo = new VoucherListVo();
-                voucherListVo.setListType((String)dataList.get(i).get("listType"));
-                voucherListVo.setOrderType((String)dataList.get(i).get("orderType"));
-                voucherListVo.setOrderNo((String)dataList.get(i).get("orderNo"));
-                voucherListVo.setOrderCycle((String)dataList.get(i).get("orderCycle"));
-                voucherListVo.setOrderStatus((String)dataList.get(i).get("orderStatus"));
-                voucherListVo.setOrgId((String)dataList.get(i).get("orgId"));
-                voucherListVo.setOrgName((String)dataList.get(i).get("orgName"));
-                list.add(voucherListVo);
-            }
-        }
-
-        /*Object data = dataMap.get("data");
-        List<VoucherListVo> list = new ArrayList<>();
-        if(data != null){
-            List<Map<String,Object>> dataList = (List<Map<String,Object>>)data;
+        Object objectData = report.get("data");
+        if(isObjectIsNotEmpty(objectData)){
+            List<Map<String,Object>> dataList =(List<Map<String,Object>> )report.get("data");
             if(CollectionUtil.isNotEmpty(dataList)){
                 for (int i = 0; i < dataList.size(); i++) {
                     VoucherListVo voucherListVo = new VoucherListVo();
@@ -254,18 +238,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
                     list.add(voucherListVo);
                 }
             }
-        }else{
-            VoucherListVo voucherListVo = new VoucherListVo();
-            voucherListVo.setListType((String)dataMap.get("listType"));
-            voucherListVo.setOrderType((String)dataMap.get("orderType"));
-            voucherListVo.setOrderNo((String)dataMap.get("orderNo"));
-            voucherListVo.setOrderCycle((String)dataMap.get("orderCycle"));
-            voucherListVo.setOrderStatus((String)dataMap.get("orderStatus"));
-            voucherListVo.setOrgId((String)dataMap.get("orgId"));
-            voucherListVo.setOrgName((String)dataMap.get("orgName"));
-            list.add(voucherListVo);
-        }*/
-
+        }
         page.setRecords(list);
         return page;
     }
