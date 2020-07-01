@@ -1,15 +1,24 @@
 package com.bank.icop.service.impl;
 
-import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.util.StrUtil;
-import com.bank.core.entity.BizException;
-import com.bank.icop.service.OnSiteInspectionService;
-import com.bank.icop.util.SoapUtil;
-import org.springframework.stereotype.Service;
-
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSONObject;
+import com.bank.core.entity.BizException;
+import com.bank.icop.dto.CheckProblemDTO;
+import com.bank.icop.service.OnSiteInspectionService;
+import com.bank.icop.util.SoapUtil;
+import com.bank.icop.vo.ApproveLogVO;
+import com.bank.icop.vo.CheckAccessoryVO;
+import com.bank.icop.vo.HandledRectifyInfoVO;
+import com.bank.icop.vo.HandledRectifyVO;
+
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 
 /**
  * SOAP调用第三方接口 现场检查实现类
@@ -19,7 +28,6 @@ import java.util.Map;
  */
 @Service
 public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
-
 
     @Override
     public List<Map> inspectionTaskList(String userId) {
@@ -71,7 +79,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
                 1,
                 "返回状态  -1:参数为空 , 0:未查询出数据 ,1:正常 ");
         Object value = report.get("value");
-        if (StrUtil.isBlankIfStr(value)){
+        if (StrUtil.isBlankIfStr(value)) {
             throw new BizException("返回的检查要点为空！");
         }
         return (boolean) value;
@@ -86,7 +94,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
                 "FXYJ11005",
                 "检查要点查看",
                 1,
-                "返回状态  -1:参数为空 , 0:未查询出数据 ,1:正常 ","details");
+                "返回状态  -1:参数为空 , 0:未查询出数据 ,1:正常 ", "details");
     }
 
     @Override
@@ -100,7 +108,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
                 0,
                 "返回状态  -1:失败 , 0:成功");
         Object value = report.get("status");
-        if (StrUtil.isBlankIfStr(value)){
+        if (StrUtil.isBlankIfStr(value)) {
             throw new BizException("检查任务的保存接口，status返回值为空！");
         }
         return value;
@@ -117,7 +125,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
                 0,
                 "返回状态  -1:失败 , 0:成功");
         Object value = report.get("status");
-        if (StrUtil.isBlankIfStr(value)){
+        if (StrUtil.isBlankIfStr(value)) {
             throw new BizException("检查任务的提交失败！");
         }
         return value;
@@ -234,7 +242,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
                 0,
                 "返回状态  -1:执行失败 ,  0:执行成功 ");
         Object value = report.get("status");
-        if (StrUtil.isBlankIfStr(value)){
+        if (StrUtil.isBlankIfStr(value)) {
             throw new BizException("检查子项审核提交，status返回值为空");
         }
         return value;
@@ -275,7 +283,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
                 0,
                 "返回状态  -1:执行失败 ,  0:执行成功 ");
         Object value = report.get("status");
-        if (StrUtil.isBlankIfStr(value)){
+        if (StrUtil.isBlankIfStr(value)) {
             throw new BizException("整改反馈说明保存,status返回值为空！");
         }
         return value;
@@ -292,12 +300,11 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
                 0,
                 "返回状态  -1:执行失败 ,  0:执行成功 ");
         Object value = report.get("status");
-        if (StrUtil.isBlankIfStr(value)){
+        if (StrUtil.isBlankIfStr(value)) {
             throw new BizException("整改提交，status返回值为空");
         }
         return value;
     }
-
 
     @Override
     public Object updateCheckList(String userId) {
@@ -322,7 +329,6 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
                 "返回状态  -1:参数为空 ,  0:正常");
     }
 
-
     @Override
     public Object feedbackCheckSubmit(String currentUserId, String cpk, String decision, String approvelog) {
         Map<String, Object> parmMap = new HashMap<>();
@@ -330,13 +336,13 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         parmMap.put("cpk", cpk);
         parmMap.put("decision", decision);
         parmMap.put("approvelog", approvelog);
-        Map report =getReport(parmMap,
+        Map report = getReport(parmMap,
                 "FXYJ11023",
                 "整改审批提交",
                 0,
                 "返回状态  -1:参数为空 ,  0:正常");
         Object value = report.get("status");
-        if (StrUtil.isBlankIfStr(value)){
+        if (StrUtil.isBlankIfStr(value)) {
             throw new BizException("整改审批提交，status返回值为空");
         }
         return value;
@@ -365,7 +371,6 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
                 "返回状态  -1:参数为空 ,  0:未查询出数据  , 1:正常");
     }
 
-
     private List<Map> getIcopTagData(Map<String, Object> parmMap, String serviceCode, String serviceName, Integer rightCode, String errMsg, String tag) {
         Map report = getReport(parmMap, serviceCode, serviceName, rightCode, errMsg);
         Object list = report.get(tag);
@@ -373,15 +378,16 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
             List<Map> tagData = null;
             try {
                 tagData = (List<Map>) list;
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 throw new BizException(tag + "标签数据转List<Map>出错，" + e.getMessage());
             }
             return tagData;
-        } else {
+        }
+        else {
             throw new BizException("返回值不包含" + tag + "标签！");
         }
     }
-
 
     private List<Map> getIcopTagList(Map<String, Object> parmMap, String serviceCode, String serviceName, Integer rightCode, String errMsg) {
         return getIcopTagData(parmMap, serviceCode, serviceName, rightCode, errMsg, "List");
@@ -391,7 +397,8 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         Map report = null;
         try {
             report = SoapUtil.sendReport(serviceCode, "812", parmMap);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new BizException(serviceName + "报错！" + e.getMessage());
         }
         if (CollectionUtil.isEmpty(report)) {
@@ -405,12 +412,108 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         Object status = report.get("status");
         if (StrUtil.isBlankIfStr(status)) {
             throw new BizException(serviceName + "接口返回状态码为空！");
-        } else {
+        }
+        else {
             if (!status.equals(String.valueOf(rightCode))) {
                 throw new BizException(errMsg + "；该接口返回状态码为：" + status + "！");
             }
         }
     }
 
+    @Override
+    public List<HandledRectifyVO> handledRectifyList(String userId) {
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("username", userId);//4095
+        List<Map> datas = getIcopTagList(parmMap, "FXYJ11028", "已处理整改列表", 1, "返回状态  -1:参数为空 ,  0:用户不存在");
 
+        List<HandledRectifyVO> result = new ArrayList<>();
+        for (int i = 0; i < datas.size(); i++) {
+            Map<String, String> data = datas.get(i);
+            HandledRectifyVO handledRectifyVO = new HandledRectifyVO();
+            handledRectifyVO.setRectifyId(data.get("CPK"));
+            handledRectifyVO.setTaskName(data.get("TASKNAME"));
+            handledRectifyVO.setChildPointName(data.get("CHILDPOINTNAME"));
+            handledRectifyVO.setQDes(data.get("QDES"));
+            handledRectifyVO.setOrgName(data.get("ORGNAME"));
+            handledRectifyVO.setQUserName(data.get("QUSERNAME"));
+            handledRectifyVO.setQDate(data.get("QDATE"));
+            handledRectifyVO.setCorrectiveFeedbackDT(data.get("CORRECTIVEFEEDBACKDT"));
+            handledRectifyVO.setCorrectiveFeedbackDes(data.get("CORRECTIVEFEEDBACKDES"));
+            handledRectifyVO.setStatus(data.get("STATUS"));
+            result.add(handledRectifyVO);
+        }
+        return result;
+    }
+
+    @Override
+    public HandledRectifyInfoVO handledRectifyInfo(String userId, String rectifyId) {
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("userNo", userId);
+        parmMap.put("cpk", rectifyId);
+
+        Map returnData = getReport(parmMap, "FXYJ11029", "已整改详细信息", 1, "返回状态  -1:参数为空 ,  0:用户不存在");
+
+        HandledRectifyInfoVO result = new HandledRectifyInfoVO();
+        //审批日志
+        List<Map<String, String>> logList = (List<Map<String, String>>) returnData.get("List");
+        //整改信息
+        Map<String, String> corrective = (Map<String, String>) returnData.get("corrective");
+
+        result.setCorrectiveFeedbackDT(corrective.get("CORRECTIVEFEEDBACKDT"));
+        result.setQUser(corrective.get("QUSER"));
+        result.setChildPointName(corrective.get("CHILDPOINTNAME"));
+        result.setSunpointName(corrective.get("SUNPOINTNAME"));
+        result.setQType(corrective.get("QTYPE"));
+        result.setQDes(corrective.get("QDES"));
+        result.setCorrectiveSuggest(corrective.get("CORRECTIVESUGGEST"));
+        //目前接口未提供该字段
+        result.setCorrectiveFeedback("");
+        List<ApproveLogVO> approveLogList = new ArrayList<>();
+        result.setApproveLogList(approveLogList);
+        List<CheckAccessoryVO> accessoryList = new ArrayList<>();
+        result.setAccessoryList(accessoryList);
+        for (int i = 0; i < logList.size(); i++) {
+            Map<String, String> logData = logList.get(i);
+            ApproveLogVO logVO = new ApproveLogVO();
+            logVO.setLogSeq(i + 1);
+            logVO.setDealMan(logData.get("DEALMAN"));
+            logVO.setRoleKey(logData.get("ROLEKEY"));
+            logVO.setDecision(logData.get("DECISION"));
+            logVO.setApproveLog(logData.get("APPROVELOG"));
+            logVO.setCreateTime(logData.get("CREATE_TIME"));
+            approveLogList.add(logVO);
+        }
+        return result;
+    }
+
+    @Override
+    public boolean problemFeedback(String problemId, String auditFeedback) {
+        Map<String, Object> parmMap = new HashMap<>();
+        //反馈意见
+        parmMap.put("details", auditFeedback);
+        //问题PK
+        parmMap.put("pk", problemId);
+        getReport(parmMap, "FXYJ11026", "问题反馈", 0, "返回状态  -1:失败 ,  0:成功");
+        return true;
+    }
+
+    @Override
+    public boolean problemEditSave(String userId, CheckProblemDTO checkProblemDTO) {
+        Map<String, String> dataMap = new HashMap<>();
+        dataMap.put("taskPk", checkProblemDTO.getTaskId());
+        dataMap.put("pk", checkProblemDTO.getProblemId());
+        dataMap.put("qdate", checkProblemDTO.getProblemDate());
+        dataMap.put("qtype", checkProblemDTO.getProblemType());
+        dataMap.put("qorgan", checkProblemDTO.getProblemRectifyOrg());
+        dataMap.put("quser", checkProblemDTO.getRectifyDutyUser());
+        dataMap.put("quserName", checkProblemDTO.getRectifyDutyUserName());
+        dataMap.put("qdes", checkProblemDTO.getProblemDes());
+
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("userNo", userId);
+        parmMap.put("jsonstr", JSONObject.toJSONString(dataMap));
+
+        getReport(parmMap, "FXYJ11027", "问题保存", 0, "返回状态  -1:失败 ,  0:成功");
+        return true;
+    }
 }
