@@ -13,7 +13,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -55,7 +54,7 @@ public class OnSiteInspectionController extends BaseIcopController {
         return onSiteInspectionService.inspectionTaskList(tokenUserInfo.getUserId());
     }
 
-    @ApiOperation("获取现场检查任务任务项列表")
+    @ApiOperation("获取运营检查大项展示列表")
     @GetMapping("/taskItemList")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "taskId", value = "任务ID", required = false, defaultValue = "", dataType = "String"),
@@ -65,79 +64,53 @@ public class OnSiteInspectionController extends BaseIcopController {
             @ApiImplicitParam(name = "taskStartDate", value = "任务开始时间", required = false, defaultValue = "", dataType = "String"),
             @ApiImplicitParam(name = "taskEndDate", value = "任务结束时间", required = false, defaultValue = "", dataType = "String")
     })
-    public List<OnSiteInspectionTaskItemVO> taskItemList(@RequestParam(value = "taskId", required = false) String taskId, @RequestParam(value = "createOrgId", required = false) String createOrgId, @RequestParam(value = "executeOrgId",
+    public List<Map> taskItemList(@RequestParam(value = "taskId", required = false) String taskId, @RequestParam(value = "createOrgId", required = false) String createOrgId, @RequestParam(value = "executeOrgId",
             required = false) String executeOrgId, @RequestParam(value = "taskName", required = false) String taskName, @RequestParam(value = "taskStartDate", required = false) String taskStartDate, @RequestParam(value = "taskEndDate", required = false) String taskEndDate) {
-        TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
-
-        List<OnSiteInspectionTaskItemVO> data = new ArrayList<>();
-        OnSiteInspectionTaskItemVO itemvo1 = new OnSiteInspectionTaskItemVO();
-        OnSiteInspectionTaskItemVO itemvo2 = new OnSiteInspectionTaskItemVO();
-        OnSiteInspectionTaskItemVO itemvo3 = new OnSiteInspectionTaskItemVO();
-        OnSiteInspectionTaskItemVO itemvo4 = new OnSiteInspectionTaskItemVO();
-
-
-        itemvo1.setTaskItemId("1");
-        itemvo1.setTaskItemName("同城清算管理");
-        itemvo1.setInspectionInfoId("");
-        itemvo1.setState("00");
-        itemvo1.setStateName("新建");
-
-        itemvo2.setTaskItemId("2");
-        itemvo2.setTaskItemName("同城清算管理");
-        itemvo2.setInspectionInfoId("2");
-        itemvo2.setState("01");
-        itemvo2.setStateName("执行中");
-
-        itemvo3.setTaskItemId("3");
-        itemvo3.setTaskItemName("同城清算管理");
-        itemvo3.setInspectionInfoId("3");
-        itemvo3.setState("02");
-        itemvo3.setStateName("未审批");
-
-        itemvo4.setTaskItemId("4");
-        itemvo4.setTaskItemName("同城清算管理");
-        itemvo4.setInspectionInfoId("4");
-        itemvo4.setState("03");
-        itemvo4.setStateName("已退回");
-
-        if (StringUtils.isBlank(taskId)) {
-            data.add(itemvo1);
-            data.add(itemvo2);
-            data.add(itemvo3);
-            data.add(itemvo4);
-        }
-        else if (StringUtils.equals(taskId, "1")) {
-            data.add(itemvo1);
-            data.add(itemvo2);
-        }
-        else {
-            data.add(itemvo3);
-            data.add(itemvo4);
-        }
-        return data;
+        String userId = getCurrentUserId(request);
+        return onSiteInspectionService.taskItemList(userId,taskId,createOrgId,executeOrgId,taskName,taskStartDate,taskEndDate);
     }
 
-    @ApiOperation("现场检查任务-登记检查")
+    @ApiOperation("检查任务执行展示")
     @GetMapping("/registerCheck")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "taskItemId", value = "检查任务项ID", required = true, dataType = "String"),
             @ApiImplicitParam(name = "inspectionInfoId", value = "执行检查信息ID", required = false, defaultValue = "", dataType = "String")
     })
-    public List<OnSiteInspectionTaskCheckVO> registerCheck(@RequestParam(value = "taskItemId") String taskItemId, @RequestParam(value = "inspectionInfoId") String inspectionInfoId) {
-        TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
-
-        return null;
+    public Object registerCheck(@RequestParam(value = "taskItemId") String taskItemId, @RequestParam(value = "inspectionInfoId") String inspectionInfoId) {
+        return onSiteInspectionService.registerCheck(getCurrentUserId(request),taskItemId,inspectionInfoId);
     }
 
-    @ApiOperation("现场检查任务-提交")
-    @PutMapping("/submit/{taskItemId}/{inspectionInfoId}")
+    @ApiOperation("检查要点查看")
+    @GetMapping("/check/{sunpointkey}/{taskpk}")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "taskItemId", value = "检查任务项ID", required = true, dataType = "String", paramType = "path"),
-            @ApiImplicitParam(name = "inspectionInfoId", value = "执行检查信息ID", required = true, dataType = "String", paramType = "path")
+            @ApiImplicitParam(name = "sunpointkey", value = "检查key", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "taskpk", value = "任务编号", required = true, defaultValue = "", dataType = "String")
     })
-    public boolean submit(@PathVariable("taskItemId") String taskItemId, @PathVariable("inspectionInfoId") String inspectionInfoId) {
-        return true;
+    public boolean check(@PathVariable("sunpointkey") String taskItemId, @PathVariable("taskpk") String inspectionInfoId) {
+        return onSiteInspectionService.check(taskItemId,inspectionInfoId);
     }
+
+
+    @ApiOperation("检查问题编辑")
+    @GetMapping("/problemEdit/{pk}/{taskpk}")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pk", value = "检查key", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "taskpk", value = "任务编号", required = true, defaultValue = "", dataType = "String")
+    })
+    public Object problemEdit(@PathVariable("pk") String pk,@PathVariable("taskpk") String taskpk) {
+        return onSiteInspectionService.problemEdit(pk,taskpk);
+    }
+
+
+    @ApiOperation("检查任务的提交")
+    @GetMapping("/checkTaskSubmit/{pk}")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pk", value = "检查key", required = true, dataType = "String")
+    })
+    public Object checkTaskSubmit(@PathVariable("pk") String pk) {
+        return onSiteInspectionService.checkTaskSubmit(getCurrentUserId(request),pk);
+    }
+
 
     @ApiOperation("现场检查任务-撤回检查")
     @PutMapping("/recall/{taskItemId}/{inspectionInfoId}")
@@ -160,13 +133,6 @@ public class OnSiteInspectionController extends BaseIcopController {
     @PostMapping("/problemSubmit")
     @ApiImplicitParam(name = "checkProblemDTO", value = "检查问题数据", required = true, dataType = "CheckProblemDTO", paramType = "body")
     public boolean problemSubmit(@RequestBody CheckProblemDTO checkProblemDTO) {
-        return true;
-    }
-
-    @ApiOperation("现场检查任务-问题编辑")
-    @PutMapping("/problemEdit")
-    @ApiImplicitParam(name = "checkProblemDTO", value = "检查问题数据", required = true, dataType = "CheckProblemDTO", paramType = "body")
-    public boolean problemEdit(@RequestBody CheckProblemDTO checkProblemDTO) {
         return true;
     }
 

@@ -25,22 +25,85 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
     public List<Map> inspectionTaskList(String userId) {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("userNo", userId);//4095
-        List<Map> data = getIcopTagList(parmMap,
+        return getIcopTagList(parmMap,
                 "FXYJ11001",
                 "获取运营检查任务列表",
                 1,
                 "返回状态  -1:参数为空 ,  0:用户不存在");
-//        List<OnSiteInspectionTaskVO> list = new ArrayList<>();
-//        data.stream()
-//                .forEach(e -> list.add(new OnSiteInspectionTaskVO(
-//                        e.get("TASKPK"),
-//                        e.get("TASKYEAR"),
-//                        e.get("TASKNAME"),
-//                        e.get("TASKSTARTDATE"),
-//                        e.get("TASKENDDATE"),
-//                        e.get("NUMBER")
-//                )));
-        return data;
+    }
+
+    @Override
+    public List<Map> taskItemList(String userId, String taskId, String createOrgId, String executeOrgId, String taskName, String taskStartDate, String taskEndDate) {
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("userNo", userId);
+        parmMap.put("taskpk", taskId);
+        parmMap.put("taskname", taskName);
+        parmMap.put("taskstartdate", taskStartDate);
+        parmMap.put("taskenddate", taskEndDate);
+        return getIcopTagList(parmMap,
+                "FXYJ11002",
+                "获取运营检查大项展示列表",
+                2,
+                "返回状态  -1:参数为空 ,  0:用户不存在  , 1:未查询出数据 ,2:正常 ");
+    }
+
+    @Override
+    public Object registerCheck(String userId, String taskItemId, String inspectionInfoId) {
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("userNo", userId);
+        parmMap.put("pk", taskItemId);
+        parmMap.put("qpk", inspectionInfoId);
+        return getReport(parmMap,
+                "FXYJ11003",
+                "检查任务执行展示",
+                2,
+                "返回状态  -1:参数为空 ,  0:用户不存在  , 1:未查询出数据 ,2:正常 ");
+    }
+
+    @Override
+    public boolean check(String taskItemId, String inspectionInfoId) {
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("sunpointkey", taskItemId);
+        parmMap.put("taskpk", inspectionInfoId);
+        Map report = getReport(parmMap,
+                "FXYJ11004",
+                "检查要点查看",
+                1,
+                "返回状态  -1:参数为空 , 0:未查询出数据 ,1:正常 ");
+        Object value = report.get("value");
+        if (StrUtil.isBlankIfStr(value)){
+            throw new BizException("返回的检查要点为空！");
+        }
+        return (boolean) value;
+    }
+
+    @Override
+    public Object problemEdit(String pk, String taskpk) {
+        Map<String, Object> parmMap = new HashMap();
+        parmMap.put("pk", pk);
+        parmMap.put("taskpk", taskpk);
+        return getIcopTagData(parmMap,
+                "FXYJ11005",
+                "检查要点查看",
+                1,
+                "返回状态  -1:参数为空 , 0:未查询出数据 ,1:正常 ","details");
+    }
+
+    @Override
+    public Object checkTaskSubmit(String currentUserId, String pk) {
+        Map<String, Object> parmMap = new HashMap();
+        parmMap.put("userNo", currentUserId);
+        parmMap.put("pk", pk);
+        Map report = getReport(parmMap,
+                "FXYJ11007",
+                "检查任务的提交",
+                0,
+                "返回状态  -1:失败 , 0:成功");
+        Object value = report.get("status");
+        if (StrUtil.isBlankIfStr(value)){
+            throw new BizException("检查任务的提交失败！");
+        }
+        return value;
     }
 
 

@@ -14,4 +14,14 @@ public interface OnSiteInspectionService {
 
 
     List<Map> inspectionTaskList(String userId);
+
+    List<Map> taskItemList(String userId, String taskId, String createOrgId, String executeOrgId, String taskName, String taskStartDate, String taskEndDate);
+
+    Object registerCheck(String currentUserId, String taskItemId, String inspectionInfoId);
+
+    boolean check(String taskItemId, String inspectionInfoId);
+
+    Object problemEdit(String pk, String taskpk);
+
+    Object checkTaskSubmit(String currentUserId, String pk);
 }
