@@ -1,12 +1,7 @@
 package com.bank.icop.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.stereotype.Service;
-
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.bank.core.entity.BizException;
 import com.bank.icop.dto.CheckProblemDTO;
@@ -16,9 +11,12 @@ import com.bank.icop.vo.ApproveLogVO;
 import com.bank.icop.vo.CheckAccessoryVO;
 import com.bank.icop.vo.HandledRectifyInfoVO;
 import com.bank.icop.vo.HandledRectifyVO;
+import org.springframework.stereotype.Service;
 
-import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.util.StrUtil;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * SOAP调用第三方接口 现场检查实现类
@@ -113,6 +111,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         }
         return value;
     }
+
 
     @Override
     public Object checkTaskSubmit(String currentUserId, String pk) {
