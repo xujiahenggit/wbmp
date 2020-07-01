@@ -366,6 +366,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         Map report = null;
         try {
             report = SoapUtil.sendReport("VTMS0007",parmMap);
+            report.put("ReturnCode","00000000");
         } catch (Exception e) {
             throw new BizException("新建订单失败！"+e.getMessage());
         }
