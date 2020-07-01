@@ -53,7 +53,7 @@ public class WbmpOperRateUtils {
     public static float getCustomerWaitTimeAvgScore(BigDecimal outsiteAvgTime,BigDecimal stardTime){
         //转float
         float f_outsiteAvgTime=outsiteAvgTime.floatValue();
-        float f_stardTime=stardTime.floatValue();
+        float f_stardTime=stardTime.floatValue()/100;
         float customerWaitTimeAvG=0;
         customerWaitTimeAvG=100-((f_outsiteAvgTime-f_stardTime)/f_stardTime*100);
         return Maht2digit(customerWaitTimeAvG);
