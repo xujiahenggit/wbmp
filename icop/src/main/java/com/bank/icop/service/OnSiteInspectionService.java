@@ -57,7 +57,7 @@ public interface OnSiteInspectionService {
 
     Object feedbackView(String currentUserId, String cpk);
 
-    Object problemSave(String currentUserId, String jsonstr);
+    Object checkTaskSave(String currentUserId, String jsonstr);
 
     Object feedbackCheckSubmit(String currentUserId, String cpk, String decision, String approvelog);
 

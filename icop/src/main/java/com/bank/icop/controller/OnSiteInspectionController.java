@@ -103,13 +103,13 @@ public class OnSiteInspectionController extends BaseIcopController {
         return onSiteInspectionService.problemEdit(pk, taskpk);
     }
 
-    @ApiOperation("检查问题保存")
-    @GetMapping("/problemSave")
+    @ApiOperation("检查任务保存")
+    @PostMapping("/checkTaskSave")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "jsonstr", value = "任务编号", required = true, defaultValue = "", dataType = "String")
     })
-    public Object problemSave(String jsonstr) {
-        return onSiteInspectionService.problemSave(getCurrentUserId(request), jsonstr);
+    public Object checkTaskSave(String jsonstr) {
+        return onSiteInspectionService.checkTaskSave(getCurrentUserId(request), jsonstr);
     }
 
     @ApiOperation("检查任务的提交")

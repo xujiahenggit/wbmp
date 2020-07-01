@@ -98,7 +98,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
     }
 
     @Override
-    public Object problemSave(String currentUserId, String jsonstr) {
+    public Object checkTaskSave(String currentUserId, String jsonstr) {
         Map<String, Object> parmMap = new HashMap();
         parmMap.put("userNo", currentUserId);
         parmMap.put("jsonstr", jsonstr);
