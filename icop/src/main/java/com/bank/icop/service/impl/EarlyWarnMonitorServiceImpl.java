@@ -1,205 +1,338 @@
 package com.bank.icop.service.impl;
 
+import com.bank.core.entity.BizException;
 import com.bank.icop.dos.*;
 import com.bank.icop.service.EarlyWarnMonitorService;
+import com.bank.icop.util.SoapUtil;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Service
 public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
     @Override
     public Object getdealDatas(String userNo) {
-        List<Map<String,Object>> list = new ArrayList<>();
-        Map<String,Object> map = new HashMap<>();
-        map.put("typeName","未办结");
-        map.put("number","50");
-        list.add(map);
-        return list;
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("userNo",userNo);
+        Map report = null;
+        try {
+            report = SoapUtil.sendReport("FXYJ10001","812",parmMap);
+        } catch (Exception e) {
+            throw new BizException("获取代办、未办结、已办数据列表报错！"+e.getMessage());
+        }
+        return report;
     }
 
     @Override
     public Object getT69Alerts(String alertkey) {
-        List<Map<String,Object>> list = new ArrayList<>();
-        Map<String,Object> map = new HashMap<>();
-        map.put("ALERTKEY","3rgry53eeg5ehyt543");
-        map.put("RULEKEY","56g45yGDHHCFy7gctugvcdvghy46e3");
-        map.put("RISKLEV_DISP","高风险");
-        map.put("ALERTDT","2020-11-22 12:23:00");
-        map.put("ORGANKEY","990101");
-        map.put("ORGANKEY_DISP","测试机构");
-        map.put("DEPT_DISP","ALTER_KEY");
-        map.put("CURRDISPOSER","1567900342");
-        map.put("LINESTATE","测试处理人");
-        map.put("FCETTYPECODE_DISP","某某莫");
-        map.put("IS_TS_BIZ","0");
-        map.put("DEFLAG_DISP","01");
-        map.put("LINESTATE_DISP","1");
-        map.put("CUST_CT","12");
-        map.put("CUST_CT1","35");
-        map.put("CERT_NO","630651965412350213");
-        map.put("CJSTATUS_DISP","1");
-        map.put("ALERTDESC","隔热分为氛围分为");
-        list.add(map);
-        return list;
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("alertkey",alertkey);
+        Map report = null;
+        try {
+            report = SoapUtil.sendReport("FXYJ10002","812",parmMap);
+        } catch (Exception e) {
+            throw new BizException("预警任务基本信息查询报错！"+e.getMessage());
+        }
+        return report;
     }
 
     @Override
     public Object getTaskDetails(String taskkey) {
-        List<Map<String,Object>> list = new ArrayList<>();
-        Map<String,Object> map = new HashMap<>();
-        map.put("TASKKEY","56GO79FHhuogFTN89GG");
-        map.put("TASKNAME","某某某某");
-        map.put("FEEDBACKDT","2020-06-29 12:18:20");
-        map.put("DEALGROUP","特别组");
-        map.put("DEALLEV","1");
-        map.put("TASKDESC","测试描述1111");
-        list.add(map);
-        return list;
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("taskkey",taskkey);
+        Map report = null;
+        try {
+            report = SoapUtil.sendReport("FXYJ10003","812",parmMap);
+        } catch (Exception e) {
+            throw new BizException("协查组任务查看详情数据查询（有、无调查记录)报错！"+e.getMessage());
+        }
+        return report;
     }
 
     @Override
     public Object modifyTasks(ModifyTasksDo modifyTasksDo) {
-        String status = "0";
-        return status;
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("taskkey",modifyTasksDo.getTaskkey());
+        parmMap.put("taskname",modifyTasksDo.getTaskname());
+        parmMap.put("deallev",modifyTasksDo.getDeallev());
+        parmMap.put("taskId",modifyTasksDo.getTaskId());
+        Map report = null;
+        try {
+            report = SoapUtil.sendReport("FXYJ10004","812",parmMap);
+        } catch (Exception e) {
+            throw new BizException("协查组任务数据修改接口报错！"+e.getMessage());
+        }
+        return report;
     }
 
     @Override
     public Object deleteTasks(String taskkey) {
-        String status = "0";
-        return status;
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("taskkey",taskkey);
+        Map report = null;
+        try {
+            report = SoapUtil.sendReport("FXYJ10005","812",parmMap);
+        } catch (Exception e) {
+            throw new BizException("协查组任务数据修改接口报错！"+e.getMessage());
+        }
+        return report;
     }
 
     @Override
     public Object returnTasks(ReturnTasksDo returnTasksDo) {
-        String status = "0";
-        return status;
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("taskkey",returnTasksDo.getTaskkey());
+        parmMap.put("sp_view",returnTasksDo.getSp_view());
+        Map report = null;
+        try {
+            report = SoapUtil.sendReport("FXYJ10006","812",parmMap);
+        } catch (Exception e) {
+            throw new BizException("协查组任务退回报错！"+e.getMessage());
+        }
+        return report;
     }
 
     @Override
     public Object addTaskDatas(AddTaskDatasDo addTaskDatasDo) {
-        String status = "0";
-        return status;
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("taskkey",addTaskDatasDo.getTaskkey());
+        parmMap.put("taskname",addTaskDatasDo.getTaskname());
+        parmMap.put("feedbackdt",addTaskDatasDo.getFeedbackdt());
+        parmMap.put("dealgroup",addTaskDatasDo.getDealgroup());
+        parmMap.put("deallev",addTaskDatasDo.getDeallev());
+        parmMap.put("taskdesc",addTaskDatasDo.getTaskdesc());
+        Map report = null;
+        try {
+            report = SoapUtil.sendReport("FXYJ10007","812",parmMap);
+        } catch (Exception e) {
+            throw new BizException("协查组任务数据新增接口报错！"+e.getMessage());
+        }
+        return report;
     }
 
     @Override
     public Object queryT69alertlogs(String alertkey) {
-        List<Map<String,Object>> list = new ArrayList<>();
-        Map<String,Object> map = new HashMap<>();
-        map.put("ALERTKEY","48HoGj80hgguGF90");
-        map.put("DISPOSER","某某某");
-        map.put("ENDDT","2020-06-29 16:35:20");
-        map.put("COMMENTS","测试11111");
-        list.add(map);
-        return list;
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("alertkey",alertkey);
+        Map report = null;
+        try {
+            report = SoapUtil.sendReport("FXYJ10008","812",parmMap);
+        } catch (Exception e) {
+            throw new BizException("协查组任务退回报错！"+e.getMessage());
+        }
+        return report;
     }
 
     @Override
     public Object queryRuleDatas(String tplakey) {
-        List<Map<String,Object>> list = new ArrayList<>();
-        Map<String,Object> map = new HashMap<>();
-        map.put("RULENAME","djwoidjqwodjq");
-        map.put("RULEDES","测试");
-        map.put("RULEKEY","ITM8765");
-        map.put("RULETYPE_DISP","11");
-        map.put("IMPLWAY_DISP","测试111");
-        map.put("GRANULAIRTY_DISP","222");
-        map.put("APPLYLEVL_DISP","1");
-        map.put("FLAG_DISP","1");
-        map.put("CREATETIME","2020-06-30 09:09:09");
-        map.put("CREATOR_DISP","某某某");
-        map.put("MODIFYTIME","2020-06-30 09:09:09");
-        map.put("MODIFYER_DISP","某某某1");
-        map.put("RULEDES","1111");
-        list.add(map);
-        return list;
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("tplakey",tplakey);
+        Map report = null;
+        try {
+            report = SoapUtil.sendReport("FXYJ10009","812",parmMap);
+        } catch (Exception e) {
+            throw new BizException("查看预警任务日志信息查询报错！"+e.getMessage());
+        }
+        return report;
     }
 
     @Override
     public Object fileremoveRisk(FilereMoveRiskDo filereMoveRiskDo) {
-        String status = "0";
-        return status;
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("alertkey",filereMoveRiskDo.getAlertkey());
+        parmMap.put("obviatereason",filereMoveRiskDo.getObviatereason());
+        parmMap.put("comments",filereMoveRiskDo.getComments());
+        Map report = null;
+        try {
+            report = SoapUtil.sendReport("FXYJ10010","812",parmMap);
+        } catch (Exception e) {
+            throw new BizException("处理方式为排除的归档报错！"+e.getMessage());
+        }
+        return report;
     }
 
     @Override
     public Object fileRiskEvent(FileRiskEventDo fileRiskEventDo) {
-        String status = "0";
-        return status;
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("alertkey",fileRiskEventDo.getAlertkey());
+        parmMap.put("mistakeno",fileRiskEventDo.getMistakeno());
+        parmMap.put("mistaketype",fileRiskEventDo.getMistaketype());
+        parmMap.put("mistakeitem",fileRiskEventDo.getMistakeitem());
+        parmMap.put("risk",fileRiskEventDo.getRisk());
+        parmMap.put("mistakedesc",fileRiskEventDo.getMistakedesc());
+        parmMap.put("sendorg",fileRiskEventDo.getSendorg());
+        parmMap.put("mistaketlr",fileRiskEventDo.getMistaketlr());
+        Map report = null;
+        try {
+            report = SoapUtil.sendReport("FXYJ10011","812",parmMap);
+        } catch (Exception e) {
+            throw new BizException("处理方式为登记风险事件的归档报错！"+e.getMessage());
+        }
+        return report;
     }
 
     @Override
     public Object queryTaskLists(String alertkey) {
-        List<Map<String,Object>> list = new ArrayList<>();
-        Map<String,Object> map = new HashMap<>();
-        map.put("ALERTKEY","8Usk089Kda");
-        map.put("CURRSETPNAME","测试111");
-        map.put("DUTYCREATE_DT","2020-06-30");
-        map.put("NOTICE_FEEDBACK_DT","2020-09-26");
-        map.put("DEPT_DISP","测试部1");
-        map.put("HANDLEROLE_DISP","测试");
-        map.put("REDFLAG","1");
-        list.add(map);
-        return list;
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("alertkey",alertkey);
+        Map report = null;
+        try {
+            report = SoapUtil.sendReport("FXYJ10018","812",parmMap);
+        } catch (Exception e) {
+            throw new BizException("协查任务基本信息查询报错！"+e.getMessage());
+        }
+        return report;
     }
 
     @Override
     public Object updateDealRecords(UpdateDealRecordsDo updateDealRecordsDo) {
-        String status = "0";
-        return status;
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("invtkey",updateDealRecordsDo.getInvtkey());
+        parmMap.put("topic",updateDealRecordsDo.getTopic());
+        parmMap.put("creator",updateDealRecordsDo.getCreator());
+        parmMap.put("beinvted",updateDealRecordsDo.getBeinvted());
+        parmMap.put("verdict",updateDealRecordsDo.getVerdict());
+        parmMap.put("processdes",updateDealRecordsDo.getProcessdes());
+        Map report = null;
+        try {
+            report = SoapUtil.sendReport("FXYJ10019","812",parmMap);
+        } catch (Exception e) {
+            throw new BizException("处理记录修改报错！"+e.getMessage());
+        }
+        return report;
     }
 
     @Override
     public Object deleteDealRecords(String invtkey) {
-        String status = "0";
-        return status;
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("invtkey",invtkey);
+        Map report = null;
+        try {
+            report = SoapUtil.sendReport("FXYJ10020","812",parmMap);
+        } catch (Exception e) {
+            throw new BizException("处理记录删除报错！"+e.getMessage());
+        }
+        return report;
     }
 
     @Override
     public Object submitTasks(SubmitTasksDo submitTasksDo) {
-        String status = "0";
-        return status;
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("taskkey",submitTasksDo.getTaskkey());
+        parmMap.put("dealflag",submitTasksDo.getDealflag());
+        parmMap.put("wpuser",submitTasksDo.getWpuser());
+        parmMap.put("filetime",submitTasksDo.getFiletime());
+        Map report = null;
+        try {
+            report = SoapUtil.sendReport("FXYJ10021","812",parmMap);
+        } catch (Exception e) {
+            throw new BizException("协查组任务调查提交报错！"+e.getMessage());
+        }
+        return report;
     }
 
     @Override
     public Object getT69AlertList(String userNo) {
-        List<Map<String,Object>> list = new ArrayList<>();
-        Map<String,Object> map = new HashMap<>();
-        map.put("ALERTKEY","8U9jsjai9dha8w");
-        map.put("RULEKEY","w344re55");
-        map.put("ORGANKEY","测试");
-        map.put("ALERTDESC","2020-06-30");
-        list.add(map);
-        return list;
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("userNo",userNo);
+        Map report = null;
+        try {
+            report = SoapUtil.sendReport("FXYJ10022","812",parmMap);
+        } catch (Exception e) {
+            throw new BizException("预警发起与识别数据列表报错！"+e.getMessage());
+        }
+        return report;
     }
 
     @Override
     public Object getReplyDataList(String userNo) {
-        List<Map<String,Object>> list = new ArrayList<>();
-        Map<String,Object> map = new HashMap<>();
-        map.put("ALERTKEY","Hydwq867Gd");
-        map.put("RULEKEY","121wdew1");
-        map.put("RISKLEV_DISP","1111");
-        map.put("DATEDT","2020-06-30 10:50:20");
-        map.put("ALERTDT","2020-06-30 10:50:20");
-        map.put("ORGANKEY_DISP","ceshi");
-        list.add(map);
-        return list;
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("userNo",userNo);
+        Map report = null;
+        try {
+            report = SoapUtil.sendReport("FXYJ10023","812",parmMap);
+        } catch (Exception e) {
+            throw new BizException("已回复协查数据列表报错！"+e.getMessage());
+        }
+        return report;
     }
 
     @Override
     public Object getNotReplyLists(String userNo) {
-        List<Map<String,Object>> list = new ArrayList<>();
-        Map<String,Object> map = new HashMap<>();
-        map.put("ALERTKEY","GJ990Hd");
-        map.put("RULEKEY","12etrtSDF");
-        map.put("RISKLEV_DISP","1");
-        map.put("DATEDT","2020-06-30");
-        map.put("ALERTDT","2020-06-30");
-        map.put("ORGANKEY_DISP","测试");
-        list.add(map);
-        return list;
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("userNo",userNo);
+        Map report = null;
+        try {
+            report = SoapUtil.sendReport("FXYJ10024","812",parmMap);
+        } catch (Exception e) {
+            throw new BizException("未回复协查数据列表报错！"+e.getMessage());
+        }
+        return report;
+    }
+
+    @Override
+    public Object returnAlerts(String alertkey) {
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("alertkey",alertkey);
+        Map report = null;
+        try {
+            report = SoapUtil.sendReport("FXYJ10012","812",parmMap);
+        } catch (Exception e) {
+            throw new BizException("已回复协查任务预警任务基本信息查询报错！"+e.getMessage());
+        }
+        return report;
+    }
+
+    @Override
+    public Object returnReplyLists(String taskkey) {
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("taskkey",taskkey);
+        Map report = null;
+        try {
+            report = SoapUtil.sendReport("FXYJ10013","812",parmMap);
+        } catch (Exception e) {
+            throw new BizException("已回复协查组任务查看详情数据查询（有、无调查记录）报错！"+e.getMessage());
+        }
+        return report;
+    }
+
+    @Override
+    public Object getAlertLogLists(String alertkey) {
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("alertkey",alertkey);
+        Map report = null;
+        try {
+            report = SoapUtil.sendReport("FXYJ10014","812",parmMap);
+        } catch (Exception e) {
+            throw new BizException("查看预警任务日志信息查询报错！"+e.getMessage());
+        }
+        return report;
+    }
+
+    @Override
+    public Object getTplakeyLists(String tplakey) {
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("tplakey",tplakey);
+        Map report = null;
+        try {
+            report = SoapUtil.sendReport("FXYJ10015","812",parmMap);
+        } catch (Exception e) {
+            throw new BizException("查看规则信息查询报错！"+e.getMessage());
+        }
+        return report;
+    }
+
+    @Override
+    public Object returnNotReplyLists(String taskkey) {
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("taskkey",taskkey);
+        Map report = null;
+        try {
+            report = SoapUtil.sendReport("FXYJ10016","812",parmMap);
+        } catch (Exception e) {
+            throw new BizException("未回复协查组任务查看详情数据查询（有、无调查记录）报错！"+e.getMessage());
+        }
+        return report;
     }
 }

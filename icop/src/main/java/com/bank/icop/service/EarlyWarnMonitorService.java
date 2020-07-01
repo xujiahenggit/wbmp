@@ -38,4 +38,14 @@ public interface EarlyWarnMonitorService {
     Object getReplyDataList(String userNo);
 
     Object getNotReplyLists(String userNo);
+
+    Object returnAlerts(String alertkey);
+
+    Object returnReplyLists(String taskkey);
+
+    Object getAlertLogLists(String alertkey);
+
+    Object getTplakeyLists(String tplakey);
+
+    Object returnNotReplyLists(String taskkey);
 }

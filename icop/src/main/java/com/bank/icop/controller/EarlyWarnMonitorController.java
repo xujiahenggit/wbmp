@@ -156,4 +156,40 @@ public class EarlyWarnMonitorController {
     public Object getNotReplyLists(@PathVariable("userNo") String userNo){
         return earlyWarnMonitorService.getNotReplyLists(userNo);
     }
+
+
+    @ApiOperation("已回复协查任务预警任务基本信息查询接口")
+    @GetMapping("/returnAlerts/{alertkey}")
+    @ApiImplicitParam(name = "alertkey",value = "预警编号",required = true,paramType = "path")
+    public Object returnAlerts(@PathVariable("alertkey") String alertkey){
+        return earlyWarnMonitorService.returnAlerts(alertkey);
+    }
+
+    @ApiOperation("已回复协查组任务查看详情数据查询接口（有、无调查记录）")
+    @GetMapping("/returnReplyLists/{taskkey}")
+    @ApiImplicitParam(name = "taskkey",value = "任务编号",required = true,paramType = "path")
+    public Object returnReplyLists(@PathVariable("taskkey") String taskkey){
+        return earlyWarnMonitorService.returnReplyLists(taskkey);
+    }
+
+    @ApiOperation("查看预警任务日志信息查询接口")
+    @GetMapping("/getAlertLogLists/{alertkey}")
+    @ApiImplicitParam(name = "alertkey",value = "预警编号",required = true,paramType = "path")
+    public Object getAlertLogLists(@PathVariable("alertkey") String alertkey){
+        return earlyWarnMonitorService.getAlertLogLists(alertkey);
+    }
+
+    @ApiOperation("查看规则信息查询接口")
+    @GetMapping("/getTplakeyLists/{tplakey}")
+    @ApiImplicitParam(name = "tplakey",value = "主键",required = true,paramType = "path")
+    public Object getTplakeyLists(@PathVariable("tplakey") String tplakey){
+        return earlyWarnMonitorService.getTplakeyLists(tplakey);
+    }
+
+    @ApiOperation("未回复协查组任务查看详情数据查询接口（有、无调查记录）")
+    @GetMapping("/returnNotReplyLists/{taskkey}")
+    @ApiImplicitParam(name = "taskkey",value = "主键",required = true,paramType = "path")
+    public Object returnNotReplyLists(@PathVariable("taskkey") String taskkey){
+        return earlyWarnMonitorService.returnNotReplyLists(taskkey);
+    }
 }
