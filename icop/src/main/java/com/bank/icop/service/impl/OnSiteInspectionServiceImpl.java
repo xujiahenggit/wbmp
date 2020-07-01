@@ -1,7 +1,12 @@
 package com.bank.icop.service.impl;
 
-import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.util.StrUtil;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+
 import com.alibaba.fastjson.JSONObject;
 import com.bank.core.entity.BizException;
 import com.bank.icop.dto.CheckProblemDTO;
@@ -11,12 +16,10 @@ import com.bank.icop.vo.ApproveLogVO;
 import com.bank.icop.vo.CheckAccessoryVO;
 import com.bank.icop.vo.HandledRectifyInfoVO;
 import com.bank.icop.vo.HandledRectifyVO;
-import org.springframework.stereotype.Service;
+import com.bank.icop.vo.OnSiteInspectionTaskVO;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 
 /**
  * SOAP调用第三方接口 现场检查实现类
@@ -28,14 +31,29 @@ import java.util.Map;
 public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
 
     @Override
-    public List<Map> inspectionTaskList(String userId) {
+    public List<OnSiteInspectionTaskVO> inspectionTaskList(String userId) {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("userNo", userId);//4095
-        return getIcopTagList(parmMap,
-                "FXYJ11001",
-                "获取运营检查任务列表",
-                1,
-                "返回状态  -1:参数为空 ,  0:用户不存在");
+
+        Map returnData = getReport(parmMap, "FXYJ11001", "获取运营检查任务列表", 1, "返回状态  -1:参数为空 ,  0:用户不存在");
+        if (returnData.get("List") == null || returnData.get("List") instanceof String) {
+            return new ArrayList<OnSiteInspectionTaskVO>();
+        }
+        List<Map<String, String>> taskList = (List<Map<String, String>>) returnData.get("List");
+        List<OnSiteInspectionTaskVO> result = new ArrayList<>();
+        for (int i = 0; i < taskList.size(); i++) {
+            Map<String, String> task = taskList.get(i);
+            OnSiteInspectionTaskVO taskVO = new OnSiteInspectionTaskVO();
+
+            taskVO.setTaskId(task.get("TASKPK"));
+            taskVO.setTaskYear(task.get("TASKYEAR"));
+            taskVO.setTaskName(task.get("TASKNAME"));
+            taskVO.setTaskStartDate(task.get("TASKSTARTDATE"));
+            taskVO.setTaskEndDate(task.get("TASKENDDATE"));
+            taskVO.setNumber(task.get("NUMBER"));
+            result.add(taskVO);
+        }
+        return result;
     }
 
     @Override
@@ -111,7 +129,6 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         }
         return value;
     }
-
 
     @Override
     public Object checkTaskSubmit(String currentUserId, String pk) {

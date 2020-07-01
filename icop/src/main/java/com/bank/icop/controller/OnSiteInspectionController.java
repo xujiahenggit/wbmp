@@ -1,20 +1,30 @@
 package com.bank.icop.controller;
 
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.bank.core.entity.TokenUserInfo;
 import com.bank.icop.dto.CheckProblemDTO;
 import com.bank.icop.service.OnSiteInspectionService;
 import com.bank.icop.vo.HandledRectifyInfoVO;
 import com.bank.icop.vo.HandledRectifyVO;
+import com.bank.icop.vo.OnSiteInspectionTaskVO;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 现场检查接口Controller
@@ -43,7 +53,7 @@ public class OnSiteInspectionController extends BaseIcopController {
 
     @ApiOperation("获取现场检查任务列表")
     @GetMapping("/inspectionTaskList")
-    public List<Map> inspectionTaskList() {
+    public List<OnSiteInspectionTaskVO> inspectionTaskList() {
         TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
         return onSiteInspectionService.inspectionTaskList(tokenUserInfo.getUserId());
     }
