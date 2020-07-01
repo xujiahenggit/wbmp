@@ -60,7 +60,7 @@
 
 
     <!-- 按条件统计机构某天的客群量-->
-    <select id="getOrgCustTypeNum" resultType="java.lang.Integer">
+    <select id="getOrgCustTypeNum" resultType="java.lang.String">
         SELECT
             INDEX_VAL
         FROM
