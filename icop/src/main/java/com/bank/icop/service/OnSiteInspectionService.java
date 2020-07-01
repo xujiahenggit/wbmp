@@ -1,9 +1,8 @@
 package com.bank.icop.service;
 
 
-import com.bank.icop.vo.OnSiteInspectionTaskVO;
-
 import java.util.List;
+import java.util.Map;
 
 /**
  * SOAP调用第三方接口日志 服务类
@@ -14,5 +13,5 @@ import java.util.List;
 public interface OnSiteInspectionService {
 
 
-    List<OnSiteInspectionTaskVO> inspectionTaskList(String userId);
+    List<Map> inspectionTaskList(String userId);
 }

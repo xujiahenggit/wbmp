@@ -57,10 +57,7 @@ public class HappyServiceImpl implements HappyService {
     public List<Map> starStatus(HappyParam param) {
         checkAndSetDefaultParam(param);
         List<HashMap<Object, Object>> dict = ListUtil.toList(MapUtil.of(new Object[][]{
-                {"star", "一星级"},
-                {"count", 0}
-        }), MapUtil.of(new Object[][]{
-                {"star", "二星级"},
+                {"star", "无星"},
                 {"count", 0}
         }), MapUtil.of(new Object[][]{
                 {"star", "三星级"},
@@ -73,7 +70,27 @@ public class HappyServiceImpl implements HappyService {
                 {"count", 0}
         }));
         List<Map<String, Integer>> data = happyDao.starStatus(param);
+        combineData(data);
         return (List<Map>) fillDictData(dict, data, "star", "count");
+    }
+
+    private void combineData(List<Map<String, Integer>> data) {
+        Integer one = getStar(data, "一星级");
+        Integer two = getStar(data, "二星级");
+        Map<String, Integer> map=new HashMap();
+        map.put("无星", one+two);
+        data.add(map);
+    }
+
+    private Integer getStar(List<Map<String, Integer>> data, String star) {
+        for (Map<String, Integer> datum : data) {
+            if (datum.get("star").equals(star)) {
+                data.remove(star);
+                return datum.get("count");
+            }
+        }
+        return 0;
+
     }
 
     private List<? extends Map> fillDictData(List<? extends Map> dict, List<? extends Map> data, String type, String count) {
@@ -164,16 +181,16 @@ public class HappyServiceImpl implements HappyService {
         //上一季度的值
         int lastQuarterYear = Integer.valueOf(yearAndQuarter.substring(0, 4));
         int lastQuarter = Integer.valueOf(yearAndQuarter.substring(4));
-        List<StatisticsDTO> quarterData = happyDao.checkStatusStatisticsQuarter(isAdmin,param);
+        List<StatisticsDTO> quarterData = happyDao.checkStatusStatisticsQuarter(isAdmin, param);
 
         int YearScore = 0;
         if (quarterData.size() > 0) {
-            YearScore = getYearScore(quarterData, queryYear,quarter, queryYear - 1, quarter);
+            YearScore = getYearScore(quarterData, queryYear, quarter, queryYear - 1, quarter);
         }
         map.put("year", getAverage(YearScore, count));
 
         YearScore = 0;
-        YearScore = getYearScore(quarterData, queryYear,quarter, lastQuarterYear, lastQuarter);
+        YearScore = getYearScore(quarterData, queryYear, quarter, lastQuarterYear, lastQuarter);
         map.put("quarter", getAverage(YearScore, count));
         return map;
     }
