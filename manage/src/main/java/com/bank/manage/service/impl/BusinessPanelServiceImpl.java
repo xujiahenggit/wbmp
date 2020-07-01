@@ -215,13 +215,16 @@ public class BusinessPanelServiceImpl implements BusinessPanelService {
              }
           //射频读卡器状态
           if(wbmpAtmpBasicInfoDO.getRfcardReader()!=null && !"".equals(wbmpAtmpBasicInfoDO.getRfcardReader())){
-              if(wbmpAtmpBasicInfoDO.getRfcardReader().equals(WbmpConstFile.DEVICE_RUN_OK)){ //OK
+              if(wbmpAtmpBasicInfoDO.getRfcardReader().equals("-1")){
+                        //不做处理
+              }else if(wbmpAtmpBasicInfoDO.getRfcardReader().equals(WbmpConstFile.DEVICE_RUN_OK)){ //OK
                     if(cardReader.equals(WbmpConstFile.DEVICE_RUN_ERROR)){
                         cardReader = WbmpConstFile.DEVICE_RUN_ERROR;  //ok+error= error
                     }else{
                         cardReader = WbmpConstFile.DEVICE_RUN_SUCESS; //ok+无效=ok,ok+ok=ok
                     }
-              }else if(wbmpAtmpBasicInfoDO.getRfcardReader().equals(WbmpConstFile.DEVICE_RUN_ERROR)){
+              }else {
+                  //不等于成功【OK】，不等于-1，其余的状态为故障，
                   cardReader = WbmpConstFile.DEVICE_RUN_ERROR;
               }
           }
@@ -247,20 +250,32 @@ public class BusinessPanelServiceImpl implements BusinessPanelService {
               }else if(wbmpAtmpBasicInfoDO.getJournalPrinter().equals(WbmpConstFile.DEVICE_RUN_OK)){
                   //等于ok表示模块正常
                   printer = WbmpConstFile.DEVICE_RUN_SUCESS;
-              }else{
-                  //不为空并且不等于-1.不等于ok，则为故障
+              }else if(wbmpAtmpBasicInfoDO.getJournalPrinter().equals(WbmpConstFile.CASH_PRINTER_JRNPEPT)){
+                  //JRNPEPT-缺纸
+                  printer = WbmpConstFile.CASH_PRINTER_JRNPEPT_NAME;
+              }else if(wbmpAtmpBasicInfoDO.getJournalPrinter().equals(WbmpConstFile.CASH_PRINTER_JRNPJAM)){
+                  //JRNPJAM-卡纸
+                  printer = WbmpConstFile.CASH_PRINTER_DOCPJAM_NAME;
+              }else {
+                  //则为故障
                   printer = WbmpConstFile.DEVICE_RUN_ERROR;
               }
           }
           //凭条打印机状态
           if(wbmpAtmpBasicInfoDO.getReceiptPrinter()!=null && !"".equals(wbmpAtmpBasicInfoDO.getReceiptPrinter())){
-              if(wbmpAtmpBasicInfoDO.getReceiptPrinter().equals(WbmpConstFile.DEVICE_RUN_OK)){ //OK
+              if(wbmpAtmpBasicInfoDO.getReceiptPrinter().equals("-1")){
+                  //-1表示无效，不做处理
+              }else if(wbmpAtmpBasicInfoDO.getReceiptPrinter().equals(WbmpConstFile.DEVICE_RUN_OK)){ //OK
                   if(printer.equals(WbmpConstFile.DEVICE_RUN_ERROR)){
                       printer = WbmpConstFile.DEVICE_RUN_ERROR;  //ok+error= error
-                  }else{
-                      printer = WbmpConstFile.DEVICE_RUN_SUCESS; //ok+无效=ok,ok+ok=ok
                   }
-              }else if(wbmpAtmpBasicInfoDO.getRfcardReader().equals(WbmpConstFile.DEVICE_RUN_ERROR)){
+              }else if(wbmpAtmpBasicInfoDO.getReceiptPrinter().equals(WbmpConstFile.CASH_PRINTER_RECPEPT)){
+                  //RECPEPT--缺纸
+                  printer = WbmpConstFile.CASH_PRINTER_RECPEPT_NAME;
+              }else if(wbmpAtmpBasicInfoDO.getReceiptPrinter().equals(WbmpConstFile.CASH_PRINTER_RECPJAM)){
+                  //RECPJAM--卡纸
+                  printer = WbmpConstFile.CASH_PRINTER_DOCPJAM_NAME;
+              }else{
                   printer = WbmpConstFile.DEVICE_RUN_ERROR;
               }
           }
@@ -269,10 +284,14 @@ public class BusinessPanelServiceImpl implements BusinessPanelService {
               if(wbmpAtmpBasicInfoDO.getStatementPrinter().equals(WbmpConstFile.DEVICE_RUN_OK)){ //OK
                   if(printer.equals(WbmpConstFile.DEVICE_RUN_ERROR)){
                       printer = WbmpConstFile.DEVICE_RUN_ERROR;  //ok+error= error
-                  }else{
-                      printer = WbmpConstFile.DEVICE_RUN_SUCESS; //ok+无效=ok,ok+ok=ok
                   }
-              }else if(wbmpAtmpBasicInfoDO.getStatementPrinter().equals(WbmpConstFile.DEVICE_RUN_ERROR)){
+              }else if(wbmpAtmpBasicInfoDO.getStatementPrinter().equals(WbmpConstFile.CASH_PRINTER_DOCPEPT)){
+                  //DOCPEPT--缺纸
+                  printer = WbmpConstFile.CASH_PRINTER_DOCPEPT_NAME;
+              }else if(wbmpAtmpBasicInfoDO.getStatementPrinter().equals(WbmpConstFile.CASH_PRINTER_DOCPJAM)){
+                  //DOCPJAM--卡纸
+                  printer = WbmpConstFile.CASH_PRINTER_DOCPJAM_NAME;
+              }else{
                   printer = WbmpConstFile.DEVICE_RUN_ERROR;
               }
           }
@@ -281,11 +300,11 @@ public class BusinessPanelServiceImpl implements BusinessPanelService {
               if(wbmpAtmpBasicInfoDO.getPassbookPrinter().equals(WbmpConstFile.DEVICE_RUN_OK)){ //OK
                   if(printer.equals(WbmpConstFile.DEVICE_RUN_ERROR)){
                       printer = WbmpConstFile.DEVICE_RUN_ERROR;  //ok+error= error
-                  }else{
-                      printer = WbmpConstFile.DEVICE_RUN_SUCESS; //ok+无效=ok,ok+ok=ok
                   }
-              }else if(wbmpAtmpBasicInfoDO.getPassbookPrinter().equals(WbmpConstFile.DEVICE_RUN_ERROR)){
-                  printer = WbmpConstFile.DEVICE_RUN_ERROR;
+              }else if(wbmpAtmpBasicInfoDO.getPassbookPrinter().equals("-1")){
+
+              }else{
+                  printer = WbmpConstFile.DEVICE_RUN_ERROR;  //ok+error= error
               }
           }
           deviceDetailInfo.setPrinter(printer);

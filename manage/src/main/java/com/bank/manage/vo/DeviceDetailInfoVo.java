@@ -41,7 +41,7 @@ public class DeviceDetailInfoVo {
     @ApiModelProperty(value = "存款模块状态 故障,正常,无效 ，钞少，钞箱满  ")
     private String  cashAcceptor;
 
-    @ApiModelProperty(value = "凭条打印机状态  故障,正常,无效 ")
+    @ApiModelProperty(value = "凭条打印机状态  故障,正常,无效 缺纸,卡纸")
     private String  printer;
 
 //    @ApiModelProperty(value = "对帐单打印机状态  DOC-对帐单打印机故障，DOCPEPT-缺对账单纸，DOCPJAM-对帐单打印机卡纸 ")
