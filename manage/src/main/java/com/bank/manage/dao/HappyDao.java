@@ -35,7 +35,7 @@ public interface HappyDao {
 
     List<ExamineDataTempAdminDO> deductStatus(HappyParam param);
 
-    List<Map<String, Integer>> starStatus(HappyParam param);
+    List<Map<String, Object>> starStatus(HappyParam param);
 
     List<Map<String, Integer>> serviceLevelStatus(HappyParam param);
 

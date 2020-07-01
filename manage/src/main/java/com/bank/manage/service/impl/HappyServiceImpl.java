@@ -69,24 +69,25 @@ public class HappyServiceImpl implements HappyService {
                 {"star", "五星级"},
                 {"count", 0}
         }));
-        List<Map<String, Integer>> data = happyDao.starStatus(param);
+        List<Map<String, Object>> data = happyDao.starStatus(param);
         combineData(data);
         return (List<Map>) fillDictData(dict, data, "star", "count");
     }
 
-    private void combineData(List<Map<String, Integer>> data) {
+    private void combineData(List<Map<String, Object>> data) {
         Integer one = getStar(data, "一星级");
         Integer two = getStar(data, "二星级");
-        Map<String, Integer> map=new HashMap();
-        map.put("无星", one+two);
+        Map<String, Object> map=new HashMap();
+        map.put("star", "无星");
+        map.put("count", one+two);
         data.add(map);
     }
 
-    private Integer getStar(List<Map<String, Integer>> data, String star) {
-        for (Map<String, Integer> datum : data) {
+    private Integer getStar(List<Map<String, Object>> data, String star) {
+        for (Map<String, Object> datum : data) {
             if (datum.get("star").equals(star)) {
                 data.remove(star);
-                return datum.get("count");
+                return Integer.valueOf(datum.get("count").toString());
             }
         }
         return 0;
