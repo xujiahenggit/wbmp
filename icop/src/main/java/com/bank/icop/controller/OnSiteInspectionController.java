@@ -69,7 +69,6 @@ public class OnSiteInspectionController extends BaseIcopController {
         String userId = getCurrentUserId(request);
         return onSiteInspectionService.taskItemList(userId,taskId,createOrgId,executeOrgId,taskName,taskStartDate,taskEndDate);
     }
-
     @ApiOperation("检查任务执行展示")
     @GetMapping("/registerCheck")
     @ApiImplicitParams({
@@ -102,6 +101,16 @@ public class OnSiteInspectionController extends BaseIcopController {
     }
 
 
+    @ApiOperation("检查问题保存")
+    @GetMapping("/problemSave")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "jsonstr", value = "任务编号", required = true, defaultValue = "", dataType = "String")
+    })
+    public Object problemSave(String jsonstr) {
+        return onSiteInspectionService.problemSave(getCurrentUserId(request),jsonstr);
+    }
+
+
     @ApiOperation("检查任务的提交")
     @GetMapping("/checkTaskSubmit/{pk}")
     @ApiImplicitParams({
@@ -110,6 +119,181 @@ public class OnSiteInspectionController extends BaseIcopController {
     public Object checkTaskSubmit(@PathVariable("pk") String pk) {
         return onSiteInspectionService.checkTaskSubmit(getCurrentUserId(request),pk);
     }
+
+    @ApiOperation("检查任务查看列表")
+    @PostMapping("/taskList")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "runorgankey", value = "执行机构", required = false, defaultValue = "", dataType = "String"),
+            @ApiImplicitParam(name = "taskName", value = "任务名称", required = false, defaultValue = "", dataType = "String"),
+            @ApiImplicitParam(name = "taskStartDate", value = "任务开始时间", required = false, defaultValue = "", dataType = "String"),
+            @ApiImplicitParam(name = "taskEndDate", value = "任务结束时间", required = false, defaultValue = "", dataType = "String")
+    })
+    public List<Map> taskList(@RequestParam(value = "runorgankey", required = false) String runorgankey, @RequestParam(value = "taskName", required = false) String taskName, @RequestParam(value = "taskStartDate", required = false) String taskStartDate, @RequestParam(value = "taskEndDate", required = false) String taskEndDate) {
+        String userId = getCurrentUserId(request);
+        return onSiteInspectionService.taskList(userId,runorgankey,taskName,taskStartDate,taskEndDate);
+    }
+
+    @ApiOperation("检查内容详细查看")
+    @GetMapping("/checkDetail/{taskpk}")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "taskpk", value = "任务编号", required = true, dataType = "String")
+    })
+    public Object checkDetail(@PathVariable("taskpk") String taskpk) {
+        String userId = getCurrentUserId(request);
+        return onSiteInspectionService.checkDetail(userId,taskpk);
+    }
+
+    @ApiOperation("检查问题查看列表")
+    @GetMapping("/problemList/{taskpk}")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "taskpk", value = "任务编号", required = true, dataType = "String")
+    })
+    public Object problemList(@PathVariable("taskpk") String taskpk) {
+        String userId = getCurrentUserId(request);
+        return onSiteInspectionService.problemList(userId,taskpk);
+    }
+
+    @ApiOperation("检查问题审核列表")
+    @GetMapping("/checkList")
+    public Object checkList() {
+        String userId = getCurrentUserId(request);
+        return onSiteInspectionService.checkList(userId);
+    }
+    @ApiOperation("检查内容审核列表")
+    @GetMapping("/contentList/{taskpk}")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "taskpk", value = "任务编号", required = true, dataType = "String")
+    })
+    public Object contentList(@PathVariable("taskpk") String taskpk) {
+        String userId = getCurrentUserId(request);
+        return onSiteInspectionService.contentList(userId,taskpk);
+    }
+
+    @ApiOperation("检查内容详细审核")
+    @GetMapping("/contentCheck/{pk}")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pk", value = "检查key", required = true, dataType = "String")
+    })
+    public Object contentCheck(@PathVariable("pk") String pk) {
+        return onSiteInspectionService.contentCheck(pk);
+    }
+    @ApiOperation("问题查看")
+    @GetMapping("/problemView/{sunpointkey}/{qpk}")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "sunpointkey", value = "要点KEY", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "qpk", value = "问题PK", required = true, dataType = "String")
+    })
+    public Object problemView(@PathVariable("sunpointkey") String sunpointkey,@PathVariable("qpk") String qpk) {
+        return onSiteInspectionService.problemView(sunpointkey,qpk);
+    }
+
+    @ApiOperation("要点查看")
+    @GetMapping("/coreCheck/{key}")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "key", value = "要点key", required = true, dataType = "String")
+    })
+    public Object coreCheck(@PathVariable("key") String key) {
+        return onSiteInspectionService.coreCheck(key);
+    }
+
+    @ApiOperation("检查子项审核提交")
+    @PostMapping("/childCheck")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "taskpk", value = "任务ID", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "feedback", value = "反馈，反馈 0不同意 1同意", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "feedbackdt", value = "反馈期限", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "feedbackdes", value = "反馈结果", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "epk", value = "要点key", required = true, dataType = "String")
+    })
+    public Object childCheck(String taskpk,String feedback,String feedbackdt,String feedbackdes,String epk) {
+        return onSiteInspectionService.childCheck(getCurrentUserId(request),taskpk,feedback,feedbackdt,feedbackdes,epk);
+    }
+
+    @ApiOperation("问题待整改列表")
+    @GetMapping("/problemUpdateList")
+    public Object problemUpdateList() {
+        String userId = getCurrentUserId(request);
+        return onSiteInspectionService.problemUpdateList(userId);
+    }
+
+
+    @ApiOperation("整改待审核列表")
+    @GetMapping("/updateCheckList")
+    public Object updateCheckList() {
+        String userId = getCurrentUserId(request);
+        return onSiteInspectionService.updateCheckList(userId);
+    }
+
+    @ApiOperation("问题整改展示界面")
+    @GetMapping("/problemUI/{key}")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "key", value = "整改PK", required = true, dataType = "String")
+    })
+    public Object problemUI(@PathVariable("key") String key) {
+        return onSiteInspectionService.problemUI(getCurrentUserId(request),key);
+    }
+
+
+    @ApiOperation("整改审批展示")
+    @GetMapping("/feedbackView/{key}")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "cpk", value = "整改PK", required = false, dataType = "String")
+    })
+    public Object feedbackView(@PathVariable("cpk") String cpk) {
+        return onSiteInspectionService.feedbackView(getCurrentUserId(request),cpk);
+    }
+
+
+    @ApiOperation("整改反馈说明保存")
+    @PostMapping("/feedbackSave")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "key", value = "整改PK", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "feedbackdes", value = "整改反馈说明", required = true, dataType = "String")
+    })
+    public Object feedbackSave(String key,String feedbackdes) {
+        return onSiteInspectionService.feedbackSave(getCurrentUserId(request),key,feedbackdes);
+    }
+
+    @ApiOperation("整改提交")
+    @PostMapping("/feedbackSubmit")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "cpk", value = "整改PK", required = true, dataType = "String")
+    })
+    public Object feedbackSubmit(String cpk) {
+        return onSiteInspectionService.feedbackSubmit(getCurrentUserId(request),cpk);
+    }
+
+    @ApiOperation("整改审批提交")
+    @PostMapping("/feedbackCheckSubmit")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "cpk", value = "整改PK", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "decision", value = "决策方式", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "approvelog", value = "审批意见", required = true, dataType = "String")
+    })
+    public Object feedbackCheckSubmit(String cpk,String decision,String approvelog) {
+        return onSiteInspectionService.feedbackCheckSubmit(getCurrentUserId(request),cpk,decision,approvelog);
+    }
+
+    @ApiOperation("检查任务详细查看")
+    @GetMapping("/checkTaskDetail")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "taskpk", value = "任务编号", required = true, dataType = "String")
+    })
+    public Object checkTaskDetail(String taskpk) {
+        return onSiteInspectionService.checkTaskDetail(getCurrentUserId(request),taskpk);
+    }
+
+
+    @ApiOperation("问题详细查看")
+    @GetMapping("/problemDetail")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pk", value = "问题主键", required = true, dataType = "String")
+    })
+    public Object problemDetail(String pk) {
+        return onSiteInspectionService.problemDetail(pk);
+    }
+
+/*===============================================================================================================================*/
 
 
     @ApiOperation("现场检查任务-撤回检查")

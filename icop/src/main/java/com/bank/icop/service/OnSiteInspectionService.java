@@ -24,4 +24,42 @@ public interface OnSiteInspectionService {
     Object problemEdit(String pk, String taskpk);
 
     Object checkTaskSubmit(String currentUserId, String pk);
+
+    List<Map> taskList(String userId,String runorgankey, String taskName, String taskStartDate, String taskEndDate);
+
+    Object checkDetail(String userId, String taskpk);
+
+    Object problemList(String userId, String taskpk);
+
+    Object checkList(String userId);
+
+    Object contentList(String userId, String taskpk);
+
+    Object contentCheck(String pk);
+
+    Object problemView(String sunpointkey, String qpk);
+
+    Object coreCheck(String key);
+
+    Object problemUpdateList(String userId);
+
+    Object problemUI(String currentUserId, String key);
+
+    Object feedbackSave(String currentUserId, String key, String feedbackdes);
+
+    Object feedbackSubmit(String currentUserId, String cpk);
+
+    Object childCheck(String currentUserId, String taskpk, String feedback, String feedbackdt, String feedbackdes, String epk);
+
+    Object updateCheckList(String userId);
+
+    Object feedbackView(String currentUserId, String cpk);
+
+    Object problemSave(String currentUserId, String jsonstr);
+
+    Object feedbackCheckSubmit(String currentUserId, String cpk, String decision, String approvelog);
+
+    Object checkTaskDetail(String currentUserId, String taskpk);
+
+    Object problemDetail(String pk);
 }
