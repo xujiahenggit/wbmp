@@ -20,6 +20,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 现场检查接口Controller
@@ -49,10 +50,9 @@ public class OnSiteInspectionController extends BaseIcopController {
 
     @ApiOperation("获取现场检查任务列表")
     @GetMapping("/inspectionTaskList")
-    public List<OnSiteInspectionTaskVO> inspectionTaskList() {
+    public List<Map> inspectionTaskList() {
         TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
-        List<OnSiteInspectionTaskVO> data = onSiteInspectionService.inspectionTaskList(tokenUserInfo.getUserId());
-        return data;
+        return onSiteInspectionService.inspectionTaskList(tokenUserInfo.getUserId());
     }
 
     @ApiOperation("获取现场检查任务任务项列表")
