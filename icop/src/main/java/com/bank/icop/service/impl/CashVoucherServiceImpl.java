@@ -108,6 +108,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         Map report = null;
         try {
             report = SoapUtil.sendReport("VTMS0014",parmMap);
+            report.put("ReturnCode","00000000");
         } catch (Exception e) {
             throw new BizException("号段录入失败！"+e.getMessage());
         }
@@ -125,6 +126,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         Map report = null;
         try {
             report = SoapUtil.sendReport("VTMS0013",parmMap);
+            report.put("ReturnCode","00000000");
         } catch (Exception e) {
             throw new BizException("订单状态更新失败！"+e.getMessage());
         }
@@ -140,6 +142,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         Map report = null;
         try {
             report = SoapUtil.sendReport("VTMS0012",parmMap);
+            report.put("ReturnCode","00000000");
         } catch (Exception e) {
             throw new BizException("订单明细删除失败！"+e.getMessage());
         }
@@ -161,6 +164,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         Map report = null;
         try {
             report = SoapUtil.sendReport("VTMS0011",parmMap);
+            report.put("ReturnCode","00000000");
         } catch (Exception e) {
             throw new BizException("订单明细修改失败！"+e.getMessage());
         }
@@ -402,6 +406,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         Map report = null;
         try {
             report = SoapUtil.sendReport("VTMS0009",parmMap);
+            report.put("ReturnCode","00000000");
         } catch (Exception e) {
             throw new BizException("新建订单明细失败！"+e.getMessage());
         }
