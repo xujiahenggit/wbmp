@@ -51,7 +51,7 @@ public class OnSiteInspectionController extends BaseIcopController {
     @Resource
     OnSiteInspectionService onSiteInspectionService;
 
-    @ApiOperation("获取现场检查任务列表")
+    @ApiOperation("获取现场检查任务列表-代办")
     @GetMapping("/inspectionTaskList")
     public List<OnSiteInspectionTaskVO> inspectionTaskList() {
         TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
