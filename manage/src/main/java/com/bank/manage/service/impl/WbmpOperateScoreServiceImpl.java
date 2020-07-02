@@ -86,7 +86,10 @@ public class WbmpOperateScoreServiceImpl extends ServiceImpl<WbmpOperateScoreDao
         int atmNum = wbmpAtmpTranInfoService.getCurrentMonthAtmTranNum(orgId, date);
         int total = absNum + atmNum;
 
-        float rjywl=WbmpOperRateUtils.getTranNumAvg(wbmpCommonCalcMethodDO.getStandDayilTrafficNum(),new BigDecimal(total));
+        //日均业务量
+        //全行业务标准量
+        float qhbzywl=wbmpCommonCalcMethodDO.getStandDayilTrafficNum().floatValue();
+        float rjywl=WbmpOperRateUtils.getTranNumAvg(qhbzywl,new BigDecimal(total));
 
         //S2121赛马制（100%）
         // S21211=无纸化业务取消率(12.5%)
@@ -105,43 +108,61 @@ public class WbmpOperateScoreServiceImpl extends ServiceImpl<WbmpOperateScoreDao
         float zzft = 0;
         // S21218=自助设备可用率(12.5%)
         float zzky = 0;
+
+
+        // 无纸化占比
+        float wzhper=(wbmpCommonCalcMethodDO.getWzhPer().floatValue())/100;
+        //银企对账率占比
+        float yqper=wbmpCommonCalcMethodDO.getYqdzPer().floatValue()/100;
+        //电子对账率占比
+        float dzper=(wbmpCommonCalcMethodDO.getDzdzPer().floatValue())/100;
+        //对公账户开通率占比
+        float dgper=(wbmpCommonCalcMethodDO.getDzdzPer().floatValue())/100;
+        //企业客户线上开通率
+        float qykhper=(wbmpCommonCalcMethodDO.getQykhxsktPer().floatValue())/100;
+        //现金业务分流率占比
+        float xjper=(wbmpCommonCalcMethodDO.getXjywflPer().floatValue())/100;
+        //自助设备分摊率
+        float zzsbftl=(wbmpCommonCalcMethodDO.getZzsbywfdPer().floatValue())/100;
+        //自助设备可用率
+        float zzsbkyPer=(wbmpCommonCalcMethodDO.getZzsbkyPer().floatValue())/100;
         //赛马制
         float smz=0;
         //赛马制列表
-        List<WbmpOperateRacingIndexMDO> listRacing = wbmpOperateRacingIndexMService.getRacingList(orgId, date);
+        List<WbmpOperateRacingIndexMDO> listRacing = wbmpOperateRacingIndexMService.getRacingList(orgId, date.substring(0, 7));
 
         for (WbmpOperateRacingIndexMDO item : listRacing) {
             //无纸化业务取消率(12.5%)
             if(WbmpConstFile.SMZ_RACING_001.equals(item.getIndexNo())){
-                wzh= WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*(wbmpCommonCalcMethodDO.getWzhPer().floatValue())/100);
+                wzh= WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*wzhper);
             }
             //S21212=银企对账率(12.5%)
             if(WbmpConstFile.SMZ_RACING_002.equals(item.getIndexNo())){
-                yq=WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*(wbmpCommonCalcMethodDO.getYqdzPer().floatValue())/100);
+                yq=WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*yqper);
             }
             //电子对账率(12.5%)
             if(WbmpConstFile.SMZ_RACING_004.equals(item.getIndexNo())){
-                yq=WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*(wbmpCommonCalcMethodDO.getDzdzPer().floatValue())/100);
+                dz=WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*dzper);
             }
             //对公账户线上开户率(12.5%)
             if(WbmpConstFile.SMZ_RACING_007.equals(item.getIndexNo())){
-                yq=WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*(wbmpCommonCalcMethodDO.getDzdzPer().floatValue())/100);
+                dg=WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*dgper);
             }
             //企业客户线上开通率(12.5%)
             if(WbmpConstFile.SMZ_RACING_008.equals(item.getIndexNo())){
-                yq=WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*(wbmpCommonCalcMethodDO.getQykhxsktPer().floatValue())/100);
+                qy=WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*qykhper);
             }
             //现金业务分流率(12.5%)
             if(WbmpConstFile.SMZ_RACING_005.equals(item.getIndexNo())){
-                yq=WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*(wbmpCommonCalcMethodDO.getXjywflPer().floatValue())/100);
+                xj=WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*xjper);
             }
             // S21217=自助设备业务分担率(12.5%)
             if(WbmpConstFile.SMZ_RACING_006.equals(item.getIndexNo())){
-                yq=WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*(wbmpCommonCalcMethodDO.getZzsbywfdPer().floatValue())/100);
+                zzft=WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*zzsbftl);
             }
             //S21218=自助设备可用率(12.5%)
             if(WbmpConstFile.SMZ_RACING_002.equals(item.getIndexNo())){
-                yq=WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*(wbmpCommonCalcMethodDO.getZzsbkyPer().floatValue())/100);
+                zzky=WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*zzsbkyPer);
             }
             smz=WbmpOperRateUtils.smz(wzh,yq,dz,dg,qy,xj,zzft,zzky);
         }
@@ -152,20 +173,30 @@ public class WbmpOperateScoreServiceImpl extends ServiceImpl<WbmpOperateScoreDao
         dwfwsp=WbmpOperRateUtils.getCustomerWaitTimeAvgScore(new BigDecimal(custmerWaitTime),wbmpCommonCalcMethodDO.getStandAvgWaitTime());
 
         //运营效能  日均业务量*占比
-        float yyxn=WbmpOperRateUtils.Maht2digit(rjywl*wbmpCommonCalcMethodDO.getOperatEffectPer().floatValue()/100);
+        //运营效能占比
+        float yyxnPer=wbmpCommonCalcMethodDO.getOperatEffectPer().floatValue()/100;
+
+        float yyxn=WbmpOperRateUtils.Maht2digit(rjywl*yyxnPer);
         //赛马制
-        float smz_s=WbmpOperRateUtils.Maht2digit(smz*wbmpCommonCalcMethodDO.getSaimazhiPer().floatValue()/100);
+        //赛马制占比
+        float smzPer=wbmpCommonCalcMethodDO.getSaimazhiPer().floatValue()/100;
+        float smz_s=WbmpOperRateUtils.Maht2digit(smz*smzPer);
         //网点服务水平
-        float wdfwsp_s=WbmpOperRateUtils.Maht2digit(dwfwsp*wbmpCommonCalcMethodDO.getServiceLevelPer().floatValue()/100);
+        //网点服务水平占比
+        float wdfwspPer=wbmpCommonCalcMethodDO.getServiceLevelPer().floatValue()/100;
+        float wdfwsp_s=WbmpOperRateUtils.Maht2digit(dwfwsp*wdfwspPer);
 
 
         //网点运营视图
-        float wdyyst=WbmpOperRateUtils.Maht2digit(((yyxn+smz_s))*wbmpCommonCalcMethodDO.getOperatViewPer().floatValue()/100);
+        //占比
+        float wdyystPer=wbmpCommonCalcMethodDO.getOperatViewPer().floatValue()/100;
+        float wdyyst=WbmpOperRateUtils.Maht2digit(((yyxn+smz_s))*wdyystPer);
         //网点服务视图
-        float wdfwst=WbmpOperRateUtils.Maht2digit(wdfwsp_s*wbmpCommonCalcMethodDO.getServiceViewPer().floatValue()/100);
+        float wdfwstPer=wbmpCommonCalcMethodDO.getServiceViewPer().floatValue()/100;
+        float wdfwst=WbmpOperRateUtils.Maht2digit(wdfwsp_s*wdfwstPer);
 
         //数据不全暂时 只返回0
-        OperScore=WbmpOperRateUtils.Maht2digit((wdfwst+wdfwst));
+        OperScore=WbmpOperRateUtils.Maht2digit((wdyyst+wdfwst));
         return OperScore;
     }
 

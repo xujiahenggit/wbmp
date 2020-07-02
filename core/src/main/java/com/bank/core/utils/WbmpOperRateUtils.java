@@ -55,7 +55,10 @@ public class WbmpOperRateUtils {
         float f_outsiteAvgTime=outsiteAvgTime.floatValue();
         float f_stardTime=stardTime.floatValue()/100;
         float customerWaitTimeAvG=0;
-        customerWaitTimeAvG=100-((f_outsiteAvgTime-f_stardTime)/f_stardTime*100);
+        if(f_outsiteAvgTime>=f_stardTime){
+            return 0;
+        }
+        customerWaitTimeAvG=100-(((f_stardTime-f_outsiteAvgTime)/f_stardTime)*100);
         return Maht2digit(customerWaitTimeAvG);
     }
 
@@ -66,15 +69,15 @@ public class WbmpOperRateUtils {
      * @param stardNum 网点标准业务量
      * @return 返回值 保留2位小数
      */
-    public static float getTranNumAvg(BigDecimal outsiteTranAvgNum,BigDecimal stardNum){
+    public static float getTranNumAvg(float outsiteTranAvgNum,BigDecimal stardNum){
         // 转 float
-        float f_outsiteTranAvgNum=outsiteTranAvgNum.floatValue();
+        float f_outsiteTranAvgNum=outsiteTranAvgNum/100;
         float f_stardNum=stardNum.floatValue();
         float TranNumAvg=0;
-        if(f_outsiteTranAvgNum>f_stardNum){
+        if(f_outsiteTranAvgNum>=f_stardNum){
             TranNumAvg=100;
         }else{
-            TranNumAvg= (float) (100-(f_stardNum-f_outsiteTranAvgNum)/f_stardNum*0.01);
+            TranNumAvg= (float) (100-(f_stardNum-f_outsiteTranAvgNum)/f_stardNum*100);
         }
         return Maht2digit(TranNumAvg);
     }
@@ -110,10 +113,11 @@ public class WbmpOperRateUtils {
         float f_orgAvgMouthBal=orgAvgMouthBal.floatValue();
         float f_standAvgMouthBal=standAvgMouthBal.floatValue();
         float TranNumAvg=0;
-        if(f_orgAvgMouthBal>f_standAvgMouthBal){
+        if(f_orgAvgMouthBal>=f_standAvgMouthBal){
             TranNumAvg=100;
         }else{
-            TranNumAvg= (float) (100-(f_standAvgMouthBal-f_orgAvgMouthBal)/f_orgAvgMouthBal*100);
+            //TranNumAvg= (float) ((f_orgAvgMouthBal/f_standAvgMouthBal)*100);
+            TranNumAvg= (float) (100-(f_standAvgMouthBal-f_orgAvgMouthBal)/f_standAvgMouthBal*100);
         }
         return Maht2digit(TranNumAvg);
     }
@@ -131,10 +135,11 @@ public class WbmpOperRateUtils {
         float f_orgAumNum=orgAumNum.floatValue();
         float f_standAumNum=standAumNum.floatValue();
         float TranNumAvg=0;
-        if(f_orgAumNum>f_standAumNum){
+        if(f_orgAumNum>=f_standAumNum){
             TranNumAvg=100;
         }else{
-            TranNumAvg= (float) (100-(f_standAumNum-f_orgAumNum)/f_orgAumNum*100);
+            //TranNumAvg= (float) ((f_orgAumNum/f_standAumNum)*100);
+            TranNumAvg=(float) (100-(f_standAumNum-f_orgAumNum)/f_standAumNum*100);
         }
         return Maht2digit(TranNumAvg);
     }
@@ -150,8 +155,8 @@ public class WbmpOperRateUtils {
      */
     public static float calcOrgBal( float avgMouthBal,BigDecimal avgMouthBalPer, float orgAumNum , BigDecimal aumPer){
         // 转 float
-       float f_avgMouthBalPer = avgMouthBalPer.floatValue();
-       float f_aumPer = aumPer.floatValue();
+       float f_avgMouthBalPer = avgMouthBalPer.floatValue()/100;
+       float f_aumPer = aumPer.floatValue()/100;
        float  orgBalScore = avgMouthBal*f_avgMouthBalPer + orgAumNum*f_aumPer;
        return Maht2digit(orgBalScore);
     }
@@ -164,10 +169,11 @@ public class WbmpOperRateUtils {
         // 转 float
         float stand =standNum.floatValue();
         float TranNumAvg=0;
-        if(custNum>stand){
+        if(custNum>=stand){
             TranNumAvg=100;
         }else{
-            TranNumAvg= (float) (100-(stand-custNum)/custNum*100);
+//            TranNumAvg= (float) (custNum/stand)*100;
+            TranNumAvg=(float) (100-(stand-custNum)/stand*100);
         }
         return Maht2digit(TranNumAvg);
     }
@@ -178,10 +184,10 @@ public class WbmpOperRateUtils {
      */
     public static float calcCustScore( float normalScore,BigDecimal normalCusPer, float goldScore , BigDecimal goldCusPer,float platinumScore , BigDecimal platinumCusPer,float diamonScore , BigDecimal diamonCusPer){
         // 转 float
-        float normalCusPerV = normalCusPer.floatValue();
-        float goldCusPerV = goldCusPer.floatValue();
-        float platinumCusPerV = platinumCusPer.floatValue();
-        float diamonCusPerV = diamonCusPer.floatValue();
+        float normalCusPerV = normalCusPer.floatValue()/100;
+        float goldCusPerV = goldCusPer.floatValue()/100;
+        float platinumCusPerV = platinumCusPer.floatValue()/100;
+        float diamonCusPerV = diamonCusPer.floatValue()/100;
         float  custScore = normalScore * normalCusPerV + goldScore * goldCusPerV +platinumScore * platinumCusPerV+ diamonScore * diamonCusPerV;
         return Maht2digit(custScore);
     }
@@ -192,8 +198,8 @@ public class WbmpOperRateUtils {
      */
     public static float calcOpenRateScore( float balScore,BigDecimal bal_per, float custScore , BigDecimal cus_per){
         // 转 float
-        float balPer = bal_per.floatValue();
-        float cusPer = cus_per.floatValue();
+        float balPer = bal_per.floatValue()/100;
+        float cusPer = cus_per.floatValue()/100;
         float  score = balScore * balPer + custScore * cusPer;
         return Maht2digit(score);
     }

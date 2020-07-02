@@ -74,7 +74,7 @@ public class WbmpAbsTransinfoServiceImpl extends ServiceImpl<WbmpAbsTransinfoDao
      */
     @Override
     public int getCurrentMonthTrandNum(String orgId, String date) {
-        int tranNum=wbmpAbsTransinfoDao.getCurrentMonthTrandNum(orgId,date);
+        int tranNum=wbmpAbsTransinfoDao.getTranNumByOrgId(orgId,date);
         return tranNum;
     }
 }

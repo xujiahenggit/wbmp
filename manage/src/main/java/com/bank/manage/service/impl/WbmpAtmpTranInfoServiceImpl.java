@@ -6,12 +6,17 @@ import com.bank.manage.service.WbmpAtmpTranInfoService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+
 /**
  * @Author: Andy
  * @Date: 2020/6/17 10:30
  */
 @Service
 public class WbmpAtmpTranInfoServiceImpl extends ServiceImpl<WbmpAtmpTranInfoDao, WbmpAtmpTranInfoDO> implements WbmpAtmpTranInfoService {
+
+    @Resource
+    private WbmpAtmpTranInfoDao wbmpAtmpTranInfoDao;
 
     /**
      * 查询 当月 自助交易量
@@ -21,7 +26,7 @@ public class WbmpAtmpTranInfoServiceImpl extends ServiceImpl<WbmpAtmpTranInfoDao
      */
     @Override
     public int getCurrentMonthAtmTranNum(String orgId, String date) {
-        return 0;
+        return wbmpAtmpTranInfoDao.getTranNumByOrgId(orgId,date);
     }
 
     /**
