@@ -37,13 +37,30 @@ public class CashVoucherServiceImpl implements CashVoucherService {
             throw new BizException("库存查询失败！"+e.getMessage());
         }
         List<VoucherStockVo> list = new ArrayList<>();
-        if(CollectionUtil.isNotEmpty(report)){
-            VoucherStockVo vo = new VoucherStockVo();
-            vo.setNum((String) report.get("num"));
-            vo.setVoucherName((String)report.get("voucherName"));
-            vo.setVoucherStatus((String)report.get("voucherStatus"));
-            vo.setVoucherNo((String)report.get("voucherNo"));
-            list.add(vo);
+        Object objectData = report.get("data");
+        if(isObjectIsNotEmpty(objectData)){
+            Map<String,Object> dataMap =(Map<String,Object> )report.get("data");
+            Object data = dataMap.get("data");
+            if(data != null){//多条数据
+                List<Map<String,Object>> dataList = (List<Map<String,Object>>)data;
+                if(CollectionUtil.isNotEmpty(dataList)){
+                    for (int i = 0; i < dataList.size(); i++) {
+                        VoucherStockVo vo = new VoucherStockVo();
+                        vo.setNum((String)dataList.get(i).get("num"));
+                        vo.setVoucherName((String)dataList.get(i).get("voucherName"));
+                        vo.setVoucherStatus((String)dataList.get(i).get("voucherStatus"));
+                        vo.setVoucherNo((String)dataList.get(i).get("voucherNo"));
+                        list.add(vo);
+                    }
+                }
+            }else{
+                VoucherStockVo vo = new VoucherStockVo();
+                vo.setNum((String) report.get("num"));
+                vo.setVoucherName((String)report.get("voucherName"));
+                vo.setVoucherStatus((String)report.get("voucherStatus"));
+                vo.setVoucherNo((String)report.get("voucherNo"));
+                list.add(vo);
+            }
         }
         return list;
     }
@@ -201,12 +218,32 @@ public class CashVoucherServiceImpl implements CashVoucherService {
             throw new BizException("事项列表查询失败！"+e.getMessage());
         }
         List<MatterListVo> list=new ArrayList<>();
-        MatterListVo vo= new MatterListVo();
-        vo.setOrderType((String)report.get("orderType"));
-        vo.setContent((String)report.get("content"));
-        vo.setCreateTime((String)report.get("createTime"));
-        vo.setEventName((String)report.get("eventName"));
-        list.add(vo);
+        Object objectData = report.get("data");
+        if(isObjectIsNotEmpty(objectData)){
+            Map<String,Object> dataMap =(Map<String,Object> )report.get("data");
+            Object data = dataMap.get("data");
+            if(data != null){//多条数据
+                List<Map<String,Object>> dataList =(List<Map<String,Object>> )report.get("data");
+                if(CollectionUtil.isNotEmpty(dataList)){
+                    for (int i = 0; i < dataList.size(); i++) {
+                        MatterListVo vo= new MatterListVo();
+                        vo.setOrderType((String)dataList.get(i).get("orderType"));
+                        vo.setContent((String)dataList.get(i).get("content"));
+                        vo.setCreateTime((String)dataList.get(i).get("createTime"));
+                        vo.setEventName((String)dataList.get(i).get("eventName"));
+                        list.add(vo);
+                    }
+                }
+            }
+             else{
+                MatterListVo vo= new MatterListVo();
+                vo.setOrderType((String)report.get("orderType"));
+                vo.setContent((String)report.get("content"));
+                vo.setCreateTime((String)report.get("createTime"));
+                vo.setEventName((String)report.get("eventName"));
+                list.add(vo);
+            }
+        }
         return list;
     }
 
