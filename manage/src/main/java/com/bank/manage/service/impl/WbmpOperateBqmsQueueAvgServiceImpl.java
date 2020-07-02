@@ -37,18 +37,22 @@ public class WbmpOperateBqmsQueueAvgServiceImpl extends ServiceImpl<WbmpOperateB
         if(wbmpOperateBqmsQueueAvgDto!=null){
             BigDecimal avgAbandonedLv = new BigDecimal(wbmpOperateBqmsQueueAvgDto.getAvgAbandonedLv());
             BigDecimal abandonedLv = new BigDecimal(wbmpOperateBqmsQueueAvgDto.getAbandonedLv());
-            //平均弃号率
-            wbmpOperateBqmsQueueAvgDto.setAvgAbandonedLv(Tools.formatBigdecimal(avgAbandonedLv));
-            //弃号率
-            wbmpOperateBqmsQueueAvgDto.setAbandonedLv(Tools.formatBigdecimal(abandonedLv));
+            BigDecimal indexCnt = new BigDecimal(wbmpOperateBqmsQueueAvgDto.getIndexCnt());
 
-            wbmpOperateBqmsQueueAvgDto.setCunstomerAvg(WbmpOperRateUtils.ComputeCustomerAvg(avgAbandonedLv,wbmpOperateBqmsQueueAvgDto.getIndexCnt()));
+            //平均弃号率[保留四位小数]
+            wbmpOperateBqmsQueueAvgDto.setAvgAbandonedLv(Tools.formatBigdecimal(avgAbandonedLv,4));
+            //弃号率[保留四位小数]
+            wbmpOperateBqmsQueueAvgDto.setAbandonedLv(Tools.formatBigdecimal(abandonedLv,4));
+
+            wbmpOperateBqmsQueueAvgDto.setCunstomerAvg(WbmpOperRateUtils.ComputeCustomerAvg(avgAbandonedLv,indexCnt));
+
+            wbmpOperateBqmsQueueAvgDto.setIndexCnt(Tools.formatBigdecimal(indexCnt,1));
         }else{
             wbmpOperateBqmsQueueAvgDto=new WbmpOperateBqmsQueueAvgDto();
             wbmpOperateBqmsQueueAvgDto.setCunstomerAvg(0);
             wbmpOperateBqmsQueueAvgDto.setAbandonedLv("0");
             wbmpOperateBqmsQueueAvgDto.setAvgAbandonedLv("0");
-            wbmpOperateBqmsQueueAvgDto.setIndexCnt(new BigDecimal(0));
+            wbmpOperateBqmsQueueAvgDto.setIndexCnt("0");
         }
         return wbmpOperateBqmsQueueAvgDto;
     }

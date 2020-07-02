@@ -71,7 +71,7 @@ public class WbmpOperateRacingIndexMServiceImpl extends ServiceImpl<WbmpOperateR
         if(listItem.size()>0){
             for(HouseRaceItem item:sortItem){
 
-                float dataNumber= Tools.formatBigdecimal(wbmpOperateRacingIndexMDao.getData(orgId,date,item.getId()));
+                float dataNumber= Tools.formatFloat(wbmpOperateRacingIndexMDao.getData(orgId,date,item.getId()));
                 data.add(dataNumber);
 
             }

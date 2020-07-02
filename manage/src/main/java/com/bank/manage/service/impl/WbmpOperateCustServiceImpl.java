@@ -8,6 +8,7 @@ import com.bank.manage.dto.CustomerAvgChartsDto;
 import com.bank.manage.dto.CustomerAvgDto;
 import com.bank.manage.service.WbmpOperateCustService;
 import com.bank.manage.vo.CustomerAvgVo;
+import com.bank.manage.vo.WbmpOperateCustVo;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -40,10 +41,17 @@ public class WbmpOperateCustServiceImpl extends ServiceImpl<WbmpOperateCustDao, 
             List<String> days= DateUtils.getDateBefor15();
             List<String> formatDays=new ArrayList<>();
             List<Integer> data=new ArrayList<>();
+
+            //获取最近15天的客群指标数据
+            List<WbmpOperateCustVo> custList = wbmpOperateCustDao.findDaysCust(customerAvgVo.getOrgId(),customerAvgVo.getCustomerTypeCode());
             for (String item:days){
-                formatDays.add(DateUtils.formartToMonthDay(item));
-                Integer total=wbmpOperateCustDao.getCustomerImgByDay(customerAvgVo.getOrgId(),item,customerAvgVo.getCustomerTypeCode());
-                data.add(total);
+                int custValue = 0;
+                    for(WbmpOperateCustVo cust:custList){
+                    if(item.equals(cust.getDataDt())){
+                        custValue = cust.getCompLastd();
+                    }
+                }
+                data.add(custValue);
             }
             customerAvgDto.setCycleCode(WbmpConstFile.DATE_TYPE_DAY);
             customerAvgDto.setCycleName("日");
@@ -59,9 +67,17 @@ public class WbmpOperateCustServiceImpl extends ServiceImpl<WbmpOperateCustDao, 
             CustomerAvgChartsDto customerAvgChartsDto=new CustomerAvgChartsDto();
             List<String> months= DateUtils.getLatest12Month();
             List<Integer> data=new ArrayList<>();
+
+            //获取最近12个月的数据
+            List<WbmpOperateCustVo> custList = wbmpOperateCustDao.findMouthCust(customerAvgVo.getOrgId(),customerAvgVo.getCustomerTypeCode());
             for (String item:months){
-                int total=wbmpOperateCustDao.getCustomerImgByMonth(customerAvgVo.getOrgId(),item,customerAvgVo.getCustomerTypeCode());
-                data.add(total);
+                int custValue = 0;
+                for(WbmpOperateCustVo cust:custList){
+                    if(item.equals(cust.getDataDt())){
+                        custValue = cust.getCompLastm();
+                    }
+                }
+                data.add(custValue);
             }
             customerAvgDto.setCycleCode(WbmpConstFile.DATE_TYPE_MONTH);
             customerAvgDto.setCycleName("月");
@@ -78,9 +94,16 @@ public class WbmpOperateCustServiceImpl extends ServiceImpl<WbmpOperateCustDao, 
             CustomerAvgChartsDto customerAvgChartsDto=new CustomerAvgChartsDto();
             List<String> years= DateUtils.getLatest3Year();
             List<Integer> data=new ArrayList<>();
+            //获取最近3年的数据
+            List<WbmpOperateCustVo> custList = wbmpOperateCustDao.findYearCust(customerAvgVo.getOrgId(),customerAvgVo.getCustomerTypeCode());
             for (String item:years){
-                Integer total=wbmpOperateCustDao.getCustomerImgByYear(customerAvgVo.getOrgId(),item,customerAvgVo.getCustomerTypeCode());
-                data.add(total);
+                int custValue = 0;
+                for(WbmpOperateCustVo cust:custList){
+                    if(item.equals(cust.getDataDt())){
+                        custValue = cust.getCompLasty();
+                    }
+                }
+                data.add(custValue);
             }
             customerAvgDto.setCycleCode(WbmpConstFile.DATE_TYPE_YEAR);
             customerAvgDto.setCycleName("年");

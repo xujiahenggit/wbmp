@@ -328,11 +328,16 @@ public class Tools {
 
 
     /**
-     * Bigdecimal 保留四位小数点
+     * Bigdecimal 默认保留两位小数,保留四位小数点
      * @param bigDecimal
      */
-    public static String formatBigdecimal(BigDecimal bigDecimal){
-        DecimalFormat df = new DecimalFormat("0.0000");
+    public static String formatBigdecimal(BigDecimal bigDecimal,int type){
+        DecimalFormat df = new DecimalFormat("0.0");
+        if(type == 2){
+            df = new DecimalFormat("0.00");
+        }else if(type == 4){
+             df = new DecimalFormat("0.0000");
+        }
        return df.format(bigDecimal);
     }
 
@@ -340,11 +345,13 @@ public class Tools {
      * float 保留两位小数点
      * @param f
      */
-    public static float formatBigdecimal(float f){
+    public static float formatFloat(float f){
         DecimalFormat df = new DecimalFormat("0.00");
         BigDecimal bigDecimal = new BigDecimal(f);
         return Float.parseFloat( df.format(bigDecimal));
     }
+
+
 
     public static void main(String[] args) {
 //        DateRange rage = getThisQuarter(null);
@@ -360,7 +367,7 @@ public class Tools {
 //        System.out.println("e:"+e);
 
          float f = 0.4586412f;
-        System.out.println("ss:"+formatBigdecimal(f));
+        System.out.println("ss:"+formatFloat(f));
 
 
     }

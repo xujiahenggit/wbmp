@@ -8,8 +8,8 @@ import com.bank.core.utils.DateUtils;
 import com.bank.manage.dao.BusinessPanelDao;
 import com.bank.manage.dos.WbmpAtmpBasicInfoDO;
 import com.bank.manage.service.BusinessPanelService;
+import com.bank.manage.util.Tools;
 import com.bank.manage.vo.*;
-import org.bouncycastle.crypto.engines.AESLightEngine;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -104,23 +104,24 @@ public class BusinessPanelServiceImpl implements BusinessPanelService {
                 //Number abandoned_lv =  (Number)objectMap.get("abandoned_lv");//弃号率
                 long queue_status_3 =  (long)objectMap.get("queue_status_3");
                 long queue_seq_count =  (long)objectMap.get("queue_seq_count");
-                Number index_cnt =  (Number)objectMap.get("index_cnt");//平均等待时长-秒
-                Number avg_abandoned_lv =  (Number)objectMap.get("avg_abandoned_lv");//平均弃号率
-                //排队预计等待时长=（等待人数/窗口数）*历史平均等待时长*历史1个月平均弃号率
-                BigDecimal wait_time = null;
-                BigDecimal abandoned_lv =null;
+//                String  index_cnt =  new BigDecimal(objectMap.get("index_cnt").toString());
+                BigDecimal index_cnt = NumberUtil.div(objectMap.get("index_cnt").toString(),"60"); //平均等待时长-秒/ 60 = 平均等待时长-分钟
+                Number avg_abandoned_lv =   NumberUtil.sub(1-(double)objectMap.get("avg_abandoned_lv"));;//(1-历史1个月平均弃号率)
+                //排队预计等待时长=（等待人数/窗口数）*历史平均等待时长*(1-历史1个月平均弃号率)
+                BigDecimal wait_time = new BigDecimal(0);
+                BigDecimal abandoned_lv = new BigDecimal(0);;
                 if(queue_cnt != 0 && num != 0){
                     BigDecimal a = NumberUtil.div(String.valueOf(queue_cnt), String.valueOf(num));
                     wait_time = NumberUtil.mul(a, index_cnt, avg_abandoned_lv);
                 }
                 if(queue_status_3 != 0 && queue_seq_count != 0){
-                    abandoned_lv  = NumberUtil.div(String.valueOf(queue_status_3), String.valueOf(queue_seq_count));
+                    abandoned_lv  =  NumberUtil.div(String.valueOf(queue_status_3), String.valueOf(queue_seq_count));
                 }
 
                 Map<String, Object> panelMap = new HashMap<>();
                 panelMap.put("queue_cnt", queue_cnt);
-                panelMap.put("wait_time", wait_time == null ? 0 : wait_time);
-                panelMap.put("abandoned_lv", abandoned_lv == null ? 0 : abandoned_lv);
+                panelMap.put("wait_time", wait_time == null ? 0 : Tools.formatBigdecimal(wait_time,1));
+                panelMap.put("abandoned_lv", abandoned_lv == null ? 0 : Tools.formatBigdecimal(abandoned_lv,4));
                 map.put("panelMap", panelMap);
 
                 Map<String, Object> bargraphMap = new HashMap<>();
