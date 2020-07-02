@@ -467,10 +467,9 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         List<OrderDetailDo> list = new ArrayList<>();
         Object ObjectData = report.get("data");
         if(isObjectIsNotEmpty(ObjectData)){
-            Map<String,Object> dataMap = (Map<String,Object>) report.get("data");
-            Object data = dataMap.get("data");
-            if(data != null){
-                List<Map<String,Object>> dataList = (List<Map<String,Object>>)data;
+            Object dataMap =  report.get("data");
+            if(dataMap instanceof ArrayList){
+                List<Map<String,Object>> dataList = (List<Map<String,Object>>)dataMap;
                 if(CollectionUtil.isNotEmpty(dataList)){
                     for (int i = 0; i < dataList.size(); i++) {
                         OrderDetailDo orderDetailDo = new OrderDetailDo();
@@ -490,19 +489,20 @@ public class CashVoucherServiceImpl implements CashVoucherService {
                     }
                 }
             }else{
+                Map<String,Object> data = (Map<String,Object>)dataMap;
                 OrderDetailDo orderDetailDo = new OrderDetailDo();
-                orderDetailDo.setOrderDeatiId((String)dataMap.get("orderDeatiId"));
-                orderDetailDo.setDetailStatus((String)dataMap.get("detailStatus"));
-                orderDetailDo.setVoucherName((String)dataMap.get("voucherName"));
-                orderDetailDo.setVoucherNo((String)dataMap.get("voucherNo"));
-                orderDetailDo.setCardName((String)dataMap.get("cardName"));
-                orderDetailDo.setCardNo((String)dataMap.get("cardNo"));
-                orderDetailDo.setPrice((String)dataMap.get("price"));
-                orderDetailDo.setVoucherAmt((String)dataMap.get("voucherAmt"));
-                orderDetailDo.setNum((String)dataMap.get("num"));
-                orderDetailDo.setSpec((String)dataMap.get("spec"));
-                orderDetailDo.setRemark((String)dataMap.get("remark"));
-                orderDetailDo.setEnterNum((String)dataMap.get("enterNum"));
+                orderDetailDo.setOrderDeatiId((String)data.get("orderDeatiId"));
+                orderDetailDo.setDetailStatus((String)data.get("detailStatus"));
+                orderDetailDo.setVoucherName((String)data.get("voucherName"));
+                orderDetailDo.setVoucherNo((String)data.get("voucherNo"));
+                orderDetailDo.setCardName((String)data.get("cardName"));
+                orderDetailDo.setCardNo((String)data.get("cardNo"));
+                orderDetailDo.setPrice((String)data.get("price"));
+                orderDetailDo.setVoucherAmt((String)data.get("voucherAmt"));
+                orderDetailDo.setNum((String)data.get("num"));
+                orderDetailDo.setSpec((String)data.get("spec"));
+                orderDetailDo.setRemark((String)data.get("remark"));
+                orderDetailDo.setEnterNum((String)data.get("enterNum"));
                 list.add(orderDetailDo);
             }
         }
