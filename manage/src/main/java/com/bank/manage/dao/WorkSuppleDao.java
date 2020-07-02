@@ -53,4 +53,13 @@ public interface WorkSuppleDao extends BaseMapper<WorkSuppleDO> {
      */
     @SqlParser(filter=true)
     IPage<FacilitatorDto> getAllList(Page<FacilitatorDto> page,@Param(value = "queryType") String queryType,@Param(value = "orgId") String orgId,@Param(value = "roleType") boolean roleType);
+
+    /**
+     * 查询引导员已办列表
+     * @param page 分页对象
+     * @param orgId 机构编号
+     * @param flag 是否具有权限
+     * @return
+     */
+    IPage<FacilitatorDto> getAeadyList(Page<FacilitatorDto> page,@Param(value = "orgId") String orgId, @Param(value = "roleType") boolean flag);
 }
