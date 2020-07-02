@@ -41,7 +41,12 @@
     <select id="queryManageByMonth" resultMap="ManageScore">
         SELECT s.ORG_ID AS org_id,s.MANAGEMENT_SCORE AS score,DATE_FORMAT(s.MANAGEMENT_DATE,'%Y-%m') AS date_dt FROM `wbmp_mangement_score` s
         INNER  JOIN
-        (SELECT ORG_ID,MAX(MANAGEMENT_DATE)as date_dt FROM `wbmp_mangement_score` GROUP BY ORG_ID, DATE_FORMAT(MANAGEMENT_DATE,'%Y-%m') ORDER BY MANAGEMENT_DATE DESC LIMIT 10000 ) a
+        (
+            SELECT ORG_ID,MAX(MANAGEMENT_DATE)as date_dt FROM `wbmp_mangement_score`
+            where ORG_ID = #{orgId}
+            GROUP BY ORG_ID, DATE_FORMAT(MANAGEMENT_DATE,'%Y-%m')
+            ORDER BY MANAGEMENT_DATE DESC LIMIT 10000
+        ) a
         on
         s.ORG_ID = a.ORG_ID
         and s.MANAGEMENT_DATE = a.date_dt
@@ -54,7 +59,12 @@
     <select id="queryManageByQuart" resultMap="ManageScore">
          SELECT s.ORG_ID AS org_id,s.MANAGEMENT_SCORE AS score, CONCAT(year(s.MANAGEMENT_DATE),'-', quarter(s.MANAGEMENT_DATE))  AS date_dt FROM `wbmp_mangement_score` s
         INNER  JOIN
-        (SELECT ORG_ID,MAX(MANAGEMENT_DATE)as MANAGEMENT_DATE FROM `wbmp_mangement_score` GROUP BY ORG_ID, CONCAT(year(MANAGEMENT_DATE),'-', quarter(MANAGEMENT_DATE)) ORDER BY MANAGEMENT_DATE DESC LIMIT 10000 ) a
+        (
+            SELECT ORG_ID,MAX(MANAGEMENT_DATE)as MANAGEMENT_DATE FROM `wbmp_mangement_score`
+            where ORG_ID = #{orgId}
+            GROUP BY ORG_ID, CONCAT(year(MANAGEMENT_DATE),'-', quarter(MANAGEMENT_DATE))
+            ORDER BY MANAGEMENT_DATE DESC LIMIT 10000
+        ) a
         on
         s.ORG_ID = a.ORG_ID
         and s.MANAGEMENT_DATE = a.MANAGEMENT_DATE
@@ -62,19 +72,23 @@
         a.ORG_ID = #{orgId}
         ORDER BY s.MANAGEMENT_DATE
         LIMIT 5
-
-
     </select>
 
     <!--查询最近3年的数据[经营分数表]-->
     <select id="queryManageByYear" resultMap="ManageScore">
          SELECT s.ORG_ID AS org_id,s.MANAGEMENT_SCORE AS score ,DATE_FORMAT(s.MANAGEMENT_DATE,'%Y') AS date_dt FROM `wbmp_mangement_score` s
         INNER  JOIN
-        (SELECT ORG_ID,MAX(MANAGEMENT_DATE)as MANAGEMENT_DATE FROM `wbmp_mangement_score` GROUP BY ORG_ID, DATE_FORMAT(MANAGEMENT_DATE,'%Y') ORDER BY MANAGEMENT_DATE DESC LIMIT 10000 ) a
+        (
+            SELECT ORG_ID,MAX(MANAGEMENT_DATE)as MANAGEMENT_DATE FROM `wbmp_mangement_score`
+             where ORG_ID = #{orgId}
+             GROUP BY ORG_ID, DATE_FORMAT(MANAGEMENT_DATE,'%Y')
+             ORDER BY MANAGEMENT_DATE DESC LIMIT 10000
+        ) a
         on
         s.ORG_ID = a.ORG_ID
         and s.MANAGEMENT_DATE = a.MANAGEMENT_DATE
-        and a.ORG_ID = #{orgId}
+        where
+         a.ORG_ID = #{orgId}
         ORDER BY s.MANAGEMENT_DATE desc
         LIMIT 3
 

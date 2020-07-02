@@ -121,13 +121,18 @@
                 FROM
                 wbmp_operate_cust c
                     INNER JOIN
-                    (SELECT MAX(DATA_DT) as DATA_DT FROM  wbmp_operate_cust GROUP BY DATE_FORMAT(DATA_DT,'%Y') ORDER BY DATA_DT DESC LIMIT 10000 ) d
+                    (
+                        SELECT MAX(DATA_DT) as DATA_DT,ORG_ID,INDEX_NO FROM  wbmp_operate_cust
+                        where ORG_ID = #{orgId} and INDEX_NO = #{customerTypeCode}
+                        GROUP BY DATE_FORMAT(DATA_DT,'%Y'),ORG_ID,INDEX_NO
+                        ORDER BY DATA_DT DESC LIMIT 10000
+                    ) d
                     ON  c.DATA_DT = d.DATA_DT
              WHERE
                 c.ORG_ID = #{orgId}
                 AND c.INDEX_NO = #{customerTypeCode}
                 ORDER BY DATA_DT desc
-                LIMIT 12
+                LIMIT 3
     </select>
 
 
