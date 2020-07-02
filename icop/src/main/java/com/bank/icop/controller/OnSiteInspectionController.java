@@ -67,7 +67,7 @@ public class OnSiteInspectionController extends BaseIcopController {
             @ApiImplicitParam(name = "taskStartDate", value = "任务开始时间", required = false, defaultValue = "", dataType = "String"),
             @ApiImplicitParam(name = "taskEndDate", value = "任务结束时间", required = false, defaultValue = "", dataType = "String")
     })
-    public Object taskItemList(@RequestParam(value = "taskId", required = false) String taskId, @RequestParam(value = "createOrgId", required = false) String createOrgId, @RequestParam(value = "executeOrgId",
+    public List taskItemList(@RequestParam(value = "taskId", required = false) String taskId, @RequestParam(value = "createOrgId", required = false) String createOrgId, @RequestParam(value = "executeOrgId",
             required = false) String executeOrgId, @RequestParam(value = "taskName", required = false) String taskName, @RequestParam(value = "taskStartDate", required = false) String taskStartDate, @RequestParam(value = "taskEndDate", required = false) String taskEndDate) {
         String userId = getCurrentUserId(request);
         return onSiteInspectionService.taskItemList(userId, taskId, createOrgId, executeOrgId, taskName, taskStartDate, taskEndDate);
@@ -93,7 +93,7 @@ public class OnSiteInspectionController extends BaseIcopController {
         return onSiteInspectionService.check(taskItemId, inspectionInfoId);
     }
 
-    @ApiOperation("检查问题编辑")
+    @ApiOperation("检查问题编辑-查询")
     @GetMapping("/problemEdit/{pk}/{taskpk}")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pk", value = "检查key", required = true, dataType = "String"),

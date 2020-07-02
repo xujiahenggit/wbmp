@@ -57,7 +57,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
     }
 
     @Override
-    public Object taskItemList(String userId, String taskId, String createOrgId, String executeOrgId, String taskName, String taskStartDate, String taskEndDate) {
+    public List taskItemList(String userId, String taskId, String createOrgId, String executeOrgId, String taskName, String taskStartDate, String taskEndDate) {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("userNo", userId);
         parmMap.put("taskpk", taskId);
@@ -108,7 +108,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         parmMap.put("taskpk", taskpk);
         return getIcopTagData(parmMap,
                 "FXYJ11005",
-                "检查要点查看",
+                "检查问题编辑",
                 1,
                 "返回状态  -1:参数为空 , 0:未查询出数据 ,1:正常 ", "details");
     }
@@ -398,8 +398,16 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         }
     }
 
-    private Object getIcopTagList(Map<String, Object> parmMap, String serviceCode, String serviceName, Integer rightCode, String errMsg) {
-        return getIcopTagData(parmMap, serviceCode, serviceName, rightCode, errMsg, "List");
+    private List getIcopTagList(Map<String, Object> parmMap, String serviceCode, String serviceName, Integer rightCode, String errMsg) {
+        Object data = getIcopTagData(parmMap, serviceCode, serviceName, rightCode, errMsg, "List");
+        if (data instanceof ArrayList) {
+            return (List) data;
+        }
+        else {
+            List result = new ArrayList();
+            result.add(data);
+            return result;
+        }
     }
 
     private Map getReport(Map<String, Object> parmMap, String serviceCode, String serviceName, Integer rightCode, String errMsg) {
@@ -433,7 +441,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
     public List<HandledRectifyVO> handledRectifyList(String userId) {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("username", userId);//4095
-        List<Map> datas = (List<Map>) getIcopTagList(parmMap, "FXYJ11028", "已处理整改列表", 1, "返回状态  -1:参数为空 ,  0:用户不存在");
+        List<Map> datas = getIcopTagList(parmMap, "FXYJ11028", "已处理整改列表", 1, "返回状态  -1:参数为空 ,  0:用户不存在");
 
         List<HandledRectifyVO> result = new ArrayList<>();
         for (int i = 0; i < datas.size(); i++) {
