@@ -327,4 +327,29 @@ public class OnSiteInspectionController extends BaseIcopController {
 
         return onSiteInspectionService.handledRectifyInfo(tokenUserInfo.getUserId(), rectifyId);
     }
+
+    @ApiOperation("获取用户所属机构信息")
+    @GetMapping("/getUserOfOrg")
+    public Object getUserOfOrgInfo() {
+        TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
+        return onSiteInspectionService.getUserOfOrgInfo(tokenUserInfo.getUserId());
+    }
+
+    @ApiOperation("获取整改柜员信息")
+    @GetMapping("/getRectifyTellerInfo")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "tellerId", value = "柜员编号", required = false, defaultValue = "", dataType = "String"),
+            @ApiImplicitParam(name = "tellerName", value = "柜员名称", required = false, defaultValue = "", dataType = "String")
+    })
+    public List getRectifyTellerInfo(@RequestParam(value = "tellerId") String tellerId, @RequestParam(value = "tellerName") String tellerName) {
+        TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
+        return onSiteInspectionService.getRectifyTellerInfo(tokenUserInfo.getUserId(), tellerId, tellerName);
+    }
+
+    @ApiOperation("获取用户所属角色信息")
+    @GetMapping("/getUserOfRoleInfo")
+    public List getUserOfRoleInfo() {
+        TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
+        return onSiteInspectionService.getUserOfRoleInfo(tokenUserInfo.getUserId());
+    }
 }

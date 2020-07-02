@@ -1,5 +1,6 @@
 package com.bank.manage.service.impl;
 
+import com.bank.core.entity.BizException;
 import com.bank.core.sysConst.WbmpConstFile;
 import com.bank.core.utils.WbmpOperRateUtils;
 import com.bank.manage.dao.WbmpCommonCalcMethodDao;
@@ -37,11 +38,11 @@ public class OperaCurveServiceImpl  implements OperateCurveService {
     @Override
     public  float calcOrgMonthScore(String orgId, String date) {
         QueryWrapper<WbmpCommonCalcMethodDO> queryWrapper = new QueryWrapper<WbmpCommonCalcMethodDO>();
-        queryWrapper.isNull("id");
         //获取参数表数据
-        WbmpCommonCalcMethodDO  wbmpCommonCalcMethodDO =  wbmpCommonCalcMethodDao.selectOne(queryWrapper);
+        WbmpCommonCalcMethodDO  wbmpCommonCalcMethodDO =  wbmpCommonCalcMethodDao.selectOne(new QueryWrapper<>());
         if(wbmpCommonCalcMethodDO==null){
             //TODO抛出错误
+            throw new BizException("获取通用配置失败！");
         }
         //全行标准月日均存款值
         BigDecimal standAvgMouthBal = wbmpCommonCalcMethodDO.getStandAvgMouthBal();
@@ -53,10 +54,19 @@ public class OperaCurveServiceImpl  implements OperateCurveService {
         BigDecimal aumPer = wbmpCommonCalcMethodDO.getAumPer();
         //获取机构余额
         String orgBal = wbmpOrgBalanceDao.getOrgHistoryBal(orgId,date);
-        BigDecimal orgBalNum = new BigDecimal(orgBal);
+
+        BigDecimal orgBalNum = new BigDecimal(0);
+        if(orgBal!=null){
+            orgBalNum = new BigDecimal(orgBal);
+        }
         //获取机构的AUM值
         String orgAum = wbmpOperateIndexAumDao.getOrgDaysAum(orgId,date);
-        BigDecimal orgAumNum = new BigDecimal(orgAum);
+
+        BigDecimal orgAumNum = new BigDecimal(0);
+        if(orgAum!=null){
+            orgAumNum = new BigDecimal(orgAum);
+        }
+
         //计算月日均存款分数
        float mouthAvgBalScore = WbmpOperRateUtils.calcAvgMouthBal(orgBalNum,standAvgMouthBal);
         //计算AUM分数
