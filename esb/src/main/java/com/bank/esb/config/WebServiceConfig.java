@@ -2,6 +2,7 @@ package com.bank.esb.config;
 
 import javax.xml.ws.Endpoint;
 
+import com.bank.esb.webservice.AutoMaticeDeviceService;
 import org.apache.cxf.Bus;
 import org.apache.cxf.bus.spring.SpringBus;
 import org.apache.cxf.jaxws.EndpointImpl;
@@ -43,10 +44,21 @@ public class WebServiceConfig {
     @Autowired
     private WSDemoService demoService;
 
+    @Autowired
+    private AutoMaticeDeviceService autoMaticeDeviceService;
+
     @Bean
-    public Endpoint endpoint() {
+    public Endpoint demoEndpoint() {
         EndpointImpl endpoint = new EndpointImpl(springBus(), demoService);
         endpoint.publish("/demoService");
         return endpoint;
     }
+
+    @Bean
+    public Endpoint autoMaticeDeviceEndpoint() {
+        EndpointImpl endpoint = new EndpointImpl(springBus(), autoMaticeDeviceService);
+        endpoint.publish("/autoMaticeDeviceService");
+        return endpoint;
+    }
+
 }
