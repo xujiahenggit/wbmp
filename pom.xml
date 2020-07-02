@@ -23,6 +23,7 @@
         <module>generator</module>
         <module>PAD</module>
         <module>icop</module>
+        <module>esb</module>
     </modules>
 
     <properties>
