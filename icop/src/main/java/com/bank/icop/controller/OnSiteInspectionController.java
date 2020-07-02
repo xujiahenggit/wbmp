@@ -1,20 +1,29 @@
 package com.bank.icop.controller;
 
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.bank.core.entity.TokenUserInfo;
 import com.bank.icop.dto.CheckProblemDTO;
 import com.bank.icop.service.OnSiteInspectionService;
 import com.bank.icop.vo.HandledRectifyInfoVO;
 import com.bank.icop.vo.HandledRectifyVO;
 import com.bank.icop.vo.OnSiteInspectionTaskVO;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 /**
  * 现场检查接口Controller
@@ -80,7 +89,7 @@ public class OnSiteInspectionController extends BaseIcopController {
             @ApiImplicitParam(name = "sunpointkey", value = "检查key", required = true, dataType = "String"),
             @ApiImplicitParam(name = "taskpk", value = "任务编号", required = true, defaultValue = "", dataType = "String")
     })
-    public boolean check(@PathVariable("sunpointkey") String taskItemId, @PathVariable("taskpk") String inspectionInfoId) {
+    public String check(@PathVariable("sunpointkey") String taskItemId, @PathVariable("taskpk") String inspectionInfoId) {
         return onSiteInspectionService.check(taskItemId, inspectionInfoId);
     }
 

@@ -1,11 +1,11 @@
 package com.bank.icop.service;
 
+import java.util.List;
+
 import com.bank.icop.dto.CheckProblemDTO;
 import com.bank.icop.vo.HandledRectifyInfoVO;
 import com.bank.icop.vo.HandledRectifyVO;
 import com.bank.icop.vo.OnSiteInspectionTaskVO;
-
-import java.util.List;
 
 /**
  * SOAP调用第三方接口日志 服务类
@@ -21,7 +21,7 @@ public interface OnSiteInspectionService {
 
     Object registerCheck(String currentUserId, String taskItemId, String inspectionInfoId);
 
-    boolean check(String taskItemId, String inspectionInfoId);
+    String check(String taskItemId, String inspectionInfoId);
 
     Object problemEdit(String pk, String taskpk);
 

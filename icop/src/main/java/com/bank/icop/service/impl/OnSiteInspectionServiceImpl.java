@@ -1,19 +1,25 @@
 package com.bank.icop.service.impl;
 
-import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.util.StrUtil;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+
 import com.alibaba.fastjson.JSONObject;
 import com.bank.core.entity.BizException;
 import com.bank.icop.dto.CheckProblemDTO;
 import com.bank.icop.service.OnSiteInspectionService;
 import com.bank.icop.util.SoapUtil;
-import com.bank.icop.vo.*;
-import org.springframework.stereotype.Service;
+import com.bank.icop.vo.ApproveLogVO;
+import com.bank.icop.vo.CheckAccessoryVO;
+import com.bank.icop.vo.HandledRectifyInfoVO;
+import com.bank.icop.vo.HandledRectifyVO;
+import com.bank.icop.vo.OnSiteInspectionTaskVO;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 
 /**
  * SOAP调用第三方接口 现场检查实现类
@@ -79,7 +85,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
     }
 
     @Override
-    public boolean check(String taskItemId, String inspectionInfoId) {
+    public String check(String taskItemId, String inspectionInfoId) {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("sunpointkey", taskItemId);
         parmMap.put("taskpk", inspectionInfoId);
@@ -92,7 +98,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         if (StrUtil.isBlankIfStr(value)) {
             throw new BizException("返回的检查要点为空！");
         }
-        return (boolean) value;
+        return (String) value;
     }
 
     @Override
