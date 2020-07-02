@@ -533,4 +533,30 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         getReport(parmMap, "FXYJ11027", "问题保存", 0, "返回状态  -1:失败 ,  0:成功");
         return true;
     }
+
+    @Override
+    public Object getUserOfOrgInfo(String userId) {
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("userNo", userId);
+
+        return getIcopTagData(parmMap, "FXYJ11030", "用户所属机构", 0, "返回状态  -1:失败 ,  0:成功", "organ");
+    }
+
+    @Override
+    public List getRectifyTellerInfo(String userId, String tellerId, String tellerName) {
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("userNo", userId);
+        parmMap.put("userId", tellerId);
+        parmMap.put("userName", tellerName);
+
+        return getIcopTagList(parmMap, "FXYJ11031", "获取整改柜员", 2, "返回状态  -1:传入参数为空 ,  0:查询用户不存在 ,1:未查询出柜员 ,2:执行正常");
+    }
+
+    @Override
+    public List getUserOfRoleInfo(String userId) {
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("userNo", userId);
+
+        return getIcopTagList(parmMap, "FXYJ11032", "用户所属角色", 1, "返回状态  -1:传入参数为空 ,  0:查询用户不存在 ,1:执行正常");
+    }
 }
