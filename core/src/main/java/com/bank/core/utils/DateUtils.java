@@ -427,6 +427,27 @@ public class DateUtils {
         return dates;
     }
 
+    /**
+     * 获取当前日期 前30天 不包含当天
+     *
+     * @return
+     */
+    public static List<String> getDateBefor30() {
+        List<String> dates = new ArrayList<>();
+        SimpleDateFormat sf = new SimpleDateFormat(DATE_yyyyMMdd);
+        Date today = new Date();
+        String endDate = sf.format(today); //当前日期
+        //获取三十天前的日期
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(today);
+        for (int i = 1; i <= 30; i++) {
+            calendar.add(Calendar.DATE, -1);
+            Date start = calendar.getTime();
+            dates.add(sf.format(start));
+        }
+        Collections.reverse(dates);
+        return dates;
+    }
 
     /**
      * 获取 最近12个月 不包含本月
@@ -520,8 +541,11 @@ public class DateUtils {
     }
 
     public static void main(String[] args) {
-        DateTimeFormatter dateTimeFormatter=DateTimeFormatter.ofPattern("yyyy-mm");
-        String date= LocalDate.now().minusDays(1).toString().substring(0, 7);
-        System.out.println(date);
+//        DateTimeFormatter dateTimeFormatter=DateTimeFormatter.ofPattern("yyyy-mm");
+//        String date= LocalDate.now().minusDays(1).toString().substring(0, 7);
+//        System.out.println(date);
+
+        List<String> list = getDateBefor30();
+        System.out.println( Arrays.toString(list.toArray()));
     }
 }

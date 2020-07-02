@@ -17,7 +17,7 @@ public interface OnSiteInspectionService {
 
     List<OnSiteInspectionTaskVO> inspectionTaskList(String userId);
 
-    Object taskItemList(String userId, String taskId, String createOrgId, String executeOrgId, String taskName, String taskStartDate, String taskEndDate);
+    List taskItemList(String userId, String taskId, String createOrgId, String executeOrgId, String taskName, String taskStartDate, String taskEndDate);
 
     Object registerCheck(String currentUserId, String taskItemId, String inspectionInfoId);
 

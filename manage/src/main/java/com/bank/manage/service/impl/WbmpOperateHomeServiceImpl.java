@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.bank.core.utils.DateUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +45,6 @@ public class WbmpOperateHomeServiceImpl implements WbmpOperateHomeService {
     @Override
     public Map<String, Object> queryBranchDepositBalance(String orgId, String depositTypeCode) {
         Map<String, Object> resultData = new HashMap<>();
-
         String balType = "";
         switch (depositTypeCode) {
             case "00":
@@ -57,21 +57,37 @@ public class WbmpOperateHomeServiceImpl implements WbmpOperateHomeService {
                 balType = "public_bal";
                 break;
         }
+        //查询当前日存款数
         Map<String, Object> depositDay = wbmpOperateHomeDao.queyDepositDay(orgId);
-        BigDecimal deposit = depositDay == null ? new BigDecimal("0.00") : (BigDecimal) depositDay.get(balType);
-        deposit = deposit == null ? new BigDecimal("0.00") : deposit;
         DecimalFormat decimalFormat = new DecimalFormat("0.00#");
-        resultData.put("deposit", decimalFormat.format(deposit.divide(new BigDecimal("100000000"), 2, BigDecimal.ROUND_HALF_UP)));
+        BigDecimal billion = new BigDecimal("100000000"); //亿元
+        //当日存款余额（单位：亿元）
+        BigDecimal deposit = new BigDecimal("0.00");
+        if(depositDay !=null){
+             deposit = new BigDecimal(String.valueOf(depositDay.get(balType) ==null ?deposit:depositDay.get(balType)));
+        }
+        resultData.put("deposit", decimalFormat.format(deposit.divide(billion, 2, BigDecimal.ROUND_HALF_UP)));
+//        BigDecimal deposit = depositDay == null ? new BigDecimal("0.00") : (BigDecimal) depositDay.get(balType);
+//        deposit = deposit == null ? new BigDecimal("0.00") : deposit;
+//        DecimalFormat decimalFormat = new DecimalFormat("0.00#");
+//        resultData.put("deposit", decimalFormat.format(deposit.divide(new BigDecimal("100000000"), 2, BigDecimal.ROUND_HALF_UP)));
 
         List<BigDecimal> data = new ArrayList<>();
         List<String> xAxis = new ArrayList<>();
+        //获取最近30天的记录
+        List<String> days= DateUtils.getDateBefor30();
+
         List<Map<String, Object>> depositDay30 = wbmpOperateHomeDao.queyDepositDay30(orgId);
-        for (int i = 0; i < depositDay30.size(); i++) {
-            Map<String, Object> depositData = depositDay30.get(i);
-            BigDecimal value = (BigDecimal) depositData.get(balType);
-            value = value == null ? new BigDecimal("0.00") : value;
-            data.add(value.divide(new BigDecimal("100000000"), 2, BigDecimal.ROUND_HALF_UP));
-            xAxis.add((String) depositData.get("date_str"));
+
+        for(String item:days){
+            xAxis.add(DateUtils.formartToMonthDay(item));
+            BigDecimal balance = new BigDecimal("0.00");
+            for(Map<String, Object> arg:depositDay30){
+                if(item.equals(arg.get("date_str"))){
+                    balance = new BigDecimal(String.valueOf(arg.get(balType) == null?balance:arg.get(balType))).divide(billion,2, BigDecimal.ROUND_HALF_UP);
+                }
+            }
+            data.add(balance);
         }
         resultData.put("data", data);
         resultData.put("xAxis", xAxis);
