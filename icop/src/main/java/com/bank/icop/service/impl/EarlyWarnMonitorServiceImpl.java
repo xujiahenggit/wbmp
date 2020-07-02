@@ -61,7 +61,7 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         try {
             report = SoapUtil.sendReport("FXYJ10004","812",parmMap);
         } catch (Exception e) {
-            throw new BizException("协查组任务数据修改接口报错！"+e.getMessage());
+            throw new BizException("协查组任务数据修改报错！"+e.getMessage());
         }
         return report;
     }
@@ -74,7 +74,7 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         try {
             report = SoapUtil.sendReport("FXYJ10005","812",parmMap);
         } catch (Exception e) {
-            throw new BizException("协查组任务数据修改接口报错！"+e.getMessage());
+            throw new BizException("协查组任务数据删除报错！"+e.getMessage());
         }
         return report;
     }
@@ -119,7 +119,7 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         try {
             report = SoapUtil.sendReport("FXYJ10008","812",parmMap);
         } catch (Exception e) {
-            throw new BizException("协查组任务退回报错！"+e.getMessage());
+            throw new BizException("查看预警任务日志信息查询报错！"+e.getMessage());
         }
         return report;
     }
@@ -132,7 +132,7 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         try {
             report = SoapUtil.sendReport("FXYJ10009","812",parmMap);
         } catch (Exception e) {
-            throw new BizException("查看预警任务日志信息查询报错！"+e.getMessage());
+            throw new BizException("查看规则信息查询报错！"+e.getMessage());
         }
         return report;
     }
