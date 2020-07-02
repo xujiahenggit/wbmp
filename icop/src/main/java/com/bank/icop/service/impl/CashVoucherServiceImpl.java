@@ -138,6 +138,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         parmMap.put("userId",vo.getUserId());
         parmMap.put("userName",vo.getUserName());
         parmMap.put("orderId",vo.getOrderId());
+        parmMap.put("orderdeatild",vo.getOrderDeatild());
         parmMap.put("operationObject",vo.getOperationObject());
         parmMap.put("operationType",vo.getOperationType());
         Map report = null;
