@@ -1,25 +1,19 @@
 package com.bank.icop.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.stereotype.Service;
-
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.bank.core.entity.BizException;
 import com.bank.icop.dto.CheckProblemDTO;
 import com.bank.icop.service.OnSiteInspectionService;
 import com.bank.icop.util.SoapUtil;
-import com.bank.icop.vo.ApproveLogVO;
-import com.bank.icop.vo.CheckAccessoryVO;
-import com.bank.icop.vo.HandledRectifyInfoVO;
-import com.bank.icop.vo.HandledRectifyVO;
-import com.bank.icop.vo.OnSiteInspectionTaskVO;
+import com.bank.icop.vo.*;
+import org.springframework.stereotype.Service;
 
-import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.util.StrUtil;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * SOAP调用第三方接口 现场检查实现类
@@ -57,7 +51,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
     }
 
     @Override
-    public List<Map> taskItemList(String userId, String taskId, String createOrgId, String executeOrgId, String taskName, String taskStartDate, String taskEndDate) {
+    public Object taskItemList(String userId, String taskId, String createOrgId, String executeOrgId, String taskName, String taskStartDate, String taskEndDate) {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("userNo", userId);
         parmMap.put("taskpk", taskId);
@@ -148,7 +142,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
     }
 
     @Override
-    public List<Map> taskList(String userId, String runorgankey, String taskName, String taskStartDate, String taskEndDate) {
+    public Object taskList(String userId, String runorgankey, String taskName, String taskStartDate, String taskEndDate) {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("userNo", userId);
         parmMap.put("runorgankey", runorgankey);
@@ -387,25 +381,18 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
                 "返回状态  -1:参数为空 ,  0:未查询出数据  , 1:正常");
     }
 
-    private List<Map> getIcopTagData(Map<String, Object> parmMap, String serviceCode, String serviceName, Integer rightCode, String errMsg, String tag) {
+    private Object getIcopTagData(Map<String, Object> parmMap, String serviceCode, String serviceName, Integer rightCode, String errMsg, String tag) {
         Map report = getReport(parmMap, serviceCode, serviceName, rightCode, errMsg);
         Object list = report.get(tag);
         if (list != null) {
-            List<Map> tagData = null;
-            try {
-                tagData = (List<Map>) list;
-            }
-            catch (Exception e) {
-                throw new BizException(tag + "标签数据转List<Map>出错，" + e.getMessage());
-            }
-            return tagData;
+            return list;
         }
         else {
             throw new BizException("返回值不包含" + tag + "标签！");
         }
     }
 
-    private List<Map> getIcopTagList(Map<String, Object> parmMap, String serviceCode, String serviceName, Integer rightCode, String errMsg) {
+    private Object getIcopTagList(Map<String, Object> parmMap, String serviceCode, String serviceName, Integer rightCode, String errMsg) {
         return getIcopTagData(parmMap, serviceCode, serviceName, rightCode, errMsg, "List");
     }
 
@@ -440,7 +427,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
     public List<HandledRectifyVO> handledRectifyList(String userId) {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("username", userId);//4095
-        List<Map> datas = getIcopTagList(parmMap, "FXYJ11028", "已处理整改列表", 1, "返回状态  -1:参数为空 ,  0:用户不存在");
+        List<Map> datas = (List<Map>) getIcopTagList(parmMap, "FXYJ11028", "已处理整改列表", 1, "返回状态  -1:参数为空 ,  0:用户不存在");
 
         List<HandledRectifyVO> result = new ArrayList<>();
         for (int i = 0; i < datas.size(); i++) {

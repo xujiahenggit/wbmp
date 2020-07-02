@@ -1,30 +1,20 @@
 package com.bank.icop.controller;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.bank.core.entity.TokenUserInfo;
 import com.bank.icop.dto.CheckProblemDTO;
 import com.bank.icop.service.OnSiteInspectionService;
 import com.bank.icop.vo.HandledRectifyInfoVO;
 import com.bank.icop.vo.HandledRectifyVO;
 import com.bank.icop.vo.OnSiteInspectionTaskVO;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * 现场检查接口Controller
@@ -68,7 +58,7 @@ public class OnSiteInspectionController extends BaseIcopController {
             @ApiImplicitParam(name = "taskStartDate", value = "任务开始时间", required = false, defaultValue = "", dataType = "String"),
             @ApiImplicitParam(name = "taskEndDate", value = "任务结束时间", required = false, defaultValue = "", dataType = "String")
     })
-    public List<Map> taskItemList(@RequestParam(value = "taskId", required = false) String taskId, @RequestParam(value = "createOrgId", required = false) String createOrgId, @RequestParam(value = "executeOrgId",
+    public Object taskItemList(@RequestParam(value = "taskId", required = false) String taskId, @RequestParam(value = "createOrgId", required = false) String createOrgId, @RequestParam(value = "executeOrgId",
             required = false) String executeOrgId, @RequestParam(value = "taskName", required = false) String taskName, @RequestParam(value = "taskStartDate", required = false) String taskStartDate, @RequestParam(value = "taskEndDate", required = false) String taskEndDate) {
         String userId = getCurrentUserId(request);
         return onSiteInspectionService.taskItemList(userId, taskId, createOrgId, executeOrgId, taskName, taskStartDate, taskEndDate);
@@ -130,7 +120,7 @@ public class OnSiteInspectionController extends BaseIcopController {
             @ApiImplicitParam(name = "taskStartDate", value = "任务开始时间", required = false, defaultValue = "", dataType = "String"),
             @ApiImplicitParam(name = "taskEndDate", value = "任务结束时间", required = false, defaultValue = "", dataType = "String")
     })
-    public List<Map> taskList(@RequestParam(value = "runorgankey", required = false) String runorgankey, @RequestParam(value = "taskName", required = false) String taskName, @RequestParam(value = "taskStartDate", required = false) String taskStartDate, @RequestParam(value = "taskEndDate",
+    public Object taskList(@RequestParam(value = "runorgankey", required = false) String runorgankey, @RequestParam(value = "taskName", required = false) String taskName, @RequestParam(value = "taskStartDate", required = false) String taskStartDate, @RequestParam(value = "taskEndDate",
             required = false) String taskEndDate) {
         String userId = getCurrentUserId(request);
         return onSiteInspectionService.taskList(userId, runorgankey, taskName, taskStartDate, taskEndDate);
