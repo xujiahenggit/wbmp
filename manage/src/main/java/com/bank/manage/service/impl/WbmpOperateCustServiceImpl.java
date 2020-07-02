@@ -45,6 +45,7 @@ public class WbmpOperateCustServiceImpl extends ServiceImpl<WbmpOperateCustDao, 
             //获取最近15天的客群指标数据
             List<WbmpOperateCustVo> custList = wbmpOperateCustDao.findDaysCust(customerAvgVo.getOrgId(),customerAvgVo.getCustomerTypeCode());
             for (String item:days){
+                formatDays.add(DateUtils.formartToMonthDay(item));
                 int custValue = 0;
                     for(WbmpOperateCustVo cust:custList){
                     if(item.equals(cust.getDataDt())){

@@ -333,7 +333,9 @@ public class Tools {
      */
     public static String formatBigdecimal(BigDecimal bigDecimal,int type){
         DecimalFormat df = new DecimalFormat("0.0");
-        if(type == 2){
+        if(type == 0){
+            df = new DecimalFormat("0");
+        }else if(type == 2){
             df = new DecimalFormat("0.00");
         }else if(type == 4){
              df = new DecimalFormat("0.0000");

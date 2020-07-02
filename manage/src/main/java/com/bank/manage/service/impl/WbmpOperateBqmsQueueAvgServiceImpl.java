@@ -46,7 +46,7 @@ public class WbmpOperateBqmsQueueAvgServiceImpl extends ServiceImpl<WbmpOperateB
 
             wbmpOperateBqmsQueueAvgDto.setCunstomerAvg(WbmpOperRateUtils.ComputeCustomerAvg(avgAbandonedLv,indexCnt));
 
-            wbmpOperateBqmsQueueAvgDto.setIndexCnt(Tools.formatBigdecimal(indexCnt,1));
+            wbmpOperateBqmsQueueAvgDto.setIndexCnt(Tools.formatBigdecimal(indexCnt,0));
         }else{
             wbmpOperateBqmsQueueAvgDto=new WbmpOperateBqmsQueueAvgDto();
             wbmpOperateBqmsQueueAvgDto.setCunstomerAvg(0);

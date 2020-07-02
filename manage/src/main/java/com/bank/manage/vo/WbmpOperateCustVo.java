@@ -1,22 +1,18 @@
 package com.bank.manage.vo;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Builder;
 import lombok.Data;
 
-import java.math.BigDecimal;
+import java.io.Serializable;
 
 /**
  * @Author: zhangfuqiang
  * @Date: 2020/7/01 19:51
  */
-@ApiModel(description = "网点存款时点余额VO")
 @Data
-@Builder
-public class WbmpOperateCustVo extends Model<WbmpOperateCustVo> {
+@ApiModel(value = "客群增长--查询list用")
+public class WbmpOperateCustVo implements Serializable {
 
     @ApiModelProperty(value = "机构号")
     private String orgId;
