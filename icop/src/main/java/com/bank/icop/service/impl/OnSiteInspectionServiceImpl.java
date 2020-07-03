@@ -535,11 +535,18 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
     }
 
     @Override
-    public Object getUserOfOrgInfo(String userId) {
+    public List getUserOfOrgInfo(String userId) {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("userNo", userId);
-
-        return getIcopTagData(parmMap, "FXYJ11030", "用户所属机构", 0, "返回状态  -1:失败 ,  0:成功", "organ");
+        Object data = getIcopTagData(parmMap, "FXYJ11030", "用户所属机构", 0, "返回状态  -1:失败 ,  0:成功", "organ");
+        if (data instanceof ArrayList) {
+            return (List) data;
+        }
+        else {
+            List result = new ArrayList();
+            result.add(data);
+            return result;
+        }
     }
 
     @Override

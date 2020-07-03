@@ -73,7 +73,7 @@ public interface OnSiteInspectionService {
 
     boolean problemEditSave(String userId, CheckProblemDTO checkProblemDTO);
 
-    Object getUserOfOrgInfo(String userId);
+    List getUserOfOrgInfo(String userId);
 
     List getRectifyTellerInfo(String userId, String tellerId, String tellerName);
 
