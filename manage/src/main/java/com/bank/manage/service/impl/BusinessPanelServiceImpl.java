@@ -101,15 +101,18 @@ public class BusinessPanelServiceImpl implements BusinessPanelService {
                 long progress_handle_cnt = (Long) objectMap.get("progress_handle_cnt");//办理中总数
                 long abandoned_cnt = (Long) objectMap.get("abandoned_cnt");//弃号总数
                 long num = (Long) objectMap.get("num");//窗口数
-                //Number abandoned_lv =  (Number)objectMap.get("abandoned_lv");//弃号率
                 long queue_status_3 =  (long)objectMap.get("queue_status_3");
                 long queue_seq_count =  (long)objectMap.get("queue_seq_count");
-//                String  index_cnt =  new BigDecimal(objectMap.get("index_cnt").toString());
                 BigDecimal index_cnt = NumberUtil.div(objectMap.get("index_cnt").toString(),"60"); //平均等待时长-秒/ 60 = 平均等待时长-分钟
-                Number avg_abandoned_lv =   NumberUtil.sub(1-(double)objectMap.get("avg_abandoned_lv"));;//(1-历史1个月平均弃号率)
+
+                BigDecimal avg_abandoned_lv1 = new BigDecimal(String.valueOf(objectMap.get("avg_abandoned_lv")));
+                BigDecimal one = new BigDecimal("1");
+
+                BigDecimal  avg_abandoned_lv = one.subtract(avg_abandoned_lv1);
+
                 //排队预计等待时长=（等待人数/窗口数）*历史平均等待时长*(1-历史1个月平均弃号率)
                 BigDecimal wait_time = new BigDecimal(0);
-                BigDecimal abandoned_lv = new BigDecimal(0);;
+                BigDecimal abandoned_lv = new BigDecimal(0);
                 if(queue_cnt != 0 && num != 0){
                     BigDecimal a = NumberUtil.div(String.valueOf(queue_cnt), String.valueOf(num));
                     wait_time = NumberUtil.mul(a, index_cnt, avg_abandoned_lv);
