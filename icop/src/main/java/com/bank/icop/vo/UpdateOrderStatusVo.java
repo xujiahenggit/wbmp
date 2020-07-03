@@ -27,4 +27,7 @@ public class UpdateOrderStatusVo implements Serializable {
     @ApiModelProperty(value = "操作类型：1-审核通过；2-驳回；3-确认（提交订单）；4-取消；5-收货；6-收货复核；7-号段审核；  ")
     private String operationType;
 
+    @ApiModelProperty("订单明细ID")
+    private String orderDeatild;
+
 }
