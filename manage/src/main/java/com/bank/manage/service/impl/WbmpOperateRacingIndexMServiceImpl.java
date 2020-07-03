@@ -28,6 +28,9 @@ public class WbmpOperateRacingIndexMServiceImpl extends ServiceImpl<WbmpOperateR
     @Resource
     private WbmpOperateRacingIndexMDao wbmpOperateRacingIndexMDao;
 
+
+    
+
     /**
      * 查询赛马制
      * @param orgId 机构号
