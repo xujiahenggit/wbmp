@@ -122,7 +122,7 @@ public class OnSiteInspectionController extends BaseIcopController {
     }
 
     @ApiOperation("检查任务查看列表")
-    @PostMapping("/taskList")
+    @GetMapping("/taskList")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "runorgankey", value = "执行机构", required = false, defaultValue = "", dataType = "String"),
             @ApiImplicitParam(name = "taskName", value = "任务名称", required = false, defaultValue = "", dataType = "String"),
