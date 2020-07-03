@@ -21,6 +21,9 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         } catch (Exception e) {
             throw new BizException("获取代办、未办结、已办数据列表报错！"+e.getMessage());
         }
+        if(!"0".equals((String)report.get("status"))){
+            throw new BizException("用户不存在");
+        }
         return report;
     }
 
