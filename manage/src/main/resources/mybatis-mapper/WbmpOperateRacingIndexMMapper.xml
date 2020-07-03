@@ -42,6 +42,8 @@
                         ORG_ID = #{orgId}
                     AND DATE_FORMAT(DATA_DT, '%Y-%m') = #{date}
                     AND INDEX_NO = #{id}
+                    ORDER BY DATA_DT DESC
+					LIMIT  1
                 ),
                 0
             )
