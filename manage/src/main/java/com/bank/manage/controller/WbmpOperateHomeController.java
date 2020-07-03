@@ -125,6 +125,11 @@ public class WbmpOperateHomeController {
         return this.wbmpAbsTransinfoService.counterDealProportion(orgId);
     }
 
+    /**
+     * 获取上一个月的赛马制指标
+     * @param orgId
+     * @return
+     */
     @ApiOperation("赛马制考核指标")
     @GetMapping("/racingAssessIndex/{orgId}")
     public HouseRaceDto racingAssessIndex(@PathVariable String orgId) {
