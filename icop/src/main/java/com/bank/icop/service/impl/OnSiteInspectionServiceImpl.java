@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
@@ -35,7 +36,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("userNo", userId);//4095
 
-        Map returnData = getReport(parmMap, "FXYJ11001", "获取运营检查任务列表", 1, "返回状态  -1:参数为空 ,  0:用户不存在");
+        Map returnData = getReport(parmMap, "FXYJ11001", "获取运营检查任务列表", "1", "返回状态  -1:参数为空 ,  0:用户不存在");
         if (returnData.get("List") == null || returnData.get("List") instanceof String) {
             return new ArrayList<OnSiteInspectionTaskVO>();
         }
@@ -67,7 +68,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         return getIcopTagList(parmMap,
                 "FXYJ11002",
                 "获取运营检查大项展示列表",
-                2,
+                "1,2",
                 "返回状态  -1:参数为空 ,  0:用户不存在  , 1:未查询出数据 ,2:正常 ");
     }
 
@@ -80,7 +81,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         return getReport(parmMap,
                 "FXYJ11003",
                 "检查任务执行展示",
-                2,
+                "1,2",
                 "返回状态  -1:参数为空 ,  0:用户不存在  , 1:未查询出数据 ,2:正常 ");
     }
 
@@ -92,7 +93,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         Map report = getReport(parmMap,
                 "FXYJ11004",
                 "检查要点查看",
-                1,
+                "1,2",
                 "返回状态  -1:参数为空 , 0:未查询出数据 ,1:正常 ");
         Object value = report.get("value");
         if (StrUtil.isBlankIfStr(value)) {
@@ -109,7 +110,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         return getIcopTagData(parmMap,
                 "FXYJ11005",
                 "检查问题编辑",
-                1,
+                "1,2",
                 "返回状态  -1:参数为空 , 0:未查询出数据 ,1:正常 ", "details");
     }
 
@@ -121,7 +122,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         Map report = getReport(parmMap,
                 "FXYJ11006",
                 "检查任务的保存",
-                0,
+                "0",
                 "返回状态  -1:失败 , 0:成功");
         Object value = report.get("status");
         if (StrUtil.isBlankIfStr(value)) {
@@ -138,7 +139,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         Map report = getReport(parmMap,
                 "FXYJ11007",
                 "检查任务的提交",
-                0,
+                "0",
                 "返回状态  -1:失败 , 0:成功");
         Object value = report.get("status");
         if (StrUtil.isBlankIfStr(value)) {
@@ -158,7 +159,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         return getIcopTagList(parmMap,
                 "FXYJ11008",
                 "获取运营检查大项展示列表",
-                2,
+                "1,2",
                 "返回状态  -1:参数为空 ,  0:用户不存在  , 1:未查询出数据 ,2:正常 ");
     }
 
@@ -170,7 +171,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         return getIcopTagList(parmMap,
                 "FXYJ11009",
                 "检查内容详细查看",
-                1,
+                "0,1",
                 "返回状态  -1:参数为空 ,  0:未查询出数据  , 1:正常  ");
     }
 
@@ -182,7 +183,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         return getIcopTagList(parmMap,
                 "FXYJ11010",
                 "检查问题查看列表",
-                1,
+                "0,1",
                 "返回状态  -1:参数为空 ,  0:未查询出数据  , 1:正常  ");
     }
 
@@ -193,7 +194,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         return getIcopTagList(parmMap,
                 "FXYJ11011",
                 "检查问题查看列表",
-                2,
+                "1,2",
                 "返回状态  -1:参数为空 ,  0:用户不存在  , 1:未查询出数据 ,2:正常 ");
     }
 
@@ -205,7 +206,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         return getIcopTagList(parmMap,
                 "FXYJ11012",
                 "检查内容审核列表",
-                2,
+                "1,2",
                 "返回状态  -1:参数为空 ,  0:用户不存在  , 1:未查询出数据 ,2:正常 ");
     }
 
@@ -216,7 +217,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         return getReport(parmMap,
                 "FXYJ11013",
                 "检查内容详细审核",
-                2,
+                "1,2",
                 "返回状态  -1:参数为空 ,  0:用户不存在  , 1:未查询出数据 ,2:正常 ");
     }
 
@@ -228,7 +229,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         return getIcopTagList(parmMap,
                 "FXYJ11014",
                 "问题查看",
-                0,
+                "0",
                 "返回状态  -1:参数为空 ,  0:正常 ");
     }
 
@@ -239,7 +240,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         return getIcopTagList(parmMap,
                 "FXYJ11015",
                 "问题查看",
-                0,
+                "0",
                 "返回状态  -1:参数为空 ,  0:正常 ");
     }
 
@@ -255,7 +256,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         Map report = getReport(parmMap,
                 "FXYJ11016",
                 "检查子项审核提交",
-                0,
+                "0",
                 "返回状态  -1:执行失败 ,  0:执行成功 ");
         Object value = report.get("status");
         if (StrUtil.isBlankIfStr(value)) {
@@ -271,7 +272,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         return getIcopTagList(parmMap,
                 "FXYJ11017",
                 "问题待整改列表",
-                0,
+                "0",
                 "返回状态  -1:参数为空 ,  0:正常 ");
     }
 
@@ -283,7 +284,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         return getIcopTagList(parmMap,
                 "FXYJ11018",
                 "问题整改展示界面",
-                0,
+                "0",
                 "返回状态  -1:参数为空 ,  0:正常 ");
     }
 
@@ -296,7 +297,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         Map report = getReport(parmMap,
                 "FXYJ11019",
                 "整改反馈说明保存",
-                0,
+                "0",
                 "返回状态  -1:执行失败 ,  0:执行成功 ");
         Object value = report.get("status");
         if (StrUtil.isBlankIfStr(value)) {
@@ -313,7 +314,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         Map report = getReport(parmMap,
                 "FXYJ11020",
                 "整改提交",
-                0,
+                "0",
                 "返回状态  -1:执行失败 ,  0:执行成功 ");
         Object value = report.get("status");
         if (StrUtil.isBlankIfStr(value)) {
@@ -329,7 +330,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         return getIcopTagList(parmMap,
                 "FXYJ11021",
                 "整改待审核列表",
-                0,
+                "0",
                 "返回状态  -1:参数为空 ,  0:正常 ");
     }
 
@@ -341,7 +342,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         return getReport(parmMap,
                 "FXYJ11022",
                 "整改审批展示",
-                0,
+                "0",
                 "返回状态  -1:参数为空 ,  0:正常");
     }
 
@@ -355,7 +356,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         Map report = getReport(parmMap,
                 "FXYJ11023",
                 "整改审批提交",
-                0,
+                "0",
                 "返回状态  -1:参数为空 ,  0:正常");
         Object value = report.get("status");
         if (StrUtil.isBlankIfStr(value)) {
@@ -372,7 +373,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         return getIcopTagList(parmMap,
                 "FXYJ11024",
                 "检查任务详细查看",
-                1,
+                "0,1",
                 "返回状态  -1:参数为空 ,  0:未查询出数据  , 1:正常  ");
     }
 
@@ -383,11 +384,11 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         return getReport(parmMap,
                 "FXYJ11025",
                 "问题详细查看",
-                1,
+                "0,1",
                 "返回状态  -1:参数为空 ,  0:未查询出数据  , 1:正常");
     }
 
-    private Object getIcopTagData(Map<String, Object> parmMap, String serviceCode, String serviceName, Integer rightCode, String errMsg, String tag) {
+    private Object getIcopTagData(Map<String, Object> parmMap, String serviceCode, String serviceName, String rightCode, String errMsg, String tag) {
         Map report = getReport(parmMap, serviceCode, serviceName, rightCode, errMsg);
         Object list = report.get(tag);
         if (list != null) {
@@ -398,19 +399,23 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         }
     }
 
-    private List getIcopTagList(Map<String, Object> parmMap, String serviceCode, String serviceName, Integer rightCode, String errMsg) {
+    private List getIcopTagList(Map<String, Object> parmMap, String serviceCode, String serviceName, String rightCode, String errMsg) {
         Object data = getIcopTagData(parmMap, serviceCode, serviceName, rightCode, errMsg, "List");
         if (data instanceof ArrayList) {
             return (List) data;
         }
         else {
             List result = new ArrayList();
-            result.add(data);
+            if (data instanceof String) {
+            }
+            else {
+                result.add(data);
+            }
             return result;
         }
     }
 
-    private Map getReport(Map<String, Object> parmMap, String serviceCode, String serviceName, Integer rightCode, String errMsg) {
+    private Map getReport(Map<String, Object> parmMap, String serviceCode, String serviceName, String rightCode, String errMsg) {
         Map report = null;
         try {
             report = SoapUtil.sendReport(serviceCode, "812", parmMap);
@@ -425,13 +430,13 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         return report;
     }
 
-    private void checkStatus(String serviceName, Integer rightCode, String errMsg, Map report) {
-        Object status = report.get("status");
+    private void checkStatus(String serviceName, String rightCode, String errMsg, Map report) {
+        String status = (String) report.get("status");
         if (StrUtil.isBlankIfStr(status)) {
             throw new BizException(serviceName + "接口返回状态码为空！");
         }
         else {
-            if (!status.equals(String.valueOf(rightCode))) {
+            if (StringUtils.indexOf(rightCode, status) == -1) {
                 throw new BizException(errMsg + "；该接口返回状态码为：" + status + "！");
             }
         }
@@ -441,7 +446,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
     public List<HandledRectifyVO> handledRectifyList(String userId) {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("username", userId);//4095
-        List<Map> datas = getIcopTagList(parmMap, "FXYJ11028", "已处理整改列表", 1, "返回状态  -1:参数为空 ,  0:用户不存在");
+        List<Map> datas = getIcopTagList(parmMap, "FXYJ11028", "已处理整改列表", "1", "返回状态  -1:参数为空 ,  0:用户不存在");
 
         List<HandledRectifyVO> result = new ArrayList<>();
         for (int i = 0; i < datas.size(); i++) {
@@ -468,7 +473,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         parmMap.put("userNo", userId);
         parmMap.put("cpk", rectifyId);
 
-        Map returnData = getReport(parmMap, "FXYJ11029", "已整改详细信息", 1, "返回状态  -1:参数为空 ,  0:用户不存在");
+        Map returnData = getReport(parmMap, "FXYJ11029", "已整改详细信息", "1", "返回状态  -1:参数为空 ,  0:用户不存在");
 
         HandledRectifyInfoVO result = new HandledRectifyInfoVO();
         //审批日志
@@ -510,7 +515,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         parmMap.put("details", auditFeedback);
         //问题PK
         parmMap.put("pk", problemId);
-        getReport(parmMap, "FXYJ11026", "问题反馈", 0, "返回状态  -1:失败 ,  0:成功");
+        getReport(parmMap, "FXYJ11026", "问题反馈", "0", "返回状态  -1:失败 ,  0:成功");
         return true;
     }
 
@@ -530,7 +535,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         parmMap.put("userNo", userId);
         parmMap.put("jsonstr", JSONObject.toJSONString(dataMap));
 
-        getReport(parmMap, "FXYJ11027", "问题保存", 0, "返回状态  -1:失败 ,  0:成功");
+        getReport(parmMap, "FXYJ11027", "问题保存", "0", "返回状态  -1:失败 ,  0:成功");
         return true;
     }
 
@@ -538,7 +543,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
     public List getUserOfOrgInfo(String userId) {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("userNo", userId);
-        Object data = getIcopTagData(parmMap, "FXYJ11030", "用户所属机构", 0, "返回状态  -1:失败 ,  0:成功", "organ");
+        Object data = getIcopTagData(parmMap, "FXYJ11030", "用户所属机构", "0", "返回状态  -1:失败 ,  0:成功", "organ");
         if (data instanceof ArrayList) {
             return (List) data;
         }
@@ -556,7 +561,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         parmMap.put("userId", tellerId);
         parmMap.put("userName", tellerName);
 
-        return getIcopTagList(parmMap, "FXYJ11031", "获取整改柜员", 2, "返回状态  -1:传入参数为空 ,  0:查询用户不存在 ,1:未查询出柜员 ,2:执行正常");
+        return getIcopTagList(parmMap, "FXYJ11031", "获取整改柜员", "1,2", "返回状态  -1:传入参数为空 ,  0:查询用户不存在 ,1:未查询出柜员 ,2:执行正常");
     }
 
     @Override
@@ -564,6 +569,6 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("userNo", userId);
 
-        return getIcopTagList(parmMap, "FXYJ11032", "用户所属角色", 1, "返回状态  -1:传入参数为空 ,  0:查询用户不存在 ,1:执行正常");
+        return getIcopTagList(parmMap, "FXYJ11032", "用户所属角色", "1", "返回状态  -1:传入参数为空 ,  0:查询用户不存在 ,1:执行正常");
     }
 }
