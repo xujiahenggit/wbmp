@@ -329,7 +329,7 @@ public class OnSiteInspectionController extends BaseIcopController {
     }
 
     @ApiOperation("获取用户所属机构信息")
-    @GetMapping("/getUserOfOrg")
+    @GetMapping("/getUserOfOrgInfo")
     public Object getUserOfOrgInfo() {
         TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
         return onSiteInspectionService.getUserOfOrgInfo(tokenUserInfo.getUserId());
