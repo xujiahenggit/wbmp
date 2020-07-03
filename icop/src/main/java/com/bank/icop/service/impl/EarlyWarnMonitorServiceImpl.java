@@ -37,6 +37,15 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         } catch (Exception e) {
             throw new BizException("预警任务基本信息查询报错！"+e.getMessage());
         }
+
+        if("-1".equals((String)report.get("status"))){
+            throw new BizException("预警编号为空");
+        }else if("1".equals((String)report.get("status"))){
+            throw new BizException("编号未查询出预警信息");
+        }else if("3".equals((String)report.get("status"))){
+            throw new BizException("无预警日志");
+        }
+
         return report;
     }
 
