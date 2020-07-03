@@ -37,7 +37,7 @@ public class WbmpOperateRacingIndexMServiceImpl extends ServiceImpl<WbmpOperateR
     public HouseRaceDto racingAssessIndex(String orgId) {
         HouseRaceDto houseRaceDto=new HouseRaceDto();
         HouseRaceCharts houseRaceCharts=new HouseRaceCharts();
-        String date= LocalDate.now().minusDays(1).toString().substring(0, 7);
+        String date= LocalDate.now().minusMonths(1).toString().substring(0, 7);
         List<HouseRaceItem> sortItem=new ArrayList<>();
         HouseRaceItem houseRaceItem_008=new HouseRaceItem();
         houseRaceItem_008.setId(WbmpConstFile.SMZ_RACING_008);
