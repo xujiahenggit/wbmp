@@ -103,9 +103,15 @@ public class BusinessPanelServiceImpl implements BusinessPanelService {
                 long num = (Long) objectMap.get("num");//窗口数
                 long queue_status_3 =  (long)objectMap.get("queue_status_3");
                 long queue_seq_count =  (long)objectMap.get("queue_seq_count");
-                BigDecimal index_cnt = NumberUtil.div(objectMap.get("index_cnt").toString(),"60"); //平均等待时长-秒/ 60 = 平均等待时长-分钟
+                BigDecimal index_cnt=new BigDecimal(0);
+                if(objectMap.get("index_cnt")!=null && objectMap.get("index_cnt")!=""){
+                    index_cnt = NumberUtil.div(objectMap.get("index_cnt").toString(),"60");
+                }
+                BigDecimal avg_abandoned_lv1=new BigDecimal(0);
+                if(objectMap.get("avg_abandoned_lv")!=null && objectMap.get("avg_abandoned_lv")!=""){
+                    avg_abandoned_lv1 = new BigDecimal(String.valueOf(objectMap.get("avg_abandoned_lv")));
+                }
 
-                BigDecimal avg_abandoned_lv1 = new BigDecimal(String.valueOf(objectMap.get("avg_abandoned_lv")));
                 BigDecimal one = new BigDecimal("1");
 
                 BigDecimal  avg_abandoned_lv = one.subtract(avg_abandoned_lv1);
