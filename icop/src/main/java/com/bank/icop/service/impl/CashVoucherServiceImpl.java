@@ -138,7 +138,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         parmMap.put("userId",vo.getUserId());
         parmMap.put("userName",vo.getUserName());
         parmMap.put("orderId",vo.getOrderId());
-        parmMap.put("orderdeatild",vo.getOrderDeatild());
+        parmMap.put("orderdeatiId",vo.getOrderDeatild());
         parmMap.put("operationObject",vo.getOperationObject());
         parmMap.put("operationType",vo.getOperationType());
         Map report = null;
@@ -265,6 +265,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         IPage<VoucherListVo> page = new Page<>();
         List<VoucherListVo> list = new ArrayList<>();
         Object objectData = report.get("data");
+        Object objectTotal= report.get("recordSize");
         if(isObjectIsNotEmpty(objectData)){
             List<Map<String,Object>> dataList =(List<Map<String,Object>> )report.get("data");
             if(CollectionUtil.isNotEmpty(dataList)){
@@ -281,6 +282,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
                 }
             }
         }
+        page.setTotal(Integer.parseInt(objectTotal.toString()));
         page.setRecords(list);
         return page;
     }
@@ -452,7 +454,8 @@ public class CashVoucherServiceImpl implements CashVoucherService {
     }
 
     @Override
-    public List<OrderDetailDo> queryDetailList(OrderQueryDetailVo orderQueryDetailVo) {
+    public IPage<OrderDetailDo> queryDetailList(OrderQueryDetailVo orderQueryDetailVo) {
+        IPage<OrderDetailDo> page=new Page<>();
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("userId",orderQueryDetailVo.getUserId());
         parmMap.put("orderId",orderQueryDetailVo.getOrderId());
@@ -466,6 +469,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         }
         List<OrderDetailDo> list = new ArrayList<>();
         Object ObjectData = report.get("data");
+        Object objectTotal= report.get("recordSize");
         if(isObjectIsNotEmpty(ObjectData)){
             Object dataMap =  report.get("data");
             if(dataMap instanceof ArrayList){
@@ -506,7 +510,9 @@ public class CashVoucherServiceImpl implements CashVoucherService {
                 list.add(orderDetailDo);
             }
         }
-        return list;
+        page.setTotal(Integer.parseInt(objectTotal.toString()));
+        page.setRecords(list);
+        return page;
     }
 
     /**

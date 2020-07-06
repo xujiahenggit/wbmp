@@ -60,5 +60,5 @@ public interface CashVoucherService {
 
     ReceiptInfoVo getReceiptInfoByOrg(String orgId);
 
-    List<OrderDetailDo> queryDetailList(OrderQueryDetailVo orderQueryDetailVo);
+    IPage<OrderDetailDo> queryDetailList(OrderQueryDetailVo orderQueryDetailVo);
 }

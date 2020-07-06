@@ -135,7 +135,7 @@ public class CashVoucherController extends BaseIcopController{
 
     @PostMapping("/queryDetailList")
     @ApiOperation("查询订单明细列表")
-    public List<OrderDetailDo> queryDetailList(@RequestBody OrderQueryDetailVo orderQueryDetailVo){
+    public IPage<OrderDetailDo> queryDetailList(@RequestBody OrderQueryDetailVo orderQueryDetailVo){
         return cashVoucherService.queryDetailList(orderQueryDetailVo);
     }
 
