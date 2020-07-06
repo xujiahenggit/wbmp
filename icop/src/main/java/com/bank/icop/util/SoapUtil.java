@@ -72,7 +72,7 @@ public class SoapUtil {
                 .insert(builder.indexOf("</Request>"), mapToXmlStr(paramMap)).toString();
         log.info("ICOP请求流水：[{}]，请求服务编码：[{}]，请求参数：[{}]", headerDO.getExternalReference(), headerDO.getServiceCode(), xml);
         HttpResponse response = HttpRequest.post(env.getProperty("ICOP.PATH")).header("SOAPAction", "application/soap+xml;charset=utf-8")
-                .body(xml, "text/xml").timeout(10000).execute();
+                .body(xml, "text/xml").timeout(Integer.parseInt(env.getProperty("ICOP.TIMEOUT"))).execute();
 
         Map<String, Object> domParse = null;
         try {

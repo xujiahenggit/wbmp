@@ -23,10 +23,18 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 
 /**
- * SOAP调用第三方接口 现场检查实现类
+ * 现场检查接口实现类
+ * ClassName: OnSiteInspectionServiceImpl
  *
- * @author zhaozhongyuan
- * @since 2020-06-09
+ * @author Yanwen D. Ding
+ *
+ * Copyright © 2016 Yusys Technologies Co., Ltd.
+ *
+ * All Rights Reserved
+ *
+ * http://www.yusys.com.cn
+ *
+ * Create Time: 2020/07/06 19:45:53
  */
 @Service
 public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
@@ -393,75 +401,6 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
                 "返回状态  -1:参数为空 ,  0:未查询出数据  , 1:正常");
     }
 
-    private Object getIcopTagData(Map<String, Object> parmMap, String serviceCode, String serviceName, String rightCode, String errMsg, String tag) {
-        Map report = getReport(parmMap, serviceCode, serviceName, rightCode, errMsg);
-        Object list = report.get(tag);
-        if (list != null) {
-            return list;
-        }
-        else {
-            throw new BizException("返回值不包含" + tag + "标签！");
-        }
-    }
-
-    private List getIcopTagList(Map<String, Object> parmMap, String serviceCode, String serviceName, String rightCode, String errMsg) {
-        Object data = getIcopTagData(parmMap, serviceCode, serviceName, rightCode, errMsg, "List");
-        if (data instanceof ArrayList) {
-            return (List) data;
-        }
-        else {
-            List result = new ArrayList();
-            if (data instanceof String) {
-            }
-            else {
-                result.add(data);
-            }
-            return result;
-        }
-    }
-
-    private List getArray(Object data) {
-        if (data instanceof ArrayList) {
-            return (List) data;
-        }
-        else {
-            List result = new ArrayList();
-            if (data instanceof String) {
-            }
-            else {
-                result.add(data);
-            }
-            return result;
-        }
-    }
-
-    private Map getReport(Map<String, Object> parmMap, String serviceCode, String serviceName, String rightCode, String errMsg) {
-        Map report = null;
-        try {
-            report = SoapUtil.sendReport(serviceCode, "812", parmMap);
-        }
-        catch (Exception e) {
-            throw new BizException(serviceName + "报错！" + e.getMessage());
-        }
-        if (CollectionUtil.isEmpty(report)) {
-            throw new BizException("返回报文为空！");
-        }
-        checkStatus(serviceName, rightCode, errMsg, report);
-        return report;
-    }
-
-    private void checkStatus(String serviceName, String rightCode, String errMsg, Map report) {
-        String status = (String) report.get("status");
-        if (StrUtil.isBlankIfStr(status)) {
-            throw new BizException(serviceName + "接口返回状态码为空！");
-        }
-        else {
-            if (StringUtils.indexOf(rightCode, status) == -1) {
-                throw new BizException(errMsg + "；该接口返回状态码为：" + status + "！");
-            }
-        }
-    }
-
     @Override
     public List<HandledRectifyVO> handledRectifyList(String userId) {
         Map<String, Object> parmMap = new HashMap<>();
@@ -564,14 +503,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("userNo", userId);
         Object data = getIcopTagData(parmMap, "FXYJ11030", "用户所属机构", "0", "返回状态  -1:失败 ,  0:成功", "organ");
-        if (data instanceof ArrayList) {
-            return (List) data;
-        }
-        else {
-            List result = new ArrayList();
-            result.add(data);
-            return result;
-        }
+        return getArray(data);
     }
 
     @Override
@@ -590,5 +522,67 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         parmMap.put("userNo", userId);
 
         return getIcopTagList(parmMap, "FXYJ11032", "用户所属角色", "1", "返回状态  -1:传入参数为空 ,  0:查询用户不存在 ,1:执行正常");
+    }
+
+    private Object getIcopTagData(Map<String, Object> parmMap, String serviceCode, String serviceName, String rightCode, String errMsg, String tag) {
+        Map report = getReport(parmMap, serviceCode, serviceName, rightCode, errMsg);
+        Object list = report.get(tag);
+        if (list != null) {
+            return list;
+        }
+        else {
+            throw new BizException("返回值不包含" + tag + "标签！");
+        }
+    }
+
+    private List getIcopTagList(Map<String, Object> parmMap, String serviceCode, String serviceName, String rightCode, String errMsg) {
+        Object data = getIcopTagData(parmMap, serviceCode, serviceName, rightCode, errMsg, "List");
+        return getArray(data);
+    }
+
+    private List getArray(Object data) {
+        if (data instanceof ArrayList) {
+            return (List) data;
+        }
+        else {
+            List result = new ArrayList();
+            if (data instanceof String) {
+            }
+            else {
+                result.add(data);
+            }
+            return result;
+        }
+    }
+
+    private Map getReport(Map<String, Object> parmMap, String serviceCode, String serviceName, String rightCode, String errMsg) {
+        Map report = null;
+        try {
+            report = SoapUtil.sendReport(serviceCode, "812", parmMap);
+        }
+        catch (Exception e) {
+            String errorMess = e.getMessage();
+            if (StringUtils.equals("Read timed out", e.getMessage())) {
+                errorMess = "请求超时！排查ICOP、ESB、源系统应用服务是否正常！";
+            }
+            throw new BizException(serviceName + "【" + serviceCode + "】报错：" + errorMess);
+        }
+        if (CollectionUtil.isEmpty(report)) {
+            throw new BizException("返回报文为空！");
+        }
+        checkStatus(serviceName, rightCode, errMsg, report);
+        return report;
+    }
+
+    private void checkStatus(String serviceName, String rightCode, String errMsg, Map report) {
+        String status = (String) report.get("status");
+        if (StrUtil.isBlankIfStr(status)) {
+            throw new BizException(serviceName + "接口返回状态码为空！");
+        }
+        else {
+            if (StringUtils.indexOf(rightCode, status) == -1) {
+                throw new BizException(errMsg + "；该接口返回状态码为：" + status + "！");
+            }
+        }
     }
 }
