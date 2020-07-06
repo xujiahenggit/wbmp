@@ -277,15 +277,20 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
     }
 
     @Override
-    public Object problemUI(String currentUserId, String key) {
+    public Object problemRectifyInfo(String currentUserId, String key) {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("userNo", currentUserId);
         parmMap.put("cpk", key);
-        return getIcopTagList(parmMap,
+        Map data = getReport(parmMap,
                 "FXYJ11018",
                 "问题整改展示界面",
                 "0",
                 "返回状态  -1:参数为空 ,  0:正常 ");
+        Map result = new HashMap();
+        result.put("corrective", data.get("corrective"));
+        result.put("List", getArray(data.get("List")));
+
+        return result;
     }
 
     @Override
@@ -401,6 +406,21 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
 
     private List getIcopTagList(Map<String, Object> parmMap, String serviceCode, String serviceName, String rightCode, String errMsg) {
         Object data = getIcopTagData(parmMap, serviceCode, serviceName, rightCode, errMsg, "List");
+        if (data instanceof ArrayList) {
+            return (List) data;
+        }
+        else {
+            List result = new ArrayList();
+            if (data instanceof String) {
+            }
+            else {
+                result.add(data);
+            }
+            return result;
+        }
+    }
+
+    private List getArray(Object data) {
         if (data instanceof ArrayList) {
             return (List) data;
         }

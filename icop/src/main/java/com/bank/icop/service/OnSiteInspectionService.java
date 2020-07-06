@@ -45,7 +45,7 @@ public interface OnSiteInspectionService {
 
     Object problemUpdateList(String userId);
 
-    Object problemUI(String currentUserId, String key);
+    Object problemRectifyInfo(String currentUserId, String key);
 
     Object feedbackSave(String currentUserId, String key, String feedbackdes);
 

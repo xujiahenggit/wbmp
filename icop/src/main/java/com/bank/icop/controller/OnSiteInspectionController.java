@@ -147,9 +147,7 @@ public class OnSiteInspectionController extends BaseIcopController {
 
     @ApiOperation("检查问题查看列表")
     @GetMapping("/problemList/{taskpk}")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "taskpk", value = "任务编号", required = true, dataType = "String")
-    })
+    @ApiImplicitParam(name = "taskpk", value = "任务编号", required = true, dataType = "String")
     public Object problemList(@PathVariable("taskpk") String taskpk) {
         String userId = getCurrentUserId(request);
         return onSiteInspectionService.problemList(userId, taskpk);
@@ -164,9 +162,7 @@ public class OnSiteInspectionController extends BaseIcopController {
 
     @ApiOperation("检查内容审核列表")
     @GetMapping("/contentList/{taskpk}")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "taskpk", value = "任务编号", required = true, dataType = "String")
-    })
+    @ApiImplicitParam(name = "taskpk", value = "任务编号", required = true, dataType = "String")
     public Object contentList(@PathVariable("taskpk") String taskpk) {
         String userId = getCurrentUserId(request);
         return onSiteInspectionService.contentList(userId, taskpk);
@@ -174,9 +170,7 @@ public class OnSiteInspectionController extends BaseIcopController {
 
     @ApiOperation("检查内容详细审核")
     @GetMapping("/contentCheck/{pk}")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "pk", value = "检查key", required = true, dataType = "String")
-    })
+    @ApiImplicitParam(name = "pk", value = "检查key", required = true, dataType = "String")
     public Object contentCheck(@PathVariable("pk") String pk) {
         return onSiteInspectionService.contentCheck(pk);
     }
@@ -228,19 +222,15 @@ public class OnSiteInspectionController extends BaseIcopController {
     }
 
     @ApiOperation("问题整改展示界面")
-    @GetMapping("/problemUI/{key}")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "key", value = "整改PK", required = true, dataType = "String")
-    })
-    public Object problemUI(@PathVariable("key") String key) {
-        return onSiteInspectionService.problemUI(getCurrentUserId(request), key);
+    @GetMapping("/problemRectifyInfo/{key}")
+    @ApiImplicitParam(name = "key", value = "整改PK", required = true, dataType = "String")
+    public Object problemRectifyInfo(@PathVariable("key") String key) {
+        return onSiteInspectionService.problemRectifyInfo(getCurrentUserId(request), key);
     }
 
     @ApiOperation("整改审批展示")
     @GetMapping("/feedbackView/{key}")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "cpk", value = "整改PK", required = false, dataType = "String")
-    })
+    @ApiImplicitParam(name = "cpk", value = "整改PK", required = false, dataType = "String")
     public Object feedbackView(@PathVariable("cpk") String cpk) {
         return onSiteInspectionService.feedbackView(getCurrentUserId(request), cpk);
     }
