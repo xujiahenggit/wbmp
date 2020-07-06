@@ -24,7 +24,8 @@
     <!--    查询交易量-->
     <select id="getTranNumByOrgId" resultType="java.lang.Integer">
         SELECT
-            IFNULL((SELECT TRADE_VOLUME
+            IFNULL((SELECT
+            sum(TRADE_VOLUME)	TRADE_VOLUME
         FROM
             wbmp_abs_transinfo
         WHERE

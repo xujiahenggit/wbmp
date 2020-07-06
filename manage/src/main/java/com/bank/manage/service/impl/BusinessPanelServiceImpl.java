@@ -77,8 +77,8 @@ public class BusinessPanelServiceImpl implements BusinessPanelService {
 
     @Override
     public List<AbsTellerInfo> tellertPageList(String orgId) {
-//        Page<AbsTellerInfo> page = new Page<>(pageQueryModel.getPageIndex(), pageQueryModel.getPageSize());
-//        page.setRecords(businessPanelDao.tellertPageList(page, orgId));
+        //柜员表的机构号为6位长度，所以查询的机构号，截取前六位
+        orgId = orgId.substring(0,6);
         return businessPanelDao.tellertPageList(orgId)
                 .stream()
                 .map(e -> {

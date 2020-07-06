@@ -154,22 +154,22 @@ SELECT
     </select>
 
 
+
     <select id="tradeVolumeSum" resultType="java.lang.Integer">
         select IFNULL((
         SELECT SUM(trade_volume) sum FROM wbmp_abs_transinfo
         WHERE flag='2' AND DATA_DT=CURDATE() AND concat(substr(ORG_ID,1,6),'01')=#{orgId}
-        GROUP BY ORG_ID
         ),0)
     </select>
-
+    <!-- tradeVolumeSum去除了 GROUP BY ORG_ID-->
 
     <select id="tellertPageList" resultType="com.bank.manage.vo.AbsTellerInfo">
        SELECT
-            a.*,
-            b.callNum,
-            c.trade_volume,
-            d.trade_volume trade_volume_sum,
-            e.onLineTime
+             a.*,
+            IFNULL(b.callNum,0) callNum,
+            IFNULL(c.trade_volume,0) trade_volume,
+            IFNULL(d.trade_volume,0) trade_volume_sum,
+            IFNULL(e.onLineTime,0) onLineTime
         FROM
             wbmp_abs_teller_info a
             LEFT JOIN (
