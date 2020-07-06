@@ -41,15 +41,15 @@ public class EarlyWarnMonitorController {
     @ApiOperation("预警任务基本信息查询接口")
     @GetMapping("/getT69Alerts/{alertkey}")
     @ApiImplicitParam(name = "alertkey",value = "预警编号",required = true,paramType = "path")
-    public Object getT69Alerts(@PathVariable("alertkey") String alertkey){
-        return earlyWarnMonitorService.getT69Alerts(alertkey);
+    public Object getT69Alerts(@PathVariable("alertkey") String alertKey){
+        return earlyWarnMonitorService.getT69Alerts(alertKey);
     }
 
     @ApiOperation("协查组任务查看详情数据查询接口（有、无调查记录)")
-    @GetMapping("/getTaskDetails/{taskkey}")
-    @ApiImplicitParam(name = "taskkey",value = "任务编号",required = true,paramType = "path")
-    public Object getTaskDetails(@PathVariable("taskkey") String taskkey){
-        return earlyWarnMonitorService.getTaskDetails(taskkey);
+    @GetMapping("/getTaskDetails/{alertKey}")
+    @ApiImplicitParam(name = "alertKey",value = "任务编号",required = true,paramType = "path")
+    public Object getTaskDetails(@PathVariable("alertKey") String alertKey){
+        return earlyWarnMonitorService.getTaskDetails(alertKey);
     }
 
     @ApiOperation("协查组任务数据修改接口")

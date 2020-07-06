@@ -50,9 +50,9 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
     }
 
     @Override
-    public Object getTaskDetails(String taskkey) {
+    public Object getTaskDetails(String alertKey) {
         Map<String, Object> parmMap = new HashMap<>();
-        parmMap.put("taskkey",taskkey);
+        parmMap.put("alertKey",alertKey);
         Map report = null;
         try {
             report = SoapUtil.sendReport("FXYJ10003","812",parmMap);
@@ -68,7 +68,8 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         parmMap.put("taskkey",modifyTasksDo.getTaskkey());
         parmMap.put("taskname",modifyTasksDo.getTaskname());
         parmMap.put("deallev",modifyTasksDo.getDeallev());
-        parmMap.put("taskId",modifyTasksDo.getTaskId());
+        parmMap.put("taskdesc",modifyTasksDo.getTaskdesc());
+        parmMap.put("dealgroup",modifyTasksDo.getDealgroup());
         Map report = null;
         try {
             report = SoapUtil.sendReport("FXYJ10004","812",parmMap);

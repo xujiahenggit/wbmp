@@ -18,6 +18,9 @@ public class ModifyTasksDo implements Serializable {
     @ApiModelProperty("任务级别")
     private String deallev;
     @ApiModelProperty("描述信息")
-    private String taskId;
+    private String taskdesc;
+    @ApiModelProperty("处理机构")
+    private String dealgroup;
+
 
 }
