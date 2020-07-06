@@ -24,15 +24,15 @@
 
     <!--获取月度的平均弃号率-->
     <select id="getOrgAvgAbandVe" resultType="String">
-        SELECT AVG(AVG_ABANDONED_LV) AVG_ABANDONED_LV
+        SELECT AVG_ABANDONED_LV
         FROM wbmp_operate_bqms_queue_avg
-        WHERE  ORG_ID=#{orgId}
-         AND  DATE_FORMAT (DATA_DT, '%Y-%m' )=#{date}
+        WHERE  ORG_ID= #{orgId}
+        order by DATA_DT desc limit 1
     </select>
 
     <!--    客户平均等待时长-->
     <select id="getCustmerWaitTime" resultType="java.lang.Float">
-        SELECT IFNULL((SELECT INDEX_CNT FROM wbmp_operate_bqms_queue_avg WHERE ORG_ID=#{orgId} AND DATE_FORMAT(DATA_DT,'%Y-%m-%d')=#{date}),0)
+        SELECT IFNULL((SELECT INDEX_CNT FROM wbmp_operate_bqms_queue_avg WHERE ORG_ID=#{orgId}  order by DATA_DT desc limit 1 ),0)
     </select>
 
 </mapper>

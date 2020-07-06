@@ -47,7 +47,7 @@ public class EarlyWarnMonitorController {
 
     @ApiOperation("协查组任务查看详情数据查询接口（有、无调查记录)")
     @GetMapping("/getTaskDetails/{taskkey}")
-    @ApiImplicitParam(name = "alertkey",value = "任务编号",required = true,paramType = "path")
+    @ApiImplicitParam(name = "taskkey",value = "任务编号",required = true,paramType = "path")
     public Object getTaskDetails(@PathVariable("taskkey") String taskkey){
         return earlyWarnMonitorService.getTaskDetails(taskkey);
     }

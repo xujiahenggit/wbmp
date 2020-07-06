@@ -467,31 +467,32 @@ SELECT
     <!--根据设备id，查询设备详情-->
     <select id="findByDeviceId" resultType="com.bank.manage.dos.WbmpAtmpBasicInfoDO">
         select
-             CASE device_run_status
-               WHEN 10
-                THEN
+            CASE device_run_status
+               WHEN 10 THEN
                 '在线'
                 WHEN 11 THEN
                 '离线'
                 WHEN -1 THEN
-                 '空闲'
+                 '无效'
                 WHEN 0 THEN
-                 '交易中'
+                 '空闲'
                WHEN 1 THEN
-                  '故障'
-                WHEN 2 THEN
-                '暂停服务'
-                WHEN 3 THEN
-                 '维护中'
-                 WHEN 4 THEN
-                 '通信中断'
-                WHEN 5 THEN
-                '耗材尽'
-                WHEN 6 THEN
-                 '已关机'
-                 WHEN 7 THEN
-                 '重启中'
-                END AS deviceRunStatus,
+                  '交易中'
+               WHEN 2 THEN
+                '故障'
+               WHEN 3 THEN
+                 '暂停服务'
+               WHEN 4 THEN
+               '维护中'
+               WHEN 5 THEN
+               '通信中断'
+               WHEN 6 THEN
+               '耗材尽'
+               WHEN 7 THEN
+               '已关机'
+               WHEN 8 THEN
+               '重启中'
+             END AS deviceRunStatus,
             device_vendor  as  deviceVendor,
             device_model as deviceModel,
            card_reader as cardReader,

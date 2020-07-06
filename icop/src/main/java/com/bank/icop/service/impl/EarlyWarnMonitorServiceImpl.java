@@ -22,7 +22,7 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
             throw new BizException("获取代办、未办结、已办数据列表报错！"+e.getMessage());
         }
         if(!"0".equals((String)report.get("status"))){
-            throw new BizException("用户不存在");
+            throw new BizException("用户不存在,状态码:"+(String)report.get("status"));
         }
         return report;
     }
@@ -37,6 +37,15 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         } catch (Exception e) {
             throw new BizException("预警任务基本信息查询报错！"+e.getMessage());
         }
+
+        if("-1".equals((String)report.get("status"))){
+            throw new BizException("预警编号为空,状态码:"+(String)report.get("status"));
+        }else if("1".equals((String)report.get("status"))){
+            throw new BizException("编号未查询出预警信息,状态码:"+(String)report.get("status"));
+        }else if("3".equals((String)report.get("status"))){
+            throw new BizException("无预警日志,状态码:"+(String)report.get("status"));
+        }
+
         return report;
     }
 
@@ -66,6 +75,9 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         } catch (Exception e) {
             throw new BizException("协查组任务数据修改报错！"+e.getMessage());
         }
+        if(!"0".equals((String)report.get("status"))){
+            throw new BizException("执行失败,状态码:"+(String)report.get("status"));
+        }
         return report;
     }
 
@@ -78,6 +90,9 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
             report = SoapUtil.sendReport("FXYJ10005","812",parmMap);
         } catch (Exception e) {
             throw new BizException("协查组任务数据删除报错！"+e.getMessage());
+        }
+        if(!"0".equals((String)report.get("status"))){
+            throw new BizException("执行失败,状态码:"+(String)report.get("status"));
         }
         return report;
     }
@@ -92,6 +107,9 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
             report = SoapUtil.sendReport("FXYJ10006","812",parmMap);
         } catch (Exception e) {
             throw new BizException("协查组任务退回报错！"+e.getMessage());
+        }
+        if(!"0".equals((String)report.get("status"))){
+            throw new BizException("执行失败,状态码:"+(String)report.get("status"));
         }
         return report;
     }
@@ -111,6 +129,9 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         } catch (Exception e) {
             throw new BizException("协查组任务数据新增接口报错！"+e.getMessage());
         }
+        if(!"0".equals((String)report.get("status"))){
+            throw new BizException("执行失败,状态码:"+(String)report.get("status"));
+        }
         return report;
     }
 
@@ -124,6 +145,15 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         } catch (Exception e) {
             throw new BizException("查看预警任务日志信息查询报错！"+e.getMessage());
         }
+
+        if("-1".equals((String)report.get("status"))){
+            throw new BizException("预警编号为空,状态码:"+(String)report.get("status"));
+        }else if("1".equals((String)report.get("status"))){
+            throw new BizException("编号未查询出预警信息,状态码:"+(String)report.get("status"));
+        }else if("3".equals((String)report.get("status"))){
+            throw new BizException("无预警日志,状态码:"+(String)report.get("status"));
+        }
+
         return report;
     }
 
@@ -137,6 +167,15 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         } catch (Exception e) {
             throw new BizException("查看规则信息查询报错！"+e.getMessage());
         }
+
+        if("-1".equals((String)report.get("status"))){
+            throw new BizException("预警编号为空,状态码:"+(String)report.get("status"));
+        }else if("1".equals((String)report.get("status"))){
+            throw new BizException("编号未查询出预警信息,状态码:"+(String)report.get("status"));
+        }else if("3".equals((String)report.get("status"))){
+            throw new BizException("无预警日志,状态码:"+(String)report.get("status"));
+        }
+
         return report;
     }
 
@@ -151,6 +190,9 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
             report = SoapUtil.sendReport("FXYJ10010","812",parmMap);
         } catch (Exception e) {
             throw new BizException("处理方式为排除的归档报错！"+e.getMessage());
+        }
+        if(!"0".equals((String)report.get("status"))){
+            throw new BizException("执行失败,状态码:"+(String)report.get("status"));
         }
         return report;
     }
@@ -172,6 +214,9 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         } catch (Exception e) {
             throw new BizException("处理方式为登记风险事件的归档报错！"+e.getMessage());
         }
+        if(!"0".equals((String)report.get("status"))){
+            throw new BizException("执行失败,状态码:"+(String)report.get("status"));
+        }
         return report;
     }
 
@@ -184,6 +229,10 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
             report = SoapUtil.sendReport("FXYJ10018","812",parmMap);
         } catch (Exception e) {
             throw new BizException("协查任务基本信息查询报错！"+e.getMessage());
+        }
+
+        if(!"0".equals((String)report.get("status"))){
+            throw new BizException("执行失败,状态码:"+(String)report.get("status"));
         }
         return report;
     }
@@ -203,6 +252,9 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         } catch (Exception e) {
             throw new BizException("处理记录修改报错！"+e.getMessage());
         }
+        if(!"0".equals((String)report.get("status"))){
+            throw new BizException("执行失败,状态码:"+(String)report.get("status"));
+        }
         return report;
     }
 
@@ -215,6 +267,9 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
             report = SoapUtil.sendReport("FXYJ10020","812",parmMap);
         } catch (Exception e) {
             throw new BizException("处理记录删除报错！"+e.getMessage());
+        }
+        if(!"0".equals((String)report.get("status"))){
+            throw new BizException("执行失败,状态码:"+(String)report.get("status"));
         }
         return report;
     }
@@ -232,6 +287,9 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         } catch (Exception e) {
             throw new BizException("协查组任务调查提交报错！"+e.getMessage());
         }
+        if(!"0".equals((String)report.get("status"))){
+            throw new BizException("执行失败,状态码:"+(String)report.get("status"));
+        }
         return report;
     }
 
@@ -244,6 +302,9 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
             report = SoapUtil.sendReport("FXYJ10022","812",parmMap);
         } catch (Exception e) {
             throw new BizException("预警发起与识别数据列表报错！"+e.getMessage());
+        }
+        if(!"0".equals((String)report.get("status"))){
+            throw new BizException("执行失败,状态码:"+(String)report.get("status"));
         }
         return report;
     }
@@ -258,6 +319,9 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         } catch (Exception e) {
             throw new BizException("已回复协查数据列表报错！"+e.getMessage());
         }
+        if(!"0".equals((String)report.get("status"))){
+            throw new BizException("执行失败,状态码:"+(String)report.get("status"));
+        }
         return report;
     }
 
@@ -270,6 +334,9 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
             report = SoapUtil.sendReport("FXYJ10024","812",parmMap);
         } catch (Exception e) {
             throw new BizException("未回复协查数据列表报错！"+e.getMessage());
+        }
+        if(!"0".equals((String)report.get("status"))){
+            throw new BizException("执行失败,状态码:"+(String)report.get("status"));
         }
         return report;
     }
@@ -284,6 +351,13 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         } catch (Exception e) {
             throw new BizException("已回复协查任务预警任务基本信息查询报错！"+e.getMessage());
         }
+        if("-1".equals((String)report.get("status"))){
+            throw new BizException("预警编号为空,状态码:"+(String)report.get("status"));
+        }else if("1".equals((String)report.get("status"))){
+            throw new BizException("编号未查询出预警信息,状态码:"+(String)report.get("status"));
+        }else if("3".equals((String)report.get("status"))){
+            throw new BizException("无预警日志,状态码:"+(String)report.get("status"));
+        }
         return report;
     }
 
@@ -296,6 +370,9 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
             report = SoapUtil.sendReport("FXYJ10013","812",parmMap);
         } catch (Exception e) {
             throw new BizException("已回复协查组任务查看详情数据查询（有、无调查记录）报错！"+e.getMessage());
+        }
+        if(!"0".equals((String)report.get("status"))){
+            throw new BizException("执行失败,状态码:"+(String)report.get("status"));
         }
         return report;
     }
@@ -310,6 +387,9 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         } catch (Exception e) {
             throw new BizException("查看预警任务日志信息查询报错！"+e.getMessage());
         }
+        if(!"0".equals((String)report.get("status"))){
+            throw new BizException("执行失败,状态码:"+(String)report.get("status"));
+        }
         return report;
     }
 
@@ -323,6 +403,9 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         } catch (Exception e) {
             throw new BizException("查看规则信息查询报错！"+e.getMessage());
         }
+        if(!"0".equals((String)report.get("status"))){
+            throw new BizException("执行失败,状态码:"+(String)report.get("status"));
+        }
         return report;
     }
 
@@ -335,6 +418,9 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
             report = SoapUtil.sendReport("FXYJ10016","812",parmMap);
         } catch (Exception e) {
             throw new BizException("未回复协查组任务查看详情数据查询（有、无调查记录）报错！"+e.getMessage());
+        }
+        if(!"0".equals((String)report.get("status"))){
+            throw new BizException("执行失败,状态码:"+(String)report.get("status"));
         }
         return report;
     }

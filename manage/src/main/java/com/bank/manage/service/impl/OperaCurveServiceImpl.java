@@ -37,7 +37,6 @@ public class OperaCurveServiceImpl  implements OperateCurveService {
 
     @Override
     public  float calcOrgMonthScore(String orgId, String date) {
-        QueryWrapper<WbmpCommonCalcMethodDO> queryWrapper = new QueryWrapper<WbmpCommonCalcMethodDO>();
         //获取参数表数据
         WbmpCommonCalcMethodDO  wbmpCommonCalcMethodDO =  wbmpCommonCalcMethodDao.selectOne(new QueryWrapper<>());
         if(wbmpCommonCalcMethodDO==null){
