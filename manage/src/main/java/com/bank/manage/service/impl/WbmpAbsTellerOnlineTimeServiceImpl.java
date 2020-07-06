@@ -114,15 +114,18 @@ public class WbmpAbsTellerOnlineTimeServiceImpl extends ServiceImpl<WbmpAbsTelle
             }
             for (int i = 0; i < size; i += 2) {
                 WbmpAbsOnlineTimeDO wbmpAbsOnlineTimeDO = collect.get(i);
-                WbmpAbsOnlineTimeDO next = collect.get(i + 1);
-                //如果取到连续登入或者登出，忽略数据
-                if (wbmpAbsOnlineTimeDO.getRtncode().equals(next.getRtncode())) {
-                    continue;
-                }
-                if (next.getRtncode().equals("NLTTSM_5201")) {
-                    continue;
-                }
                 if (i + 1 < size) {
+                    WbmpAbsOnlineTimeDO next = collect.get(i + 1);
+                    //如果取到连续登入或者登出，忽略数据
+                    if (wbmpAbsOnlineTimeDO.getInterfacecode().equals(next.getInterfacecode())) {
+                        continue;
+                    }
+                    if (next.getInterfacecode().equals("NLTTSM_5201")) {
+                        continue;
+                    }
+                    if (wbmpAbsOnlineTimeDO.getInterfacecode().equals("NLTTSM_5202")) {
+                        continue;
+                    }
                     recordtime = next.getRecordtime();
                 } else {
                     //如果是登入
