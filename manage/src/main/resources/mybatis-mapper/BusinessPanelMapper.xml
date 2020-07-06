@@ -35,7 +35,7 @@ SELECT
         SELECT
         A.teller_id,
         A.recordtime,
-        TIMESTAMPDIFF( SECOND, A.recordtime, B.recordtime ) sub_seconds
+        IFNULL(TIMESTAMPDIFF(SECOND,A.recordtime,B.recordtime),TIMESTAMPDIFF(SECOND,A.recordtime,NOW())) sub_seconds
         FROM
         (
         SELECT
@@ -48,7 +48,7 @@ SELECT
         @i := 1
         ) d
         WHERE
-        a.RTNCODE = '00000000'
+        a.RTNMSG='交易成功'
         AND a.DATA_DT = CURDATE()
         ORDER BY
         teller_id,
@@ -65,7 +65,7 @@ SELECT
         @j := 0
         ) c
         WHERE
-        RTNCODE = '00000000'
+        RTNMSG='交易成功'
         AND DATA_DT = CURDATE()
         ORDER BY
         teller_id,
@@ -192,7 +192,7 @@ SELECT
                     A.ORG_ID,
                     A.INTERFACECODE,
                     A.recordtime,
-                    TIMESTAMPDIFF( SECOND, A.recordtime, B.recordtime ) sub_seconds
+                    IFNULL(TIMESTAMPDIFF(SECOND,A.recordtime,B.recordtime),TIMESTAMPDIFF(SECOND,A.recordtime,NOW())) sub_seconds
                 FROM
                     (
                     SELECT
@@ -205,7 +205,7 @@ SELECT
                             @i := 1
                         ) d
                     WHERE
-                        a.RTNCODE = '00000000'
+                        a.RTNMSG='交易成功'
                         AND a.DATA_DT = CURDATE()
                     ORDER BY
                         teller_id,
@@ -222,7 +222,7 @@ SELECT
 					@j := 0
 				) c
 			WHERE
-				RTNCODE = '00000000'
+				RTNMSG='交易成功'
 				AND DATA_DT = CURDATE()
 			ORDER BY
 				teller_id,
@@ -284,7 +284,7 @@ SELECT
                     A.INTERFACECODE,
                     A.ORG_ID,
                     A.recordtime,
-                    TIMESTAMPDIFF( SECOND, A.recordtime, B.recordtime ) sub_seconds
+                    IFNULL(TIMESTAMPDIFF(SECOND,A.recordtime,B.recordtime),TIMESTAMPDIFF(SECOND,A.recordtime,NOW())) sub_seconds
                 FROM
                     (
                     SELECT
@@ -297,7 +297,7 @@ SELECT
                             @i := 1
                         ) d
                     WHERE
-                        a.RTNCODE = '00000000'
+                        a.RTNMSG='交易成功'
                         AND a.DATA_DT = CURDATE()
                     ORDER BY
                         teller_id,
@@ -314,7 +314,7 @@ SELECT
                             @j := 0
                         ) c
                     WHERE
-                        RTNCODE = '00000000'
+                        RTNMSG='交易成功'
                         AND DATA_DT = CURDATE()
                     ORDER BY
                         teller_id,
@@ -354,7 +354,7 @@ SELECT
                             A.ORG_ID,
                             A.INTERFACECODE,
                             A.recordtime,
-                            TIMESTAMPDIFF( SECOND, A.recordtime, B.recordtime ) sub_seconds
+                            IFNULL(TIMESTAMPDIFF(SECOND,A.recordtime,B.recordtime),TIMESTAMPDIFF(SECOND,A.recordtime,NOW())) sub_seconds
                         FROM
                             (
                             SELECT
@@ -367,7 +367,7 @@ SELECT
                                     @i := 1
                                 ) d
                             WHERE
-                                a.RTNCODE = '00000000'
+                                a.RTNMSG='交易成功'
                                 AND a.DATA_DT = CURDATE()
                             ORDER BY
                                 teller_id,
@@ -384,7 +384,7 @@ SELECT
                                     @j := 0
                                 ) c
                             WHERE
-                                RTNCODE = '00000000'
+                                RTNMSG='交易成功'
                                 AND DATA_DT = CURDATE()
                             ORDER BY
                                 teller_id,

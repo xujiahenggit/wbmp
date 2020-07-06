@@ -1,19 +1,15 @@
 package com.bank.manage.controller;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.bank.auth.base.BaseController;
 import com.bank.manage.service.HappyService;
+import com.bank.manage.service.WbmpAbsTellerOnlineTimeService;
 import com.bank.manage.vo.HappyParam;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 快乐服务报表统计
@@ -65,6 +61,14 @@ public class HappyController extends BaseController {
     public Object HeadStatus(@RequestBody HappyParam param) {
         param.setUserId(getCurrentUserInfo(this.httpServletRequest).getUserId());
         return this.happyService.HeadStatus(param);
+    }
+
+    @Resource
+    WbmpAbsTellerOnlineTimeService wbmpAbsTellerOnlineTimeService;
+
+    @GetMapping("/test")
+    public void aa() {
+        wbmpAbsTellerOnlineTimeService.fillDataBeat();
     }
 
 }

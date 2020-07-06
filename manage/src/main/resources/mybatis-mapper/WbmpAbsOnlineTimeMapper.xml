@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.WbmpAbsOnlineTimeDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="wbmpAbsOnlineTimeResultMap" type="com.bank.manage.dos.WbmpAbsOnlineTimeDO">
+        <id column="BUSISERNO" property="busiserno"/>
+        <result column="ORG_ID" property="orgId"/>
+        <result column="TELLER_ID" property="tellerId"/>
+        <result column="INTERFACECODE" property="interfacecode"/>
+        <result column="RTNCODE" property="rtncode"/>
+        <result column="RTNMSG" property="rtnmsg"/>
+        <result column="RECORDTIME" property="recordtime"/>
+        <result column="STARTRECORDTIME" property="startrecordtime"/>
+        <result column="DATA_DT" property="dataDt"/>
+    </resultMap>
+
+
+    <select id="listPage" resultMap="wbmpAbsOnlineTimeResultMap">
+        select * from wbmp_abs_online_time
+        <where>
+                <if test="model!=null">
+                    <if test="model.busiserno != null and model.busiserno !=''">
+                        BUSISERNO = #{model.busiserno}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.orgId != null and model.orgId !=''">
+ AND                         ORG_ID = #{model.orgId}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.tellerId != null and model.tellerId !=''">
+ AND                         TELLER_ID = #{model.tellerId}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.interfacecode != null and model.interfacecode !=''">
+ AND                         INTERFACECODE = #{model.interfacecode}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.rtncode != null and model.rtncode !=''">
+ AND                         RTNCODE = #{model.rtncode}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.rtnmsg != null and model.rtnmsg !=''">
+ AND                         RTNMSG = #{model.rtnmsg}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.recordtime != null and model.recordtime !=''">
+ AND                         RECORDTIME = #{model.recordtime}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.startrecordtime != null and model.startrecordtime !=''">
+ AND                         STARTRECORDTIME = #{model.startrecordtime}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.dataDt != null and model.dataDt !=''">
+ AND                         DATA_DT = #{model.dataDt}
+                    </if>
+                </if>
+        </where>
+    </select>
+
+
+</mapper>

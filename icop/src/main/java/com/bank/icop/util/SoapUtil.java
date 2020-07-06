@@ -1,19 +1,5 @@
 package com.bank.icop.util;
 
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.http.HttpRequest;
-import cn.hutool.http.HttpResponse;
-import com.alibaba.fastjson.JSON;
-import com.bank.core.entity.BizException;
-import com.bank.core.entity.HeaderDO;
-import com.bank.core.utils.ApplicationContextUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
-import org.springframework.core.env.Environment;
-
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -23,6 +9,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import org.springframework.core.env.Environment;
+
+import com.alibaba.fastjson.JSON;
+import com.bank.core.entity.BizException;
+import com.bank.core.entity.HeaderDO;
+import com.bank.core.utils.ApplicationContextUtil;
+
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 发送soap请求工具类
  */
@@ -31,17 +33,17 @@ public class SoapUtil {
 
     private static StringBuilder builder = new StringBuilder();
 
-    public static Map sendReport(String serviceCode,String channelId, Map<String, Object> paramMap) {
+    public static Map sendReport(String serviceCode, String channelId, Map<String, Object> paramMap) {
         HeaderDO headerDO = new HeaderDO();
         headerDO.setServiceCode(serviceCode);
         headerDO.setChannelId(channelId);
-        return sendReport(headerDO,paramMap);
+        return sendReport(headerDO, paramMap);
     }
 
     public static Map sendReport(String serviceCode, Map<String, Object> paramMap) {
         HeaderDO headerDO = new HeaderDO();
         headerDO.setServiceCode(serviceCode);
-        return sendReport(headerDO,paramMap);
+        return sendReport(headerDO, paramMap);
     }
 
     public static Map sendReport(HeaderDO headerDO, Map<String, Object> paramMap) {
@@ -68,16 +70,16 @@ public class SoapUtil {
         String xml = builder.append(document)
                 .insert(builder.indexOf("</Header>"), beanToXmlStr(headerDO))
                 .insert(builder.indexOf("</Request>"), mapToXmlStr(paramMap)).toString();
-        log.info("ICOP请求流水：[{}]，请求服务编码：[{}]，请求参数：[{}]",headerDO.getExternalReference(),headerDO.getServiceCode(),xml);
+        log.info("ICOP请求流水：[{}]，请求服务编码：[{}]，请求参数：[{}]", headerDO.getExternalReference(), headerDO.getServiceCode(), xml);
         HttpResponse response = HttpRequest.post(env.getProperty("ICOP.PATH")).header("SOAPAction", "application/soap+xml;charset=utf-8")
-                .body(xml, "text/xml").execute();
-
+                .body(xml, "text/xml").timeout(10000).execute();
 
         Map<String, Object> domParse = null;
         try {
             domParse = domParse(response.body());
             log.info("ICOP返回数据：[{}]", JSON.toJSONString(domParse));
-        } catch (DocumentException e) {
+        }
+        catch (DocumentException e) {
             throw new BizException("解析dom失败");
         }
         return domParse;
@@ -101,8 +103,8 @@ public class SoapUtil {
         Element rootElement = doc.getRootElement();
         List<Element> list = rootElement.selectNodes("//Response");
         Map<String, Object> headMap = new HashMap<>();
-        headMap=elementTomap(list.get(0));
-        if (!headMap.get("ReturnCode").equals("00000000")){
+        headMap = elementTomap(list.get(0));
+        if (!headMap.get("ReturnCode").equals("00000000")) {
             throw new BizException(headMap.get("ReturnMessage").toString());
         }
         map = elementTomap(list.get(1));
@@ -135,10 +137,12 @@ public class SoapUtil {
                             mapList.add(m);
                         }
                         map.put(iter.getName(), mapList);
-                    } else {
+                    }
+                    else {
                         map.put(iter.getName(), m);
                     }
-                } else {
+                }
+                else {
                     if (map.get(iter.getName()) != null) {
                         Object obj = map.get(iter.getName());
                         if (!obj.getClass().getName().equals("java.util.ArrayList")) {
@@ -151,22 +155,22 @@ public class SoapUtil {
                             mapList.add(iter.getText());
                         }
                         map.put(iter.getName(), mapList);
-                    } else {
+                    }
+                    else {
                         map.put(iter.getName(), iter.getText());
                     }
                 }
             }
-        } else {
+        }
+        else {
             map.put(e.getName(), e.getText());
         }
         return map;
     }
 
-
     private static String replaceALL(String xml) {
         return xml.replaceAll("&gt;", ">").replaceAll("&lt;", "<");
     }
-
 
     private static String mapToXmlStr(Map<String, Object> map) {
         builder.setLength(0);
@@ -193,7 +197,8 @@ public class SoapUtil {
                     }
                 }
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             String errMsg = e.getMessage();
             log.info("{}", errMsg);
             throw new BizException(errMsg);
