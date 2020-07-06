@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,7 +61,7 @@ public class WbmpOperateScoreServiceImpl extends ServiceImpl<WbmpOperateScoreDao
     @Override
     public void saveScore(List<WbmpMangementScoreDO> listManagement, List<WbmpOperateScoreDO> listOperate) {
         try {
-            this.saveBatch(listOperate);
+            saveBatch(listOperate);
             wbmpMangementScoreService.saveBatch(listManagement);
         } catch (Exception e) {
             throw new BizException("经营 运营 综合得分数据保存失败！");
@@ -129,8 +131,10 @@ public class WbmpOperateScoreServiceImpl extends ServiceImpl<WbmpOperateScoreDao
         //赛马制
         float smz=0;
         //赛马制列表
-        List<WbmpOperateRacingIndexMDO> listRacing = wbmpOperateRacingIndexMService.getRacingList(orgId, date.substring(0, 7));
 
+        //由于赛马制的数据是月度数据，所以时间要取 上个月的
+        String dateSmz= LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")).minusMonths(1).toString().substring(0,7);
+        List<WbmpOperateRacingIndexMDO> listRacing = wbmpOperateRacingIndexMService.getRacingList(orgId,dateSmz);
         for (WbmpOperateRacingIndexMDO item : listRacing) {
             //无纸化业务取消率(12.5%)
             if(WbmpConstFile.SMZ_RACING_001.equals(item.getIndexNo())){

@@ -73,15 +73,15 @@
 
 
     <!-- 按条件统计机构某天的客群量-->
-    <select id="getOrgCustTypeNum" resultType="java.lang.String">
-        SELECT
+    <select id="getOrgCustTypeNum" resultType="java.lang.Float">
+        SELECT IFNULL((SELECT
             INDEX_VAL
         FROM
             wbmp_operate_cust
         WHERE
         ORG_ID = #{orgId}
         AND INDEX_NO = #{customerTypeCode}
-        AND DATE_FORMAT(DATA_DT,'%Y-%m-%d') = DATE_FORMAT(#{date},'%Y-%m-%d')
+        AND DATE_FORMAT(DATA_DT,'%Y-%m-%d') = DATE_FORMAT(#{date},'%Y-%m-%d')),0)
     </select>
 
 

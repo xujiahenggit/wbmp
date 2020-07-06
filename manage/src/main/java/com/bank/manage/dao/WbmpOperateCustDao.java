@@ -42,7 +42,7 @@ public interface WbmpOperateCustDao extends BaseMapper<WbmpOperateCustDO> {
     /**
      *获取机构和客户类型查询客户量
      */
-    String getOrgCustTypeNum(@Param(value = "orgId") String orgId,@Param(value = "customerTypeCode") String customerTypeCode,@Param(value = "date") String date);
+    Float getOrgCustTypeNum(@Param(value = "orgId") String orgId,@Param(value = "customerTypeCode") String customerTypeCode,@Param(value = "date") String date);
 
 
     /**
