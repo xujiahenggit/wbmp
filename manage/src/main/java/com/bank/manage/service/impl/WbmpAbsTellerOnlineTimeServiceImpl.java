@@ -107,11 +107,6 @@ public class WbmpAbsTellerOnlineTimeServiceImpl extends ServiceImpl<WbmpAbsTelle
             List<WbmpAbsOnlineTimeDO> collect = list.stream().sorted((a, b) -> a.getRecordtime().compareTo(b.getRecordtime())).collect(Collectors.toList());
             int size = collect.size();
             String recordtime = "";
-
-            //如果在线，才会加上最后这段时间，否则不添加
-            if (online) {
-                recordtime = DateUtil.now();
-            }
             for (int i = 0; i < size; i += 2) {
                 WbmpAbsOnlineTimeDO wbmpAbsOnlineTimeDO = collect.get(i);
                 if (i + 1 < size) {
@@ -129,7 +124,7 @@ public class WbmpAbsTellerOnlineTimeServiceImpl extends ServiceImpl<WbmpAbsTelle
                     recordtime = next.getRecordtime();
                 } else {
                     //如果是登入
-                    if (wbmpAbsOnlineTimeDO.getRtncode().equals("NLTTSM_5201")) {
+                    if (wbmpAbsOnlineTimeDO.getRtncode().equals("NLTTSM_5201")&&online) {
                         recordtime = DateUtil.now();
                     } else {
                         recordtime = "";
