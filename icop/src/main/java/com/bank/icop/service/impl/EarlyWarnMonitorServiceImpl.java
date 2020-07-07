@@ -133,6 +133,8 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         parmMap.put("dealgroup",addTaskDatasDo.getDealgroup());
         parmMap.put("deallev",addTaskDatasDo.getDeallev());
         parmMap.put("taskdesc",addTaskDatasDo.getTaskdesc());
+        parmMap.put("userNo",addTaskDatasDo.getUserNo());
+        parmMap.put("alertKey",addTaskDatasDo.getAlertKey());
         Map report = null;
         try {
             report = SoapUtil.sendReport("FXYJ10007","812",parmMap);
@@ -194,6 +196,11 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("alertkey",filereMoveRiskDo.getAlertkey());
         parmMap.put("obviatereason",filereMoveRiskDo.getObviatereason());
+        parmMap.put("userNo",filereMoveRiskDo.getUserNo());
+        parmMap.put("dept",filereMoveRiskDo.getDept());
+        parmMap.put("rolekey",filereMoveRiskDo.getRolekey());
+        parmMap.put("rulekey",filereMoveRiskDo.getRulekey());
+        parmMap.put("tplakey",filereMoveRiskDo.getTplakey());
         parmMap.put("comments",filereMoveRiskDo.getComments());
         Map report = null;
         try {
