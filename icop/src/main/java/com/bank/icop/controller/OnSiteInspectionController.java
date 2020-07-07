@@ -213,7 +213,7 @@ public class OnSiteInspectionController extends BaseIcopController {
     }
 
     @ApiOperation("整改审批展示【FXYJ11020")
-    @GetMapping("/feedbackView/{key}")
+    @GetMapping("/feedbackView/{cpk}")
     @ApiImplicitParam(name = "cpk", value = "整改PK", required = false, dataType = "String")
     public Object feedbackView(@PathVariable("cpk") String cpk) {
         return onSiteInspectionService.feedbackView(getCurrentUserId(request), cpk);
