@@ -111,7 +111,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         List<Map<String,Object>> list = new ArrayList<>();
         parmMap.put("userId",vo.getUserId());
         parmMap.put("orderId",vo.getOrderId());
-        parmMap.put("orderDeatilId",vo.getOrderDeatilId());
+        parmMap.put("orderDeatild",vo.getOrderDeatilId());
         parmMap.put("voucherNo",vo.getVoucherNo());
         List<VoucherNumberVo> data = vo.getData();
         for (VoucherNumberVo numberVo : data) {

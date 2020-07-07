@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -148,22 +149,22 @@ public class SoapUtil {
                         if (!obj.getClass().getName().equals("java.util.ArrayList")) {
                             mapList = new ArrayList();
                             mapList.add(obj);
-                            mapList.add(iter.getText() == "null" ? "" : iter.getText());
+                            mapList.add(StringUtils.equals(iter.getText(), "null") ? "" : iter.getText());
                         }
                         if (obj.getClass().getName().equals("java.util.ArrayList")) {
                             mapList = (List) obj;
-                            mapList.add(iter.getText() == "null" ? "" : iter.getText());
+                            mapList.add(StringUtils.equals(iter.getText(), "null") ? "" : iter.getText());
                         }
                         map.put(iter.getName(), mapList);
                     }
                     else {
-                        map.put(iter.getName(), iter.getText() == "null" ? "" : iter.getText());
+                        map.put(iter.getName(), StringUtils.equals(iter.getText(), "null") ? "" : iter.getText());
                     }
                 }
             }
         }
         else {
-            map.put(e.getName(), e.getText() == "null" ? "" : e.getText());
+            map.put(e.getName(), StringUtils.equals(e.getText(), "null") ? "" : e.getText());
         }
         return map;
     }

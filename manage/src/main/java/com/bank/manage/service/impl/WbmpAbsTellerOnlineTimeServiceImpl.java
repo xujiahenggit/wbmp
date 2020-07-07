@@ -17,11 +17,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
  * @author 代码自动生成
  * @since 2020-07-03
  */
+@Slf4j
 @Service
 public class WbmpAbsTellerOnlineTimeServiceImpl extends ServiceImpl<WbmpAbsTellerOnlineTimeDao, WbmpAbsTellerOnlineTimeDO> implements WbmpAbsTellerOnlineTimeService {
 
@@ -66,78 +67,102 @@ public class WbmpAbsTellerOnlineTimeServiceImpl extends ServiceImpl<WbmpAbsTelle
     WbmpAbsTellerInfoService wbmpAbsTellerInfoService;
 
     @Override
-    public void fillDataBeat() {
-        List<WbmpAbsTellerInfoDO> list = wbmpAbsTellerInfoService.list();
-        for (WbmpAbsTellerInfoDO wbmpAbsTellerInfoDO : list) {
-            String tellerId = wbmpAbsTellerInfoDO.getTellerId();
-            WbmpAbsTellerOnlineTimeDO wbmpAbsTellerOnlineTimeDO = getById(tellerId);
-            WbmpAbsTellerOnlineTimeDO onlineTimeDO = new WbmpAbsTellerOnlineTimeDO(wbmpAbsTellerInfoDO.getOrgId(),
-                    tellerId,
-                    wbmpAbsTellerInfoDO.getTellerName(),
-                    null,
-                    0
-            );
-            if (wbmpAbsTellerOnlineTimeDO == null) {
-                saveOrUpdate(onlineTimeDO);
-            }else {
-                String date = DateUtil.format(wbmpAbsTellerOnlineTimeDO.getUpdateTime(),"yyyy-MM-dd");
-                //清洗前一天数据
-                if (!date.equals(DateUtil.today())){
-                    wbmpAbsTellerOnlineTimeDao.clearAll();
-                }
-            }
-            String tellerInd = wbmpAbsTellerInfoDO.getTellerInd();
-            boolean online = isOnLine(tellerInd);
-            long onLineTime = getCurrentDayOnLineTime(tellerId, online);
-            onlineTimeDO.setOnlineTime(onLineTime);
-            saveOrUpdate(onlineTimeDO);
-        }
-
-
+    public void initData() {
+        //对前一天数据进行清洗
+        wbmpAbsTellerOnlineTimeDao.clearAll();
+        //初始化数据
+        wbmpAbsTellerInfoService.list().forEach(e -> saveOrUpdate(new WbmpAbsTellerOnlineTimeDO(e.getOrgId(),
+                e.getTellerId(),
+                e.getTellerName(),
+                null,
+                0
+        )));
     }
 
-    private long getCurrentDayOnLineTime(String tellerId, boolean online) {
-        LambdaQueryWrapper<WbmpAbsOnlineTimeDO> queryWrapper = new LambdaQueryWrapper<WbmpAbsOnlineTimeDO>()
-                .eq(WbmpAbsOnlineTimeDO::getTellerId, tellerId)
-                .eq(WbmpAbsOnlineTimeDO::getRtnmsg, "交易成功")
-                .eq(WbmpAbsOnlineTimeDO::getDataDt, DateUtil.today());
-        List<WbmpAbsOnlineTimeDO> list = wbmpAbsOnlineTimeService.list(queryWrapper);
-        long sum = 0;
-        if (list.size() > 0) {
-            List<WbmpAbsOnlineTimeDO> collect = list.stream().sorted((a, b) -> a.getRecordtime().compareTo(b.getRecordtime())).collect(Collectors.toList());
-            int size = collect.size();
-            String recordtime = "";
-            for (int i = 0; i < size; i += 2) {
-                WbmpAbsOnlineTimeDO wbmpAbsOnlineTimeDO = collect.get(i);
-                if (i + 1 < size) {
-                    WbmpAbsOnlineTimeDO next = collect.get(i + 1);
-                    //如果取到连续登入或者登出，忽略数据
-                    if (wbmpAbsOnlineTimeDO.getInterfacecode().equals(next.getInterfacecode())) {
-                        continue;
-                    }
-                    if (next.getInterfacecode().equals("NLTTSM_5201")) {
-                        continue;
-                    }
-                    if (wbmpAbsOnlineTimeDO.getInterfacecode().equals("NLTTSM_5202")) {
-                        continue;
-                    }
-                    recordtime = next.getRecordtime();
-                } else {
-                    //如果是登入
-                    if (wbmpAbsOnlineTimeDO.getRtncode().equals("NLTTSM_5201")&&online) {
-                        recordtime = DateUtil.now();
-                    } else {
-                        recordtime = "";
-                    }
 
-                }
-                sum += getTime(recordtime, wbmpAbsOnlineTimeDO.getRecordtime());
+    @Override
+    public void fillDataBeat() {
+        List<WbmpAbsTellerInfoDO> list = wbmpAbsTellerInfoService.list();
+        List<WbmpAbsOnlineTimeDO> onlineInfo = getOnlineInfo();
+        Map<String, WbmpAbsTellerOnlineTimeDO> onlineTimeMap = getOnlineTimeMap();
+        List<WbmpAbsTellerOnlineTimeDO> onlineTimeDOS = new ArrayList();
+        for (WbmpAbsTellerInfoDO wbmpAbsTellerInfoDO : list) {
+            String tellerId = wbmpAbsTellerInfoDO.getTellerId();
+            WbmpAbsTellerOnlineTimeDO onlineTimeDO = null;
+            if (onlineTimeMap.containsKey(tellerId)) {
+                onlineTimeDO = onlineTimeMap.get(tellerId);
+            } else {
+                onlineTimeDO = new WbmpAbsTellerOnlineTimeDO(wbmpAbsTellerInfoDO.getOrgId(),
+                        tellerId,
+                        wbmpAbsTellerInfoDO.getTellerName(),
+                        null,
+                        0
+                );
             }
 
+            String tellerInd = wbmpAbsTellerInfoDO.getTellerInd();
+            boolean online = isOnLine(tellerInd);
+            long onLineTime = getCurrentDayOnLineTime(onlineInfo, tellerId, online);
+            onlineTimeDO.setOnlineTime(onLineTime);
+            onlineTimeDOS.add(onlineTimeDO);
+        }
+        saveOrUpdateBatch(onlineTimeDOS);
+    }
 
+    private List<WbmpAbsOnlineTimeDO> getOnlineInfo() {
+        LambdaQueryWrapper<WbmpAbsOnlineTimeDO> queryWrapper = new LambdaQueryWrapper<WbmpAbsOnlineTimeDO>()
+                .eq(WbmpAbsOnlineTimeDO::getRtnmsg, "交易成功")
+                .eq(WbmpAbsOnlineTimeDO::getDataDt, DateUtil.today());
+        return wbmpAbsOnlineTimeService.list(queryWrapper);
+    }
+
+    private Map<String, WbmpAbsTellerOnlineTimeDO> getOnlineTimeMap() {
+        Map<String, WbmpAbsTellerOnlineTimeDO> map = new HashMap();
+        list().stream().forEach(e -> map.put(e.getTellerId(), e));
+        return map;
+    }
+
+    @Override
+    public void fillDataBeatTest() {
+        log.info("测试定时任务执行");
+    }
+
+    private long getCurrentDayOnLineTime(List<WbmpAbsOnlineTimeDO> onlineInfo, String tellerId, boolean online) {
+        long sum = 0;
+        List<WbmpAbsOnlineTimeDO> collect = onlineInfo
+                .stream()
+                .filter(e -> e.getTellerId().equals(tellerId))
+                .sorted(Comparator.comparing(WbmpAbsOnlineTimeDO::getRecordtime))
+                .collect(Collectors.toList());
+        int size = collect.size();
+        String recordtime = "";
+        for (int i = 0; i < size; i += 2) {
+            WbmpAbsOnlineTimeDO wbmpAbsOnlineTimeDO = collect.get(i);
+            if (i + 1 < size) {
+                WbmpAbsOnlineTimeDO next = collect.get(i + 1);
+                //如果取到连续登入或者登出，忽略数据
+                if (wbmpAbsOnlineTimeDO.getInterfacecode().equals(next.getInterfacecode())) {
+                    continue;
+                }
+                if (next.getInterfacecode().equals("NLTTSM_5201")) {
+                    continue;
+                }
+                if (wbmpAbsOnlineTimeDO.getInterfacecode().equals("NL TTSM_5202")) {
+                    continue;
+                }
+                recordtime = next.getRecordtime();
+            } else {
+                //如果是登入
+                if (wbmpAbsOnlineTimeDO.getRtncode().equals("NLTTSM_5201") && online) {
+                    recordtime = DateUtil.now();
+                } else {
+                    recordtime = "";
+                }
+
+            }
+            sum += getTime(recordtime, wbmpAbsOnlineTimeDO.getRecordtime());
         }
         return sum;
-
     }
 
     private long getTime(String recordtime, String recordtime1) {

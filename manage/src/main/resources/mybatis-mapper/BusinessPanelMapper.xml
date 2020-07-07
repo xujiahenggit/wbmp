@@ -260,17 +260,13 @@ SELECT
             </if>
         ),0)
     </select>
-    <select id="tradeNumRank" resultType="java.lang.Integer">
-        select IFNULL((
-            SELECT rank FROM (
-            SELECT a.*,(@i := @i + 1) as rank FROM wbmp_abs_transinfo a,(select @i := 0) b
+    <select id="tradeNumRank" resultType="java.util.Map">
+            SELECT a.TELLER_ID id,(@i := @i + 1) as rank FROM wbmp_abs_transinfo a,(select @i := 0) b
             WHERE a.DATA_DT=CURDATE() AND a.flag=3
             <if test="orgId!=null">
                 and concat(substr(ORG_ID,1,6),'01')=#{orgId}
             </if>
-            ORDER BY a.trade_volume DESC) c
-            WHERE c.TELLER_ID = #{tellerId}
-        ),0)
+            ORDER BY a.trade_volume DESC
     </select>
 
 
