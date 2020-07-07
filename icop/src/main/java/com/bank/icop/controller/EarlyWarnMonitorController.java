@@ -1,6 +1,7 @@
 package com.bank.icop.controller;
 
 import com.bank.icop.dos.*;
+import com.bank.icop.dto.TaskListsDto;
 import com.bank.icop.service.EarlyWarnMonitorService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -109,10 +110,10 @@ public class EarlyWarnMonitorController {
     }
 
     @ApiOperation("协查任务基本信息查询接口")
-    @GetMapping("/queryTaskLists/{alertkey}")
-    @ApiImplicitParam(name = "alertkey",value = "预警编号",required = true,paramType = "path")
-    public Object queryTaskLists(@PathVariable("alertkey") String alertkey){
-        return earlyWarnMonitorService.queryTaskLists(alertkey);
+    @PostMapping("/queryTaskLists")
+    @ApiImplicitParam(name = "taskListsDto",value = "协查任务基本信息查询",required = true,paramType = "body", dataType = "TaskListsDto")
+    public Object queryTaskLists(@RequestBody TaskListsDto taskListsDto){
+        return earlyWarnMonitorService.queryTaskLists(taskListsDto);
     }
 
     @ApiOperation("处理记录修改接口")

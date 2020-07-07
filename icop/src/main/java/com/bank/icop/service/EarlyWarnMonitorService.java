@@ -1,6 +1,7 @@
 package com.bank.icop.service;
 
 import com.bank.icop.dos.*;
+import com.bank.icop.dto.TaskListsDto;
 
 public interface EarlyWarnMonitorService {
     Object getdealDatas(String userNo);
@@ -25,7 +26,7 @@ public interface EarlyWarnMonitorService {
 
     Object fileRiskEvent(FileRiskEventDo fileRiskEventDo);
 
-    Object queryTaskLists(String alertkey);
+    Object queryTaskLists(TaskListsDto taskListsDto);
 
     Object updateDealRecords(UpdateDealRecordsDo updateDealRecordsDo);
 
