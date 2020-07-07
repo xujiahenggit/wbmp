@@ -67,18 +67,14 @@ public class WbmpOperateHomeServiceImpl implements WbmpOperateHomeService {
              deposit = new BigDecimal(String.valueOf(depositDay.get(balType) ==null ?deposit:depositDay.get(balType)));
         }
         resultData.put("deposit", decimalFormat.format(deposit.divide(billion, 2, BigDecimal.ROUND_HALF_UP)));
-//        BigDecimal deposit = depositDay == null ? new BigDecimal("0.00") : (BigDecimal) depositDay.get(balType);
-//        deposit = deposit == null ? new BigDecimal("0.00") : deposit;
-//        DecimalFormat decimalFormat = new DecimalFormat("0.00#");
-//        resultData.put("deposit", decimalFormat.format(deposit.divide(new BigDecimal("100000000"), 2, BigDecimal.ROUND_HALF_UP)));
-
+        
         List<BigDecimal> data = new ArrayList<>();
         List<String> xAxis = new ArrayList<>();
         //获取最近30天的记录
         List<String> days= DateUtils.getDateBefor30();
 
         List<Map<String, Object>> depositDay30 = wbmpOperateHomeDao.queyDepositDay30(orgId);
-
+        depositDay30.add(depositDay);
         for(String item:days){
             xAxis.add(DateUtils.formartToMonthDay(item));
             BigDecimal balance = new BigDecimal("0.00");
