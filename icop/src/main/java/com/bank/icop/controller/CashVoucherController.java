@@ -139,4 +139,10 @@ public class CashVoucherController extends BaseIcopController{
         return cashVoucherService.queryDetailList(orderQueryDetailVo);
     }
 
+
+    @PostMapping("/waitlist")
+    @ApiOperation("凭证待办列表")
+    public List<VoucherWaitListVo> getWaitList(@RequestBody WaitListQueryVo waitListQueryVo){
+        return cashVoucherService.getWaitList(waitListQueryVo);
+    }
 }
