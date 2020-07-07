@@ -2,6 +2,7 @@ package com.bank.icop.service.impl;
 
 import com.bank.core.entity.BizException;
 import com.bank.icop.dos.*;
+import com.bank.icop.dto.TaskListsDto;
 import com.bank.icop.service.EarlyWarnMonitorService;
 import com.bank.icop.util.SoapUtil;
 import org.springframework.stereotype.Service;
@@ -243,9 +244,10 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
     }
 
     @Override
-    public Object queryTaskLists(String alertkey) {
+    public Object queryTaskLists(TaskListsDto taskListsDto) {
         Map<String, Object> parmMap = new HashMap<>();
-        parmMap.put("alertkey",alertkey);
+        parmMap.put("alertkey",taskListsDto.getAlertkey());
+        parmMap.put("userNo",taskListsDto.getUserNo());
         Map report = null;
         try {
             report = SoapUtil.sendReport("FXYJ10018","812",parmMap);
@@ -253,8 +255,12 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
             throw new BizException("协查任务基本信息查询报错！"+e.getMessage());
         }
 
-        if(!"0".equals((String)report.get("status"))){
-            throw new BizException("执行失败,状态码:"+(String)report.get("status"));
+        if("-1".equals((String)report.get("status"))){
+            throw new BizException("预警编号为空,状态码:"+(String)report.get("status"));
+        }else if("1".equals((String)report.get("status"))){
+            throw new BizException("编号未查询出预警信息,状态码:"+(String)report.get("status"));
+        }else if("3".equals((String)report.get("status"))){
+            throw new BizException("无预警日志,状态码:"+(String)report.get("status"));
         }
         return report;
     }

@@ -66,11 +66,20 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         parmMap.put("userNo", userId);
         parmMap.put("pk", taskItemId);
         parmMap.put("qpk", inspectionInfoId);
-        return getReport(parmMap,
+
+        Map data = getReport(parmMap,
                 "FXYJ11003",
                 "检查任务执行展示",
                 "1,2",
                 "返回状态  -1:参数为空 ,  0:用户不存在  , 1:未查询出数据 ,2:正常 ");
+
+        Map result = new HashMap();
+        result.put("task", data.get("task"));
+        result.put("question", data.get("question"));
+        result.put("checkpoints", getArray(data.get("checkpoints")));
+        result.put("details", getArray(data.get("details")));
+
+        return result;
     }
 
     @Override
