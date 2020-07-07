@@ -236,9 +236,10 @@ SELECT
 	GROUP BY
 		teller_id
 	) e ON a.TELLER_ID = e.TELLER_ID
-        WHERE a.ORG_ID=#{orgId}
+        WHERE
+        concat(a.ORG_ID,a.GROUP_NO)=#{orgId}
     </select>
-
+<!--a.ORG_ID=#{orgId}-->
 
     <select id="onlineSum" resultType="java.lang.Integer">
         select IFNULL((
