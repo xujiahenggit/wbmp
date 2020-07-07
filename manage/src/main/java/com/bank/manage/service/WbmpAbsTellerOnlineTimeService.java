@@ -22,4 +22,8 @@ public interface WbmpAbsTellerOnlineTimeService extends IService<WbmpAbsTellerOn
     IPage<WbmpAbsTellerOnlineTimeDO> listPage(PageQueryModel pageQueryModel);
 
     void  fillDataBeat();
+
+    void  initData();
+
+    void  fillDataBeatTest();
 }
