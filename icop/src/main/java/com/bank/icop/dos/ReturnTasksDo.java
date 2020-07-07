@@ -11,7 +11,11 @@ public class ReturnTasksDo implements Serializable {
     private static final long serialVersionUID = 1L;
     @ApiModelProperty(" 任务编号")
     private String taskkey;
-    @ApiModelProperty(" 退回意见说明")
-    private String sp_view;
+    @ApiModelProperty("用户编号")
+    private String userNo;
+    @ApiModelProperty("预警编号")
+    private String alertKey;
+    @ApiModelProperty("退回意见说明")
+    private String opinion;
 
 }

@@ -109,7 +109,9 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
     public Object returnTasks(ReturnTasksDo returnTasksDo) {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("taskkey",returnTasksDo.getTaskkey());
-        parmMap.put("sp_view",returnTasksDo.getSp_view());
+        parmMap.put("userNo",returnTasksDo.getUserNo());
+        parmMap.put("alertKey",returnTasksDo.getAlertKey());
+        parmMap.put("opinion",returnTasksDo.getOpinion());
         Map report = null;
         try {
             report = SoapUtil.sendReport("FXYJ10006","812",parmMap);
