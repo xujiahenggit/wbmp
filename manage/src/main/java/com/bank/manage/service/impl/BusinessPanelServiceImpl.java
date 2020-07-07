@@ -149,20 +149,43 @@ public class BusinessPanelServiceImpl implements BusinessPanelService {
     @Override
     public RankInfo rankInfo(String orgId, String tellerId) {
         Integer onlineSum = businessPanelDao.onlineSum(orgId);//在线人数
+        if(onlineSum ==null || "".equals(onlineSum)){
+            onlineSum = 0;
+        }
         Integer tradeSum = businessPanelDao.tradeSum(orgId);
+        if(tradeSum ==null || "".equals(tradeSum)){
+            tradeSum = 0;
+        }
         Float onlineTimeSum = businessPanelDao.onlineTimeSum(orgId);//总在线时长,秒钟
         Number onlineTimeSumMinute = NumberUtil.div(onlineTimeSum==null? 0L :onlineTimeSum.floatValue(), 60, 0);//总在线时长,转为分钟
         Integer tradeNumRank = businessPanelDao.tradeNumRank(orgId, tellerId);//交易量排名
         Integer onlineTimeRank = businessPanelDao.onlineTimeRank(orgId, tellerId);//在线时长排名
-        return RankInfo
-                .builder()
-                .tellerId(tellerId)
-                .onlineSum(onlineSum)
-                .tradeNumAverage(valueContainNull(tradeSum,onlineSum)?null:NumberUtil.div(tradeSum,onlineSum, 0))
-                .tradeNumRank(tradeNumRank)
-                .onlineTimeAverage(valueContainNull(onlineTimeSumMinute, onlineSum)?null:NumberUtil.div(onlineTimeSumMinute, onlineSum, 0))//计算均值
-                .onlineTimeRank(onlineTimeRank)
-                .build();
+        if(onlineTimeRank ==null || "".equals(onlineTimeRank)){
+            onlineTimeRank = 0;
+        }
+        if(onlineSum == 0){
+            BigDecimal zero = new BigDecimal(0);
+            return RankInfo
+                    .builder()
+                    .tellerId(tellerId)
+                    .onlineSum(onlineSum)
+                    .tradeNumAverage(zero)
+                    .tradeNumRank(tradeNumRank)
+                    .onlineTimeAverage(zero)//计算均值
+                    .onlineTimeRank(onlineTimeRank)
+                    .build();
+        }else{
+            return RankInfo
+                    .builder()
+                    .tellerId(tellerId)
+                    .onlineSum(onlineSum)
+                    .tradeNumAverage(valueContainNull(tradeSum,onlineSum)?null:NumberUtil.div(tradeSum,onlineSum, 0))
+                    .tradeNumRank(tradeNumRank)
+                    .onlineTimeAverage(valueContainNull(onlineTimeSumMinute, onlineSum)?new BigDecimal(String.valueOf(onlineTimeSumMinute)):NumberUtil.div(onlineTimeSumMinute, onlineSum, 0))//计算均值
+                    .onlineTimeRank(onlineTimeRank)
+                    .build();
+        }
+
     }
 
     @Override
