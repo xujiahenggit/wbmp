@@ -194,9 +194,8 @@ public class BusinessPanelServiceImpl implements BusinessPanelService {
         if (id.size()==0) {
             return tradeNumRankList.size() + 1;
         }else {
-            return (Integer) id.get(0).get("rank");
+            return NumberUtil.parseInt(NumberUtil.toStr((Number) id.get(0).get("rank")));
         }
-
     }
 
     @Override
