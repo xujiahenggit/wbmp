@@ -14,11 +14,6 @@ import com.bank.icop.dto.CheckItemCheckSubmitDTO;
 import com.bank.icop.dto.CheckProblemDTO;
 import com.bank.icop.service.OnSiteInspectionService;
 import com.bank.icop.util.SoapUtil;
-import com.bank.icop.vo.ApproveLogVO;
-import com.bank.icop.vo.CheckAccessoryVO;
-import com.bank.icop.vo.HandledRectifyInfoVO;
-import com.bank.icop.vo.HandledRectifyVO;
-import com.bank.icop.vo.OnSiteInspectionTaskVO;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
@@ -41,29 +36,11 @@ import cn.hutool.core.util.StrUtil;
 public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
 
     @Override
-    public List<OnSiteInspectionTaskVO> inspectionTaskList(String userId) {
+    public List inspectionTaskList(String userId) {
         Map<String, Object> parmMap = new HashMap<>();
-        parmMap.put("userNo", userId);//4095
+        parmMap.put("userNo", userId);
 
-        Map returnData = getReport(parmMap, "FXYJ11001", "获取运营检查任务列表", "1", "返回状态  -1:参数为空 ,  0:用户不存在");
-        if (returnData.get("List") == null || returnData.get("List") instanceof String) {
-            return new ArrayList<OnSiteInspectionTaskVO>();
-        }
-        List<Map<String, String>> taskList = (List<Map<String, String>>) returnData.get("List");
-        List<OnSiteInspectionTaskVO> result = new ArrayList<>();
-        for (int i = 0; i < taskList.size(); i++) {
-            Map<String, String> task = taskList.get(i);
-            OnSiteInspectionTaskVO taskVO = new OnSiteInspectionTaskVO();
-
-            taskVO.setTaskId(task.get("TASKPK"));
-            taskVO.setTaskYear(task.get("TASKYEAR"));
-            taskVO.setTaskName(task.get("TASKNAME"));
-            taskVO.setTaskStartDate(task.get("TASKSTARTDATE"));
-            taskVO.setTaskEndDate(task.get("TASKENDDATE"));
-            taskVO.setNumber(task.get("NUMBER"));
-            result.add(taskVO);
-        }
-        return result;
+        return getIcopTagList(parmMap, "FXYJ11001", "获取运营检查任务列表", "1", "返回状态  -1:参数为空 ,  0:用户不存在");
     }
 
     @Override
@@ -403,68 +380,25 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
     }
 
     @Override
-    public List<HandledRectifyVO> handledRectifyList(String userId) {
+    public List handledRectifyList(String userId) {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("username", userId);//4095
-        List<Map> datas = getIcopTagList(parmMap, "FXYJ11028", "已处理整改列表", "1", "返回状态  -1:参数为空 ,  0:用户不存在");
 
-        List<HandledRectifyVO> result = new ArrayList<>();
-        for (int i = 0; i < datas.size(); i++) {
-            Map<String, String> data = datas.get(i);
-            HandledRectifyVO handledRectifyVO = new HandledRectifyVO();
-            handledRectifyVO.setRectifyId(data.get("CPK"));
-            handledRectifyVO.setTaskName(data.get("TASKNAME"));
-            handledRectifyVO.setChildPointName(data.get("CHILDPOINTNAME"));
-            handledRectifyVO.setQDes(data.get("QDES"));
-            handledRectifyVO.setOrgName(data.get("ORGNAME"));
-            handledRectifyVO.setQUserName(data.get("QUSERNAME"));
-            handledRectifyVO.setQDate(data.get("QDATE"));
-            handledRectifyVO.setCorrectiveFeedbackDT(data.get("CORRECTIVEFEEDBACKDT"));
-            handledRectifyVO.setCorrectiveFeedbackDes(data.get("CORRECTIVEFEEDBACKDES"));
-            handledRectifyVO.setStatus(data.get("STATUS"));
-            result.add(handledRectifyVO);
-        }
-        return result;
+        return getIcopTagList(parmMap, "FXYJ11028", "已处理整改列表", "1", "返回状态  -1:参数为空 ,  0:用户不存在");
     }
 
     @Override
-    public HandledRectifyInfoVO handledRectifyInfo(String userId, String rectifyId) {
+    public Object handledRectifyInfo(String userId, String rectifyId) {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("userNo", userId);
         parmMap.put("cpk", rectifyId);
 
         Map returnData = getReport(parmMap, "FXYJ11029", "已整改详细信息", "1", "返回状态  -1:参数为空 ,  0:用户不存在");
 
-        HandledRectifyInfoVO result = new HandledRectifyInfoVO();
-        //审批日志
-        List<Map<String, String>> logList = (List<Map<String, String>>) returnData.get("List");
-        //整改信息
-        Map<String, String> corrective = (Map<String, String>) returnData.get("corrective");
+        Map result = new HashMap();
+        result.put("corrective", returnData.get("corrective"));
+        result.put("List", getArray(returnData.get("List")));
 
-        result.setCorrectiveFeedbackDT(corrective.get("CORRECTIVEFEEDBACKDT"));
-        result.setQUser(corrective.get("QUSER"));
-        result.setChildPointName(corrective.get("CHILDPOINTNAME"));
-        result.setSunpointName(corrective.get("SUNPOINTNAME"));
-        result.setQType(corrective.get("QTYPE"));
-        result.setQDes(corrective.get("QDES"));
-        result.setCorrectiveSuggest(corrective.get("CORRECTIVESUGGEST"));
-        //目前接口未提供该字段
-        result.setCorrectiveFeedback("");
-        List<ApproveLogVO> approveLogList = new ArrayList<>();
-        result.setApproveLogList(approveLogList);
-        List<CheckAccessoryVO> accessoryList = new ArrayList<>();
-        result.setAccessoryList(accessoryList);
-        for (int i = 0; i < logList.size(); i++) {
-            Map<String, String> logData = logList.get(i);
-            ApproveLogVO logVO = new ApproveLogVO();
-            logVO.setLogSeq(i + 1);
-            logVO.setDealMan(logData.get("DEALMAN"));
-            logVO.setRoleKey(logData.get("ROLEKEY"));
-            logVO.setDecision(logData.get("DECISION"));
-            logVO.setApproveLog(logData.get("APPROVELOG"));
-            logVO.setCreateTime(logData.get("CREATE_TIME"));
-            approveLogList.add(logVO);
-        }
         return result;
     }
 
@@ -528,7 +462,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
     @Override
     public Object problemAddQuery(String sunpointkey, String taskpk) {
         Map<String, Object> parmMap = new HashMap<>();
-        parmMap.put("sunpointkey", sunpointkey);
+        parmMap.put("key", sunpointkey);
         parmMap.put("taskpk", taskpk);
 
         return getIcopTagData(parmMap, "FXYJ11033", "检查问题添加", "0,1", "返回状态 -1:参数为空 , 0:未查询出数据 ,1:正常", "check");

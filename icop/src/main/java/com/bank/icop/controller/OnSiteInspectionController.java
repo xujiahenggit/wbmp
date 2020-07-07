@@ -17,9 +17,6 @@ import com.bank.core.entity.TokenUserInfo;
 import com.bank.icop.dto.CheckItemCheckSubmitDTO;
 import com.bank.icop.dto.CheckProblemDTO;
 import com.bank.icop.service.OnSiteInspectionService;
-import com.bank.icop.vo.HandledRectifyInfoVO;
-import com.bank.icop.vo.HandledRectifyVO;
-import com.bank.icop.vo.OnSiteInspectionTaskVO;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -53,7 +50,7 @@ public class OnSiteInspectionController extends BaseIcopController {
 
     @ApiOperation("获取现场检查任务列表-代办")
     @GetMapping("/inspectionTaskList")
-    public List<OnSiteInspectionTaskVO> inspectionTaskList() {
+    public List inspectionTaskList() {
         TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
         return onSiteInspectionService.inspectionTaskList(tokenUserInfo.getUserId());
     }
@@ -284,18 +281,16 @@ public class OnSiteInspectionController extends BaseIcopController {
 
     @ApiOperation("获取已处理整改列表")
     @GetMapping("/handledRectifyList")
-    public List<HandledRectifyVO> handledRectifyList() {
+    public List handledRectifyList() {
         TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
-
         return onSiteInspectionService.handledRectifyList(tokenUserInfo.getUserId());
     }
 
     @ApiOperation("已处理整改详细信息查看")
     @GetMapping("/handledRectifyInfo/{rectifyId}")
     @ApiImplicitParam(name = "rectifyId", value = "已处理整改ID", required = true, dataType = "String", paramType = "path")
-    public HandledRectifyInfoVO handledRectifyInfo(@PathVariable("rectifyId") String rectifyId) {
+    public Object handledRectifyInfo(@PathVariable("rectifyId") String rectifyId) {
         TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
-
         return onSiteInspectionService.handledRectifyInfo(tokenUserInfo.getUserId(), rectifyId);
     }
 

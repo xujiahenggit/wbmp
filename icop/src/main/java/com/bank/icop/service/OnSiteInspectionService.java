@@ -4,9 +4,6 @@ import java.util.List;
 
 import com.bank.icop.dto.CheckItemCheckSubmitDTO;
 import com.bank.icop.dto.CheckProblemDTO;
-import com.bank.icop.vo.HandledRectifyInfoVO;
-import com.bank.icop.vo.HandledRectifyVO;
-import com.bank.icop.vo.OnSiteInspectionTaskVO;
 
 /**
  * SOAP调用第三方接口日志 服务类
@@ -16,7 +13,7 @@ import com.bank.icop.vo.OnSiteInspectionTaskVO;
  */
 public interface OnSiteInspectionService {
 
-    List<OnSiteInspectionTaskVO> inspectionTaskList(String userId);
+    List inspectionTaskList(String userId);
 
     List taskItemList(String userId, String taskId, String createOrgId, String executeOrgId, String taskName, String taskStartDate, String taskEndDate);
 
@@ -66,9 +63,9 @@ public interface OnSiteInspectionService {
 
     Object problemDetail(String pk);
 
-    List<HandledRectifyVO> handledRectifyList(String userId);
+    List handledRectifyList(String userId);
 
-    HandledRectifyInfoVO handledRectifyInfo(String userId, String rectifyId);
+    Object handledRectifyInfo(String userId, String rectifyId);
 
     boolean problemFeedback(String problemId, String auditFeedback);
 
