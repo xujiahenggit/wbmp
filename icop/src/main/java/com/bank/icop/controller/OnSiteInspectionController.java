@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bank.core.entity.TokenUserInfo;
+import com.bank.icop.dto.CheckItemCheckSubmitDTO;
 import com.bank.icop.dto.CheckProblemDTO;
 import com.bank.icop.service.OnSiteInspectionService;
 import com.bank.icop.vo.HandledRectifyInfoVO;
@@ -105,18 +106,14 @@ public class OnSiteInspectionController extends BaseIcopController {
 
     @ApiOperation("检查任务保存")
     @PostMapping("/checkTaskSave")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "jsonstr", value = "任务编号", required = true, defaultValue = "", dataType = "String")
-    })
+    @ApiImplicitParam(name = "jsonstr", value = "任务编号", required = true, defaultValue = "", dataType = "String")
     public Object checkTaskSave(String jsonstr) {
         return onSiteInspectionService.checkTaskSave(getCurrentUserId(request), jsonstr);
     }
 
     @ApiOperation("检查任务的提交")
     @GetMapping("/checkTaskSubmit/{pk}")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "pk", value = "检查key", required = true, dataType = "String")
-    })
+    @ApiImplicitParam(name = "pk", value = "检查key", required = true, dataType = "String")
     public Object checkTaskSubmit(@PathVariable("pk") String pk) {
         return onSiteInspectionService.checkTaskSubmit(getCurrentUserId(request), pk);
     }
@@ -137,9 +134,7 @@ public class OnSiteInspectionController extends BaseIcopController {
 
     @ApiOperation("检查内容详细查看")
     @GetMapping("/checkDetail/{taskpk}")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "taskpk", value = "任务编号", required = true, dataType = "String")
-    })
+    @ApiImplicitParam(name = "taskpk", value = "任务编号", required = true, dataType = "String")
     public Object checkDetail(@PathVariable("taskpk") String taskpk) {
         String userId = getCurrentUserId(request);
         return onSiteInspectionService.checkDetail(userId, taskpk);
@@ -187,24 +182,16 @@ public class OnSiteInspectionController extends BaseIcopController {
 
     @ApiOperation("要点查看")
     @GetMapping("/coreCheck/{key}")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "key", value = "要点key", required = true, dataType = "String")
-    })
+    @ApiImplicitParam(name = "key", value = "要点key", required = true, dataType = "String")
     public Object coreCheck(@PathVariable("key") String key) {
         return onSiteInspectionService.coreCheck(key);
     }
 
     @ApiOperation("检查子项审核提交")
     @PostMapping("/childCheck")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "taskpk", value = "任务ID", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "feedback", value = "反馈，反馈 0不同意 1同意", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "feedbackdt", value = "反馈期限", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "feedbackdes", value = "反馈结果", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "epk", value = "要点key", required = true, dataType = "String")
-    })
-    public Object childCheck(String taskpk, String feedback, String feedbackdt, String feedbackdes, String epk) {
-        return onSiteInspectionService.childCheck(getCurrentUserId(request), taskpk, feedback, feedbackdt, feedbackdes, epk);
+    @ApiImplicitParam(name = "checkItemCheckSubmitDTO", value = "检查子项审核提交对象", required = true, dataType = "CheckItemCheckSubmitDTO", paramType = "body")
+    public Object childCheck(@RequestBody CheckItemCheckSubmitDTO checkItemCheckSubmitDTO) {
+        return onSiteInspectionService.childCheck(getCurrentUserId(request), checkItemCheckSubmitDTO);
     }
 
     @ApiOperation("问题待整改列表")
@@ -247,9 +234,7 @@ public class OnSiteInspectionController extends BaseIcopController {
 
     @ApiOperation("整改提交")
     @PostMapping("/feedbackSubmit")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "cpk", value = "整改PK", required = true, dataType = "String")
-    })
+    @ApiImplicitParam(name = "cpk", value = "整改PK", required = true, dataType = "String")
     public Object feedbackSubmit(String cpk) {
         return onSiteInspectionService.feedbackSubmit(getCurrentUserId(request), cpk);
     }
@@ -267,18 +252,14 @@ public class OnSiteInspectionController extends BaseIcopController {
 
     @ApiOperation("检查任务详细查看")
     @GetMapping("/checkTaskDetail")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "taskpk", value = "任务编号", required = true, dataType = "String")
-    })
+    @ApiImplicitParam(name = "taskpk", value = "任务编号", required = true, dataType = "String")
     public Object checkTaskDetail(String taskpk) {
         return onSiteInspectionService.checkTaskDetail(getCurrentUserId(request), taskpk);
     }
 
     @ApiOperation("问题详细查看")
     @GetMapping("/problemDetail")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "pk", value = "问题主键", required = true, dataType = "String")
-    })
+    @ApiImplicitParam(name = "pk", value = "问题主键", required = true, dataType = "String")
     public Object problemDetail(String pk) {
         return onSiteInspectionService.problemDetail(pk);
     }

@@ -2,6 +2,7 @@ package com.bank.icop.service;
 
 import java.util.List;
 
+import com.bank.icop.dto.CheckItemCheckSubmitDTO;
 import com.bank.icop.dto.CheckProblemDTO;
 import com.bank.icop.vo.HandledRectifyInfoVO;
 import com.bank.icop.vo.HandledRectifyVO;
@@ -51,7 +52,7 @@ public interface OnSiteInspectionService {
 
     Object feedbackSubmit(String currentUserId, String cpk);
 
-    Object childCheck(String currentUserId, String taskpk, String feedback, String feedbackdt, String feedbackdes, String epk);
+    Object childCheck(String currentUserId, CheckItemCheckSubmitDTO checkItemCheckSubmitDTO);
 
     Object updateCheckList(String userId);
 

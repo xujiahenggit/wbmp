@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bank.core.entity.BizException;
+import com.bank.icop.dto.CheckItemCheckSubmitDTO;
 import com.bank.icop.dto.CheckProblemDTO;
 import com.bank.icop.service.OnSiteInspectionService;
 import com.bank.icop.util.SoapUtil;
@@ -253,14 +254,14 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
     }
 
     @Override
-    public Object childCheck(String currentUserId, String taskpk, String feedback, String feedbackdt, String feedbackdes, String epk) {
+    public Object childCheck(String currentUserId, CheckItemCheckSubmitDTO checkItemCheckSubmitDTO) {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("userNo", currentUserId);
-        parmMap.put("taskpk", taskpk);
-        parmMap.put("feedback", feedback);
-        parmMap.put("feedbackdt", feedbackdt);
-        parmMap.put("feedbackdes", feedbackdes);
-        parmMap.put("epk", epk);
+        parmMap.put("taskpk", checkItemCheckSubmitDTO.getTaskpk());
+        parmMap.put("feedback", checkItemCheckSubmitDTO.getFeedback());
+        parmMap.put("feedbackdt", checkItemCheckSubmitDTO.getFeedbackdt());
+        parmMap.put("feedbackdes", checkItemCheckSubmitDTO.getFeedbackdes());
+        parmMap.put("epk", checkItemCheckSubmitDTO.getEpk());
         Map report = getReport(parmMap,
                 "FXYJ11016",
                 "检查子项审核提交",

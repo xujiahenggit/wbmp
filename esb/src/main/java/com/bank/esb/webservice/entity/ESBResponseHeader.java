@@ -2,7 +2,8 @@ package com.bank.esb.webservice.entity;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
+
+import com.alibaba.fastjson.annotation.JSONField;
 
 import lombok.Data;
 
@@ -24,22 +25,22 @@ import lombok.Data;
 @XmlAccessorType(XmlAccessType.NONE)
 public class ESBResponseHeader {
 
-    @XmlElement(name = "ReturnCode")
+    @JSONField(name = "ReturnCode")
     private String ReturnCode;
 
-    @XmlElement(name = "ProviderChannelId")
+    @JSONField(name = "ProviderChannelId")
     private String ProviderChannelId;
 
-    @XmlElement(name = "ResponseTime")
+    @JSONField(name = "ResponseTime")
     private String ResponseTime;
 
-    @XmlElement(name = "ReturnMessage")
+    @JSONField(name = "ReturnMessage")
     private String ReturnMessage;
 
-    @XmlElement(name = "ProviderReference")
+    @JSONField(name = "ProviderReference")
     private String ProviderReference;
 
-    @XmlElement(name = "ProviderWorkingDate")
+    @JSONField(name = "ProviderWorkingDate")
     private String ProviderWorkingDate;
 
 }
