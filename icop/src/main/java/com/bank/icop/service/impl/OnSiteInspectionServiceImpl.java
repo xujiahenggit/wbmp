@@ -258,8 +258,8 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         return getIcopTagList(parmMap,
                 "FXYJ11017",
                 "问题待整改列表",
-                "0",
-                "返回状态  -1:参数为空 ,  0:正常 ");
+                "0,1",
+                "返回状态  -1:参数为空 ,  0:未查询出数据 ,1:正常");
     }
 
     @Override
@@ -321,8 +321,8 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         return getIcopTagList(parmMap,
                 "FXYJ11021",
                 "整改待审核列表",
-                "0",
-                "返回状态  -1:参数为空 ,  0:正常 ");
+                "0,1",
+                "返回状态  -1:参数为空 ,  0:未查询出数据 ,1:正常");
     }
 
     @Override
@@ -384,7 +384,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("username", userId);//4095
 
-        return getIcopTagList(parmMap, "FXYJ11028", "已处理整改列表", "1", "返回状态  -1:参数为空 ,  0:用户不存在");
+        return getIcopTagList(parmMap, "FXYJ11028", "已处理整改列表", "0,1", "返回状态  -1:参数为空 ,  0:未查询出数据 ,1:正常");
     }
 
     @Override
