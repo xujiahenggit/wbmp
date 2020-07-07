@@ -88,10 +88,10 @@ public class EarlyWarnMonitorController {
     }
 
     @ApiOperation("查看规则信息查询接口")
-    @GetMapping("/queryRuleDatas/{tplakey}")
-    @ApiImplicitParam(name = "alertkey",value = "主键",required = true,paramType = "path")
-    public Object queryRuleDatas(@PathVariable("tplakey") String tplakey){
-        return earlyWarnMonitorService.queryRuleDatas(tplakey);
+    @GetMapping("/queryRuleDatas/{alertKey}")
+    @ApiImplicitParam(name = "alertKey",value = "预警编号",required = true,paramType = "path")
+    public Object queryRuleDatas(@PathVariable("alertKey") String alertKey){
+        return earlyWarnMonitorService.queryRuleDatas(alertKey);
     }
 
     @ApiOperation("处理方式为排除的归档接口")

@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
+
 @Data
 @ApiModel(description = "处理方式为登记风险事件的归档模型")
 public class FileRiskEventDo implements Serializable {
@@ -25,5 +27,15 @@ public class FileRiskEventDo implements Serializable {
     private String sendorg;
     @ApiModelProperty("风险事件责任人")
     private String mistaketlr;
+    @ApiModelProperty("返回日期")
+    private Date orderfeedbackdt;
+    @ApiModelProperty("原交易金额")
+    private String tradesum;
+    @ApiModelProperty("协查行描述")
+    private String sendorg_disp;
+    @ApiModelProperty("风险事件责任人——描述")
+    private String mistaketlr_disp;
+    @ApiModelProperty("用户编号")
+    private String userNo;
 
 }

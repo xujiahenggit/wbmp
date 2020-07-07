@@ -59,6 +59,13 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         } catch (Exception e) {
             throw new BizException("协查组任务查看详情数据查询（有、无调查记录)报错！"+e.getMessage());
         }
+        if("-1".equals((String)report.get("status"))){
+            throw new BizException("预警编号为空,状态码:"+(String)report.get("status"));
+        }else if("1".equals((String)report.get("status"))){
+            throw new BizException("编号未查询出预警信息,状态码:"+(String)report.get("status"));
+        }else if("3".equals((String)report.get("status"))){
+            throw new BizException("无预警日志,状态码:"+(String)report.get("status"));
+        }
         return report;
     }
 
@@ -159,9 +166,9 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
     }
 
     @Override
-    public Object queryRuleDatas(String tplakey) {
+    public Object queryRuleDatas(String alertKey) {
         Map<String, Object> parmMap = new HashMap<>();
-        parmMap.put("tplakey",tplakey);
+        parmMap.put("alertKey",alertKey);
         Map report = null;
         try {
             report = SoapUtil.sendReport("FXYJ10009","812",parmMap);
@@ -209,6 +216,11 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         parmMap.put("mistakedesc",fileRiskEventDo.getMistakedesc());
         parmMap.put("sendorg",fileRiskEventDo.getSendorg());
         parmMap.put("mistaketlr",fileRiskEventDo.getMistaketlr());
+        parmMap.put("orderfeedbackdt",fileRiskEventDo.getOrderfeedbackdt());
+        parmMap.put("tradesum",fileRiskEventDo.getTradesum());
+        parmMap.put("sendorg_disp",fileRiskEventDo.getSendorg_disp());
+        parmMap.put("mistaketlr_disp",fileRiskEventDo.getMistaketlr_disp());
+        parmMap.put("userNo",fileRiskEventDo.getUserNo());
         Map report = null;
         try {
             report = SoapUtil.sendReport("FXYJ10011","812",parmMap);
