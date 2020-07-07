@@ -3,7 +3,7 @@
 <mapper namespace="com.bank.manage.dao.WbmpOperateHomeDao">
 
 	<select id="queyDepositDay" resultType="map">
-		SELECT org_no, private_bal, public_bal, generality_bal FROM dws_ass_ogsj_gen_acct
+		SELECT org_no, private_bal, public_bal, generality_bal,DATE_FORMAT( update_date, '%Y%m%d' ) date_str FROM dws_ass_ogsj_gen_acct
 		WHERE org_no = #{orgId} AND update_date = DATE_FORMAT( CURRENT_DATE, '%Y%m%d' )
 	</select>
 
