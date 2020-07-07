@@ -267,7 +267,13 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         Object objectData = report.get("data");
         Object objectTotal= report.get("recordSize");
         if(isObjectIsNotEmpty(objectData)){
-            List<Map<String,Object>> dataList =(List<Map<String,Object>> )report.get("data");
+            List<Map<String,Object>> dataList =new ArrayList<>();
+            if(objectData instanceof HashMap){
+                dataList.add((Map<String, Object>) report.get("data"));
+            }else{
+                dataList =(List<Map<String,Object>> )report.get("data");
+            }
+
             if(CollectionUtil.isNotEmpty(dataList)){
                 for (int i = 0; i < dataList.size(); i++) {
                     VoucherListVo voucherListVo = new VoucherListVo();
@@ -373,7 +379,11 @@ public class CashVoucherServiceImpl implements CashVoucherService {
                     .orgId(orgId)
                     .orgName((String)report.get("orgName"))
                     .receiptUser((String)report.get("consignee"))
-                    .receiptAddress((String)report.get("address")).build();
+                    .receiptAddress((String)report.get("address"))
+                    .phone((String)report.get("consigneePhone"))
+                    .invoiceType((String)report.get("invoiceType"))
+                    .invoiceTitle((String) report.get("invoiceTitle"))
+                    .dutyParagraph((String)report.get("taxId")).build();
         }
         return vo;
     }
