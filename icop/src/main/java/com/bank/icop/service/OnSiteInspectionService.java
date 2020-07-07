@@ -78,4 +78,6 @@ public interface OnSiteInspectionService {
     List getRectifyTellerInfo(String userId, String tellerId, String tellerName);
 
     List getUserOfRoleInfo(String userId);
+
+    Object problemAddQuery(String sunpointkey, String taskpk);
 }

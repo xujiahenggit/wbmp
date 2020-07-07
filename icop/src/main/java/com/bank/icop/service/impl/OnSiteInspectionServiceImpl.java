@@ -524,6 +524,15 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         return getIcopTagList(parmMap, "FXYJ11032", "用户所属角色", "1", "返回状态  -1:传入参数为空 ,  0:查询用户不存在 ,1:执行正常");
     }
 
+    @Override
+    public Object problemAddQuery(String sunpointkey, String taskpk) {
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("sunpointkey", sunpointkey);
+        parmMap.put("taskpk", taskpk);
+
+        return getIcopTagData(parmMap, "FXYJ11033", "检查问题添加", "0,1", "返回状态 -1:参数为空 , 0:未查询出数据 ,1:正常", "check");
+    }
+
     private Object getIcopTagData(Map<String, Object> parmMap, String serviceCode, String serviceName, String rightCode, String errMsg, String tag) {
         Map report = getReport(parmMap, serviceCode, serviceName, rightCode, errMsg);
         Object list = report.get(tag);
@@ -585,4 +594,5 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
             }
         }
     }
+
 }

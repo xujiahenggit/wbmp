@@ -342,4 +342,14 @@ public class OnSiteInspectionController extends BaseIcopController {
         TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
         return onSiteInspectionService.getUserOfRoleInfo(tokenUserInfo.getUserId());
     }
+
+    @ApiOperation("检查问题添加-查询")
+    @GetMapping("/problemAddQuery/{sunpointkey}/{taskpk}")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "sunpointkey", value = "检查key", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "taskpk", value = "任务Key", required = true, defaultValue = "", dataType = "String")
+    })
+    public Object problemAddQuery(@PathVariable("sunpointkey") String sunpointkey, @PathVariable("taskpk") String taskpk) {
+        return onSiteInspectionService.problemAddQuery(sunpointkey, taskpk);
+    }
 }
