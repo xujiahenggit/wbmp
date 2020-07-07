@@ -111,7 +111,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         List<Map<String,Object>> list = new ArrayList<>();
         parmMap.put("userId",vo.getUserId());
         parmMap.put("orderId",vo.getOrderId());
-        parmMap.put("orderDeatild",vo.getOrderDeatilId());
+        parmMap.put("orderDeatilId",vo.getOrderDeatilId());
         parmMap.put("voucherNo",vo.getVoucherNo());
         List<VoucherNumberVo> data = vo.getData();
         for (VoucherNumberVo numberVo : data) {
@@ -124,7 +124,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         parmMap.put("data",list);
         Map report = null;
         try {
-            report = SoapUtil.sendReport("VTMS0014",parmMap);
+            report = SoapUtil.sendReportHd("VTMS0014",parmMap);
             report.put("ReturnCode","00000000");
         } catch (Exception e) {
             throw new BizException("号段录入失败！"+e.getMessage());
@@ -564,6 +564,15 @@ public class CashVoucherServiceImpl implements CashVoucherService {
                         voucherWaitListVo.setOrgId((String)dataList.get(i).get("orgId"));
                         voucherWaitListVo.setOrgName((String)dataList.get(i).get("orgName"));
                         voucherWaitListVo.setName("凭证订单确认");
+                        OrderQueryVo queryVo=new OrderQueryVo();
+                        queryVo.setOrderId(waitListQueryVo.getUserId());
+                        queryVo.setUserId(waitListQueryVo.getUserId());
+                        queryVo.setOrderType((String)dataList.get(i).get("orderType"));
+                        List<OrderVo> listOrderInfo=getOrderInfo(queryVo);
+                        if(listOrderInfo.size()>0){
+                            voucherWaitListVo.setDate(listOrderInfo.get(1).getCreateDate());
+                        }
+
                         voucherWaitListVo.setContent((String) dataList.get(i).get("orgName")+"+"+getOrderType((String)dataList.get(i).get("orderType")));
                         list.add(voucherWaitListVo);
                     }
@@ -581,12 +590,12 @@ public class CashVoucherServiceImpl implements CashVoucherService {
      */
     private String getOrderType(String orderTypeId){
         String orderType="";
-        switch (orderType){
-            case "01":
+        switch (orderTypeId){
+            case "1":
                 orderType= "重要空白凭证订单";
-            case "02":
+            case "2":
                 orderType= "非重要空白凭证订单";
-            case "03":
+            case "3":
                 orderType= "分行代理凭证订单";
         }
         return orderType;
