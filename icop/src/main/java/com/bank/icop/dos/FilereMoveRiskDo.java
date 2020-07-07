@@ -13,6 +13,16 @@ public class FilereMoveRiskDo implements Serializable {
     private String alertkey;
     @ApiModelProperty("排除原因")
     private String obviatereason;
+    @ApiModelProperty("用户编号")
+    private String userNo;
+    @ApiModelProperty("部门编号")
+    private String dept;
+    @ApiModelProperty("角色编号")
+    private String rolekey;
+    @ApiModelProperty("规则编号")
+    private String rulekey;
+    @ApiModelProperty("主键")
+    private String tplakey;
     @ApiModelProperty("备注")
     private String comments;
 

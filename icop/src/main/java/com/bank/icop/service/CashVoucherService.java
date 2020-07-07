@@ -61,4 +61,10 @@ public interface CashVoucherService {
     ReceiptInfoVo getReceiptInfoByOrg(String orgId);
 
     IPage<OrderDetailDo> queryDetailList(OrderQueryDetailVo orderQueryDetailVo);
+
+    /**
+     * 查询凭证 待办列表
+     * @param waitListQueryVo 查询参数
+     */
+    List<VoucherWaitListVo> getWaitList(WaitListQueryVo waitListQueryVo);
 }

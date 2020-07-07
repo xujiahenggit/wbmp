@@ -21,5 +21,9 @@ public class AddTaskDatasDo implements Serializable {
     private String deallev;
     @ApiModelProperty("描述信息")
     private String taskdesc;
+    @ApiModelProperty("用户编号")
+    private String userNo;
+    @ApiModelProperty("预警编号编号")
+    private String alertKey;
 
 }

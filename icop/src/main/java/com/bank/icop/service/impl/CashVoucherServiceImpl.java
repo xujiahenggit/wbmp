@@ -138,7 +138,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         parmMap.put("userId",vo.getUserId());
         parmMap.put("userName",vo.getUserName());
         parmMap.put("orderId",vo.getOrderId());
-        parmMap.put("orderdeatiId",vo.getOrderDeatild());
+        parmMap.put("orderDeatild",vo.getOrderDeatild());
         parmMap.put("operationObject",vo.getOperationObject());
         parmMap.put("operationType",vo.getOperationType());
         Map report = null;
@@ -416,7 +416,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         parmMap.put("invoiceType",orderInfoVo.getInvoiceType());
         parmMap.put("invoiceTitle",orderInfoVo.getInvoiceTitle());
         parmMap.put("dutyPara",orderInfoVo.getDutyPara());
-        parmMap.put("remark",orderInfoVo.getRemark());
+        parmMap.put("remark",orderInfoVo.getRemark()==null?"":orderInfoVo.getRemark());
         Map report = null;
         try {
             report = SoapUtil.sendReport("VTMS0007",parmMap);
@@ -452,7 +452,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         parmMap.put("num",orderDetailVo.getNum());
         parmMap.put("cardName",orderDetailVo.getCardName());
         parmMap.put("cardNo",orderDetailVo.getCardNo());
-        parmMap.put("remark",orderDetailVo.getRemark());
+        parmMap.put("remark",orderDetailVo.getRemark()==null?"":orderDetailVo.getRemark());
         Map report = null;
         try {
             report = SoapUtil.sendReport("VTMS0009",parmMap);
@@ -523,6 +523,73 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         page.setTotal(Integer.parseInt(objectTotal.toString()));
         page.setRecords(list);
         return page;
+    }
+
+    /**
+     * 查询待办 列表
+     * @param waitListQueryVo 查询参数
+     */
+    @Override
+    public List<VoucherWaitListVo> getWaitList(WaitListQueryVo waitListQueryVo) {
+        HashMap<String, Object> parmMap = new HashMap<>();
+        parmMap.put("userId", waitListQueryVo.getUserId());
+        parmMap.put("orgId", getOrgId(waitListQueryVo.getOrgId()));
+        parmMap.put("pageIndex", 1);
+        parmMap.put("pageSize", 100);
+        Map report = null;
+        try {
+            report = SoapUtil.sendReport("VTMS0003",parmMap);
+        } catch (Exception e) {
+            throw new BizException("凭证订单列表查询失败！"+e.getMessage());
+        }
+        List<VoucherWaitListVo> list = new ArrayList<>();
+        Object objectData = report.get("data");
+        Object objectTotal= report.get("recordSize");
+        if(isObjectIsNotEmpty(objectData)){
+            List<Map<String,Object>> dataList =new ArrayList<>();
+            if(objectData instanceof HashMap){
+                dataList.add((Map<String, Object>) report.get("data"));
+            }else{
+                dataList =(List<Map<String,Object>> )report.get("data");
+            }
+            if(CollectionUtil.isNotEmpty(dataList)){
+                for (int i = 0; i < dataList.size(); i++) {
+                    if("4".equals(dataList.get(i).get("orderStatus"))){
+                        VoucherWaitListVo voucherWaitListVo=new VoucherWaitListVo();
+                        voucherWaitListVo.setListType((String)dataList.get(i).get("listType"));
+                        voucherWaitListVo.setOrderType((String)dataList.get(i).get("orderType"));
+                        voucherWaitListVo.setOrderNo((String)dataList.get(i).get("orderNo"));
+                        voucherWaitListVo.setOrderCycle((String)dataList.get(i).get("orderCycle"));
+                        voucherWaitListVo.setOrderStatus((String)dataList.get(i).get("orderStatus"));
+                        voucherWaitListVo.setOrgId((String)dataList.get(i).get("orgId"));
+                        voucherWaitListVo.setOrgName((String)dataList.get(i).get("orgName"));
+                        voucherWaitListVo.setName("凭证订单确认");
+                        voucherWaitListVo.setContent((String) dataList.get(i).get("orgName")+"+"+getOrderType((String)dataList.get(i).get("orderType")));
+                        list.add(voucherWaitListVo);
+                    }
+                }
+            }
+        }
+        return list;
+    }
+
+
+    /**
+     * 获取订单类型
+     * @param orderTypeId 订单类型ID
+     * @return
+     */
+    private String getOrderType(String orderTypeId){
+        String orderType="";
+        switch (orderType){
+            case "01":
+                orderType= "重要空白凭证订单";
+            case "02":
+                orderType= "非重要空白凭证订单";
+            case "03":
+                orderType= "分行代理凭证订单";
+        }
+        return orderType;
     }
 
     /**
