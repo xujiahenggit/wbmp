@@ -148,22 +148,22 @@ public class SoapUtil {
                         if (!obj.getClass().getName().equals("java.util.ArrayList")) {
                             mapList = new ArrayList();
                             mapList.add(obj);
-                            mapList.add(iter.getText());
+                            mapList.add(iter.getText() == "null" ? "" : iter.getText());
                         }
                         if (obj.getClass().getName().equals("java.util.ArrayList")) {
                             mapList = (List) obj;
-                            mapList.add(iter.getText());
+                            mapList.add(iter.getText() == "null" ? "" : iter.getText());
                         }
                         map.put(iter.getName(), mapList);
                     }
                     else {
-                        map.put(iter.getName(), iter.getText());
+                        map.put(iter.getName(), iter.getText() == "null" ? "" : iter.getText());
                     }
                 }
             }
         }
         else {
-            map.put(e.getName(), e.getText());
+            map.put(e.getName(), e.getText() == "null" ? "" : e.getText());
         }
         return map;
     }

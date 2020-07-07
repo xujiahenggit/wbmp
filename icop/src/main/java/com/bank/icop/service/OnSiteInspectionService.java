@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.bank.icop.dto.CheckItemCheckSubmitDTO;
 import com.bank.icop.dto.CheckProblemDTO;
+import com.bank.icop.dto.CheckTaskSaveDTO;
 
 /**
  * SOAP调用第三方接口日志 服务类
@@ -55,7 +56,7 @@ public interface OnSiteInspectionService {
 
     Object feedbackView(String currentUserId, String cpk);
 
-    Object checkTaskSave(String currentUserId, String jsonstr);
+    Object checkTaskSave(String currentUserId, CheckTaskSaveDTO checkTaskSaveDTO);
 
     Object feedbackCheckSubmit(String currentUserId, String cpk, String decision, String approvelog);
 

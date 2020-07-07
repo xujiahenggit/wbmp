@@ -8,10 +8,12 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.bank.core.entity.BizException;
 import com.bank.icop.dto.CheckItemCheckSubmitDTO;
 import com.bank.icop.dto.CheckProblemDTO;
+import com.bank.icop.dto.CheckTaskSaveDTO;
 import com.bank.icop.service.OnSiteInspectionService;
 import com.bank.icop.util.SoapUtil;
 
@@ -101,10 +103,10 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
     }
 
     @Override
-    public Object checkTaskSave(String currentUserId, String jsonstr) {
+    public Object checkTaskSave(String currentUserId, CheckTaskSaveDTO checkTaskSaveDTO) {
         Map<String, Object> parmMap = new HashMap();
         parmMap.put("userNo", currentUserId);
-        parmMap.put("jsonstr", jsonstr);
+        parmMap.put("jsonstr", JSON.toJSONString(checkTaskSaveDTO));
         Map report = getReport(parmMap,
                 "FXYJ11006",
                 "检查任务的保存",
