@@ -395,7 +395,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         parmMap.put("userNo", userId);
         parmMap.put("cpk", rectifyId);
 
-        Map returnData = getReport(parmMap, "FXYJ11029", "已整改详细信息", "1", "返回状态  -1:参数为空 ,  0:用户不存在");
+        Map returnData = getReport(parmMap, "FXYJ11029", "已整改详细信息", "0", "返回状态  -1:参数为空 ,  0:正常");
 
         Map result = new HashMap();
         result.put("corrective", returnData.get("corrective"));
