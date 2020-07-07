@@ -54,7 +54,7 @@ public interface BusinessPanelDao {
      * @param tellerId
      * @return 该柜员是第几名
      */
-    Integer tradeNumRank(@Param("orgId") String orgId, @Param("tellerId") String tellerId);
+    List<Map<String,Object>> tradeNumRank(@Param("orgId") String orgId);
 
     Float onlineTimeSum(@Param("orgId") String orgId);
 
