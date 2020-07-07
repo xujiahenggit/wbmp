@@ -79,15 +79,27 @@ public class ESBUtil {
     public static String convert(Map<String, Object> map) {
         StringBuffer buffer = new StringBuffer();
         for (String key : map.keySet()) {
-            buffer.append("<" + key + ">");
             if (map.get(key) instanceof Map) {
+                buffer.append("<" + key + ">");
                 String element = convert((Map<String, Object>) map.get(key));
                 buffer.append(element);
+                buffer.append("</" + key + ">");
+            }
+            else if (map.get(key) instanceof List) {
+                List list = (List) map.get(key);
+                for (int i = 0; i < list.size(); i++) {
+                    buffer.append("<" + key + ">");
+                    String element = convert((Map<String, Object>) list.get(i));
+                    buffer.append(element);
+                    buffer.append("</" + key + ">");
+                }
             }
             else {
+                buffer.append("<" + key + ">");
                 buffer.append(map.get(key));
+                buffer.append("</" + key + ">");
             }
-            buffer.append("</" + key + ">");
+
         }
         return buffer.toString();
     }

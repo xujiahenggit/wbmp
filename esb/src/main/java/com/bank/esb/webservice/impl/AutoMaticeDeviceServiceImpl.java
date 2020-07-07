@@ -2,8 +2,10 @@ package com.bank.esb.webservice.impl;
 
 import java.io.ByteArrayInputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.jws.WebService;
@@ -19,6 +21,7 @@ import com.alibaba.fastjson.JSON;
 import com.bank.core.entity.BizException;
 import com.bank.esb.dto.InspectionSheetsDto;
 import com.bank.esb.dto.OrderDealWithDto;
+import com.bank.esb.dto.OrderDto;
 import com.bank.esb.dto.OrderSubmissionDto;
 import com.bank.esb.dto.RepairOrderBDto;
 import com.bank.esb.dto.RepairOrderDispatchDto;
@@ -56,6 +59,17 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
 
     private ResponseDto getOrders(OrderNumVo orderNumVo) {
         ResponseDto responseDto = new ResponseDto();
+        responseDto.setStatus("0");
+        responseDto.setPageIndex(orderNumVo.getPageIndex());
+        responseDto.setPageSize(orderNumVo.getPageSize());
+        List<OrderDto> orderDtoList = new ArrayList<>();
+        OrderDto orderDto1 = new OrderDto();
+        orderDto1.setDeviceType("deviceType");
+        orderDtoList.add(orderDto1);
+        OrderDto orderDto2 = new OrderDto();
+        orderDto2.setDeviceName("deviceName");
+        orderDtoList.add(orderDto2);
+        responseDto.setList(orderDtoList);
         return responseDto;
     }
 

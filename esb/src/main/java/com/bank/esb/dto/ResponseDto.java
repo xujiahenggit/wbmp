@@ -1,10 +1,12 @@
 package com.bank.esb.dto;
 
+import java.util.List;
+
+import com.alibaba.fastjson.annotation.JSONField;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
-import java.util.List;
 
 /**
  * @Author: cq
@@ -13,8 +15,9 @@ import java.util.List;
 @ApiModel(description = "相应报文")
 @Data
 public class ResponseDto {
+
     @ApiModelProperty(value = "业务响应码 -1: 交易失败 ; 0: 正常 , ")
-    private String repcode;
+    private String status;
 
     @ApiModelProperty(value = "分页大小")
     private int pageSize;
@@ -26,5 +29,6 @@ public class ResponseDto {
     private int total;
 
     @ApiModelProperty(value = "工单Dto集合")
-    private List<OrderDto> orderDtoList;
+    @JSONField(name = "List")
+    private List<OrderDto> List;
 }
