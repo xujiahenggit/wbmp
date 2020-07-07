@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bank.core.entity.TokenUserInfo;
 import com.bank.icop.dto.CheckItemCheckSubmitDTO;
 import com.bank.icop.dto.CheckProblemDTO;
+import com.bank.icop.dto.CheckTaskSaveDTO;
 import com.bank.icop.service.OnSiteInspectionService;
 
 import io.swagger.annotations.Api;
@@ -103,9 +104,9 @@ public class OnSiteInspectionController extends BaseIcopController {
 
     @ApiOperation("检查任务保存【FXYJ11006】")
     @PostMapping("/checkTaskSave")
-    @ApiImplicitParam(name = "jsonstr", value = "任务编号", required = true, defaultValue = "", dataType = "String")
-    public Object checkTaskSave(String jsonstr) {
-        return onSiteInspectionService.checkTaskSave(getCurrentUserId(request), jsonstr);
+    @ApiImplicitParam(name = "checkTaskSaveDTO", value = "检查任务保存对象", required = true, dataType = "CheckTaskSaveDTO", paramType = "body")
+    public Object checkTaskSave(@RequestBody CheckTaskSaveDTO checkTaskSaveDTO) {
+        return onSiteInspectionService.checkTaskSave(getCurrentUserId(request), checkTaskSaveDTO);
     }
 
     @ApiOperation("检查任务的提交【FXYJ11007】")

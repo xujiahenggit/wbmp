@@ -1,5 +1,7 @@
 package com.bank.icop.dto;
 
+import java.io.Serializable;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -18,7 +20,12 @@ import lombok.Data;
  * Create Time: 2020/07/07 15:42:23
  */
 @Data
-public class CheckItemCheckSubmitDTO {
+public class CheckItemCheckSubmitDTO implements Serializable {
+
+    /**
+     *
+     */
+    private static final long serialVersionUID = 7602658586121659759L;
 
     @ApiModelProperty(value = "任务PK")
     private String taskpk;
