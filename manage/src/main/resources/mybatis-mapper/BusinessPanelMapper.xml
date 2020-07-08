@@ -236,6 +236,7 @@
 	) e ON a.TELLER_ID = e.TELLER_ID
         WHERE
         concat(a.ORG_ID,a.GROUP_NO)=#{orgId}
+        ORDER BY TELLER_IND desc,onLineTime DESC,trade_volume DESC,callNum DESC
     </select>
 <!--a.ORG_ID=#{orgId}-->
 
