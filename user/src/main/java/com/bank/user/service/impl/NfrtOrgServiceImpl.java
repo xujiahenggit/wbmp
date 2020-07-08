@@ -144,4 +144,13 @@ public class NfrtOrgServiceImpl extends ServiceImpl<NfrtOrgDao, NfrtOrgDO> imple
         }
         return listOrg;
     }
+
+    /**
+     * 获取所有的核心机构号  计算综合分数用
+     * @return
+     */
+    @Override
+    public List<OrgNftDto> getAllOrgUseOperate() {
+        return nfrtOrgDao.getAllOrgUseOperate();
+    }
 }

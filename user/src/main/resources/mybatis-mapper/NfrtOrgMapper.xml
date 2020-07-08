@@ -161,4 +161,15 @@
         AND O.ORG_UNIT_ID =#{departId}
         AND O.ORG_ID =#{orgId}
     </select>
+
+    <!--    获取所有核心机构号列表 计算综合分数用-->
+    <select id="getAllOrgUseOperate" resultMap="nftOrgDto">
+        SELECT DISTINCT
+            CONCAT(NFRT_ORG_ID, '01') AS NFRT_ORGID,
+            NFRT_ORG_NAME AS NFRT_ORGNAME
+        FROM
+            t_nfrt_org
+        WHERE
+            NFRT_ORG_NO='01'
+    </select>
 </mapper>

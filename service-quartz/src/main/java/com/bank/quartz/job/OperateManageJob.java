@@ -51,7 +51,8 @@ public class OperateManageJob implements Job {
             //String date="2020-07-02";
 
             //获取所有的网点列表
-            List<OrgNftDto> listOrg=nfrtOrgService.getAllOutletsList();
+            //List<OrgNftDto> listOrg=nfrtOrgService.getAllOutletsList();
+            List<OrgNftDto> listOrg=nfrtOrgService.getAllOrgUseOperate();
             /**
              * 经营列表
              */
@@ -63,7 +64,7 @@ public class OperateManageJob implements Job {
             //每个网点 获取
             for (OrgNftDto item:listOrg){
                 // 根据时间和机构号 来查询 经营分数
-                float manageScore=operateCurveService.calcOrgMonthScore(item.getOrgCode(),date);
+                float manageScore=operateCurveService.calcOrgMonthScore(item.getOrgId(),date);
                 //经营得分模型
                 WbmpMangementScoreDO wbmpMangementScoreDO=new WbmpMangementScoreDO();
                 //设置日期
@@ -78,7 +79,7 @@ public class OperateManageJob implements Job {
                 listManagement.add(wbmpMangementScoreDO);
 
                 //根据时间和机构号 查询运营分数
-                float operateScore=wbmpOperateScoreService.calOperScore(item.getOrgCode(),date);
+                float operateScore=wbmpOperateScoreService.calOperScore(item.getOrgId(),date);
                 //运营得分模型
                 WbmpOperateScoreDO wbmpOperateScoreDO=new WbmpOperateScoreDO();
                 //设置时间
