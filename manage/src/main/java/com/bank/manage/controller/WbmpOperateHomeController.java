@@ -2,6 +2,8 @@ package com.bank.manage.controller;
 
 import com.bank.core.enums.ConstantEnum;
 import com.bank.core.sysConst.WbmpConstFile;
+import com.bank.manage.dos.WbmpMangementScoreDO;
+import com.bank.manage.dos.WbmpOperateScoreDO;
 import com.bank.manage.dto.CustomerAvgDto;
 import com.bank.manage.dto.HouseRaceDto;
 import com.bank.manage.dto.WbmpAbsAtmTranInfoDto;
@@ -18,6 +20,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -176,5 +179,17 @@ public class WbmpOperateHomeController {
     })
     public Map<String, Object> queryOrgTierInfo(@PathVariable String orgId) {
         return this.wbmpOperateHomeService.queryOrgTierInfo(orgId);
+    }
+
+
+    @ApiOperation(value = "计算分数")
+    @GetMapping("/cale/{orgId}/{date}")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "orgId", value = "机构号", required = true, paramType = "path"),
+            @ApiImplicitParam(name = "date", value = "日期", required = true, paramType = "path")
+    })
+    public String calScore(@PathVariable String orgId,@PathVariable String date){
+
+        return wbmpOperateHomeService.calScore(orgId,date);
     }
 }

@@ -51,14 +51,14 @@ public class WbmpOperRateUtils {
      * @return
      */
     public static float getCustomerWaitTimeAvgScore(BigDecimal outsiteAvgTime,BigDecimal stardTime){
-        //转float
-        float f_outsiteAvgTime=outsiteAvgTime.floatValue();
-        float f_stardTime=stardTime.floatValue()/100;
+        //转float 转为 分钟
+        float f_outsiteAvgTime=outsiteAvgTime.floatValue()/60;
+        float f_stardTime=stardTime.floatValue();
         float customerWaitTimeAvG=0;
         if(f_outsiteAvgTime>=f_stardTime){
             return 0;
         }
-        customerWaitTimeAvG=100-(((f_stardTime-f_outsiteAvgTime)/f_stardTime)*100);
+        customerWaitTimeAvG=100-(((f_stardTime-f_outsiteAvgTime)/f_stardTime)*1);
         return Maht2digit(customerWaitTimeAvG);
     }
 
@@ -70,14 +70,16 @@ public class WbmpOperRateUtils {
      * @return 返回值 保留2位小数
      */
     public static float getTranNumAvg(float outsiteTranAvgNum,BigDecimal stardNum){
-        // 转 float
-        float f_outsiteTranAvgNum=outsiteTranAvgNum/100;
+        // 转 float 网点日均业务量  0
+        float f_outsiteTranAvgNum=outsiteTranAvgNum;
+        //标准 100
         float f_stardNum=stardNum.floatValue();
+
         float TranNumAvg=0;
         if(f_outsiteTranAvgNum>=f_stardNum){
             TranNumAvg=100;
         }else{
-            TranNumAvg= (float) (100-(f_stardNum-f_outsiteTranAvgNum)/f_stardNum*100);
+            TranNumAvg= (float) (100-(f_stardNum-f_outsiteTranAvgNum)/f_stardNum*1);
         }
         return Maht2digit(TranNumAvg);
     }

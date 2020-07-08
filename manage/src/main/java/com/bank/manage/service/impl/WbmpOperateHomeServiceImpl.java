@@ -2,6 +2,7 @@ package com.bank.manage.service.impl;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +11,10 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import com.bank.core.utils.DateUtils;
+import com.bank.manage.dos.WbmpMangementScoreDO;
+import com.bank.manage.dos.WbmpOperateScoreDO;
+import com.bank.manage.service.OperateCurveService;
+import com.bank.manage.service.WbmpOperateScoreService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +46,12 @@ public class WbmpOperateHomeServiceImpl implements WbmpOperateHomeService {
 
     @Resource
     private NfrtOrgDao nfrtOrgDao;
+
+    @Resource
+    private OperateCurveService operateCurveService;
+
+    @Resource
+    private WbmpOperateScoreService wbmpOperateScoreService;
 
     @Override
     public Map<String, Object> queryBranchDepositBalance(String orgId, String depositTypeCode) {
@@ -191,6 +202,22 @@ public class WbmpOperateHomeServiceImpl implements WbmpOperateHomeService {
             }
         }
         return result;
+    }
+
+    /**
+     * 计算分数
+     * @param orgId 机构号时间
+     * @param date 时间
+     * @return
+     */
+    @Override
+    public String calScore(String orgId, String date) {
+        // 根据时间和机构号 来查询 经营分数
+        float manageScore=operateCurveService.calcOrgMonthScore(orgId,date);
+        //根据时间和机构号 查询运营分数
+        float operateScore=wbmpOperateScoreService.calOperScore(orgId,date);
+
+        return "success";
     }
 
 }

@@ -61,7 +61,9 @@ public class WbmpOperateScoreServiceImpl extends ServiceImpl<WbmpOperateScoreDao
     @Override
     public void saveScore(List<WbmpMangementScoreDO> listManagement, List<WbmpOperateScoreDO> listOperate) {
         try {
+
             saveBatch(listOperate);
+
             wbmpMangementScoreService.saveBatch(listManagement);
         } catch (Exception e) {
             throw new BizException("经营 运营 综合得分数据保存失败！");
@@ -91,7 +93,7 @@ public class WbmpOperateScoreServiceImpl extends ServiceImpl<WbmpOperateScoreDao
         //日均业务量
         //全行业务标准量
         float qhbzywl=wbmpCommonCalcMethodDO.getStandDayilTrafficNum().floatValue();
-        float rjywl=WbmpOperRateUtils.getTranNumAvg(qhbzywl,new BigDecimal(total));
+        float rjywl=WbmpOperRateUtils.getTranNumAvg(total,new BigDecimal(qhbzywl));
 
         //S2121赛马制（100%）
         // S21211=无纸化业务取消率(12.5%)
@@ -119,7 +121,7 @@ public class WbmpOperateScoreServiceImpl extends ServiceImpl<WbmpOperateScoreDao
         //电子对账率占比
         float dzper=(wbmpCommonCalcMethodDO.getDzdzPer().floatValue())/100;
         //对公账户开通率占比
-        float dgper=(wbmpCommonCalcMethodDO.getDzdzPer().floatValue())/100;
+        float dgper=(wbmpCommonCalcMethodDO.getDgzhxskhPer().floatValue())/100;
         //企业客户线上开通率
         float qykhper=(wbmpCommonCalcMethodDO.getQykhxsktPer().floatValue())/100;
         //现金业务分流率占比
@@ -138,35 +140,35 @@ public class WbmpOperateScoreServiceImpl extends ServiceImpl<WbmpOperateScoreDao
         for (WbmpOperateRacingIndexMDO item : listRacing) {
             //无纸化业务取消率(12.5%)
             if(WbmpConstFile.SMZ_RACING_001.equals(item.getIndexNo())){
-                wzh= WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*wzhper);
+                wzh= WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*wzhper*100);
             }
             //S21212=银企对账率(12.5%)
             if(WbmpConstFile.SMZ_RACING_002.equals(item.getIndexNo())){
-                yq=WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*yqper);
+                yq=WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*yqper*100);
             }
             //电子对账率(12.5%)
             if(WbmpConstFile.SMZ_RACING_004.equals(item.getIndexNo())){
-                dz=WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*dzper);
+                dz=WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*dzper*100);
             }
             //对公账户线上开户率(12.5%)
             if(WbmpConstFile.SMZ_RACING_007.equals(item.getIndexNo())){
-                dg=WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*dgper);
+                dg=WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*dgper*100);
             }
             //企业客户线上开通率(12.5%)
             if(WbmpConstFile.SMZ_RACING_008.equals(item.getIndexNo())){
-                qy=WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*qykhper);
+                qy=WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*qykhper*100);
             }
             //现金业务分流率(12.5%)
             if(WbmpConstFile.SMZ_RACING_005.equals(item.getIndexNo())){
-                xj=WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*xjper);
+                xj=WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*xjper*100);
             }
             // S21217=自助设备业务分担率(12.5%)
             if(WbmpConstFile.SMZ_RACING_006.equals(item.getIndexNo())){
-                zzft=WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*zzsbftl);
+                zzft=WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*zzsbftl*100);
             }
             //S21218=自助设备可用率(12.5%)
             if(WbmpConstFile.SMZ_RACING_002.equals(item.getIndexNo())){
-                zzky=WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*zzsbkyPer);
+                zzky=WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*zzsbkyPer*100);
             }
             smz=WbmpOperRateUtils.smz(wzh,yq,dz,dg,qy,xj,zzft,zzky);
         }
