@@ -12,8 +12,8 @@
         (SELECT COUNT( DISTINCT wbn.win_num ) FROM wbmp_bqms_win wbn WHERE wbn.branch = #{branch} AND wbn.status1 = '1') as num,
         (select count(b.queue_seq) from wbmp_bqms_queue b WHERE b.queue_status = '3' and b.branch = #{branch} and DATE_FORMAT(b.data_dt,'%Y%m%d') = #{nowStr}) as queue_status_3,
         (select count(b.queue_seq) from wbmp_bqms_queue b WHERE b.branch = #{branch} and DATE_FORMAT(b.data_dt,'%Y%m%d') = #{nowStr}) as queue_seq_count,
-        (select q.INDEX_CNT  from wbmp_operate_bqms_queue_avg q where q.ORG_ID = #{branch} order by q.DATA_DT desc limit 1) as index_cnt,
-        (select q.AVG_ABANDONED_LV  from wbmp_operate_bqms_queue_avg q where q.ORG_ID = #{branch} order by q.DATA_DT desc limit 1) as avg_abandoned_lv
+        (select q.INDEX_CNT  from wbmp_operate_bqms_queue_avg q where concat(substr(q.ORG_ID,1,6),'01') = concat(substr(#{branch},1,6),'01') order by q.DATA_DT desc limit 1) as index_cnt,
+        (select q.AVG_ABANDONED_LV  from wbmp_operate_bqms_queue_avg q where concat(substr(q.ORG_ID,1,6),'01') = concat(substr(#{branch},1,6),'01') order by q.DATA_DT desc limit 1) as avg_abandoned_lv
     </select>
 
 
