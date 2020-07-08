@@ -176,7 +176,7 @@
             LEFT JOIN wbmp_abs_transinfo c ON a.TELLER_ID = c.TELLER_ID
             AND c.flag = '3'
             AND c.DATA_DT = CURDATE()
-            LEFT JOIN wbmp_abs_transinfo d ON a.ORG_ID = d.ORG_ID
+            LEFT JOIN wbmp_abs_transinfo d ON CONCAT(a.ORG_ID,a.GROUP_NO)= d.ORG_ID
             AND d.flag = '1'
             AND d.DATA_DT = CURDATE()
             LEFT JOIN (
@@ -243,7 +243,7 @@
         select IFNULL((
             SELECT COUNT(TELLER_ID) FROM wbmp_abs_teller_info WHERE teller_ind = '1'
             <if test="orgId!=null">
-                and ORG_ID=#{orgId}
+                and CONCAT(ORG_ID,GROUP_NO)=#{orgId}
             </if>
         ),0)
     </select>
