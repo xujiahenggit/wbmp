@@ -41,7 +41,7 @@
         FROM
         wbmp_operate_cust
         WHERE
-        ORG_ID =#{orgId}
+        concat(substr(ORG_ID,1,6),'01') =  concat(substr(#{orgId},1,6),'01')
         AND DATA_DT=#{day}
         AND INDEX_NO = #{customerType}),0)
     </select>
@@ -54,7 +54,7 @@
         FROM
             wbmp_operate_cust
         WHERE
-            ORG_ID = #{orgId}
+             concat(substr(ORG_ID,1,6),'01') =  concat(substr(#{orgId},1,6),'01')
         AND DATE_FORMAT(DATA_DT,'%Y-%m')=#{month}
         AND INDEX_NO =#{customerType}),0)
     </select>
@@ -66,7 +66,7 @@
         FROM
             wbmp_operate_cust
         WHERE
-           ORG_ID = #{orgId}
+            concat(substr(ORG_ID,1,6),'01') =  concat(substr(#{orgId},1,6),'01')
         AND DATE_FORMAT(DATA_DT,'%Y')=#{year}
         AND INDEX_NO =#{customerType}),0)
     </select>
@@ -79,7 +79,7 @@
         FROM
             wbmp_operate_cust
         WHERE
-        ORG_ID = #{orgId}
+        concat(substr(ORG_ID,1,6),'01') =  concat(substr(#{orgId},1,6),'01')
         AND INDEX_NO = #{customerTypeCode}
         AND DATE_FORMAT(DATA_DT,'%Y-%m-%d') = DATE_FORMAT(#{date},'%Y-%m-%d')),0)
     </select>
@@ -92,7 +92,7 @@
                 FROM
                 wbmp_operate_cust
                 WHERE
-                ORG_ID = #{orgId}
+                concat(substr(ORG_ID,1,6),'01') =  concat(substr(#{orgId},1,6),'01')
                 AND INDEX_NO = #{customerTypeCode}
                 ORDER BY DATA_DT desc
                 LIMIT 15
@@ -108,7 +108,7 @@
                     (SELECT MAX(DATA_DT) as DATA_DT FROM  wbmp_operate_cust GROUP BY DATE_FORMAT(DATA_DT,'%Y-%m') ORDER BY DATA_DT DESC LIMIT 10000 ) d
                     ON  c.DATA_DT = d.DATA_DT
              WHERE
-                c.ORG_ID = #{orgId}
+                 concat(substr(c.ORG_ID,1,6),'01') =  concat(substr(#{orgId},1,6),'01')
                 AND c.INDEX_NO = #{customerTypeCode}
                 ORDER BY DATA_DT desc
                 LIMIT 12
@@ -129,7 +129,7 @@
                     ) d
                     ON  c.DATA_DT = d.DATA_DT
              WHERE
-                c.ORG_ID = #{orgId}
+                concat(substr(c.ORG_ID,1,6),'01') =  concat(substr(#{orgId},1,6),'01')
                 AND c.INDEX_NO = #{customerTypeCode}
                 ORDER BY DATA_DT desc
                 LIMIT 3

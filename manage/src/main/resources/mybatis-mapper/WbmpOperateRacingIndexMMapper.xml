@@ -39,7 +39,7 @@
                     FROM
                         WBMP_OPERATE_RACING_INDEX_M
                     WHERE
-                        ORG_ID = #{orgId}
+                        concat(substr(ORG_ID,1,6),'01') =  concat(substr(#{orgId},1,6),'01')
                     AND DATE_FORMAT(DATA_DT, '%Y-%m') = #{date}
                     AND INDEX_NO = #{id}
                     ORDER BY DATA_DT DESC
@@ -51,6 +51,10 @@
 
     <!--    获取赛马制列表 -->
     <select id="getRacingList" resultMap="BaseResultMap">
-        SELECT  * FROM WBMP_OPERATE_RACING_INDEX_M WHERE ORG_ID=#{orgId}  AND DATE_FORMAT(DATA_DT,'%Y-%m')=#{date}
+        SELECT  *
+        FROM WBMP_OPERATE_RACING_INDEX_M
+        WHERE
+        concat(substr(ORG_ID,1,6),'01') =  concat(substr(#{orgId},1,6),'01')
+        AND DATE_FORMAT(DATA_DT,'%Y-%m')=#{date}
     </select>
 </mapper>
