@@ -22,7 +22,7 @@ public class NetUtil {
         }
         //生产环境与sit环境使用域名
         else if (StringUtils.indexOf("sit,pro", configFileReader.getSpringProfile()) > -1) {
-            return "http://" + configFileReader.getApplicationIp() + "/" + contextPath;
+            return "http://" + configFileReader.getApplicationIp() + contextPath;
         }
         else {
             ip = cn.hutool.core.net.NetUtil.getLocalhostStr();
@@ -37,7 +37,7 @@ public class NetUtil {
         }
         //生产环境与sit环境使用域名
         else if (StringUtils.indexOf("sit,pro", configFileReader.getSpringProfile()) > -1) {
-            return "http://" + configFileReader.getApplicationIp() + "/" + configFileReader.getApplicationContextPath();
+            return "http://" + configFileReader.getApplicationIp() + configFileReader.getApplicationContextPath();
         }
         else {
             ip = cn.hutool.core.net.NetUtil.getLocalhostStr();
