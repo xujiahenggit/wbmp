@@ -565,12 +565,12 @@ public class CashVoucherServiceImpl implements CashVoucherService {
                         voucherWaitListVo.setOrgName((String)dataList.get(i).get("orgName"));
                         voucherWaitListVo.setName("凭证订单确认");
                         OrderQueryVo queryVo=new OrderQueryVo();
-                        queryVo.setOrderId(waitListQueryVo.getUserId());
-                        queryVo.setUserId(waitListQueryVo.getUserId());
+                        queryVo.setOrderId((String)dataList.get(i).get("orderNo"));
+                        queryVo.setUserId(getOrgId(waitListQueryVo.getOrgId()));
                         queryVo.setOrderType((String)dataList.get(i).get("orderType"));
                         List<OrderVo> listOrderInfo=getOrderInfo(queryVo);
                         if(listOrderInfo.size()>0){
-                            voucherWaitListVo.setDate(listOrderInfo.get(1).getCreateDate());
+                            voucherWaitListVo.setDate(listOrderInfo.get(0).getCreateDate());
                         }
 
                         voucherWaitListVo.setContent((String) dataList.get(i).get("orgName")+"+"+getOrderType((String)dataList.get(i).get("orderType")));
