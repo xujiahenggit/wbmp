@@ -176,7 +176,7 @@
             LEFT JOIN wbmp_abs_transinfo c ON a.TELLER_ID = c.TELLER_ID
             AND c.flag = '3'
             AND c.DATA_DT = CURDATE()
-            LEFT JOIN wbmp_abs_transinfo d ON a.ORG_ID = d.ORG_ID
+            LEFT JOIN wbmp_abs_transinfo d ON CONCAT(a.ORG_ID,a.GROUP_NO)= d.ORG_ID
             AND d.flag = '1'
             AND d.DATA_DT = CURDATE()
             LEFT JOIN (
