@@ -29,7 +29,7 @@
         FROM
             wbmp_abs_transinfo
         WHERE
-            concat(substr(ORG_ID,1,6),'01') = concat(substr(#{orgId},1,6),'01')
+            ORG_ID = #{orgId}
         AND FLAG = 1
         AND DATE_FORMAT(DATA_DT, '%Y-%m-%d') = #{date}),0)
     </select>
@@ -47,7 +47,7 @@
                     WHERE
                         FLAG = 1
                     AND DATE_FORMAT(DATA_DT, '%Y-%m') = #{date}
-                    AND concat(substr(ORG_ID,1,6),'01') = concat(substr(#{orgId},1,6),'01')
+                    AND ORG_ID = #{orgId}
                 ),
                 0
             )

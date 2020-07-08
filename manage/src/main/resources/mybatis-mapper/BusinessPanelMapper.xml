@@ -4,16 +4,16 @@
 
 
     <select id="queryOperation" resultType="map">
-SELECT
-(select count(b.queue_seq) from wbmp_bqms_queue b WHERE b.queue_status = '0' and concat(substr(b.branch,1,6),'01') = #{branch} and DATE_FORMAT(b.data_dt,'%Y%m%d') = #{nowStr}) as queue_cnt,
-(select count(b.queue_seq) from wbmp_bqms_queue b WHERE b.queue_status = '1' and concat(substr(b.branch,1,6),'01') = #{branch} and DATE_FORMAT(b.data_dt,'%Y%m%d') = #{nowStr}) as progress_handle_cnt,
-(select count(b.queue_seq) from wbmp_bqms_queue b WHERE b.queue_status = '2' and concat(substr(b.branch,1,6),'01') = #{branch} and DATE_FORMAT(b.data_dt,'%Y%m%d') = #{nowStr}) as already_handle_cnt,
-(select count(b.queue_seq) from wbmp_bqms_queue b WHERE b.queue_status = '3' and concat(substr(b.branch,1,6),'01') = #{branch} and DATE_FORMAT(b.data_dt,'%Y%m%d') = #{nowStr}) as abandoned_cnt,
-(SELECT COUNT( DISTINCT wbn.win_num ) FROM wbmp_bqms_win wbn WHERE concat(substr(wbn.branch,1,6),'01') = #{branch} AND wbn.status1 = '1') as num,
-(select count(b.queue_seq) from wbmp_bqms_queue b WHERE b.queue_status = '3' and concat(substr(b.branch,1,6),'01') = #{branch} and DATE_FORMAT(b.data_dt,'%Y%m%d') = #{nowStr}) as queue_status_3,
-(select count(b.queue_seq) from wbmp_bqms_queue b WHERE concat(substr(b.branch,1,6),'01') = #{branch} and DATE_FORMAT(b.data_dt,'%Y%m%d') = #{nowStr}) as queue_seq_count,
-(select q.INDEX_CNT  from wbmp_operate_bqms_queue_avg q where q.ORG_ID = #{branch} order by q.DATA_DT desc limit 1) as index_cnt,
-(select q.AVG_ABANDONED_LV  from wbmp_operate_bqms_queue_avg q where q.ORG_ID = #{branch} order by q.DATA_DT desc limit 1) as avg_abandoned_lv
+        SELECT
+        (select count(b.queue_seq) from wbmp_bqms_queue b WHERE b.queue_status = '0' and b.branch  = #{branch} and DATE_FORMAT(b.data_dt,'%Y%m%d') = #{nowStr}) as queue_cnt,
+        (select count(b.queue_seq) from wbmp_bqms_queue b WHERE b.queue_status = '1' and b.branch  = #{branch} and DATE_FORMAT(b.data_dt,'%Y%m%d') = #{nowStr}) as progress_handle_cnt,
+        (select count(b.queue_seq) from wbmp_bqms_queue b WHERE b.queue_status = '2' and b.branch  = #{branch} and DATE_FORMAT(b.data_dt,'%Y%m%d') = #{nowStr}) as already_handle_cnt,
+        (select count(b.queue_seq) from wbmp_bqms_queue b WHERE b.queue_status = '3' and b.branch  = #{branch} and DATE_FORMAT(b.data_dt,'%Y%m%d') = #{nowStr}) as abandoned_cnt,
+        (SELECT COUNT( DISTINCT wbn.win_num ) FROM wbmp_bqms_win wbn WHERE wbn.branch = #{branch} AND wbn.status1 = '1') as num,
+        (select count(b.queue_seq) from wbmp_bqms_queue b WHERE b.queue_status = '3' and b.branch = #{branch} and DATE_FORMAT(b.data_dt,'%Y%m%d') = #{nowStr}) as queue_status_3,
+        (select count(b.queue_seq) from wbmp_bqms_queue b WHERE b.branch = #{branch} and DATE_FORMAT(b.data_dt,'%Y%m%d') = #{nowStr}) as queue_seq_count,
+        (select q.INDEX_CNT  from wbmp_operate_bqms_queue_avg q where q.ORG_ID = #{branch} order by q.DATA_DT desc limit 1) as index_cnt,
+        (select q.AVG_ABANDONED_LV  from wbmp_operate_bqms_queue_avg q where q.ORG_ID = #{branch} order by q.DATA_DT desc limit 1) as avg_abandoned_lv
     </select>
 
 
@@ -137,17 +137,15 @@ SELECT
 
 
     <select id="devicetransCnfSum" resultType="java.lang.Integer">
-
-    select IFNULL((
-    SELECT SUM(trans_cnt) sum FROM wbmp_atmp_tran_info
-    WHERE ORG_ID=#{orgId} AND DATA_DT=CURDATE() GROUP BY ORG_ID),0)
-
+        select IFNULL((
+        SELECT SUM(trans_cnt) sum FROM wbmp_atmp_tran_info
+        WHERE ORG_ID=#{orgId} AND DATA_DT=CURDATE() GROUP BY ORG_ID),0)
     </select>
 
 
     <select id="tradeVolumeTop5" resultType="com.bank.manage.vo.TransCntInfo">
         SELECT tran_name trans_name,SUM(trade_volume) sum FROM wbmp_abs_transinfo
-        WHERE flag='2' AND DATA_DT=CURDATE() AND concat(substr(ORG_ID,1,6),'01')=#{orgId}
+        WHERE flag='2' AND DATA_DT=CURDATE() AND ORG_ID =#{orgId}
         GROUP BY tran_name
         ORDER BY sum DESC
         LIMIT 5
@@ -158,7 +156,7 @@ SELECT
     <select id="tradeVolumeSum" resultType="java.lang.Integer">
         select IFNULL((
         SELECT SUM(trade_volume) sum FROM wbmp_abs_transinfo
-        WHERE flag='2' AND DATA_DT=CURDATE() AND concat(substr(ORG_ID,1,6),'01')=#{orgId}
+        WHERE flag='2' AND DATA_DT=CURDATE() AND ORG_ID =#{orgId}
         ),0)
     </select>
     <!-- tradeVolumeSum去除了 GROUP BY ORG_ID-->
@@ -178,7 +176,7 @@ SELECT
             LEFT JOIN wbmp_abs_transinfo c ON a.TELLER_ID = c.TELLER_ID
             AND c.flag = '3'
             AND c.DATA_DT = CURDATE()
-            LEFT JOIN wbmp_abs_transinfo d ON a.ORG_ID = concat(substr(d.ORG_ID,1,6),'01')
+            LEFT JOIN wbmp_abs_transinfo d ON a.ORG_ID = d.ORG_ID
             AND d.flag = '1'
             AND d.DATA_DT = CURDATE()
             LEFT JOIN (
@@ -256,7 +254,7 @@ SELECT
             WHERE DATA_DT=CURDATE()
             AND flag=1
             <if test="orgId!=null">
-                and concat(substr(ORG_ID,1,6),'01')=#{orgId}
+                and ORG_ID = #{orgId}
             </if>
         ),0)
     </select>
@@ -264,11 +262,10 @@ SELECT
             SELECT a.TELLER_ID id,(@i := @i + 1) as rank FROM wbmp_abs_transinfo a,(select @i := 0) b
             WHERE a.DATA_DT=CURDATE() AND a.flag=3
             <if test="orgId!=null">
-                and concat(substr(ORG_ID,1,6),'01')=#{orgId}
+                and ORG_ID = #{orgId}
             </if>
             ORDER BY a.trade_volume DESC
     </select>
-
 
 
     <select id="onlineTimeSum" resultType="java.lang.Float">
