@@ -199,28 +199,14 @@ public class OnSiteInspectionController extends BaseIcopController {
         return onSiteInspectionService.problemUpdateList(userId);
     }
 
-    @ApiOperation("整改待审核列表【FXYJ11018】")
-    @GetMapping("/updateCheckList")
-    public Object updateCheckList() {
-        String userId = getCurrentUserId(request);
-        return onSiteInspectionService.updateCheckList(userId);
-    }
-
-    @ApiOperation("问题整改展示界面【FXYJ11019】")
+    @ApiOperation("问题整改展示界面【FXYJ11018】")
     @GetMapping("/problemRectifyInfo/{key}")
     @ApiImplicitParam(name = "key", value = "整改PK", required = true, dataType = "String")
     public Object problemRectifyInfo(@PathVariable("key") String key) {
         return onSiteInspectionService.problemRectifyInfo(getCurrentUserId(request), key);
     }
 
-    @ApiOperation("整改审批展示【FXYJ11020")
-    @GetMapping("/feedbackView/{cpk}")
-    @ApiImplicitParam(name = "cpk", value = "整改PK", required = false, dataType = "String")
-    public Object feedbackView(@PathVariable("cpk") String cpk) {
-        return onSiteInspectionService.feedbackView(getCurrentUserId(request), cpk);
-    }
-
-    @ApiOperation("整改反馈说明保存【FXYJ11021】")
+    @ApiOperation("整改反馈说明保存【FXYJ11019】")
     @PostMapping("/feedbackSave")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "key", value = "整改PK", required = true, dataType = "String"),
@@ -230,11 +216,25 @@ public class OnSiteInspectionController extends BaseIcopController {
         return onSiteInspectionService.feedbackSave(getCurrentUserId(request), key, feedbackdes);
     }
 
-    @ApiOperation("整改提交【FXYJ11022】")
+    @ApiOperation("整改提交【FXYJ11020】")
     @PostMapping("/feedbackSubmit")
     @ApiImplicitParam(name = "cpk", value = "整改PK", required = true, dataType = "String")
     public Object feedbackSubmit(String cpk) {
         return onSiteInspectionService.feedbackSubmit(getCurrentUserId(request), cpk);
+    }
+
+    @ApiOperation("整改待审核列表【FXYJ11021】")
+    @GetMapping("/updateCheckList")
+    public Object updateCheckList() {
+        String userId = getCurrentUserId(request);
+        return onSiteInspectionService.updateCheckList(userId);
+    }
+
+    @ApiOperation("整改审批展示【FXYJ11022")
+    @GetMapping("/feedbackView/{cpk}")
+    @ApiImplicitParam(name = "cpk", value = "整改PK", required = false, dataType = "String")
+    public Object feedbackView(@PathVariable("cpk") String cpk) {
+        return onSiteInspectionService.feedbackView(getCurrentUserId(request), cpk);
     }
 
     @ApiOperation("整改审批提交【FXYJ11023】")
