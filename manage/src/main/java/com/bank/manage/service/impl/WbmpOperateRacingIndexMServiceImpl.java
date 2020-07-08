@@ -68,7 +68,7 @@ public class WbmpOperateRacingIndexMServiceImpl extends ServiceImpl<WbmpOperateR
         HouseRaceItem houseRaceItem_007=new HouseRaceItem();
         houseRaceItem_007.setId(WbmpConstFile.SMZ_RACING_007);
         houseRaceItem_007.setMax("100");
-        houseRaceItem_007.setName("对公线上开通率");
+        houseRaceItem_007.setName("对公账户线上开户率");
         sortItem.add(houseRaceItem_007);
 
 
