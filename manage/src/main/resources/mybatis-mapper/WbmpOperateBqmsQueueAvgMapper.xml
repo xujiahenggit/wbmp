@@ -30,13 +30,18 @@
     <select id="getOrgAvgAbandVe" resultType="String">
         SELECT AVG_ABANDONED_LV
         FROM wbmp_operate_bqms_queue_avg
-        WHERE  ORG_ID= #{orgId}
+        WHERE  concat(substr(ORG_ID,1,6),'01')= concat(substr(#{orgId},1,6),'01')
         order by DATA_DT desc limit 1
     </select>
 
     <!--    客户平均等待时长-->
     <select id="getCustmerWaitTime" resultType="java.lang.Float">
-        SELECT IFNULL((SELECT INDEX_CNT FROM wbmp_operate_bqms_queue_avg WHERE ORG_ID=#{orgId}  order by DATA_DT desc limit 1 ),0)
+        SELECT IFNULL((
+                SELECT INDEX_CNT
+                FROM wbmp_operate_bqms_queue_avg
+                WHERE  concat(substr(ORG_ID,1,6),'01')= concat(substr(#{orgId},1,6),'01')
+                order by DATA_DT desc limit 1
+                ),0)
     </select>
 
 </mapper>
