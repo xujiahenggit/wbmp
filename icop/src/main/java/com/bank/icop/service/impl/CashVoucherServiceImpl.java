@@ -69,7 +69,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
     public List queryVoucherNumber(VoucherNumberDo voucherNumberDo) {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("userId",voucherNumberDo.getUserId());
-        parmMap.put("orgId",getOrgId(voucherNumberDo.getOrderId()));
+        parmMap.put("orderId",getOrgId(voucherNumberDo.getOrderId()));
         parmMap.put("voucherNo",voucherNumberDo.getVoucherNo());
         parmMap.put("orderDeatilId",voucherNumberDo.getOrderDeatilId());
         Map report = null;

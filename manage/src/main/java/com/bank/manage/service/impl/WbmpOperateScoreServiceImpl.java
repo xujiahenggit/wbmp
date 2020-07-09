@@ -143,7 +143,7 @@ public class WbmpOperateScoreServiceImpl extends ServiceImpl<WbmpOperateScoreDao
                 wzh= WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*wzhper*100);
             }
             //S21212=银企对账率(12.5%)
-            if(WbmpConstFile.SMZ_RACING_002.equals(item.getIndexNo())){
+            if(WbmpConstFile.SMZ_RACING_003.equals(item.getIndexNo())){
                 yq=WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*yqper*100);
             }
             //电子对账率(12.5%)

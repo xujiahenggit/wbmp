@@ -46,9 +46,9 @@ public class OperateManageJob implements Job {
         long start=System.currentTimeMillis();
         try{
             //定时 时间 为当前时间-1天
-            String date= LocalDate.now().minusDays(1).toString();
+            //String date= LocalDate.now().minusDays(1).toString();
 
-            //String date="2020-07-02";
+            String date="2020-07-07";
 
             //获取所有的网点列表
             //List<OrgNftDto> listOrg=nfrtOrgService.getAllOutletsList();
