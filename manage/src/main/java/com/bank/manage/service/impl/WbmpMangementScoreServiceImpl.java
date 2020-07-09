@@ -53,15 +53,15 @@ public class WbmpMangementScoreServiceImpl extends ServiceImpl<WbmpMangementScor
         List<OrgScoreVo> queryResult = new ArrayList<OrgScoreVo>();
         if(WbmpConstFile.DATE_TYPE_YEAR.equals(queryType)){
 
-            queryResult = wbmpMangementScoreDao.queryByYear(orgId);
+            queryResult = wbmpMangementScoreDao.queryManageByYear(orgId);
 
         }else if(WbmpConstFile.DATE_TYPE_JIDU.equals(queryType)){
 
-            queryResult = wbmpMangementScoreDao.queryByQuart(orgId);
+            queryResult = wbmpMangementScoreDao.queryManageByQuart(orgId);
 
         }else if(WbmpConstFile.DATE_TYPE_MONTH.equals(queryType)){
 
-            queryResult =wbmpMangementScoreDao.queryByMonth(orgId);
+            queryResult =wbmpMangementScoreDao.queryManageByMonth(orgId);
         }
 
         //更加x轴的查询条件筛选记录，如果未找到记录，则记录赋值为0

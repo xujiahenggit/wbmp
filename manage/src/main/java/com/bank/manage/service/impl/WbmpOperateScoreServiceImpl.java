@@ -61,9 +61,9 @@ public class WbmpOperateScoreServiceImpl extends ServiceImpl<WbmpOperateScoreDao
     @Override
     public void saveScore(List<WbmpMangementScoreDO> listManagement, List<WbmpOperateScoreDO> listOperate) {
         try {
-
+            //保存经营分数
             saveBatch(listOperate);
-
+            //保存运营分数
             wbmpMangementScoreService.saveBatch(listManagement);
         } catch (Exception e) {
             throw new BizException("经营 运营 综合得分数据保存失败！");
@@ -213,15 +213,15 @@ public class WbmpOperateScoreServiceImpl extends ServiceImpl<WbmpOperateScoreDao
         List<OrgScoreVo> queryResult = new ArrayList<OrgScoreVo>();
         if(WbmpConstFile.DATE_TYPE_YEAR.equals(queryType)){
 
-            queryResult = wbmpOperateScoreDao.queryManageByYear(orgId);
+            queryResult = wbmpOperateScoreDao.queryByYear(orgId);
 
         }else if(WbmpConstFile.DATE_TYPE_JIDU.equals(queryType)){
 
-            queryResult = wbmpOperateScoreDao.queryManageByQuart(orgId);
+            queryResult = wbmpOperateScoreDao.queryByQuart(orgId);
 
         }else if(WbmpConstFile.DATE_TYPE_MONTH.equals(queryType)){
 
-            queryResult =wbmpOperateScoreDao.queryManageByMonth(orgId);
+            queryResult =wbmpOperateScoreDao.queryByMonth(orgId);
         }
         for (String str:times){
             String scoreStr = "0";
