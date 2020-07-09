@@ -100,12 +100,12 @@
 
     <!--查询最近12个月的客户数-->
     <select id="findMouthCust" resultMap="custResultMap">
-            SELECT
+                 SELECT
                 c.ORG_ID,c.INDEX_NO,c.INDEX_VAL,c.COMP_LASTD,c.COMP_LASTM,c.COMP_LASTQ,c.COMP_LASTY, DATE_FORMAT(c.DATA_DT,'%Y-%m') AS DATA_DT
                 FROM
                 wbmp_operate_cust c
                     INNER JOIN
-                    (SELECT MAX(DATA_DT) as DATA_DT FROM  wbmp_operate_cust GROUP BY DATE_FORMAT(DATA_DT,'%Y-%m') ORDER BY DATA_DT DESC LIMIT 10000 ) d
+                    (SELECT max(DATA_DT) as DATA_DT FROM  wbmp_operate_cust  where concat(substr(ORG_ID,1,6),'01') =  concat(substr(#{orgId},1,6),'01')  GROUP BY DATE_FORMAT(DATA_DT,'%Y-%m') ORDER BY DATA_DT DESC LIMIT 10000  ) d
                     ON  c.DATA_DT = d.DATA_DT
              WHERE
                  concat(substr(c.ORG_ID,1,6),'01') =  concat(substr(#{orgId},1,6),'01')
