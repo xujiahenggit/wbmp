@@ -2,11 +2,9 @@ package com.bank.manage.service.impl;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.annotation.Resource;
 
@@ -70,12 +68,22 @@ public class WbmpOperateHomeServiceImpl implements WbmpOperateHomeService {
         }
         //查询当前日存款数
         Map<String, Object> depositDay = wbmpOperateHomeDao.queyDepositDay(orgId);
+
         DecimalFormat decimalFormat = new DecimalFormat("0.00#");
         BigDecimal billion = new BigDecimal("100000000"); //亿元
         //当日存款余额（单位：亿元）
         BigDecimal deposit = new BigDecimal("0.00");
         if(depositDay !=null){
              deposit = new BigDecimal(String.valueOf(depositDay.get(balType) ==null ?deposit:depositDay.get(balType)));
+        }else if(depositDay ==null){
+            depositDay = new HashMap<String, Object>();
+            SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
+            String  today = df.format(new Date());
+            depositDay.put("org_no",orgId);
+            depositDay.put("private_bal",deposit);
+            depositDay.put("public_bal",deposit);
+            depositDay.put("generality_bal",deposit);
+            depositDay.put("date_str",today);
         }
         resultData.put("deposit", decimalFormat.format(deposit.divide(billion, 2, BigDecimal.ROUND_HALF_UP)));
         
