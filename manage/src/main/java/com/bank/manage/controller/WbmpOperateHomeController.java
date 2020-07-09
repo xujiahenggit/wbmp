@@ -2,8 +2,6 @@ package com.bank.manage.controller;
 
 import com.bank.core.enums.ConstantEnum;
 import com.bank.core.sysConst.WbmpConstFile;
-import com.bank.manage.dos.WbmpMangementScoreDO;
-import com.bank.manage.dos.WbmpOperateScoreDO;
 import com.bank.manage.dto.CustomerAvgDto;
 import com.bank.manage.dto.HouseRaceDto;
 import com.bank.manage.dto.WbmpAbsAtmTranInfoDto;
@@ -20,7 +18,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

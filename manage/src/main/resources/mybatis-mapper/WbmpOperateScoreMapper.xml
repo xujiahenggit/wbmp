@@ -26,74 +26,45 @@
     </sql>
 
 
-    <!--查询月度日期最大一天的分数-->
-    <select id="findOperateOrgMouthScore" resultType="java.lang.Float">
-       select IFNULL(( SELECT   MANAGEMENT_SCORE FROM WBMP_MANGEMENT_SCORE WHERE ORG_ID=#{orgId} and DATE_FORMAT(MANAGEMENT_DATE,'%Y-%m')=#{mouth} ORDER BY MANAGEMENT_DATE desc LIMIT 1),0)
-    </select>
-
-    <!--查询年度日期最大一天的分数-->
-    <select id="findOperateYearOrgScore" resultType="java.lang.Float">
-     select IFNULL((SELECT  MANAGEMENT_SCORE FROM WBMP_MANGEMENT_SCORE WHERE ORG_ID=#{orgId} and DATE_FORMAT(MANAGEMENT_DATE,'%Y')=#{year} ORDER BY MANAGEMENT_DATE desc LIMIT 1),0)
-    </select>
-
-
-    <!--查询最近12个月的数据[经营分数表]-->
-    <select id="queryManageByMonth" resultMap="ManageScore">
-        SELECT s.ORG_ID AS org_id,s.MANAGEMENT_SCORE AS score,DATE_FORMAT(s.MANAGEMENT_DATE,'%Y-%m') AS date_dt FROM `wbmp_mangement_score` s
+    <!--查询最近13个月经营的数据-->
+    <select id="queryByMonth" resultMap="ManageScore">
+        SELECT s.ORG_ID AS org_id,s.OPERATE_SCORE AS score,DATE_FORMAT(s.OPERATE_DATE,'%Y-%m') AS date_dt FROM `wbmp_operate_score` s
         INNER  JOIN
-        (
-            SELECT ORG_ID,MAX(MANAGEMENT_DATE)as date_dt FROM `wbmp_mangement_score`
-            where ORG_ID = #{orgId}
-            GROUP BY ORG_ID, DATE_FORMAT(MANAGEMENT_DATE,'%Y-%m')
-            ORDER BY MANAGEMENT_DATE DESC LIMIT 10000
-        ) a
+        (SELECT ORG_ID,MAX(OPERATE_DATE)as OPERATE_DATE FROM `wbmp_operate_score` GROUP BY ORG_ID, DATE_FORMAT(OPERATE_DATE,'%Y-%m') ORDER BY OPERATE_DATE DESC LIMIT 10000 ) a
         on
         s.ORG_ID = a.ORG_ID
-        and s.MANAGEMENT_DATE = a.date_dt
+        and s.OPERATE_DATE = a.OPERATE_DATE
         where a.ORG_ID = #{orgId}
-        ORDER BY s.MANAGEMENT_DATE desc
-        limit 13
+        ORDER BY s.OPERATE_DATE desc
+         limit 13
     </select>
 
-    <!--查询最近四个季度的数据[经营分数表]-->
-    <select id="queryManageByQuart" resultMap="ManageScore">
-         SELECT s.ORG_ID AS org_id,s.MANAGEMENT_SCORE AS score, CONCAT(year(s.MANAGEMENT_DATE),'-', quarter(s.MANAGEMENT_DATE))  AS date_dt FROM `wbmp_mangement_score` s
+    <!--查询最近四个季度的数据[经营]-->
+    <select id="queryByQuart" resultMap="ManageScore">
+        SELECT s.ORG_ID AS org_id,s.OPERATE_SCORE AS score, CONCAT(year(s.OPERATE_DATE),'-', quarter(s.OPERATE_DATE))  AS date_dt FROM `wbmp_operate_score` s
         INNER  JOIN
-        (
-            SELECT ORG_ID,MAX(MANAGEMENT_DATE)as MANAGEMENT_DATE FROM `wbmp_mangement_score`
-            where ORG_ID = #{orgId}
-            GROUP BY ORG_ID, CONCAT(year(MANAGEMENT_DATE),'-', quarter(MANAGEMENT_DATE))
-            ORDER BY MANAGEMENT_DATE DESC LIMIT 10000
-        ) a
+        (SELECT ORG_ID,MAX(OPERATE_DATE)as OPERATE_DATE FROM `wbmp_operate_score` GROUP BY ORG_ID, CONCAT(year(OPERATE_DATE),'-', quarter(OPERATE_DATE)) ORDER BY OPERATE_DATE DESC LIMIT 10000 ) a
         on
         s.ORG_ID = a.ORG_ID
-        and s.MANAGEMENT_DATE = a.MANAGEMENT_DATE
+        and s.OPERATE_DATE = a.OPERATE_DATE
         where
         a.ORG_ID = #{orgId}
-        ORDER BY s.MANAGEMENT_DATE
+        ORDER BY s.OPERATE_DATE
         LIMIT 5
     </select>
 
-    <!--查询最近3年的数据[经营分数表]-->
-    <select id="queryManageByYear" resultMap="ManageScore">
-         SELECT s.ORG_ID AS org_id,s.MANAGEMENT_SCORE AS score ,DATE_FORMAT(s.MANAGEMENT_DATE,'%Y') AS date_dt FROM `wbmp_mangement_score` s
+    <!--查询最近3年的数据[经营]-->
+    <select id="queryByYear" resultMap="ManageScore">
+       SELECT s.ORG_ID AS org_id,s.OPERATE_SCORE AS score ,DATE_FORMAT(s.OPERATE_DATE,'%Y') AS date_dt FROM `wbmp_operate_score` s
         INNER  JOIN
-        (
-            SELECT ORG_ID,MAX(MANAGEMENT_DATE)as MANAGEMENT_DATE FROM `wbmp_mangement_score`
-             where ORG_ID = #{orgId}
-             GROUP BY ORG_ID, DATE_FORMAT(MANAGEMENT_DATE,'%Y')
-             ORDER BY MANAGEMENT_DATE DESC LIMIT 10000
-        ) a
+        (SELECT ORG_ID,MAX(OPERATE_DATE)as OPERATE_DATE FROM `wbmp_operate_score` GROUP BY ORG_ID, DATE_FORMAT(OPERATE_DATE,'%Y') ORDER BY OPERATE_DATE DESC LIMIT 10000 ) a
         on
         s.ORG_ID = a.ORG_ID
-        and s.MANAGEMENT_DATE = a.MANAGEMENT_DATE
-        where
-         a.ORG_ID = #{orgId}
-        ORDER BY s.MANAGEMENT_DATE desc
+        and s.OPERATE_DATE = a.OPERATE_DATE
+        and a.ORG_ID = #{orgId}
+        ORDER BY s.OPERATE_DATE desc
         LIMIT 3
-
     </select>
-
 
 
 </mapper>
