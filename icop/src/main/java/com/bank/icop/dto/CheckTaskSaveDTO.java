@@ -27,7 +27,7 @@ public class CheckTaskSaveDTO implements Serializable {
     */
     private static final long serialVersionUID = 5395738676165401215L;
 
-    private CheckPonitsSaveDTO checkpoints;
+    private CheckPonitSaveDTO checkpoints;
 
     private List<CheckProblemSaveDTO> list;
 }
