@@ -19,7 +19,7 @@ import lombok.Data;
  * Create Time: 2020/07/07 17:34:57
  */
 @Data
-public class CheckPonitsSaveDTO implements Serializable {
+public class CheckPonitSaveDTO implements Serializable {
 
     /**
     *
