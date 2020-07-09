@@ -46,9 +46,9 @@ public class OperateManageJob implements Job {
         long start=System.currentTimeMillis();
         try{
             //定时 时间 为当前时间-1天
-            //String date= LocalDate.now().minusDays(1).toString();
+            String date= LocalDate.now().minusDays(1).toString();
 
-            String date="2020-07-07";
+            //String date="2020-07-07";
 
             //获取所有的网点列表
             //List<OrgNftDto> listOrg=nfrtOrgService.getAllOutletsList();
@@ -61,6 +61,7 @@ public class OperateManageJob implements Job {
              * 运营列表
              */
             List<WbmpOperateScoreDO> listOperate=new ArrayList<>();
+
             //每个网点 获取
             for (OrgNftDto item:listOrg){
                 // 根据时间和机构号 来查询 运营分数
@@ -94,7 +95,7 @@ public class OperateManageJob implements Job {
                 listOperate.add(wbmpOperateScoreDO);
 
             }
-            wbmpOperateScoreService.saveScore(listManagement,listOperate);
+            wbmpOperateScoreService.saveScore(listManagement,listOperate,date);
             //记录日志 运行成功
             //14.保存日志
             TaskLogDO taskLogDO = GetTaskLogModel.getModel(jobExecutionContext, "1" , localDateTime, System.currentTimeMillis() - start, null);

@@ -24,8 +24,9 @@ public interface WbmpOperateScoreService extends IService<WbmpOperateScoreDO> {
      * 保存综合得分
      * @param listManagement 经营得分数据
      * @param listOperate 运营得分数据
+     * @param date 日期
      */
-    void saveScore(List<WbmpMangementScoreDO> listManagement, List<WbmpOperateScoreDO> listOperate);
+    void saveScore(List<WbmpMangementScoreDO> listManagement, List<WbmpOperateScoreDO> listOperate,String date);
 
     /**
      * 计算运营得分情况

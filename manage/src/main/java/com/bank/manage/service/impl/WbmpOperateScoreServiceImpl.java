@@ -59,8 +59,20 @@ public class WbmpOperateScoreServiceImpl extends ServiceImpl<WbmpOperateScoreDao
      */
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void saveScore(List<WbmpMangementScoreDO> listManagement, List<WbmpOperateScoreDO> listOperate) {
+    public void saveScore(List<WbmpMangementScoreDO> listManagement, List<WbmpOperateScoreDO> listOperate,String date) {
         try {
+
+            //保存之前清空经营数据
+            QueryWrapper<WbmpOperateScoreDO> queryWrapper=new QueryWrapper<>();
+            queryWrapper.eq("OPERATE_DATE",date);
+            this.remove(queryWrapper);
+
+            //保存之前 清空 运营数据
+            QueryWrapper<WbmpMangementScoreDO> queryWrapper1=new QueryWrapper<>();
+
+            queryWrapper1.eq("MANAGEMENT_DATE",date);
+            wbmpMangementScoreService.remove(queryWrapper1);
+
             //保存经营分数
             saveBatch(listOperate);
             //保存运营分数
