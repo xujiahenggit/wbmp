@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiOperation;
 import lombok.Data;
 
 /**
@@ -14,8 +15,14 @@ import lombok.Data;
 @ApiModel(description = "事项列表")
 public class MatterListVo implements Serializable {
 
+    @ApiModelProperty(value = "事件ID")
+    private String eventID;
+
     @ApiModelProperty(value = "事件名称")
     private String eventName;
+
+    @ApiModelProperty(value = "事件类型")
+    private String type;
 
     @ApiModelProperty(value = "创建时间", notes = "yyyyMMdd HH:mm:ss")
     private String createTime;
