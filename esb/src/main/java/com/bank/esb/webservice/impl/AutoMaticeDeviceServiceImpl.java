@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.jws.WebService;
 
+import com.bank.esb.dto.*;
 import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -19,20 +20,6 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
 import com.bank.core.entity.BizException;
-import com.bank.esb.dto.InspectionSheetsDto;
-import com.bank.esb.dto.OrderDealWithDto;
-import com.bank.esb.dto.OrderDto;
-import com.bank.esb.dto.OrderSubmissionDto;
-import com.bank.esb.dto.RepairOrderBDto;
-import com.bank.esb.dto.RepairOrderDispatchDto;
-import com.bank.esb.dto.ResonseTransferInformationDto;
-import com.bank.esb.dto.ResponServiceInformationDto;
-import com.bank.esb.dto.ResponseDto;
-import com.bank.esb.dto.ResponseEngineerDto;
-import com.bank.esb.dto.ResponseEquipmentDetailDto;
-import com.bank.esb.dto.ResponseInspectionSheetDto;
-import com.bank.esb.dto.ResponseInstitutionsDto;
-import com.bank.esb.dto.StateChangesDto;
 import com.bank.esb.util.ESBUtil;
 import com.bank.esb.vo.EngineerVo;
 import com.bank.esb.vo.EquipmentDetailVo;
@@ -81,21 +68,54 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
 
     private ResponseInstitutionsDto getInstitutions(InstitutionsVo institutionsVo) {
         ResponseInstitutionsDto responseInstitutionsDto = new ResponseInstitutionsDto();
+        responseInstitutionsDto.setRepcode("0");
+        List<InstitutionsDto> list = new ArrayList<>();
+        for(int i=0;i<2;i++){
+            InstitutionsDto institutionsDto =new InstitutionsDto();
+            institutionsDto.setOrgId("10010"+i);
+            institutionsDto.setOrgName("测试"+i);
+            list.add(institutionsDto);
+        }
+        responseInstitutionsDto.setInstitutionsDtoList(list);
         return responseInstitutionsDto;
     }
 
     private ResponseInspectionSheetDto getInspectionSheet(InspectionSheetVo inspectionSheetVo) {
         ResponseInspectionSheetDto responseInspectionSheetDto = new ResponseInspectionSheetDto();
+        responseInspectionSheetDto.setRepcode("0");
+        List<InspectionSheetDto> list =new ArrayList<>();
+        for(int i=0;i<2;i++){
+            InspectionSheetDto institutionsDto =new InspectionSheetDto();
+            institutionsDto.setOrgId("10010"+i);
+            institutionsDto.setDeviceProperty("阿萨");
+            institutionsDto.setInprocessNo("1111");
+            institutionsDto.setOrgAddress("湖南省");
+            institutionsDto.setSerialNum("101");
+            institutionsDto.setWarrantyTime(new Date());
+            list.add(institutionsDto);
+        }
+        responseInspectionSheetDto.setInspectionSheetDtoList(list);
         return responseInspectionSheetDto;
     }
 
     private InspectionSheetsDto getInspectionSheets(InspectionSheetsVo inspectionSheetsVo) {
         InspectionSheetsDto inspectionSheetsDto = new InspectionSheetsDto();
+        inspectionSheetsDto.setRepcode("0");
         return inspectionSheetsDto;
     }
 
     private ResponseEngineerDto getEngineer(EngineerVo engineerVo) {
         ResponseEngineerDto responseEngineerDto = new ResponseEngineerDto();
+        responseEngineerDto.setRepcode("0");
+        List<EngineerDto> engineerDtoList =new ArrayList<>();
+        for(int i=0;i<2;i++){
+            EngineerDto engineerDto =new EngineerDto();
+            engineerDto.setEngineerId("1"+i);
+            engineerDto.setEngineerName("测试"+i);
+            engineerDto.setPhone("13263953265");
+            engineerDtoList.add(engineerDto);
+        }
+        responseEngineerDto.setEngineerDtoList(engineerDtoList);
         return responseEngineerDto;
     }
 
@@ -106,21 +126,44 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
 
     private StateChangesDto stateChanges(StateChangesVo stateChangesVo) {
         StateChangesDto stateChangesDto = new StateChangesDto();
+        stateChangesDto.setRepcode("0");
         return stateChangesDto;
     }
 
     private OrderSubmissionDto orderSubmission(OrderSubmissionVo orderSubmissionVo) {
         OrderSubmissionDto orderSubmissionDto = new OrderSubmissionDto();
+        orderSubmissionDto.setRepcode("0");
         return orderSubmissionDto;
     }
 
     private RepairOrderBDto repairOrder(RepairOrderBVo repairOrderBVo) {
         RepairOrderBDto repairOrderBDto = new RepairOrderBDto();
+        repairOrderBDto.setRepcode("0");
         return repairOrderBDto;
     }
 
     private ResponseEquipmentDetailDto getEquipmentDetail(EquipmentDetailVo equipmentDetailVo) {
         ResponseEquipmentDetailDto responseEquipmentDetailDto = new ResponseEquipmentDetailDto();
+        responseEquipmentDetailDto.setRepcode("0");
+        List<EquipmentDetailDto> equipmentDetailDtoList = new ArrayList<>();
+        for(int i=0;i<2;i++){
+            EquipmentDetailDto engineerDto =new EquipmentDetailDto();
+            engineerDto.setAddress("湖南省"+i);
+            engineerDto.setDeviceId("1"+i);
+            engineerDto.setDeviceModel("asda");
+            engineerDto.setDeviceVendor("asda");
+            engineerDto.setOrgId("10010"+i);
+            engineerDto.setInstallDate(new Date());
+            engineerDto.setOrgName("测试"+i);
+            List<ServiceSupervisorDto> serviceSupervisorDto =new ArrayList<>();
+            ServiceSupervisorDto supervisorDto =new ServiceSupervisorDto();
+            supervisorDto.setServerId("1"+i);
+            supervisorDto.setServerName("擦拭"+i);
+            serviceSupervisorDto.add(supervisorDto);
+            engineerDto.setServiceSupervisorDtoList(serviceSupervisorDto);
+            equipmentDetailDtoList.add(engineerDto);
+        }
+        responseEquipmentDetailDto.setEquipmentDetailDtoList(equipmentDetailDtoList);
         return responseEquipmentDetailDto;
     }
 
@@ -131,6 +174,22 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
 
     private ResponServiceInformationDto getServiceInformation(ServiceInformationVo serviceInformationVo) {
         ResponServiceInformationDto responServiceInformationDto = new ResponServiceInformationDto();
+        responServiceInformationDto.setRepcode("0");
+        List<ServiceInformationDto> list =new ArrayList<>();
+        for(int i=0;i<2;i++){
+            ServiceInformationDto serviceInformationDto =new ServiceInformationDto();
+            serviceInformationDto.setEngineerId("1"+i);
+            serviceInformationDto.setEngineerName("测试"+i);
+            serviceInformationDto.setEngineerPhone("123456789632");
+            serviceInformationDto.setFinishTime(new Date());
+            serviceInformationDto.setProcessMode("asda");
+            serviceInformationDto.setServerId("1"+i);
+            serviceInformationDto.setServerName("测试"+i);
+            serviceInformationDto.setServerPhone("12365246985");
+            serviceInformationDto.setServiceProvider("asdsssss");
+            list.add(serviceInformationDto);
+        }
+        responServiceInformationDto.setServiceInformationDtoList(list);
         return responServiceInformationDto;
     }
 

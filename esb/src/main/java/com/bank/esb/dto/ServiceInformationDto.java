@@ -1,12 +1,14 @@
 package com.bank.esb.dto;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import java.util.Date;
 
 /**
  * cq
  */
+@Data
 public class ServiceInformationDto {
     @ApiModelProperty(value = "服务商")
     private String serviceProvider;
