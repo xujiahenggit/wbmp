@@ -18,6 +18,6 @@ public class VoucherNumberDo implements Serializable {
     @ApiModelProperty("凭证代码")
     private String voucherNo;
     @ApiModelProperty("订单明细id")
-    private String orderDeatild;
+    private String orderDeatilId;
 
 }
