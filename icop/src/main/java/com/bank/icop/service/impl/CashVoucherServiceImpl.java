@@ -234,7 +234,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
                     vo.setContent((String) dataList.get(i).get("content"));
                     vo.setOrderType((String) dataList.get(i).get("orderType"));
                     vo.setOperationObject((String) dataList.get(i).get("operationObject"));
-                    vo.setOperationType((String) dataList.get(i).get("operationObject"));
+                    vo.setOperationType((String) dataList.get(i).get("operationType"));
                     list.add(vo);
                 }
             }
