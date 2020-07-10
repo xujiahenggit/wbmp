@@ -34,12 +34,6 @@ spring:
     username: root
     #  连接数据库的密码
     password: root78
-      # 连接数据库的url
-      #    url: jdbc:mysql://127.0.0.1:3306/ssp?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true&failOverReadOnly=false&serverTimezone=GMT%2B8
-      # 连接数据库的账号
-    #    username: root
-    #  连接数据库的密码
-    #    password: 123456
     # 使用druid数据源
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
