@@ -15,4 +15,7 @@ public class EngineerVo {
     @ApiModelProperty(value = "服务主管编号")
     private String engineerMId;
 
+    @ApiModelProperty(value = "查询文本：该字段可以为工程师名称、工程师电话")
+    private String seachTxt;
+
 }

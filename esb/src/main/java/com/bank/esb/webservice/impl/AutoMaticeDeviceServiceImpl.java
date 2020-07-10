@@ -1,16 +1,14 @@
 package com.bank.esb.webservice.impl;
 
-import java.io.ByteArrayInputStream;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.jws.WebService;
-
+import cn.hutool.core.lang.UUID;
+import com.alibaba.fastjson.JSON;
+import com.bank.core.entity.BizException;
 import com.bank.esb.dto.*;
+import com.bank.esb.util.ESBUtil;
+import com.bank.esb.vo.*;
+import com.bank.esb.webservice.AutoMaticeDeviceService;
+import com.bank.esb.webservice.entity.ESBRequestHeader;
+import com.bank.esb.webservice.entity.ESBResponseHeader;
 import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -18,31 +16,126 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSON;
-import com.bank.core.entity.BizException;
-import com.bank.esb.util.ESBUtil;
-import com.bank.esb.vo.EngineerVo;
-import com.bank.esb.vo.EquipmentDetailVo;
-import com.bank.esb.vo.InspectionSheetVo;
-import com.bank.esb.vo.InspectionSheetsVo;
-import com.bank.esb.vo.InstitutionsVo;
-import com.bank.esb.vo.OrderDealWithVo;
-import com.bank.esb.vo.OrderNumVo;
-import com.bank.esb.vo.OrderSubmissionVo;
-import com.bank.esb.vo.RepairOrderBVo;
-import com.bank.esb.vo.RepairOrderDispatchVo;
-import com.bank.esb.vo.ServiceInformationVo;
-import com.bank.esb.vo.StateChangesVo;
-import com.bank.esb.vo.TransferInformationVo;
-import com.bank.esb.webservice.AutoMaticeDeviceService;
-import com.bank.esb.webservice.entity.ESBRequestHeader;
-import com.bank.esb.webservice.entity.ESBResponseHeader;
-
-import cn.hutool.core.lang.UUID;
+import javax.jws.WebService;
+import java.io.ByteArrayInputStream;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 @WebService(name = "automaticedeviceservice", targetNamespace = "http://webservice.wbmp.com")
 public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
+    @SuppressWarnings("unchecked")
+    @Override
+    public String esbService(String requestXml) {
+        if (StringUtils.isBlank(requestXml)) {
+            throw new BizException("ESB请求报文为空！");
+        }
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(requestXml.getBytes());
+        SAXReader builder = new SAXReader();
+        //报文转xml文档
+        Document doc;
+        try {
+            doc = builder.read(byteArrayInputStream);
+        }
+        catch (DocumentException e) {
+            throw new BizException("ESB请求报文不符合xml格式！");
+        }
+        Element serviceElement = doc.getRootElement();
+        Map<String, Object> requestMap = ESBUtil.elementTomap(serviceElement);
+
+        Map<String, Object> header = (Map<String, Object>) requestMap.get("Header");
+        Map<String, Object> body = (Map<String, Object>) requestMap.get("Body");
+        if (header == null) {
+            throw new BizException("获取ESB请求报文头失败");
+        }
+        if (body == null) {
+            throw new BizException("获取ESB请求报文体失败");
+        }
+        ESBRequestHeader requestHeader = JSON.parseObject(JSON.toJSONString(header), ESBRequestHeader.class);
+
+        Map<String, Object> returnVO = new HashMap<String, Object>();
+        switch (requestHeader.getServiceCode()) {
+            case "WBMP10001"://工单查询
+                OrderNumVo orderNumVO = JSON.parseObject(JSON.toJSONString(body), OrderNumVo.class);
+                returnVO = JSON.parseObject(JSON.toJSONString(getOrders(orderNumVO)), Map.class);
+                break;
+            case "WBMP10002"://工单处理
+                OrderDealWithVo orderDealWithVo = JSON.parseObject(JSON.toJSONString(body), OrderDealWithVo.class);
+                returnVO = JSON.parseObject(JSON.toJSONString(orderDealWith(orderDealWithVo)), Map.class);
+                break;
+            case "WBMP10003"://机构列表接口
+                InstitutionsVo institutionsVo = JSON.parseObject(JSON.toJSONString(body), InstitutionsVo.class);
+                returnVO = JSON.parseObject(JSON.toJSONString(getInstitutions(institutionsVo)), Map.class);
+                break;
+            case "WBMP10004"://巡检单创建查询接口
+                InspectionSheetVo inspectionSheetVo = JSON.parseObject(JSON.toJSONString(body), InspectionSheetVo.class);
+                returnVO = JSON.parseObject(JSON.toJSONString(getInspectionSheet(inspectionSheetVo)), Map.class);
+                break;
+            case "WBMP10005"://巡检单创建接口
+                InspectionSheetsVo inspectionSheet = JSON.parseObject(JSON.toJSONString(body), InspectionSheetsVo.class);
+                returnVO = JSON.parseObject(JSON.toJSONString(getInspectionSheets(inspectionSheet)), Map.class);
+                break;
+            case "WBMP10007"://工程师列表查询接口
+                EngineerVo engineerVo = JSON.parseObject(JSON.toJSONString(body), EngineerVo.class);
+                returnVO = JSON.parseObject(JSON.toJSONString(getEngineer(engineerVo)), Map.class);
+                break;
+//            case "WBMP10008":
+//                InspectionSheetsVo inspectionSheet = JSON.parseObject(JSON.toJSONString(body), InspectionSheetsVo.class);
+//                returnVO = JSON.parseObject(JSON.toJSONString(getInspectionSheets(inspectionSheet)), Map.class);
+//                break;
+//            case "WBMP10009":
+//                InspectionSheetsVo inspectionSheet = JSON.parseObject(JSON.toJSONString(body), InspectionSheetsVo.class);
+//                returnVO = JSON.parseObject(JSON.toJSONString(getInspectionSheets(inspectionSheet)), Map.class);
+//                break;
+//            case "WBMP10010":
+//                InspectionSheetsVo inspectionSheet = JSON.parseObject(JSON.toJSONString(body), InspectionSheetsVo.class);
+//                returnVO = JSON.parseObject(JSON.toJSONString(getInspectionSheets(inspectionSheet)), Map.class);
+//                break;
+//            case "WBMP10011":
+//                InspectionSheetsVo inspectionSheet = JSON.parseObject(JSON.toJSONString(body), InspectionSheetsVo.class);
+//                returnVO = JSON.parseObject(JSON.toJSONString(getInspectionSheets(inspectionSheet)), Map.class);
+//                break;
+//            case "WBMP10012":
+//                InspectionSheetsVo inspectionSheet = JSON.parseObject(JSON.toJSONString(body), InspectionSheetsVo.class);
+//                returnVO = JSON.parseObject(JSON.toJSONString(getInspectionSheets(inspectionSheet)), Map.class);
+//                break;
+//            case "WBMP10013":
+//                InspectionSheetsVo inspectionSheet = JSON.parseObject(JSON.toJSONString(body), InspectionSheetsVo.class);
+//                returnVO = JSON.parseObject(JSON.toJSONString(getInspectionSheets(inspectionSheet)), Map.class);
+//                break;
+//            case "WBMP10014":
+//                InspectionSheetsVo inspectionSheet = JSON.parseObject(JSON.toJSONString(body), InspectionSheetsVo.class);
+//                returnVO = JSON.parseObject(JSON.toJSONString(getInspectionSheets(inspectionSheet)), Map.class);
+//                break;
+//            case "WBMP10015":
+//                InspectionSheetsVo inspectionSheet = JSON.parseObject(JSON.toJSONString(body), InspectionSheetsVo.class);
+//                returnVO = JSON.parseObject(JSON.toJSONString(getInspectionSheets(inspectionSheet)), Map.class);
+//                break;
+            default:
+                break;
+        }
+
+        Map<String, Object> response = new HashMap<String, Object>();
+        Map<String, Object> responseHeader = new HashMap<String, Object>();
+        responseHeader.putAll(header);
+        ESBResponseHeader res = new ESBResponseHeader();
+        res.setReturnCode("00000000");
+        res.setProviderChannelId("812");
+        res.setResponseTime(new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()));
+        res.setReturnMessage("服务调用成功");
+        res.setProviderReference(UUID.randomUUID().toString());
+        res.setProviderWorkingDate(new SimpleDateFormat("yyyyMMdd").format(new Date()));
+        responseHeader.put("Response", JSON.parseObject(JSON.toJSONString(res), Map.class));
+
+        Map<String, Object> responseBody = new HashMap<String, Object>();
+        responseBody.put("Response", returnVO);
+
+        response.put("Header", responseHeader);
+        response.put("Body", responseBody);
+
+        return "<Service>" + ESBUtil.convert(response) + "</Service>";
+    }
+
 
     private ResponseDto getOrders(OrderNumVo orderNumVo) {
         ResponseDto responseDto = new ResponseDto();
@@ -191,70 +284,6 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         }
         responServiceInformationDto.setServiceInformationDtoList(list);
         return responServiceInformationDto;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public String esbService(String requestXml) {
-        if (StringUtils.isBlank(requestXml)) {
-            throw new BizException("ESB请求报文为空！");
-        }
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(requestXml.getBytes());
-        SAXReader builder = new SAXReader();
-        //报文转xml文档
-        Document doc;
-        try {
-            doc = builder.read(byteArrayInputStream);
-        }
-        catch (DocumentException e) {
-            throw new BizException("ESB请求报文不符合xml格式！");
-        }
-        Element serviceElement = doc.getRootElement();
-        Map<String, Object> requestMap = ESBUtil.elementTomap(serviceElement);
-
-        Map<String, Object> header = (Map<String, Object>) requestMap.get("Header");
-        Map<String, Object> body = (Map<String, Object>) requestMap.get("Body");
-        if (header == null) {
-            throw new BizException("获取ESB请求报文头失败");
-        }
-        if (body == null) {
-            throw new BizException("获取ESB请求报文体失败");
-        }
-        ESBRequestHeader requestHeader = JSON.parseObject(JSON.toJSONString(header), ESBRequestHeader.class);
-
-        Map<String, Object> returnVO = new HashMap<String, Object>();
-        switch (requestHeader.getServiceCode()) {
-            case "WBMP10001":
-                OrderNumVo orderNumVO = JSON.parseObject(JSON.toJSONString(body), OrderNumVo.class);
-                returnVO = JSON.parseObject(JSON.toJSONString(getOrders(orderNumVO)), Map.class);
-                break;
-            case "WBMP10002":
-                OrderDealWithVo orderDealWithVo = JSON.parseObject(JSON.toJSONString(body), OrderDealWithVo.class);
-                returnVO = JSON.parseObject(JSON.toJSONString(orderDealWith(orderDealWithVo)), Map.class);
-                break;
-            default:
-                break;
-        }
-
-        Map<String, Object> response = new HashMap<String, Object>();
-        Map<String, Object> responseHeader = new HashMap<String, Object>();
-        responseHeader.putAll(header);
-        ESBResponseHeader res = new ESBResponseHeader();
-        res.setReturnCode("00000000");
-        res.setProviderChannelId("812");
-        res.setResponseTime(new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()));
-        res.setReturnMessage("服务调用成功");
-        res.setProviderReference(UUID.randomUUID().toString());
-        res.setProviderWorkingDate(new SimpleDateFormat("yyyyMMdd").format(new Date()));
-        responseHeader.put("Response", JSON.parseObject(JSON.toJSONString(res), Map.class));
-
-        Map<String, Object> responseBody = new HashMap<String, Object>();
-        responseBody.put("Response", returnVO);
-
-        response.put("Header", responseHeader);
-        response.put("Body", responseBody);
-
-        return "<Service>" + ESBUtil.convert(response) + "</Service>";
     }
 
 }
