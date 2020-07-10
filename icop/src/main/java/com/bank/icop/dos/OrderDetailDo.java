@@ -35,6 +35,8 @@ public class OrderDetailDo implements Serializable {
     private String remark;
     @ApiModelProperty("是否可以录入号段&号段复核 1-可录入号段；2-可复核；3-不可录入号段，不可复核")
     private String enterNum;
+    @ApiModelProperty("订单录入数量")
+    private String totalNum;
 
 
 }

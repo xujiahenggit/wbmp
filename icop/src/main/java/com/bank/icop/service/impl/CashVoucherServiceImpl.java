@@ -491,6 +491,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
                         orderDetailDo.setSpec((String) dataList.get(i).get("spec"));
                         orderDetailDo.setRemark((String) dataList.get(i).get("remark"));
                         orderDetailDo.setEnterNum((String) dataList.get(i).get("enterNum"));
+                        orderDetailDo.setTotalNum((String) dataList.get(i).get("totalNum"));
                         list.add(orderDetailDo);
                     }
                 }
