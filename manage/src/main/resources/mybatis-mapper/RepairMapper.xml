@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.RepairDao">
+
+    <insert id="saveWorkOrder" parameterType="com.bank.manage.dto.WorkOrderDto">
+           insert into t_work_order(
+              terminal_code,
+              work_order_type,
+              priority_code,
+              director,
+              requir_complete_time,
+              work_order_describe,
+              describe_type,
+              work_order_code,
+              work_order_status,
+              create_time
+           )
+            values(
+             #{terminalCode},
+             #{workOrderType},
+             #{priorityCode},
+             #{director},
+             #{requirCompleteTime},
+             #{workOrderDescribe},
+             #{describeType},
+             #{workOrderCode},
+             #{workOrderStatus},
+             #{createTime}
+            )
+
+    </insert>
+    <insert id="saveRepair" parameterType="com.bank.manage.dos.RepairDo">
+        insert into t_work_order
+        (terminal_code,
+        work_order_type,
+        priority_code,
+        module_code,
+        requir_complete_time,
+        create_id,
+        work_order_code,
+        work_order_status,
+        work_order_describe,
+        director,
+        engineer,
+        work_order_complete_time,
+        describe_type,
+        rating,
+        rating_note,
+        deal_type,
+        deal_note,
+        create_time,
+        escorts_patrol,
+        escorts_start_time,
+        escorts_complete_time,
+        escorts_handling,
+        escorts_handling,
+        branch,
+        sub_branch,
+        buffet_line,
+        vendor
+        )
+        values(
+         #{terminalCode},
+         #{workOrderType},
+         #{priorityCode},
+         #{moduleCode},
+         #{requirCompleteTime},
+         #{createId},
+         #{workOrderCode},
+         #{workOrderStatus},
+         #{workOrderDescribe},
+         #{director},
+         #{engineer},
+         #{workOrderCompleteTime},
+         #{describeType},
+         #{rating},
+         #{ratingNote},
+         #{dealType},
+         #{dealNote},
+         #{createTime},
+         #{escortsPatrol},
+         #{escortsStartTime},
+         #{escortsCompletetTime},
+         #{escortsHandling},
+         #{branch},
+         #{subBranch},
+         #{buffetLine},
+         #{vendor}
+        )
+    </insert>
+
+    <select id="getRepairById" resultType="com.bank.manage.vo.RepairVo">
+                select
+                    id id,
+                    repair_code repairCode,
+                    repair_status repairStatus,
+                    priority_code priorityCode
+                from t_repair
+                where repair_code= #{repairCode}
+    </select>
+
+    <select id="getEquipmentByCode" resultType="com.bank.manage.vo.EquipmentVo">
+            SELECT
+                    term.STRTERMNUM terminalCode,
+                    device.IDEVTYPE equipmentType,
+                    branch.org_code branchOrgId,
+                    subbranch.org_code subbranchOrgId,
+                    selfsvcbank.STRADDRESS address,
+                    device.firstinstalldate installationTime
+            from dat_term term
+            left join dat_device device
+            on device.id = term.DEVICEID
+            left join dat_branch branch
+            on branch.STRBRANCHNUM =device.STRBRANCHNUM
+            left join dat_subbranch subbranch
+            on subbranch.STRBRANCHNUM = branch.STRBRANCHNUM
+            left join dat_selfsvcbank selfsvcbank
+            on selfsvcbank.STRBRANCHNUM = subbranch.STRBRANCHNUM
+            where term.STRTERMNUM =#{terminalCode}
+    </select>
+
+    <select id="getInspectionEquipmentByCode" resultType="com.bank.manage.vo.InspectionEquipmentVo">
+                select
+                        term.STRTERMNUM,
+                        device.STRDEVSN,
+                        device.IDEVTYPE,
+                        selfsvcbank.STRSSBNAME
+                from dat_term term
+                left join dat_device device
+                on device.id =term.DEVICEID
+                left join dat_selfsvcbank selfsvcbank
+                on selfsvcbank.STRBRANCHNUM = device.STRBRANCHNUM
+                left join dat_branch branch
+                on branch.STRBRANCHNUM = device.STRBRANCHNUM
+                left join t_inspection_records records
+                on records.terminal_code = term.STRTERMNUM
+                <where>
+                <if test="equipmentClass !=null">
+                    and device.IDEVCLASS = #{equipmentClass}
+                </if>
+                <if test="terminalCode !=null">
+                    and term.STRTERMNUM= #{terminalCode}
+                </if>
+                <if test="equipmentType !=null">
+                    and device.IDEVTYPE= #{equipmentType}
+                </if>
+                <if test="orgId !=null">
+                    and branch.org_code= #{orgId}
+                </if>
+                <if test="serviceProviders !=null">
+                    and device.STRDEVMANU= #{serviceProviders}
+                </if>
+                and term.STRTERMNUM in(
+                            select
+                                terminal_code
+                            from t_inspection_records
+                    )
+                <if test="startTime !=null and endTime != null">
+                    and records.inspection_time between #{startTime}  and  #{endTime}
+                </if>
+
+                </where>
+    </select>
+
+    <select id="getInspectionEquipment" resultType="com.bank.manage.vo.InspectionEquipmentVo">
+         select
+                        term.STRTERMNUM,
+                        device.STRDEVSN,
+                        device.IDEVTYPE,
+                        selfsvcbank.STRSSBNAME
+                from dat_term term
+                left join dat_device device
+                on device.id =term.DEVICEID
+                left join dat_selfsvcbank selfsvcbank
+                on selfsvcbank.STRBRANCHNUM = device.STRBRANCHNUM
+                left join dat_branch branch
+                on branch.STRBRANCHNUM = device.STRBRANCHNUM
+                left join t_inspection_records records
+                on records.terminal_code = term.STRTERMNUM
+        <where>
+            <if test="equipmentClass !=null">
+                and device.IDEVCLASS = #{equipmentClass}
+            </if>
+            <if test="terminalCode !=null">
+                and term.STRTERMNUM= #{terminalCode}
+            </if>
+            <if test="equipmentType !=null">
+                and device.IDEVTYPE= #{equipmentType}
+            </if>
+            <if test="orgId !=null">
+                and branch.org_code= #{orgId}
+            </if>
+            <if test="serviceProviders !=null">
+                and device.STRDEVMANU= #{serviceProviders}
+            </if>
+            and term.STRTERMNUM not in(
+            select
+            terminal_code
+            from t_inspection_records
+            )
+          <!--  <if test="startTime !=null and endTime != null">
+                and records.inspection_time between #{startTime}  and  #{endTime}
+            </if>-->
+
+        </where>
+    </select>
+
+    <select id="getDevicesNumber"  resultType="com.bank.manage.vo.DevicesNumberVo">
+        select    count(*) totalNumber,
+                  ifnull(sum( case when device.ISTATUS ='4' then
+                          1
+                    end ),0) onlineNumber,
+                  ifnull(sum( case when device.ISTATUS ='2' then
+                          1
+                    end ),0) suspendedNumber,
+                  ifnull(sum( case when device.ISTATUS ='5' then
+                          1
+                    end ),0) faultNumber,
+                  ifnull(sum( case when device.ISTATUS ='1' then
+                          1
+                    end ),0) offlineNumber,
+                  round(ifnull(sum( case when device.ISTATUS ='4' then
+                          1
+                    end )/count(*),0),2) availability
+     from dat_device device
+    </select>
+
+    <select id="getLargerScreen" resultType="com.bank.manage.vo.LargerScreenVo">
+            select
+                    a.DEVICE_ID id,
+                    a.TERMINAL_NUM terminalCode,
+                    a.DEVICE_NAME equipmentName,
+                    a.`STATUS` status
+            from s_device a
+            <where>
+                <if test="terminalCode != null">
+                  and  a.TERMINAL_NUM = #{terminalCode}
+                </if>
+            </where>
+    </select>
+
+    <select id="getPrinterByCode" resultType="com.bank.manage.vo.PrinterVo">
+        select
+                termstatus.id id,
+                termstatus.VMRECEIPTPRINTER stripPrinterStatus,
+                termstatus.VMJOURNALPRINTER flowPrinterStatus,
+                termstatus.VMSTATEMENTPRINTER reconciliationPrinterStatus,
+                termstatus.VMPASSBOOKPRINTER passbookPrinter
+        from dat_termstatus termstatus
+        where termstatus.STRTERMNUM = #{terminalCode}
+    </select>
+</mapper>
