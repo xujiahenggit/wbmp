@@ -12,7 +12,7 @@ import java.util.List;
 public interface CashVoucherService {
     List<VoucherStockVo> queryVoucherStock(VoucherStockDo voucherStockDo);
 
-    List queryVoucherNumber(VoucherNumberDo voucherNumberDo);
+    List<VoucherNumberVo> queryVoucherNumber(VoucherNumberDo voucherNumberDo);
 
     Object voucherNumberSave(InputVoucherNumberVo inputVoucherNumberVo);
 

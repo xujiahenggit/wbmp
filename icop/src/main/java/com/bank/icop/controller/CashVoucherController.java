@@ -36,7 +36,7 @@ public class CashVoucherController extends BaseIcopController{
     @PostMapping("/queryVoucherNumber")
     @ApiOperation(value = "凭证管理--号段查看")
     @ApiImplicitParam(name = "voucherNumberDo", value = "号段信息查询", required = true, paramType = "body", dataType = "VoucherNumberDo")
-    public List queryVoucherNumber(@RequestBody VoucherNumberDo voucherNumberDo) {
+    public List<VoucherNumberVo> queryVoucherNumber(@RequestBody VoucherNumberDo voucherNumberDo) {
         return this.cashVoucherService.queryVoucherNumber(voucherNumberDo);
     }
 

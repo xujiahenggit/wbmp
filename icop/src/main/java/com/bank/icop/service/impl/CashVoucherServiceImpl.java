@@ -66,7 +66,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
     }
 
     @Override
-    public List queryVoucherNumber(VoucherNumberDo voucherNumberDo) {
+    public List<VoucherNumberVo> queryVoucherNumber(VoucherNumberDo voucherNumberDo) {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("userId", voucherNumberDo.getUserId());
         parmMap.put("orderId", getOrgId(voucherNumberDo.getOrderId()));
@@ -81,26 +81,22 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         List<VoucherNumberVo> list = new ArrayList<>();
         Object objectData = report.get("data");
         if (isObjectIsNotEmpty(objectData)) {
-            Map<String, Object> dataMap = (Map<String, Object>) report.get("data");
-            Object data = dataMap.get("data");
-            if (data != null) {//多条数据
-                List<Map<String, Object>> dataList = (List<Map<String, Object>>) data;
-                if (CollectionUtil.isNotEmpty(dataList)) {
-                    for (int i = 0; i < dataList.size(); i++) {
-                        VoucherNumberVo vo = new VoucherNumberVo();
-                        vo.setStartNo((String) report.get("startNo"));
-                        vo.setEndNo((String) report.get("endNo"));
-                        vo.setNum((Integer) report.get("num"));
-                        list.add(vo);
-                    }
-                }
+            List<Map<String, Object>> dataList = new ArrayList<>();
+            if (objectData instanceof HashMap) {
+                dataList.add((Map<String, Object>) report.get("data"));
             } else {
-                VoucherNumberVo vo = new VoucherNumberVo();
-                vo.setStartNo((String) report.get("startNo"));
-                vo.setEndNo((String) report.get("endNo"));
-                vo.setNum((Integer) report.get("num"));
-                list.add(vo);
+                dataList = (List<Map<String, Object>>) report.get("data");
             }
+            if (CollectionUtil.isNotEmpty(dataList)) {
+                for (int i = 0; i < dataList.size(); i++) {
+                    VoucherNumberVo vo = new VoucherNumberVo();
+                    vo.setStartNo((String) dataList.get(i).get("startNo"));
+                    vo.setEndNo((String) dataList.get(i).get("endNo"));
+                    vo.setNum((Long.parseLong((String)dataList.get(i).get("num"))));
+                    list.add(vo);
+                }
+            }
+
         }
         return list;
     }
