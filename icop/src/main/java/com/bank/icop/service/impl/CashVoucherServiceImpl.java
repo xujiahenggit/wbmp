@@ -227,12 +227,14 @@ public class CashVoucherServiceImpl implements CashVoucherService {
             if (CollectionUtil.isNotEmpty(dataList)) {
                 for (int i = 0; i < dataList.size(); i++) {
                     MatterListVo vo = new MatterListVo();
-                    vo.setOrderType((String) dataList.get(i).get("orderType"));
-                    vo.setContent((String) dataList.get(i).get("content"));
-                    vo.setCreateTime((String) dataList.get(i).get("createTime"));
-                    vo.setEventName((String) dataList.get(i).get("eventName"));
                     vo.setEventID((String) dataList.get(i).get("eventID"));
                     vo.setType((String) dataList.get(i).get("type"));
+                    vo.setEventName((String) dataList.get(i).get("eventName"));
+                    vo.setCreateTime((String) dataList.get(i).get("createTime"));
+                    vo.setContent((String) dataList.get(i).get("content"));
+                    vo.setOrderType((String) dataList.get(i).get("orderType"));
+                    vo.setOperationObject((String) dataList.get(i).get("operationObject"));
+                    vo.setOperationType((String) dataList.get(i).get("operationObject"));
                     list.add(vo);
                 }
             }
