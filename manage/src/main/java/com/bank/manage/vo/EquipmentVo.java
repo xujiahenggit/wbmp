@@ -26,4 +26,7 @@ public class EquipmentVo {
     private String address;
     @ApiModelProperty(value = "安装日期")
     private Date installationTime;
+
+    @ApiModelProperty(value = "厂商（服务商）")
+    private String deviceVendor;
 }

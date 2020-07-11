@@ -4,18 +4,18 @@ import com.bank.core.entity.BizException;
 import com.bank.manage.dao.InspectionEquipmentDto;
 import com.bank.manage.dao.LargerScreenDto;
 import com.bank.manage.dao.RepairDao;
-import com.bank.manage.dos.RepairDo;
+import com.bank.manage.dto.ComplaintsWorkOrderDto;
+import com.bank.manage.dto.InspectionWorkOrderDto;
 import com.bank.manage.dto.WorkOrderDto;
+import com.bank.manage.dto.WorkOrdersDto;
 import com.bank.manage.service.RepairService;
 import com.bank.manage.vo.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.lang.StringUtils;
-import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.net.BindException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -31,10 +31,10 @@ public class RepairServiceImpl implements RepairService {
 
     @Override
     public int saveRepair(WorkOrderDto workOrderDto) {
-        //生成工单编号  人工工单:01 系统自建工单:02 投诉工单:03 巡检工单:04
+        //生成工单编号  工单类型 1-故障工单；2-投诉工单；3-巡检
         LocalDateTime now =LocalDateTime.now();
-        workOrderDto.setWorkOrderCode("02"+now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")));
-        //工单状态默认 待处理：0
+        workOrderDto.setWorkOrderCode("1"+now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")));
+        //工单状态默认  0 :待处理；1：待评价；2：办接；3：待分行确认；4：待总行确认；4：待厂商回复；6：总行知悉；7：分行知悉；8：退回；9：已关闭
         workOrderDto.setWorkOrderStatus("0");
         workOrderDto.setCreateTime(new Date());
         return  repairDao.saveWorkOrder(workOrderDto);
@@ -46,7 +46,7 @@ public class RepairServiceImpl implements RepairService {
     }
 
     @Override
-    public EquipmentVo getEquipmentByCode(String terminalCode) {
+    public List<EquipmentVo> getEquipmentByCode(String terminalCode) {
         return repairDao.getEquipmentByCode(terminalCode);
     }
 
@@ -54,7 +54,6 @@ public class RepairServiceImpl implements RepairService {
     public List<InspectionEquipmentVo> getInspectionEquipmentByCode(InspectionEquipmentDto inspectionEquipmentDto) {
         getTime(inspectionEquipmentDto);
         SimpleDateFormat simpleDateFormat =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        System.out.println( simpleDateFormat.format(inspectionEquipmentDto.getStartTime())+"--"+simpleDateFormat.format(inspectionEquipmentDto.getEndTime()));
         if("1".equals(inspectionEquipmentDto.getLogo())){
             //已巡检
             List<InspectionEquipmentVo> list = repairDao.getInspectionEquipmentByCode(inspectionEquipmentDto);
@@ -62,16 +61,16 @@ public class RepairServiceImpl implements RepairService {
                 list.get(i).setLogo("1");
             }
             return list;
-        }else{
+        }
             //未巡检
             List<InspectionEquipmentVo> list = repairDao.getInspectionEquipment(inspectionEquipmentDto);
             for(int i=0;i<list.size();i++){
                 list.get(i).setLogo("1");
+
             }
+        return list;
 
-        }
 
-        return null;
     }
 
     @Override
@@ -97,6 +96,72 @@ public class RepairServiceImpl implements RepairService {
     @Override
     public PrinterVo getPrinterByCode(String terminalCode) {
         return repairDao.getPrinterByCode(terminalCode);
+    }
+
+    @Override
+    public IPage<WorkOrderVO> getWorkOrder(WorkOrdersDto workOrdersDto) {
+        Page<LargerScreenVo> page = new Page<>(workOrdersDto.getPageIndex(), workOrdersDto.getPageSize());
+        if (StringUtils.isNotBlank(workOrdersDto.getSort())) {
+            if (StringUtils.equalsIgnoreCase("DESC", workOrdersDto.getOrder())) {
+                page.setDesc(workOrdersDto.getSort());
+            }
+            else {
+                page.setAsc(workOrdersDto.getSort());
+            }
+        }
+        //判断来源类型  1 我发起的，2 我审批的、3 我办结的、4 系统自建；5 所有
+        if("5".equals(workOrdersDto.getSourceType())){
+            //查询所有
+            return repairDao.getWorkOrder(page,workOrdersDto);
+        }else if("1".equals(workOrdersDto.getSourceType())){
+            //我发起的
+            return  repairDao.getWorkOrderByMe(page,workOrdersDto);
+        }
+        else if("4".equals(workOrdersDto.getSourceType())){
+            //系统自建
+             return  repairDao.getWorkOrderBySystem(page,workOrdersDto);
+        }
+
+        //其他类型
+        return repairDao.getWorkOrderByOther(page,workOrdersDto);
+
+
+    }
+
+    @Override
+    public int saveInspectionWorkOrder(InspectionWorkOrderDto inspectionWorkOrderDto) {
+        //生成工单编号  工单类型 1-故障工单；2-投诉工单；3-巡检
+        LocalDateTime now =LocalDateTime.now();
+        inspectionWorkOrderDto.setWorkOrderCode("3"+now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")));
+        //工单状态默认  0 :待处理；1：待评价；2：办接；3：待分行确认；4：待总行确认；4：待厂商回复；6：总行知悉；7：分行知悉；8：退回；9：已关闭
+        inspectionWorkOrderDto.setWorkOrderStatus("0");
+        inspectionWorkOrderDto.setCreateTime(new Date());
+        inspectionWorkOrderDto.setWorkOrderType("3");
+        //将处理方式拼接在 json
+        StringBuffer stringBuffer =new StringBuffer();
+        for(int i=0;i<inspectionWorkOrderDto.getEscortsHandlingList().size();i++){
+            stringBuffer.append(inspectionWorkOrderDto.getEscortsHandlingList().get(i)).append(",");
+        }
+        inspectionWorkOrderDto.setJson(stringBuffer.toString());
+        return repairDao.saveInspectionWorkOrder(inspectionWorkOrderDto);
+    }
+
+    @Override
+    public int saveComplaintsWorkOrder(ComplaintsWorkOrderDto complaintsWorkOrderDto) {
+        //生成工单编号  工单类型 1-故障工单；2-投诉工单；3-巡检
+        LocalDateTime now =LocalDateTime.now();
+        complaintsWorkOrderDto.setWorkOrderCode("2"+now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")));
+        //工单状态默认  0 :待处理；1：待评价；2：办接；3：待分行确认；4：待总行确认；4：待厂商回复；6：总行知悉；7：分行知悉；8：退回；9：已关闭
+        complaintsWorkOrderDto.setWorkOrderStatus("0");
+        complaintsWorkOrderDto.setCreateTime(new Date());
+        complaintsWorkOrderDto.setWorkOrderType("2");
+        return repairDao.saveComplaintsWorkOrder(complaintsWorkOrderDto);
+    }
+
+    @Override
+    public BreakDownWorkOrderVo getBreakWorkOrderByCode(String repairCode) {
+
+        return repairDao.getBreakWorkOrderByCode(repairCode);
     }
 
     public void getTime(InspectionEquipmentDto inspectionEquipmentDto){

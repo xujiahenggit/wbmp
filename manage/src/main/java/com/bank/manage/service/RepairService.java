@@ -3,8 +3,10 @@ package com.bank.manage.service;
 import com.bank.manage.dao.InspectionEquipmentDto;
 
 import com.bank.manage.dao.LargerScreenDto;
-import com.bank.manage.dos.RepairDo;
+import com.bank.manage.dto.ComplaintsWorkOrderDto;
+import com.bank.manage.dto.InspectionWorkOrderDto;
 import com.bank.manage.dto.WorkOrderDto;
+import com.bank.manage.dto.WorkOrdersDto;
 import com.bank.manage.vo.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
@@ -15,7 +17,7 @@ public interface RepairService {
 
     RepairVo getRepairById(String repairCode);
 
-    EquipmentVo getEquipmentByCode(String terminalCode);
+    List<EquipmentVo> getEquipmentByCode(String terminalCode);
 
     List<InspectionEquipmentVo> getInspectionEquipmentByCode(InspectionEquipmentDto inspectionEquipmentDto);
 
@@ -24,4 +26,12 @@ public interface RepairService {
     IPage<LargerScreenVo> getLargerScreen(LargerScreenDto largerScreenDto);
 
     PrinterVo getPrinterByCode(String terminalCode);
+
+    IPage<WorkOrderVO> getWorkOrder(WorkOrdersDto workOrdersDto);
+
+    int saveInspectionWorkOrder(InspectionWorkOrderDto inspectionWorkOrderDto);
+
+    int saveComplaintsWorkOrder(ComplaintsWorkOrderDto complaintsWorkOrderDto);
+
+    BreakDownWorkOrderVo getBreakWorkOrderByCode(String repairCode);
 }

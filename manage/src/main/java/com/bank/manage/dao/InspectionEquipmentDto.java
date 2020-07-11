@@ -15,11 +15,11 @@ import java.util.Date;
 @ApiModel
 public class InspectionEquipmentDto {
 
-    @ApiModelProperty(value = "设备分类")
+    @ApiModelProperty(value = "设备分类 现金自助0、非现金自助1、快柜设备2")
     private String equipmentClass;
     @ApiModelProperty(value = "终端编号")
     private String terminalCode;
-    @ApiModelProperty(value = "设备类型")
+    @ApiModelProperty(value = "设备类型 自动取款机 1，自动存款机 2，自动存取款机 3，自动查询机 4")
     private String equipmentType;
     @ApiModelProperty(value = "统计时间  1:本季度 2：上季度  3：本半年 4：上半年")
     private String statisticalTime;

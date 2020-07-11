@@ -1,7 +1,9 @@
 package com.bank.manage.dao;
 
-import com.bank.manage.dos.RepairDo;
+import com.bank.manage.dto.ComplaintsWorkOrderDto;
+import com.bank.manage.dto.InspectionWorkOrderDto;
 import com.bank.manage.dto.WorkOrderDto;
+import com.bank.manage.dto.WorkOrdersDto;
 import com.bank.manage.vo.*;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -17,7 +19,7 @@ public interface RepairDao extends BaseMapper<RepairDao> {
 
     RepairVo getRepairById(@Param(value = "repairCode")String repairCode);
 
-    EquipmentVo getEquipmentByCode(@Param(value = "terminalCode") String terminalCode);
+    List<EquipmentVo> getEquipmentByCode(@Param(value = "terminalCode") String terminalCode);
 
     int saveWorkOrder(WorkOrderDto workOrderDto);
 
@@ -31,4 +33,18 @@ public interface RepairDao extends BaseMapper<RepairDao> {
                                           @Param("terminalCode") String terminalCode,@Param("selfBankCode") String selfBankCode);
 
     PrinterVo getPrinterByCode(String terminalCode);
+
+    IPage<WorkOrderVO> getWorkOrder(Page<LargerScreenVo> page,@Param("model") WorkOrdersDto workOrdersDto);
+
+    IPage<WorkOrderVO> getWorkOrderByMe(Page<LargerScreenVo> page,@Param("model") WorkOrdersDto workOrdersDto);
+
+    IPage<WorkOrderVO> getWorkOrderBySystem(Page<LargerScreenVo> page,@Param("model") WorkOrdersDto workOrdersDto);
+
+    IPage<WorkOrderVO> getWorkOrderByOther(Page<LargerScreenVo> page,@Param("model") WorkOrdersDto workOrdersDto);
+
+    int saveInspectionWorkOrder(InspectionWorkOrderDto inspectionWorkOrderDto);
+
+    int saveComplaintsWorkOrder(ComplaintsWorkOrderDto complaintsWorkOrderDto);
+
+    BreakDownWorkOrderVo getBreakWorkOrderByCode(@Param("repairCode") String repairCode);
 }

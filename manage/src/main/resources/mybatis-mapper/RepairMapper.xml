@@ -13,7 +13,10 @@
               describe_type,
               work_order_code,
               work_order_status,
-              create_time
+              create_time,
+              create_id,
+              create_name
+
            )
             values(
              #{terminalCode},
@@ -25,10 +28,76 @@
              #{describeType},
              #{workOrderCode},
              #{workOrderStatus},
-             #{createTime}
+             #{createTime},
+             #{createId},
+             #{createName}
             )
 
     </insert>
+
+    <insert id="saveInspectionWorkOrder" parameterType="com.bank.manage.dto.InspectionWorkOrderDto">
+           insert into t_work_order(
+              terminal_code,
+              work_order_type,
+              escorts_patrol,
+              escorts_start_time,
+              escorts_complete_time,
+              escorts_handling,
+              work_order_code,
+              work_order_status,
+              create_time,
+              create_id,
+              create_name
+
+           )
+            values(
+             #{terminalCode},
+             #{workOrderType},
+             #{escortsPatrol},
+             #{startTime},
+             #{endTime},
+             #{json},
+             #{workOrderCode},
+             #{workOrderStatus},
+             #{createTime},
+             #{createId},
+             #{createName}
+            )
+
+    </insert>
+
+    <insert id="saveComplaintsWorkOrder" parameterType="com.bank.manage.dto.ComplaintsWorkOrderDto">
+           insert into t_work_order(
+              work_order_type,
+              branch,
+              sub_branch,
+              buffet_line,
+              vendor,
+              work_order_code,
+              work_order_status,
+              work_order_describe,
+              create_time,
+              create_id,
+              create_name
+
+           )
+            values(
+             #{workOrderType},
+             #{branch},
+             #{subBranch},
+             #{buffetLine},
+             #{vendor},
+             #{workOrderCode},
+             #{workOrderStatus},
+             #{workOrderDescribe},
+             #{createTime},
+             #{createId},
+             #{createName}
+            )
+
+    </insert>
+
+
     <insert id="saveRepair" parameterType="com.bank.manage.dos.RepairDo">
         insert into t_work_order
         (terminal_code,
@@ -106,7 +175,8 @@
                     branch.org_code branchOrgId,
                     subbranch.org_code subbranchOrgId,
                     selfsvcbank.STRADDRESS address,
-                    device.firstinstalldate installationTime
+                    device.firstinstalldate installationTime,
+                    device.STRDEVMANU deviceVendor
             from dat_term term
             left join dat_device device
             on device.id = term.DEVICEID
@@ -121,10 +191,10 @@
 
     <select id="getInspectionEquipmentByCode" resultType="com.bank.manage.vo.InspectionEquipmentVo">
                 select
-                        term.STRTERMNUM,
-                        device.STRDEVSN,
-                        device.IDEVTYPE,
-                        selfsvcbank.STRSSBNAME
+                        term.STRTERMNUM terminalCode,
+                        device.STRDEVSN sequence,
+                        device.IDEVTYPE equipmentType,
+                        selfsvcbank.STRSSBNAME name
                 from dat_term term
                 left join dat_device device
                 on device.id =term.DEVICEID
@@ -132,8 +202,6 @@
                 on selfsvcbank.STRBRANCHNUM = device.STRBRANCHNUM
                 left join dat_branch branch
                 on branch.STRBRANCHNUM = device.STRBRANCHNUM
-                left join t_inspection_records records
-                on records.terminal_code = term.STRTERMNUM
                 <where>
                 <if test="equipmentClass !=null">
                     and device.IDEVCLASS = #{equipmentClass}
@@ -154,20 +222,22 @@
                             select
                                 terminal_code
                             from t_inspection_records
+                    <where>
+                        <if test="startTime !=null and endTime != null">
+                            and inspection_time between #{startTime}  and  #{endTime}
+                        </if>
+                    </where>
                     )
-                <if test="startTime !=null and endTime != null">
-                    and records.inspection_time between #{startTime}  and  #{endTime}
-                </if>
 
                 </where>
     </select>
 
     <select id="getInspectionEquipment" resultType="com.bank.manage.vo.InspectionEquipmentVo">
          select
-                        term.STRTERMNUM,
-                        device.STRDEVSN,
-                        device.IDEVTYPE,
-                        selfsvcbank.STRSSBNAME
+                        term.STRTERMNUM terminalCode,
+                        device.STRDEVSN sequence,
+                        device.IDEVTYPE equipmentType,
+                        selfsvcbank.STRSSBNAME name
                 from dat_term term
                 left join dat_device device
                 on device.id =term.DEVICEID
@@ -175,8 +245,6 @@
                 on selfsvcbank.STRBRANCHNUM = device.STRBRANCHNUM
                 left join dat_branch branch
                 on branch.STRBRANCHNUM = device.STRBRANCHNUM
-                left join t_inspection_records records
-                on records.terminal_code = term.STRTERMNUM
         <where>
             <if test="equipmentClass !=null">
                 and device.IDEVCLASS = #{equipmentClass}
@@ -197,10 +265,12 @@
             select
             terminal_code
             from t_inspection_records
+            <where>
+                <if test="startTime !=null and endTime != null">
+                    and inspection_time between #{startTime}  and  #{endTime}
+                </if>
+            </where>
             )
-          <!--  <if test="startTime !=null and endTime != null">
-                and records.inspection_time between #{startTime}  and  #{endTime}
-            </if>-->
 
         </where>
     </select>
@@ -248,5 +318,221 @@
                 termstatus.VMPASSBOOKPRINTER passbookPrinter
         from dat_termstatus termstatus
         where termstatus.STRTERMNUM = #{terminalCode}
+    </select>
+
+    <select id="getWorkOrder" resultType="com.bank.manage.vo.WorkOrderVO">
+               select
+                        t.id id,
+                        t.work_order_code workOrderCode,
+                        t.terminal_code terminalCode,
+                        t.create_time createTime,
+                        subbranch.org_code orgId,
+                        t.work_order_status status,
+                        device.STRDEVMANU vendor,
+                        device.STRDEVSN repairCode,
+                        t.deal_type way,
+                        device.IDEVTYPE repairName,
+                        t.engineer engineer
+                from t_work_order t
+                   left join dat_term term
+                on term.STRTERMNUM =t.terminal_code
+                   left join dat_device device
+                on device.id =term.DEVICEID
+                   left join dat_subbranch subbranch
+                on subbranch.STRSUBBRANCHNUM = term.STRSUBBRANCHNUM
+
+                <where>
+                    <if test="model.workOrderType != null">
+                        and t.work_order_type = #{model.workOrderType}
+                    </if>
+                    <if test="model.orgId != null">
+                        and subbranch.org_code= #{model.orgId}
+                    </if>
+                    <if test="model.vendor != null">
+                        and device.STRDEVMANU like concat('%',#{model.vendor},'%')
+                    </if>
+                    <if test="model.status != null">
+                        and t.work_order_status = #{model.status}
+                    </if>
+                    <if test="model.terminalCode != null">
+                        and t.terminal_code = #{model.terminalCode}
+                    </if>
+                    <if test="model.logUserId != null">
+                        and t.create_id = #{model.logUserId}
+                    </if>
+                </where>
+                union all
+                select
+                    work_order.id id,
+                    "" workOrderCode,
+                    "" terminalCode,
+                    work_order.beginDate createTime,
+                    subbranch.org_code orgId,
+                    work_order.status status,
+                    work_order.deviceManu vendor,
+                    work_order.deviceModel repairCode,
+                    "" way,
+                    work_order.deviceType repairName,
+                    "" engineer
+
+                from dat_work_order work_order
+                left join dat_subbranch subbranch
+                on subbranch.STRSUBBRANCHNUM = work_order.STRSUBBRANCHNUM
+                <where>
+                    <if test="model.orgId != null">
+                        and subbranch.org_code = #{model.orgId}
+                    </if>
+                    <if test="model.vendor != null">
+                        and work_order.deviceManu like concat('%',#{model.vendor},'%')
+                    </if>
+                    <if test="model.terminalCode != null">
+                        and work_order.strTermNum = #{model.terminalCode}
+                    </if>
+                </where>
+
+    </select>
+
+    <select id="getWorkOrderByMe" resultType="com.bank.manage.vo.WorkOrderVO">
+        select
+                t.id id,
+                t.work_order_code workOrderCode,
+                t.terminal_code terminalCode,
+                t.create_time createTime,
+                subbranch.org_code orgId,
+                t.work_order_status status,
+                device.STRDEVMANU vendor,
+                device.STRDEVSN  repairCode,
+                t.deal_type way,
+                device.IDEVTYPE repairName,
+                t.engineer engineer
+        from t_work_order t
+        left join dat_term term
+        on term.STRTERMNUM =t.terminal_code
+        left join dat_device device
+        on device.id =term.DEVICEID
+        left join dat_subbranch subbranch
+        on subbranch.STRSUBBRANCHNUM = term.STRSUBBRANCHNUM
+        left join t_work_water water
+        on water.word_order_id =t.id
+        <where>
+            <if test="model.workOrderType != null">
+                and t.work_order_type = #{model.workOrderType}
+            </if>
+            <if test="model.orgId != null">
+                and subbranch.org_code= #{model.orgId}
+            </if>
+            <if test="model.vendor != null">
+                and device.STRDEVMANU like concat('%',#{model.vendor},'%')
+            </if>
+            <if test="model.status != null">
+                and t.work_order_status = #{model.status}
+            </if>
+            <if test="model.terminalCode != null">
+                and t.terminal_code = #{model.terminalCode}
+            </if>
+            <if test="model.logUserId != null">
+                and t.create_id  = #{model.logUserId}
+            </if>
+            and  t.id not in (
+              select word_order_id   from t_work_water
+            )
+        </where>
+    </select>
+
+    <select id="getWorkOrderByOther" resultType="com.bank.manage.vo.WorkOrderVO">
+        select
+            t.id id,
+            t.work_order_code workOrderCode,
+            t.terminal_code terminalCode,
+            t.create_time createTime,
+            subbranch.org_code orgId,
+            t.work_order_status status,
+            device.STRDEVMANU vendor,
+            device.STRDEVSN  repairCode,
+            t.deal_type way,
+            device.IDEVTYPE repairName,
+            t.engineer engineer
+        from t_work_order t
+        left join dat_term term
+        on term.STRTERMNUM =t.terminal_code
+        left join dat_device device
+        on device.id =term.DEVICEID
+        left join dat_subbranch subbranch
+        on subbranch.STRSUBBRANCHNUM = term.STRSUBBRANCHNUM
+        left join t_work_water water
+        on water.word_order_id =t.id
+        <where>
+            <if test="model.workOrderType != null">
+                and t.work_order_type = #{model.workOrderType}
+            </if>
+            <if test="model.orgId != null">
+                and subbranch.org_code= #{model.orgId}
+            </if>
+            <if test="model.vendor != null">
+                and device.STRDEVMANU like concat('%',#{model.vendor},'%')
+            </if>
+            <if test="model.status != null">
+                and t.work_order_status = #{model.status}
+            </if>
+            <if test="model.terminalCode != null">
+                and t.terminal_code = #{model.terminalCode}
+            </if>
+            <if test="model.logUserId != null">
+                and t.create_id = #{model.logUserId}
+            </if>
+            and  t.id  in (
+                   select word_order_id   from t_work_water
+                   <where>
+                       <if test="model.sourceType != null" >
+                           and deal_with_type = #{model.sourceType}
+                       </if>
+                   </where>
+
+            )
+        </where>
+    </select>
+
+
+
+
+    <select id="getWorkOrderBySystem" resultType="com.bank.manage.vo.WorkOrderVO">
+        select
+        work_order.id id,
+        subbranch.org_code orgId,
+        work_order.status status,
+        work_order.deviceType repairName,
+        work_order.deviceManu vendor,
+        work_order.deviceModel repairCode,
+        work_order.beginDate createTime
+
+        from dat_work_order work_order
+        left join dat_subbranch subbranch
+        on subbranch.STRSUBBRANCHNUM = work_order.STRSUBBRANCHNUM
+
+        <where>
+            <if test="model.orgId != null">
+                and subbranch.org_code = #{model.orgId}
+            </if>
+            <if test="model.vendor != null">
+                and work_order.deviceManu like concat('%',#{model.vendor},'%')
+            </if>
+            <if test="model.terminalCode != null">
+                and work_order.strTermNum = #{model.terminalCode}
+            </if>
+        </where>
+    </select>
+
+    <select id="getBreakWorkOrderByCode" resultType="com.bank.manage.vo.BreakDownWorkOrderVo">
+          SELECT
+                    t.work_order_code workOrderCode,
+                    t.work_order_status workOrderStatus,
+                    t.priority_code priorityCode,
+                    t.requir_complete_time requirCompleteTime,
+                    t.create_name createName,
+                    t.create_time createTime,
+                    t.work_order_describe workOrderDescribe
+            from t_work_order t
+            where
+                 t.work_order_code = #{repairCode}
     </select>
 </mapper>
