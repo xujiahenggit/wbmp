@@ -8,6 +8,7 @@ import com.bank.icop.service.CashVoucherService;
 import com.bank.icop.vo.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +16,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/cashVoucher")
 @Api(tags = "凭证管理接口")
@@ -147,6 +149,7 @@ public class CashVoucherController extends BaseIcopController{
     @PostMapping("/ordervoucherinfo")
     @ApiOperation(value = "订单凭证详情接口")
     public OrderVoucherDetailResponseVo getOrderVoucherDetailInfo(@RequestBody OrderVoucherDetailVo orderVoucherDetailVo){
+        log.info("Controller 接受的参数："+orderVoucherDetailVo.toString());
         return cashVoucherService.getOrderVoucherDetailInfo(orderVoucherDetailVo);
     }
 

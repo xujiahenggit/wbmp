@@ -11,6 +11,7 @@ import com.bank.icop.util.SoapUtil;
 import com.bank.icop.vo.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 public class CashVoucherServiceImpl implements CashVoucherService {
 
@@ -587,6 +589,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
      */
     @Override
     public OrderVoucherDetailResponseVo getOrderVoucherDetailInfo(OrderVoucherDetailVo orderVoucherDetailVo) {
+        log.info("接受到的参数："+orderVoucherDetailVo.toString());
         OrderVoucherDetailResponseVo orderVoucherDetailResponseVo = new OrderVoucherDetailResponseVo();
         HashMap<String, Object> parmMap = new HashMap<>();
         parmMap.put("userId", orderVoucherDetailVo.getUserId());
@@ -602,7 +605,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         if (isObjectIsNotEmpty(report)) {
 
             orderVoucherDetailResponseVo.setOrderNo((String) report.get("orderNo"));
-            orderVoucherDetailResponseVo.setOrderDeatiId((String) report.get("orderNo"));
+            orderVoucherDetailResponseVo.setOrderDeatiId((String) report.get("orderDeatiId"));
             orderVoucherDetailResponseVo.setDetailStatus((String) report.get("detailStatus"));
             orderVoucherDetailResponseVo.setVoucherName((String) report.get("voucherName"));
             orderVoucherDetailResponseVo.setVoucherNo((String) report.get("voucherNo"));
