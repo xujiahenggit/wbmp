@@ -211,11 +211,18 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
     public Object contentCheck(String pk) {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("pk", pk);
-        return getReport(parmMap,
+        Map data = getReport(parmMap,
                 "FXYJ11013",
                 "检查内容详细审核",
                 "1,2",
                 "返回状态  -1:参数为空 ,  0:用户不存在  , 1:未查询出数据 ,2:正常 ");
+
+        Map result = new HashMap();
+        result.put("task", data.get("task"));
+        result.put("list", getArray(data.get("list")));
+        result.put("checkpoints", data.get("checkpoints"));
+
+        return result;
     }
 
     @Override
