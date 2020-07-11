@@ -67,4 +67,11 @@ public interface CashVoucherService {
      * @param waitListQueryVo 查询参数
      */
     List<VoucherWaitListVo> getWaitList(WaitListQueryVo waitListQueryVo);
+
+    /**
+     * 查询订单凭证详情
+     * @param orderVoucherDetailVo
+     * @return
+     */
+    OrderVoucherDetailResponseVo getOrderVoucherDetailInfo(OrderVoucherDetailVo orderVoucherDetailVo);
 }

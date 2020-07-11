@@ -7,10 +7,7 @@ import com.bank.icop.dos.VoucherStockDo;
 import com.bank.icop.service.CashVoucherService;
 import com.bank.icop.vo.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -145,4 +142,13 @@ public class CashVoucherController extends BaseIcopController{
     public List<VoucherWaitListVo> getWaitList(@RequestBody WaitListQueryVo waitListQueryVo){
         return cashVoucherService.getWaitList(waitListQueryVo);
     }
+
+
+    @PostMapping("/ordervoucherinfo")
+    @ApiOperation(value = "订单凭证详情接口")
+    public OrderVoucherDetailResponseVo getOrderVoucherDetailInfo(@RequestBody OrderVoucherDetailVo orderVoucherDetailVo){
+        return cashVoucherService.getOrderVoucherDetailInfo(orderVoucherDetailVo);
+    }
+
+
 }

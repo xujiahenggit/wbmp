@@ -92,7 +92,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
                     VoucherNumberVo vo = new VoucherNumberVo();
                     vo.setStartNo((String) dataList.get(i).get("startNo"));
                     vo.setEndNo((String) dataList.get(i).get("endNo"));
-                    vo.setNum((Long.parseLong((String)dataList.get(i).get("num"))));
+                    vo.setNum((Long.parseLong((String) dataList.get(i).get("num"))));
                     list.add(vo);
                 }
             }
@@ -576,6 +576,66 @@ public class CashVoucherServiceImpl implements CashVoucherService {
             }
         }
         return list;
+    }
+
+
+    /**
+     * 查询订单凭证详细接口
+     *
+     * @param orderVoucherDetailVo
+     * @return
+     */
+    @Override
+    public OrderVoucherDetailResponseVo getOrderVoucherDetailInfo(OrderVoucherDetailVo orderVoucherDetailVo) {
+        OrderVoucherDetailResponseVo orderVoucherDetailResponseVo = new OrderVoucherDetailResponseVo();
+        HashMap<String, Object> parmMap = new HashMap<>();
+        parmMap.put("userId", orderVoucherDetailVo.getUserId());
+        parmMap.put("orgId", getOrgId(orderVoucherDetailVo.getOrgId()));
+        parmMap.put("orderDeatilId", orderVoucherDetailVo.getOrderDeatilId());
+        Map report = null;
+        try {
+            report = SoapUtil.sendReport("VTMS0017", parmMap);
+        } catch (Exception e) {
+            throw new BizException("查询凭证订单详情失败！" + e.getMessage());
+        }
+        List<VoucherWaitListVo> list = new ArrayList<>();
+        if (isObjectIsNotEmpty(report)) {
+
+            orderVoucherDetailResponseVo.setOrderNo((String) report.get("orderNo"));
+            orderVoucherDetailResponseVo.setOrderDeatiId((String) report.get("orderNo"));
+            orderVoucherDetailResponseVo.setDetailStatus((String) report.get("detailStatus"));
+            orderVoucherDetailResponseVo.setVoucherName((String) report.get("voucherName"));
+            orderVoucherDetailResponseVo.setVoucherNo((String) report.get("voucherNo"));
+            orderVoucherDetailResponseVo.setCardName((String) report.get("cardName"));
+            orderVoucherDetailResponseVo.setCardNo((String) report.get("cardNo"));
+            orderVoucherDetailResponseVo.setPrice((String) report.get("price"));
+            orderVoucherDetailResponseVo.setVoucherAmt((String) report.get("voucherAmt"));
+            orderVoucherDetailResponseVo.setTotalNum((String) report.get("totalNum"));
+            orderVoucherDetailResponseVo.setNum((String) report.get("num"));
+            orderVoucherDetailResponseVo.setSpec((String) report.get("spec"));
+            orderVoucherDetailResponseVo.setRemark((String) report.get("remark"));
+            orderVoucherDetailResponseVo.setEnterNum((String) report.get("enterNum"));
+            Object objectData=report.get("data");
+            List<Map<String, Object>> dataList = new ArrayList<>();
+            if (objectData instanceof HashMap) {
+                dataList.add((Map<String, Object>) report.get("data"));
+            } else {
+                dataList = (List<Map<String, Object>>) report.get("data");
+            }
+
+            List<VoucherNumberVo> numberVoList = new ArrayList<>();
+            if (CollectionUtil.isNotEmpty(dataList)) {
+                for (int i = 0; i < dataList.size(); i++) {
+                    VoucherNumberVo voucherNumberVo = new VoucherNumberVo();
+                    voucherNumberVo.setStartNo((String) dataList.get(i).get("startNo"));
+                    voucherNumberVo.setEndNo((String) dataList.get(i).get("endNo"));
+                    voucherNumberVo.setNum(Long.parseLong((String) dataList.get(i).get("num")));
+                    numberVoList.add(voucherNumberVo);
+                }
+            }
+            orderVoucherDetailResponseVo.setList(numberVoList);
+        }
+        return orderVoucherDetailResponseVo;
     }
 
 
