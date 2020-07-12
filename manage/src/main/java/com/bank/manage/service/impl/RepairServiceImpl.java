@@ -4,10 +4,7 @@ import com.bank.core.entity.BizException;
 import com.bank.manage.dao.InspectionEquipmentDto;
 import com.bank.manage.dao.LargerScreenDto;
 import com.bank.manage.dao.RepairDao;
-import com.bank.manage.dto.ComplaintsWorkOrderDto;
-import com.bank.manage.dto.InspectionWorkOrderDto;
-import com.bank.manage.dto.WorkOrderDto;
-import com.bank.manage.dto.WorkOrdersDto;
+import com.bank.manage.dto.*;
 import com.bank.manage.service.RepairService;
 import com.bank.manage.vo.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -162,6 +159,11 @@ public class RepairServiceImpl implements RepairService {
     public BreakDownWorkOrderVo getBreakWorkOrderByCode(String repairCode) {
 
         return repairDao.getBreakWorkOrderByCode(repairCode);
+    }
+
+    @Override
+    public List<CompletedWordOrderVo> getCompletedWordOrderByCode(CompletedWordOrderDto completedWordOrderDto) {
+        return repairDao.getCompletedWordOrderByCode(completedWordOrderDto);
     }
 
     public void getTime(InspectionEquipmentDto inspectionEquipmentDto){

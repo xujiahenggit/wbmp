@@ -535,4 +535,65 @@
             where
                  t.work_order_code = #{repairCode}
     </select>
+
+    <select id="getCompletedWordOrderByCode" resultType="com.bank.manage.vo.CompletedWordOrderVo">
+        select
+                a.id id,
+                device.STRDEVMANU deviceVendor,
+                device.STRDEVMODEL deviceModel,
+                termstatus.CASHACCEPTORINFO depositStatus,
+                termstatus.CASHDISPENSERINFO withDrawalsStatus,
+                termstatus.VMCARDREADER readerStatus,
+                termstatus.VMPINPAD passWordStatus,
+                termstatus.VMJOURNALPRINTER flowPrinterStatus,
+                termstatus.VMRECEIPTPRINTER slipPrinterStatus,
+                termstatus.VMSTATEMENTPRINTER reconciliationPrinterStatus,
+                termstatus.VMPASSBOOKPRINTER passbookPrinterStatus ,
+                termstatus.DTSVCSTATUSBEGIN serviceStatus,
+                branch.org_code orgId,
+                selfsvcbank.STRADDRESS address,
+                device.firstinstalldate installationTime,
+                a.terminal_code terminalCode,
+                device.IDEVTYPE,
+                a.director director
+
+            from t_work_order a
+               left join dat_term term
+            on term.STRTERMNUM = a.terminal_code
+               left join dat_device device
+            on device.id = term.DEVICEID
+               left join dat_termstatus termstatus
+            on termstatus.STRTERMNUM = a.terminal_code
+               left join dat_branch branch
+            on branch.STRBRANCHNUM = device.STRBRANCHNUM
+               left join dat_selfsvcbank selfsvcbank
+            on selfsvcbank.STRBRANCHNUM =device.STRBRANCHNUM
+
+            <where>
+                <if test="workOrderCode != null">
+                  and  a.work_order_code= #{workOrderCode}
+                </if>
+                <if test="createId != null">
+                    and a.create_id= #{createId}
+                </if>
+                <if test="createTime != null">
+                    and a.create_time = #{createTime}
+                </if>
+                <if test="workOrderDescribe != null">
+                    and a.work_order_describe like concat('%', #{workOrderDescribe},'%')
+                </if>
+                <if test="escortsPatrol != null">
+                    and a.escorts_patrol = #{escortsPatrol}
+                </if>
+                <if test="requirCompleteTime != null">
+                    and a.requir_complete_time = #{requirCompleteTime}
+                </if>
+
+            </where>
+
+
+
+
+
+    </select>
 </mapper>

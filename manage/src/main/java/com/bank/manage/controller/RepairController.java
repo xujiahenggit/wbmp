@@ -3,10 +3,7 @@ package com.bank.manage.controller;
 import com.bank.core.entity.BizException;
 import com.bank.manage.dao.InspectionEquipmentDto;
 import com.bank.manage.dao.LargerScreenDto;
-import com.bank.manage.dto.ComplaintsWorkOrderDto;
-import com.bank.manage.dto.InspectionWorkOrderDto;
-import com.bank.manage.dto.WorkOrderDto;
-import com.bank.manage.dto.WorkOrdersDto;
+import com.bank.manage.dto.*;
 import com.bank.manage.service.RepairService;
 import com.bank.manage.vo.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -105,7 +102,7 @@ public class RepairController {
         return repairService.getWorkOrder(workOrdersDto);
       }
 
-    @ApiOperation(value ="（主管，工程师收到故障单）工单信息查询")
+    @ApiOperation(value ="（主管，工程师收到故障单）人工创建工单信息查询")
     @GetMapping("/getBreakWorkOrderByCode/{repairCode}")
     @ApiImplicitParam(name = "repairCode",value = "工单编号",required = true,paramType = "path")
     public BreakDownWorkOrderVo getBreakWorkOrderByCode(@PathVariable String repairCode){
@@ -114,4 +111,12 @@ public class RepairController {
         }
         return repairService.getBreakWorkOrderByCode(repairCode);
     }
+
+    @ApiOperation(value ="已完成工单详情查询")
+    @PostMapping("/getCompletedWordOrderByCode/{repairCode}")
+    public List<CompletedWordOrderVo> getCompletedWordOrderByCode(@RequestBody CompletedWordOrderDto completedWordOrderDto){
+
+        return repairService.getCompletedWordOrderByCode(completedWordOrderDto);
+    }
+
 }

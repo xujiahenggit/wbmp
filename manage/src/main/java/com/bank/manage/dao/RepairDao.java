@@ -1,9 +1,6 @@
 package com.bank.manage.dao;
 
-import com.bank.manage.dto.ComplaintsWorkOrderDto;
-import com.bank.manage.dto.InspectionWorkOrderDto;
-import com.bank.manage.dto.WorkOrderDto;
-import com.bank.manage.dto.WorkOrdersDto;
+import com.bank.manage.dto.*;
 import com.bank.manage.vo.*;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -47,4 +44,6 @@ public interface RepairDao extends BaseMapper<RepairDao> {
     int saveComplaintsWorkOrder(ComplaintsWorkOrderDto complaintsWorkOrderDto);
 
     BreakDownWorkOrderVo getBreakWorkOrderByCode(@Param("repairCode") String repairCode);
+
+    List<CompletedWordOrderVo> getCompletedWordOrderByCode(CompletedWordOrderDto completedWordOrderDto);
 }
