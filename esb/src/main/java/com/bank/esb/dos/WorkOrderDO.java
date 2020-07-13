@@ -68,9 +68,14 @@ public class WorkOrderDO implements Serializable {
   @ApiModelProperty(value = "工单编号")
   private String workOrderCode;
     /**
-     * 工单状态  0 :待处理；1：待评价；2：办接；3：待分行确认；4：待总行确认；4：待厂商回复；6：总行知悉；7：分行知悉；8：退回；9：已关闭
+     * 回复意见
      */
-  @ApiModelProperty(value = "工单状态  0 :待处理；1：待评价；2：办接；3：待分行确认；4：待总行确认；4：待厂商回复；6：总行知悉；7：分行知悉；8：退回；9：已关闭")
+  @ApiModelProperty(value = "回复意见")
+  private String suggestion;
+    /**
+     * 工单状态  0 :待处理；1：待评价；2：办接；3：分行确认；4：总行确认；5：厂商回复；6：总行知悉；7：分行知悉；8：退回；9：已关闭 10：已评价
+     */
+  @ApiModelProperty(value = "工单状态  0 :待处理；1：待评价；2：办接；3：分行确认；4：总行确认；5：厂商回复；6：总行知悉；7：分行知悉；8：退回；9：已关闭 10：已评价")
   private String workOrderStatus;
     /**
      * 工单描述
