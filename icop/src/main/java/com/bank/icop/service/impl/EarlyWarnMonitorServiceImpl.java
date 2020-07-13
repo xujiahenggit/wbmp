@@ -578,4 +578,20 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         }
         return report;
     }
+
+    @Override
+    public Object getUpdateByKey(String alertKey) {
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("alertKey",alertKey);
+        Map report = null;
+        try {
+            report = SoapUtil.sendReport("FXYJ10031","812",parmMap);
+        } catch (Exception e) {
+            throw new BizException("查看用户角色报错！"+e.getMessage());
+        }
+        if(!"0".equals((String)report.get("status"))){
+            throw new BizException("执行失败,状态码:"+(String)report.get("status"));
+        }
+        return report;
+    }
 }

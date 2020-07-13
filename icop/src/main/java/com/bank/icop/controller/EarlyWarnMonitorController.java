@@ -233,4 +233,13 @@ public class EarlyWarnMonitorController {
         return earlyWarnMonitorService.getMyTaskByNo(userNo);
     }
 
+
+    @ApiOperation("点修改查看接口031")
+    @GetMapping("/getUpdateByKey/{alertKey}")
+    @ApiImplicitParam(name = "alertKey",value = "预警编号",required = true,paramType = "path")
+    public Object getUpdateByKey(@PathVariable("alertKey") String alertKey){
+        return earlyWarnMonitorService.getUpdateByKey(alertKey);
+    }
+
+
 }
