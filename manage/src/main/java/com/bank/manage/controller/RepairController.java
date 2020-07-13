@@ -113,10 +113,20 @@ public class RepairController {
     }
 
     @ApiOperation(value ="已完成工单详情查询")
-    @PostMapping("/getCompletedWordOrderByCode/{repairCode}")
+    @PostMapping("/getCompletedWordOrderByCode")
     public List<CompletedWordOrderVo> getCompletedWordOrderByCode(@RequestBody CompletedWordOrderDto completedWordOrderDto){
 
         return repairService.getCompletedWordOrderByCode(completedWordOrderDto);
+    }
+
+    @ApiOperation(value ="服务信息查询")
+    @PostMapping("/getServiceInformationByCode/{repairCode}")
+    @ApiImplicitParam(name = "repairCode",value = "工单编号",required = true,paramType = "path")
+    public ServiceInformationsVo getServiceInformationByCode(String repairCode){
+        if("".equals(repairCode)){
+            throw new BizException("工单编号不能为空");
+        }
+        return repairService.getServiceInformationByCode(repairCode);
     }
 
 }

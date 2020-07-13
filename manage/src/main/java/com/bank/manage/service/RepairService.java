@@ -33,4 +33,6 @@ public interface RepairService {
     BreakDownWorkOrderVo getBreakWorkOrderByCode(String repairCode);
 
     List<CompletedWordOrderVo> getCompletedWordOrderByCode(CompletedWordOrderDto completedWordOrderDto);
+
+    ServiceInformationsVo getServiceInformationByCode(String repairCode);
 }

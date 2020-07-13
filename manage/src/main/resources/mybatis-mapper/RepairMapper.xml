@@ -590,10 +590,19 @@
                 </if>
 
             </where>
+    </select>
 
+    <select id="getServiceInformationByCode" resultType="com.bank.manage.vo.ServiceInformationsVo">
+              select
+                        t.vendor deviceVendor,
+                        t.director director,
+                        t.engineer engineer,
+                        t.deal_type dealType,
+                        t.work_order_complete_time workOrderCompleteTime,
+                        t.escorts_start_time escortsStartTime,
+                        t.escorts_complete_time escortsCompleteTime
 
-
-
-
+                from t_work_order t
+                where t.work_order_code  = #{repairCode}
     </select>
 </mapper>

@@ -166,6 +166,11 @@ public class RepairServiceImpl implements RepairService {
         return repairDao.getCompletedWordOrderByCode(completedWordOrderDto);
     }
 
+    @Override
+    public ServiceInformationsVo getServiceInformationByCode(String repairCode) {
+        return repairDao.getServiceInformationByCode(repairCode);
+    }
+
     public void getTime(InspectionEquipmentDto inspectionEquipmentDto){
         //获取当前系统的月份
         Calendar calendar =Calendar.getInstance();

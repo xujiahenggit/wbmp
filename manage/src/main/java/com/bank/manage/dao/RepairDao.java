@@ -46,4 +46,6 @@ public interface RepairDao extends BaseMapper<RepairDao> {
     BreakDownWorkOrderVo getBreakWorkOrderByCode(@Param("repairCode") String repairCode);
 
     List<CompletedWordOrderVo> getCompletedWordOrderByCode(CompletedWordOrderDto completedWordOrderDto);
+
+    ServiceInformationsVo getServiceInformationByCode( @Param("repairCode") String repairCode);
 }
