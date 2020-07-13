@@ -620,12 +620,13 @@ public class CashVoucherServiceImpl implements CashVoucherService {
             orderVoucherDetailResponseVo.setEnterNum((String) report.get("enterNum"));
             Object objectData=report.get("data");
             List<Map<String, Object>> dataList = new ArrayList<>();
-            if (objectData instanceof HashMap) {
-                dataList.add((Map<String, Object>) report.get("data"));
-            } else {
-                dataList = (List<Map<String, Object>>) report.get("data");
+            if(isObjectIsNotEmpty(objectData)){
+                if (objectData instanceof HashMap) {
+                    dataList.add((Map<String, Object>) report.get("data"));
+                } else {
+                    dataList = (List<Map<String, Object>>) report.get("data");
+                }
             }
-
             List<VoucherNumberVo> numberVoList = new ArrayList<>();
             if (CollectionUtil.isNotEmpty(dataList)) {
                 for (int i = 0; i < dataList.size(); i++) {
