@@ -14,6 +14,8 @@ import com.bank.esb.vo.*;
 import com.bank.esb.webservice.AutoMaticeDeviceService;
 import com.bank.esb.webservice.entity.ESBRequestHeader;
 import com.bank.esb.webservice.entity.ESBResponseHeader;
+import com.bank.manage.dos.WorkWaterDO;
+import com.bank.manage.service.WorkWaterService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
@@ -74,7 +76,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                 InstitutionsVo institutionsVo = JSON.parseObject(JSON.toJSONString(body), InstitutionsVo.class);
                 returnVO = JSON.parseObject(JSON.toJSONString(getInstitutions(institutionsVo)), Map.class);
                 break;
-            case "WBMP10004"://巡检单创建查询接口
+            case "WBMP10004"://巡检单查询接口
                 InspectionSheetVo inspectionSheetVo = JSON.parseObject(JSON.toJSONString(body), InspectionSheetVo.class);
                 returnVO = JSON.parseObject(JSON.toJSONString(getInspectionSheet(inspectionSheetVo)), Map.class);
                 break;

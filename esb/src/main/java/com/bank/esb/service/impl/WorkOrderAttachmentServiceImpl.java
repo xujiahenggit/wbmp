@@ -9,7 +9,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import javax.annotation.Resource;
 import java.util.Map;
 import com.bank.esb.dos.WorkOrderAttachmentDO;
-import com.bank.esb.vo.WorkOrderAttachmentVO;
 import com.bank.esb.dao.WorkOrderAttachmentDao;
 import com.bank.esb.service.WorkOrderAttachmentService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
