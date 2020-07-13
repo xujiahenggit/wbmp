@@ -1,15 +1,19 @@
 package com.bank.esb.webservice.impl;
 
 import cn.hutool.core.lang.UUID;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.bank.core.entity.BizException;
 import com.bank.esb.dao.DatWorkOrderDao;
+import com.bank.esb.dos.*;
 import com.bank.esb.dto.*;
+import com.bank.esb.service.*;
 import com.bank.esb.util.ESBUtil;
 import com.bank.esb.vo.*;
 import com.bank.esb.webservice.AutoMaticeDeviceService;
 import com.bank.esb.webservice.entity.ESBRequestHeader;
 import com.bank.esb.webservice.entity.ESBResponseHeader;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -21,6 +25,7 @@ import javax.annotation.Resource;
 import javax.jws.WebService;
 import java.io.ByteArrayInputStream;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -38,8 +43,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         Document doc;
         try {
             doc = builder.read(byteArrayInputStream);
-        }
-        catch (DocumentException e) {
+        } catch (DocumentException e) {
             throw new BizException("ESB请求报文不符合xml格式！");
         }
         Element serviceElement = doc.getRootElement();
@@ -149,31 +153,93 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         responseDto.setPageIndex(pageIndex);
         int pageSize = orderNumVo.getPageSize();
         responseDto.setPageSize(pageSize);
-        orderNumVo.setPageIndex((pageIndex-1)*pageSize);
+        orderNumVo.setPageIndex((pageIndex - 1) * pageSize);
         List<OrderDto> orderDtoList = datWorkOrderDao.queryOrders(orderNumVo);
         responseDto.setList(orderDtoList);
         return responseDto;
     }
 
+    @Resource
+    WorkOrderAttachmentService workOrderAttachmentService;
+
+    @Resource
+    WorkWaterService workWaterService;
+
+    @Resource
+    WorkOrderService workOrderService;
+
     private OrderDealWithDto orderDealWith(OrderDealWithVo orderDealWithVo) {
         OrderDealWithDto orderDealWithDto = new OrderDealWithDto();
         orderDealWithDto.setRepcode("0");
+        String orderNo = orderDealWithVo.getOrderNo();
+        WorkOrderDO orderDO = workOrderService.getOne(new LambdaQueryWrapper<WorkOrderDO>().eq(WorkOrderDO::getWorkOrderCode, orderNo));
+        if (orderDO != null) {
+            //更新工单表
+            String engineerId = orderDealWithVo.getEngineerId();
+            String processMode = orderDealWithVo.getProcessMode();
+            String serviceDescribe = orderDealWithVo.getServiceDescribe();
+            orderDO.setEngineer(engineerId);
+            orderDO.setDealType(processMode);
+            orderDO.setDealNote(serviceDescribe);
+            workOrderService.saveOrUpdate(orderDO);
 
+            //插入流水
+            workWaterService.save(new WorkWaterDO(null, null, orderNo,
+                     processMode, LocalDateTime.now()
+                    , engineerId, serviceDescribe, null,null,null
+                    ));
 
+            //附件保存
+            List<String> pictureUrl = orderDealWithVo.getPictureUrl();
+            List list = new ArrayList<WorkOrderAttachmentDO>();
+            if (pictureUrl.size()>0){
+                for (String url : pictureUrl) {
+                    list.add(new WorkOrderAttachmentDO(null,orderNo,url,
+                            url.substring(url.lastIndexOf("/")),null));
+                }
 
-
+            }
+            workOrderAttachmentService.saveBatch(list);
+        } else {
+            orderDealWithDto.setRepcode("-1");
+        }
         return orderDealWithDto;
     }
+
+    @Resource
+    DatBranchService datBranchService;
+    @Resource
+    DatSubbranchService datSubbranchService;
+    @Resource
+    DatSelfsvcbankService datSelfsvcbankService;
 
     private ResponseInstitutionsDto getInstitutions(InstitutionsVo institutionsVo) {
         ResponseInstitutionsDto responseInstitutionsDto = new ResponseInstitutionsDto();
         responseInstitutionsDto.setRepcode("0");
+        String orgId = institutionsVo.getOrgId();
         List<InstitutionsDto> list = new ArrayList<>();
-        for(int i=0;i<2;i++){
-            InstitutionsDto institutionsDto =new InstitutionsDto();
-            institutionsDto.setOrgId("10010"+i);
-            institutionsDto.setOrgName("测试"+i);
-            list.add(institutionsDto);
+        if (StrUtil.isBlankIfStr(orgId)){
+            List<DatBranchDO> datBranchDOS = datBranchService.list(new LambdaQueryWrapper<DatBranchDO>().eq(DatBranchDO::getStrbanknum, orgId));
+            if (datBranchDOS.size()>0){
+                for (DatBranchDO datBranchDO : datBranchDOS) {
+                    list.add(new InstitutionsDto(datBranchDO.getStrbranchnum(), datBranchDO.getStrbranchname()));
+                }
+            }else {
+                List<DatSubbranchDO> subbranchDOS = datSubbranchService.list(new LambdaQueryWrapper<DatSubbranchDO>().eq(DatSubbranchDO::getStrbranchnum, orgId));
+                if (subbranchDOS.size()>0){
+                    for (DatSubbranchDO subbranchDO : subbranchDOS) {
+                        list.add(new InstitutionsDto(subbranchDO.getStrsubbranchnum(), subbranchDO.getStrsubbranchname()));
+                    }
+                }else {
+                    List<DatSelfsvcbankDO> selfsvcbankDOS = datSelfsvcbankService.list(new LambdaQueryWrapper<DatSelfsvcbankDO>().eq(DatSelfsvcbankDO::getStrsubbranchnum, orgId));
+                    if (selfsvcbankDOS.size()>0){
+                        for (DatSelfsvcbankDO selfsvcbankDO : selfsvcbankDOS) {
+                            list.add(new InstitutionsDto(selfsvcbankDO.getStrssbnum(),selfsvcbankDO.getStrssbname()));
+                        }
+                    }
+
+                }
+            }
         }
         responseInstitutionsDto.setInstitutionsDtoList(list);
         return responseInstitutionsDto;
@@ -182,10 +248,10 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
     private ResponseInspectionSheetDto getInspectionSheet(InspectionSheetVo inspectionSheetVo) {
         ResponseInspectionSheetDto responseInspectionSheetDto = new ResponseInspectionSheetDto();
         responseInspectionSheetDto.setRepcode("0");
-        List<InspectionSheetDto> list =new ArrayList<>();
-        for(int i=0;i<2;i++){
-            InspectionSheetDto institutionsDto =new InspectionSheetDto();
-            institutionsDto.setOrgId("10010"+i);
+        List<InspectionSheetDto> list = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            InspectionSheetDto institutionsDto = new InspectionSheetDto();
+            institutionsDto.setOrgId("10010" + i);
             institutionsDto.setDeviceProperty("阿萨");
             institutionsDto.setInprocessNo("1111");
             institutionsDto.setOrgAddress("湖南省");
@@ -206,11 +272,11 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
     private ResponseEngineerDto getEngineer(EngineerVo engineerVo) {
         ResponseEngineerDto responseEngineerDto = new ResponseEngineerDto();
         responseEngineerDto.setRepcode("0");
-        List<EngineerDto> engineerDtoList =new ArrayList<>();
-        for(int i=0;i<2;i++){
-            EngineerDto engineerDto =new EngineerDto();
-            engineerDto.setEngineerId("1"+i);
-            engineerDto.setEngineerName("测试"+i);
+        List<EngineerDto> engineerDtoList = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            EngineerDto engineerDto = new EngineerDto();
+            engineerDto.setEngineerId("1" + i);
+            engineerDto.setEngineerName("测试" + i);
             engineerDto.setPhone("13263953265");
             engineerDtoList.add(engineerDto);
         }
@@ -245,19 +311,19 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         ResponseEquipmentDetailDto responseEquipmentDetailDto = new ResponseEquipmentDetailDto();
         responseEquipmentDetailDto.setRepcode("0");
         List<EquipmentDetailDto> equipmentDetailDtoList = new ArrayList<>();
-        for(int i=0;i<2;i++){
-            EquipmentDetailDto engineerDto =new EquipmentDetailDto();
-            engineerDto.setAddress("湖南省"+i);
-            engineerDto.setDeviceId("1"+i);
+        for (int i = 0; i < 2; i++) {
+            EquipmentDetailDto engineerDto = new EquipmentDetailDto();
+            engineerDto.setAddress("湖南省" + i);
+            engineerDto.setDeviceId("1" + i);
             engineerDto.setDeviceModel("asda");
             engineerDto.setDeviceVendor("asda");
-            engineerDto.setOrgId("10010"+i);
+            engineerDto.setOrgId("10010" + i);
             engineerDto.setInstallDate(new Date());
-            engineerDto.setOrgName("测试"+i);
-            List<ServiceSupervisorDto> serviceSupervisorDto =new ArrayList<>();
-            ServiceSupervisorDto supervisorDto =new ServiceSupervisorDto();
-            supervisorDto.setServerId("1"+i);
-            supervisorDto.setServerName("擦拭"+i);
+            engineerDto.setOrgName("测试" + i);
+            List<ServiceSupervisorDto> serviceSupervisorDto = new ArrayList<>();
+            ServiceSupervisorDto supervisorDto = new ServiceSupervisorDto();
+            supervisorDto.setServerId("1" + i);
+            supervisorDto.setServerName("擦拭" + i);
             serviceSupervisorDto.add(supervisorDto);
             engineerDto.setServiceSupervisorDtoList(serviceSupervisorDto);
             equipmentDetailDtoList.add(engineerDto);
@@ -274,16 +340,16 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
     private ResponServiceInformationDto getServiceInformation(ServiceInformationVo serviceInformationVo) {
         ResponServiceInformationDto responServiceInformationDto = new ResponServiceInformationDto();
         responServiceInformationDto.setRepcode("0");
-        List<ServiceInformationDto> list =new ArrayList<>();
-        for(int i=0;i<2;i++){
-            ServiceInformationDto serviceInformationDto =new ServiceInformationDto();
-            serviceInformationDto.setEngineerId("1"+i);
-            serviceInformationDto.setEngineerName("测试"+i);
+        List<ServiceInformationDto> list = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            ServiceInformationDto serviceInformationDto = new ServiceInformationDto();
+            serviceInformationDto.setEngineerId("1" + i);
+            serviceInformationDto.setEngineerName("测试" + i);
             serviceInformationDto.setEngineerPhone("123456789632");
             serviceInformationDto.setFinishTime(new Date());
             serviceInformationDto.setProcessMode("asda");
-            serviceInformationDto.setServerId("1"+i);
-            serviceInformationDto.setServerName("测试"+i);
+            serviceInformationDto.setServerId("1" + i);
+            serviceInformationDto.setServerName("测试" + i);
             serviceInformationDto.setServerPhone("12365246985");
             serviceInformationDto.setServiceProvider("asdsssss");
             list.add(serviceInformationDto);

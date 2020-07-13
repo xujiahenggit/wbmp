@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.esb.dao.WorkOrderAttachmentDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="workOrderAttachmentResultMap" type="com.bank.esb.dos.WorkOrderAttachmentDO">
+        <id column="id" property="id"/>
+        <result column="repair_id" property="repairId"/>
+        <result column="path" property="path"/>
+        <result column="name" property="name"/>
+        <result column="size" property="size"/>
+    </resultMap>
+
+
+    <select id="listPage" resultMap="workOrderAttachmentResultMap">
+        select * from t_work_order_attachment
+        <where>
+                <if test="model!=null">
+                    <if test="model.id != null and model.id !=''">
+                        id = #{model.id}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.repairId != null and model.repairId !=''">
+ AND                         repair_id = #{model.repairId}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.path != null and model.path !=''">
+ AND                         path = #{model.path}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.name != null and model.name !=''">
+ AND                         name = #{model.name}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.size != null and model.size !=''">
+ AND                         size = #{model.size}
+                    </if>
+                </if>
+        </where>
+    </select>
+
+
+</mapper>

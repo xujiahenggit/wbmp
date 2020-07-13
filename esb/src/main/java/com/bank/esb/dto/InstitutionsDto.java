@@ -2,7 +2,9 @@ package com.bank.esb.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @Author: cq
@@ -10,6 +12,8 @@ import lombok.Data;
  */
 @ApiModel(description = "机构列表Dto")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class InstitutionsDto {
 
     @ApiModelProperty(value = "机构号")
