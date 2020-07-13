@@ -19,8 +19,8 @@ public class ReplyDataDo {
     private String risklev;
     @ApiModelProperty("状态")
     private String dealflag;
-    @ApiModelProperty("客户经理号")
-    private String fcettypecode;
-    @ApiModelProperty("抽检状态")
-    private String cjstatus;
+//    @ApiModelProperty("客户经理号")
+//    private String fcettypecode;
+//    @ApiModelProperty("抽检状态")
+//    private String cjstatus;
 }
