@@ -12,7 +12,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author 代码自动生成
  * @since 2020-07-13
  */
-public interface WorkWaterService extends IService<WorkWaterDO> {
+public interface ManageWorkWaterService extends IService<WorkWaterDO> {
 
     /**
      * 自定义分页
