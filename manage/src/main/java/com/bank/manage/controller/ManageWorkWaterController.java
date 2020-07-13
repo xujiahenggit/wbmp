@@ -1,14 +1,13 @@
 package com.bank.manage.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiImplicitParam;
 import com.bank.core.entity.PageQueryModel;
-import org.springframework.web.bind.annotation.*;
 import com.bank.manage.dos.WorkWaterDO;
-import com.bank.manage.vo.WorkWaterVO;
+import com.bank.manage.service.ManageWorkWaterService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.*;
 
-import com.bank.manage.service.WorkWaterService;
 import javax.annotation.Resource;
 /**
  * 工单流水表 控制器
@@ -16,12 +15,12 @@ import javax.annotation.Resource;
  * @since 2020-07-13
  */
 @RestController
-@RequestMapping("/workWater")
+@RequestMapping("/manageWorkWater")
 @Api(value = "工单流水表", tags = "工单流水表接口")
-public class WorkWaterController {
+public class ManageWorkWaterController {
 
 	@Resource
-	private WorkWaterService workWaterService;
+	private ManageWorkWaterService manageWorkWaterService;
 
 
 	/**
@@ -31,7 +30,7 @@ public class WorkWaterController {
 	@ApiImplicitParam(name = "id", value = "唯一标识", required = true, paramType = "path")
 	@ApiOperation(value = "详情", notes = "传入id")
 	public Object detail(@PathVariable String id) {
-		return workWaterService.getById(id);
+		return manageWorkWaterService.getById(id);
 	}
 
 	/**
@@ -40,7 +39,7 @@ public class WorkWaterController {
 	@PostMapping("/list")
 	@ApiOperation(value = "分页", notes = "传入PageQueryModel")
 	public Object list(@RequestBody PageQueryModel pageQueryModel) {
-		return workWaterService.listPage(pageQueryModel);
+		return manageWorkWaterService.listPage(pageQueryModel);
 	}
 
 	/**
@@ -49,7 +48,7 @@ public class WorkWaterController {
 	@PostMapping("/save")
 	@ApiOperation(value = "新增或修改", notes = "传入workWater")
 	public Object save(@RequestBody WorkWaterDO workWater) {
-		return workWaterService.saveOrUpdate(workWater);
+		return manageWorkWaterService.saveOrUpdate(workWater);
 	}
 
 
@@ -60,7 +59,7 @@ public class WorkWaterController {
 	@ApiOperation(value = "删除", notes = "传入id")
 	@ApiImplicitParam(name = "id", value = "唯一标识", required = true, paramType = "path")
 	public Object remove(@PathVariable String id) {
-		return workWaterService.removeById(id);
+		return manageWorkWaterService.removeById(id);
 	}
 
 
