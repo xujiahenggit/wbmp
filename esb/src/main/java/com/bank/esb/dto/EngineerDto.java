@@ -14,6 +14,9 @@ public class EngineerDto {
     @ApiModelProperty(value = "工程师编号")
     private String engineerId;
 
+    @ApiModelProperty(value = "工单编号")
+    private String orderId;
+
     @ApiModelProperty(value = "工程师名称")
     private String engineerName;
 

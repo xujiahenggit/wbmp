@@ -88,14 +88,14 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                 EngineerVo engineerVo = JSON.parseObject(JSON.toJSONString(body), EngineerVo.class);
                 returnVO = JSON.parseObject(JSON.toJSONString(getEngineer(engineerVo)), Map.class);
                 break;
-//            case "WBMP10008":
-//                InspectionSheetsVo inspectionSheet = JSON.parseObject(JSON.toJSONString(body), InspectionSheetsVo.class);
-//                returnVO = JSON.parseObject(JSON.toJSONString(getInspectionSheets(inspectionSheet)), Map.class);
-//                break;
-//            case "WBMP10009":
-//                InspectionSheetsVo inspectionSheet = JSON.parseObject(JSON.toJSONString(body), InspectionSheetsVo.class);
-//                returnVO = JSON.parseObject(JSON.toJSONString(getInspectionSheets(inspectionSheet)), Map.class);
-//                break;
+            case "WBMP10008":
+                EngineerDto engineerDto = JSON.parseObject(JSON.toJSONString(body), EngineerDto.class);
+                returnVO = JSON.parseObject(JSON.toJSONString(getEngineer(engineerDto)), Map.class);
+                break;
+            case "WBMP10009"://状态变更（工程师到达现场）接口
+                StateChangesVo changeStatus = JSON.parseObject(JSON.toJSONString(body), StateChangesVo.class);
+                returnVO = JSON.parseObject(JSON.toJSONString(stateChanges(changeStatus)), Map.class);
+                break;
 //            case "WBMP10010":
 //                InspectionSheetsVo inspectionSheet = JSON.parseObject(JSON.toJSONString(body), InspectionSheetsVo.class);
 //                returnVO = JSON.parseObject(JSON.toJSONString(getInspectionSheets(inspectionSheet)), Map.class);
@@ -298,6 +298,25 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         responseEngineerDto.setEngineerDtoList(engineerDtoList);
         return responseEngineerDto;
     }
+    private ResponseEngineerDto getEngineer(EngineerDto engineerDto) {
+        ResponseEngineerDto responseEngineerDto = new ResponseEngineerDto();
+        responseEngineerDto.setRepcode("0");
+        String engineerId = engineerDto.getEngineerId();
+        String orderId = engineerDto.getOrderId();
+        //工单分派
+        WorkOrderDO orderDO = workOrderService.getOne(new LambdaQueryWrapper<WorkOrderDO>().eq(WorkOrderDO::getWorkOrderCode, orderId));
+        if (orderDO != null) {
+            orderDO.setEngineer(engineerId);
+            workOrderService.saveOrUpdate(orderDO);
+
+        }
+        //插入流水
+        workWaterService.save(new WorkWaterDO(null, null, orderId,
+                "2", LocalDateTime.now()
+                , engineerId, "工单分派", null,null,engineerDto.getEngineerName()
+        ));
+        return responseEngineerDto;
+    }
 
     private RepairOrderDispatchDto getRepairOrderDispatch(RepairOrderDispatchVo repairOrderDispatchVo) {
         RepairOrderDispatchDto repairOrderDispatchDto = new RepairOrderDispatchDto();
@@ -307,6 +326,13 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
     private StateChangesDto stateChanges(StateChangesVo stateChangesVo) {
         StateChangesDto stateChangesDto = new StateChangesDto();
         stateChangesDto.setRepcode("0");
+        String engineerId = stateChangesVo.getEngineerId();
+        String orderId = stateChangesVo.getOrderNo();
+        //更改状态
+        workWaterService.save(new WorkWaterDO(null, null, orderId,
+                "3", LocalDateTime.now()
+                , engineerId, "工程师到达现场处理状态变更", null,null,null
+        ));
         return stateChangesDto;
     }
 
