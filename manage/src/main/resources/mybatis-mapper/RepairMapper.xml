@@ -161,8 +161,8 @@
     <select id="getRepairById" resultType="com.bank.manage.vo.RepairVo">
                 select
                     id id,
-                    repair_code repairCode,
-                    repair_status repairStatus,
+                    work_order_code  repairCode,
+                    work_order_status repairStatus,
                     priority_code priorityCode
                 from t_work_order
                 where repair_code= #{repairCode}
