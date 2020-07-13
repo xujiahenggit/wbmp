@@ -1,19 +1,19 @@
 package com.bank.manage.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.bank.core.utils.MapUtils;
 import cn.hutool.core.util.StrUtil;
 import com.bank.core.entity.PageQueryModel;
+import com.bank.core.utils.MapUtils;
+import com.bank.manage.dao.ManageWorkWaterDao;
+import com.bank.manage.dos.WorkWaterDO;
+import com.bank.manage.service.ManageWorkWaterService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import javax.annotation.Resource;
-import java.util.Map;
-import com.bank.manage.dos.WorkWaterDO;
-import com.bank.manage.vo.WorkWaterVO;
-import com.bank.manage.dao.WorkWaterDao;
-import com.bank.manage.service.WorkWaterService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.Map;
 /**
  * 工单流水表 服务实现类
  *
@@ -21,10 +21,10 @@ import org.springframework.stereotype.Service;
  * @since 2020-07-13
  */
 @Service
-        public class WorkWaterServiceImpl extends ServiceImpl<WorkWaterDao, WorkWaterDO>implements WorkWaterService {
+        public class ManageWorkWaterServiceImpl extends ServiceImpl<ManageWorkWaterDao, WorkWaterDO>implements ManageWorkWaterService {
 
         @Resource
-         WorkWaterDao workWaterDao;
+        ManageWorkWaterDao manageworkWaterDao;
 
         @Override
         public IPage<WorkWaterDO>listPage(PageQueryModel pageQueryModel){
@@ -45,7 +45,7 @@ import org.springframework.stereotype.Service;
             if(!MapUtils.isEmpty(queryParam)){
             workWaterDO=BeanUtil.mapToBean(queryParam, WorkWaterDO.class,false);
             }
-            page.setRecords(workWaterDao.listPage(page,workWaterDO));
+            page.setRecords(manageworkWaterDao.listPage(page,workWaterDO));
             return page;
         }
 }

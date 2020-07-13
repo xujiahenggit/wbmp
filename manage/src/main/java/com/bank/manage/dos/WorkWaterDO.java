@@ -46,7 +46,7 @@ public class WorkWaterDO implements Serializable {
      * 工单id
      */
   @ApiModelProperty(value = "工单id")
-  private Integer wordOrderId;
+  private String wordOrderId;
 
     /**
      * 处理类型 (1退回、2分派 3办结）
