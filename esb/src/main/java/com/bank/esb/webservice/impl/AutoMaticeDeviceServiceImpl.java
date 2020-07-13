@@ -15,7 +15,7 @@ import com.bank.esb.webservice.AutoMaticeDeviceService;
 import com.bank.esb.webservice.entity.ESBRequestHeader;
 import com.bank.esb.webservice.entity.ESBResponseHeader;
 import com.bank.manage.dos.WorkWaterDO;
-import com.bank.manage.service.WorkWaterService;
+import com.bank.manage.service.ManageWorkWaterService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
@@ -166,7 +166,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
     WorkOrderAttachmentService workOrderAttachmentService;
 
     @Resource
-    WorkWaterService workWaterService;
+    ManageWorkWaterService workWaterService;
 
     @Resource
     WorkOrderService workOrderService;
