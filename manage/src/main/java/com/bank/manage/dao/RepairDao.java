@@ -1,5 +1,6 @@
 package com.bank.manage.dao;
 
+import com.bank.manage.dos.ManageWorkOrderDO;
 import com.bank.manage.dto.*;
 import com.bank.manage.vo.*;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -9,7 +10,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-public interface RepairDao extends BaseMapper<RepairDao> {
+public interface RepairDao extends BaseMapper<ManageWorkOrderDO> {
 
 
     int saveRepair(WorkOrderDto workOrderDto);

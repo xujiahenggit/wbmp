@@ -160,12 +160,12 @@
 
     <select id="getRepairById" resultType="com.bank.manage.vo.RepairVo">
                 select
-                    id id,
-                    work_order_code  repairCode,
-                    work_order_status repairStatus,
-                    priority_code priorityCode
+                    id,
+                    work_order_code AS repairCode,
+                    work_order_status AS repairStatus,
+                    priority_code AS priorityCode
                 from t_work_order
-                where repair_code= #{repairCode}
+                where work_order_code = #{repairCode}
     </select>
 
     <select id="getEquipmentByCode" resultType="com.bank.manage.vo.EquipmentVo">

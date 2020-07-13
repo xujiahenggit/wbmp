@@ -4,11 +4,13 @@ import com.bank.core.entity.BizException;
 import com.bank.manage.dao.InspectionEquipmentDto;
 import com.bank.manage.dao.LargerScreenDto;
 import com.bank.manage.dao.RepairDao;
+import com.bank.manage.dos.ManageWorkOrderDO;
 import com.bank.manage.dto.*;
 import com.bank.manage.service.RepairService;
 import com.bank.manage.vo.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class RepairServiceImpl implements RepairService {
+public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO> implements RepairService {
     @Resource
     private RepairDao repairDao;
 

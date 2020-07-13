@@ -353,6 +353,16 @@ public class Tools {
         return Float.parseFloat( df.format(bigDecimal));
     }
 
+    /**
+     * 获取随机数
+     */
+    public static String getFreeOrderNo(){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        String dateStr = sdf.format(new Date());
+        Random r = new Random();
+        int randomNum =  r.nextInt(900000)+100000;
+        return dateStr+String.valueOf(randomNum);
+    }
 
 
     public static void main(String[] args) {
