@@ -12,6 +12,7 @@
         <result column="requir_complete_time" property="requirCompleteTime"/>
         <result column="create_id" property="createId"/>
         <result column="work_order_code" property="workOrderCode"/>
+        <result column="suggestion" property="suggestion"/>
         <result column="work_order_status" property="workOrderStatus"/>
         <result column="work_order_describe" property="workOrderDescribe"/>
         <result column="director" property="director"/>
@@ -76,6 +77,11 @@
                 <if test="model!=null">
                     <if test="model.workOrderCode != null and model.workOrderCode !=''">
  AND                         work_order_code = #{model.workOrderCode}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.suggestion != null and model.suggestion !=''">
+ AND                         suggestion = #{model.suggestion}
                     </if>
                 </if>
                 <if test="model!=null">

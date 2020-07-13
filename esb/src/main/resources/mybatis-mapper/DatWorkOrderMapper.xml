@@ -218,9 +218,21 @@
          </where>
             LIMIT #{m.pageIndex},#{m.pageSize}
     </select>
-
-
-
+    <select id="getDeviceInfo" resultType="java.util.Map">
+        SELECT
+        STRTERMNUM deviceId,
+        STRDEVMODEL deviceModel,
+        STRORGNO orgId,
+        STRSSBNAME orgName,
+        STRTERMADDR address,
+        firstinstalldate installDate,
+        STRDEVMANU deviceVendor
+        FROM (
+        SELECT d.*,c.STRORGNO,c.STRTERMNUM,c.STRTERMADDR,e.STRSSBNAME FROM dat_term c
+        left JOIN dat_device d on c.DEVICEID = d.ID
+        left JOIN dat_selfsvcbank e on c.STRSSBNUM=e.STRSSBNUM
+        ) b
+    </select>
 
 
 </mapper>
