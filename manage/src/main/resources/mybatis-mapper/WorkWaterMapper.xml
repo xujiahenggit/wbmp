@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.WorkWaterDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="workWaterResultMap" type="com.bank.manage.dos.WorkWaterDO">
+        <id column="id" property="id"/>
+        <result column="serial_number" property="serialNumber"/>
+        <result column="word_order_id" property="wordOrderId"/>
+        <result column="deal_with_type" property="dealWithType"/>
+        <result column="deal_with_time" property="dealWithTime"/>
+        <result column="deal_with_people_id" property="dealWithPeopleId"/>
+        <result column="deal_with_note" property="dealWithNote"/>
+        <result column="create_time" property="createTime"/>
+        <result column="org_id" property="orgId"/>
+        <result column="deal_with_people_name" property="dealWithPeopleName"/>
+    </resultMap>
+
+
+    <select id="listPage" resultMap="workWaterResultMap">
+        select * from t_work_water
+        <where>
+                <if test="model!=null">
+                    <if test="model.id != null and model.id !=''">
+                        id = #{model.id}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.serialNumber != null and model.serialNumber !=''">
+                        AND serial_number = #{model.serialNumber}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.wordOrderId != null and model.wordOrderId !=''">
+                        AND word_order_id = #{model.wordOrderId}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.dealWithType != null and model.dealWithType !=''">
+                        AND deal_with_type = #{model.dealWithType}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.dealWithTime != null and model.dealWithTime !=''">
+                        AND deal_with_time = #{model.dealWithTime}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.dealWithPeopleId != null and model.dealWithPeopleId !=''">
+                        AND deal_with_people_id = #{model.dealWithPeopleId}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.dealWithNote != null and model.dealWithNote !=''">
+                        AND deal_with_note = #{model.dealWithNote}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.createTime != null and model.createTime !=''">
+                        AND create_time = #{model.createTime}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.orgId != null and model.orgId !=''">
+                        AND org_id = #{model.orgId}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.dealWithPeopleName != null and model.dealWithPeopleName !=''">
+                        AND deal_with_people_name = #{model.dealWithPeopleName}
+                    </if>
+                </if>
+        </where>
+    </select>
+
+</mapper>
