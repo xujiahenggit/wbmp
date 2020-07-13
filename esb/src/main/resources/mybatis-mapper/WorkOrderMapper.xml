@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.esb.dao.WorkOrderDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="workOrderResultMap" type="com.bank.esb.dos.WorkOrderDO">
+        <id column="id" property="id"/>
+        <result column="terminal_code" property="terminalCode"/>
+        <result column="work_order_type" property="workOrderType"/>
+        <result column="priority_code" property="priorityCode"/>
+        <result column="module_code" property="moduleCode"/>
+        <result column="requir_complete_time" property="requirCompleteTime"/>
+        <result column="create_id" property="createId"/>
+        <result column="work_order_code" property="workOrderCode"/>
+        <result column="work_order_status" property="workOrderStatus"/>
+        <result column="work_order_describe" property="workOrderDescribe"/>
+        <result column="director" property="director"/>
+        <result column="engineer" property="engineer"/>
+        <result column="work_order_complete_time" property="workOrderCompleteTime"/>
+        <result column="describe_type" property="describeType"/>
+        <result column="rating" property="rating"/>
+        <result column="rating_note" property="ratingNote"/>
+        <result column="deal_type" property="dealType"/>
+        <result column="deal_note" property="dealNote"/>
+        <result column="create_time" property="createTime"/>
+        <result column="escorts_patrol" property="escortsPatrol"/>
+        <result column="escorts_start_time" property="escortsStartTime"/>
+        <result column="escorts_complete_time" property="escortsCompleteTime"/>
+        <result column="escorts_handling" property="escortsHandling"/>
+        <result column="branch" property="branch"/>
+        <result column="sub_branch" property="subBranch"/>
+        <result column="buffet_line" property="buffetLine"/>
+        <result column="vendor" property="vendor"/>
+        <result column="create_name" property="createName"/>
+    </resultMap>
+
+
+    <select id="listPage" resultMap="workOrderResultMap">
+        select * from t_work_order
+        <where>
+                <if test="model!=null">
+                    <if test="model.id != null and model.id !=''">
+                        id = #{model.id}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.terminalCode != null and model.terminalCode !=''">
+ AND                         terminal_code = #{model.terminalCode}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.workOrderType != null and model.workOrderType !=''">
+ AND                         work_order_type = #{model.workOrderType}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.priorityCode != null and model.priorityCode !=''">
+ AND                         priority_code = #{model.priorityCode}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.moduleCode != null and model.moduleCode !=''">
+ AND                         module_code = #{model.moduleCode}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.requirCompleteTime != null and model.requirCompleteTime !=''">
+ AND                         requir_complete_time = #{model.requirCompleteTime}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.createId != null and model.createId !=''">
+ AND                         create_id = #{model.createId}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.workOrderCode != null and model.workOrderCode !=''">
+ AND                         work_order_code = #{model.workOrderCode}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.workOrderStatus != null and model.workOrderStatus !=''">
+ AND                         work_order_status = #{model.workOrderStatus}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.workOrderDescribe != null and model.workOrderDescribe !=''">
+ AND                         work_order_describe = #{model.workOrderDescribe}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.director != null and model.director !=''">
+ AND                         director = #{model.director}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.engineer != null and model.engineer !=''">
+ AND                         engineer = #{model.engineer}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.workOrderCompleteTime != null and model.workOrderCompleteTime !=''">
+ AND                         work_order_complete_time = #{model.workOrderCompleteTime}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.describeType != null and model.describeType !=''">
+ AND                         describe_type = #{model.describeType}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.rating != null and model.rating !=''">
+ AND                         rating = #{model.rating}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.ratingNote != null and model.ratingNote !=''">
+ AND                         rating_note = #{model.ratingNote}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.dealType != null and model.dealType !=''">
+ AND                         deal_type = #{model.dealType}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.dealNote != null and model.dealNote !=''">
+ AND                         deal_note = #{model.dealNote}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.createTime != null and model.createTime !=''">
+ AND                         create_time = #{model.createTime}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.escortsPatrol != null and model.escortsPatrol !=''">
+ AND                         escorts_patrol = #{model.escortsPatrol}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.escortsStartTime != null and model.escortsStartTime !=''">
+ AND                         escorts_start_time = #{model.escortsStartTime}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.escortsCompleteTime != null and model.escortsCompleteTime !=''">
+ AND                         escorts_complete_time = #{model.escortsCompleteTime}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.escortsHandling != null and model.escortsHandling !=''">
+ AND                         escorts_handling = #{model.escortsHandling}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.branch != null and model.branch !=''">
+ AND                         branch = #{model.branch}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.subBranch != null and model.subBranch !=''">
+ AND                         sub_branch = #{model.subBranch}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.buffetLine != null and model.buffetLine !=''">
+ AND                         buffet_line = #{model.buffetLine}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.vendor != null and model.vendor !=''">
+ AND                         vendor = #{model.vendor}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.createName != null and model.createName !=''">
+ AND                         create_name = #{model.createName}
+                    </if>
+                </if>
+        </where>
+    </select>
+
+
+</mapper>
