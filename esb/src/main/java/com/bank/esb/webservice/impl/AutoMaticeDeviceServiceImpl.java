@@ -1,5 +1,6 @@
 package com.bank.esb.webservice.impl;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
@@ -266,6 +267,18 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
     private InspectionSheetsDto getInspectionSheets(InspectionSheetsVo inspectionSheetsVo) {
         InspectionSheetsDto inspectionSheetsDto = new InspectionSheetsDto();
         inspectionSheetsDto.setRepcode("0");
+        //巡检单创建
+        WorkOrderDO workOrderDO = WorkOrderDO.builder()
+                .terminalCode(inspectionSheetsVo.getDeviceNo())
+                .workOrderType("3")
+                .workOrderCode(UUID.randomUUID().toString())
+                .workOrderStatus("0")
+                .escortsPatrol(inspectionSheetsVo.getAccompany())
+                .escortsStartTime(DateUtil.parseLocalDateTime(inspectionSheetsVo.getStartTime()))
+                .escortsCompleteTime(DateUtil.parseLocalDateTime(inspectionSheetsVo.getEndTime()))
+                .escortsHandling(inspectionSheetsVo.getProcessMode())
+                .workOrderDescribe(inspectionSheetsVo.getOrderDescribe()).build();
+        workOrderService.save(workOrderDO);
         return inspectionSheetsDto;
     }
 
