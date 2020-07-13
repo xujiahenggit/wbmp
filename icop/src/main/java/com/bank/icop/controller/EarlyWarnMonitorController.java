@@ -138,24 +138,22 @@ public class EarlyWarnMonitorController {
     }
 
     @ApiOperation("预警发起与识别数据列表接口10022")
-    @GetMapping("/getT69AlertList/{userNo}")
-    @ApiImplicitParam(name = "userNo",value = "用户编号",required = true,paramType = "path")
-    public Object getT69AlertList(@PathVariable("userNo") String userNo){
-        return earlyWarnMonitorService.getT69AlertList(userNo);
+    @PostMapping("/getT69AlertList")
+    @ApiImplicitParam(name = "alertListDo",value = "预警发起与识别数据列表接口10022",required = true,paramType = "body", dataType = "AlertListDo")
+    public Object getT69AlertList(@RequestBody AlertListDo alertListDo){
+        return earlyWarnMonitorService.getT69AlertList(alertListDo);
     }
 
     @ApiOperation("已回复协查数据列表接口10023")
-    @GetMapping("/getReplyDataList/{userNo}")
-    @ApiImplicitParam(name = "userNo",value = "用户编号",required = true,paramType = "path")
-    public Object getReplyDataList(@PathVariable("userNo") String userNo){
-        return earlyWarnMonitorService.getReplyDataList(userNo);
+    @PostMapping("/getReplyDataList")
+    public Object getReplyDataList(@RequestBody ReplyDataDo replyDataDo){
+        return earlyWarnMonitorService.getReplyDataList(replyDataDo);
     }
 
     @ApiOperation("未回复协查数据列表接口10024")
-    @GetMapping("/getNotReplyLists/{userNo}")
-    @ApiImplicitParam(name = "userNo",value = "用户编号",required = true,paramType = "path")
-    public Object getNotReplyLists(@PathVariable("userNo") String userNo){
-        return earlyWarnMonitorService.getNotReplyLists(userNo);
+    @PostMapping("/getNotReplyLists")
+    public Object getNotReplyLists(@RequestBody ReplyDataDo replyDataDo){
+        return earlyWarnMonitorService.getNotReplyLists(replyDataDo);
     }
 
 
@@ -193,4 +191,55 @@ public class EarlyWarnMonitorController {
     public Object returnNotReplyLists(@PathVariable("taskkey") String taskkey){
         return earlyWarnMonitorService.returnNotReplyLists(taskkey);
     }
+
+    @ApiOperation("获取角色 11032")
+    @GetMapping("/returnNotReplyLists/{userNo}")
+    @ApiImplicitParam(name = "userNo",value = "主键",required = true,paramType = "path")
+    public Object returnRoleLists(@PathVariable("userNo") String userNo){
+        return earlyWarnMonitorService.returnRoleLists(userNo);
+    }
+
+    @ApiOperation("调查任务详情接口029")
+    @GetMapping("/getTaskByCode/{taskkey}")
+    @ApiImplicitParam(name = "taskkey",value = "主键",required = true,paramType = "path")
+    public Object getTaskByCode(@PathVariable("taskkey") String taskkey){
+        return earlyWarnMonitorService.getTaskByCode(taskkey);
+    }
+
+    @ApiOperation("用户所属机构11030")
+    @GetMapping("/getUserByNo/{userNo}")
+    @ApiImplicitParam(name = "userNo",value = "用户编号",required = true,paramType = "path")
+    public Object getUserByNo(@PathVariable("userNo") String userNo){
+        return earlyWarnMonitorService.getUserByNo(userNo);
+    }
+
+    @ApiOperation("处理记录保存接口10025")
+    @PostMapping("/getProcessingRecords")
+    public Object getProcessingRecords(@RequestBody ProcessingRecordsDo processingRecordsDo){
+        return earlyWarnMonitorService.getProcessingRecords(processingRecordsDo);
+    }
+
+    @ApiOperation("处理记录列表接口10026")
+    @GetMapping("/getRecordByKey/{taskkey}")
+    @ApiImplicitParam(name = "taskkey",value = "",required = true,paramType = "path")
+    public Object getRecordByKey(@PathVariable("taskkey") String taskkey){
+        return earlyWarnMonitorService.getRecordByKey(taskkey);
+    }
+
+    @ApiOperation("我的任务接口10028")
+    @GetMapping("/getMyTaskByNo/{userNo}")
+    @ApiImplicitParam(name = "userNo",value = "用户编号",required = true,paramType = "path")
+    public Object getMyTaskByNo(@PathVariable("userNo") String userNo){
+        return earlyWarnMonitorService.getMyTaskByNo(userNo);
+    }
+
+
+    @ApiOperation("点修改查看接口031")
+    @GetMapping("/getUpdateByKey/{alertKey}")
+    @ApiImplicitParam(name = "alertKey",value = "预警编号",required = true,paramType = "path")
+    public Object getUpdateByKey(@PathVariable("alertKey") String alertKey){
+        return earlyWarnMonitorService.getUpdateByKey(alertKey);
+    }
+
+
 }
