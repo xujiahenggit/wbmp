@@ -3,13 +3,15 @@ package com.bank.manage.service;
 import com.bank.manage.dao.InspectionEquipmentDto;
 
 import com.bank.manage.dao.LargerScreenDto;
+import com.bank.manage.dos.ManageWorkOrderDO;
 import com.bank.manage.dto.*;
 import com.bank.manage.vo.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
 
-public interface RepairService {
+public interface RepairService extends IService<ManageWorkOrderDO> {
     int saveRepair(WorkOrderDto repairDto);
 
     RepairVo getRepairById(String repairCode);

@@ -3,9 +3,14 @@ package com.bank.manage.controller;
 import com.bank.core.entity.BizException;
 import com.bank.manage.dao.InspectionEquipmentDto;
 import com.bank.manage.dao.LargerScreenDto;
+import com.bank.manage.dos.ManageWorkOrderDO;
+import com.bank.manage.dos.WorkWaterDO;
 import com.bank.manage.dto.*;
+import com.bank.manage.service.ManageWorkWaterService;
 import com.bank.manage.service.RepairService;
+import com.bank.manage.util.Tools;
 import com.bank.manage.vo.*;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -13,6 +18,8 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -26,6 +33,9 @@ import java.util.List;
 public class RepairController {
     @Autowired
     private RepairService repairService;
+    @Resource
+    private ManageWorkWaterService manageWorkWaterService;
+
 
     @ApiOperation(value ="故障工单新增")
     @PostMapping("/saveRepair")
@@ -129,5 +139,60 @@ public class RepairController {
         }
         return repairService.getServiceInformationByCode(repairCode);
     }
+
+
+    @ApiOperation(value ="工单退回")
+    @PostMapping("/repairReback")
+    public Boolean repairReback(@RequestBody RepairRebackVo repairRebackVo){
+        Boolean flag = false;
+        if(null == repairRebackVo.getWorkOrderCode()  || "".equals(repairRebackVo.getWorkOrderCode())){
+            throw new BizException("工单编号不能为空");
+        }
+        String workOrderCode = repairRebackVo.getWorkOrderCode() ;
+        RepairVo repairVo = repairService.getRepairById(workOrderCode);
+        if(repairVo != null){
+            //更新工单状态为退回
+            LambdaUpdateWrapper<ManageWorkOrderDO> lambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+            //TODO 新增退回原因
+            lambdaUpdateWrapper.eq(ManageWorkOrderDO::getWorkOrderCode,workOrderCode).set(ManageWorkOrderDO::getWorkOrderStatus,"8");
+            flag = repairService.update(lambdaUpdateWrapper);
+            //插入工单流水
+            WorkWaterDO  workWater = new WorkWaterDO();
+            workWater.setSerialNumber(Tools.getFreeOrderNo());
+            workWater.setWordOrderId(workOrderCode);
+            workWater.setDealWithType("1");
+            workWater.setDealWithTime(LocalDateTime.now());
+            workWater.setDealWithPeopleId(repairRebackVo.getDealWithPeopleId());
+            workWater.setDealWithPeopleName(repairRebackVo.getDealWithPeopleName());
+            workWater.setOrgId(repairRebackVo.getOrgId());
+            workWater.setCreateTime(LocalDateTime.now());
+            workWater.setDealWithNote(repairRebackVo.getDealWithNote());
+            flag =  manageWorkWaterService.save(workWater);
+        }
+
+        return flag;
+    }
+
+
+    @ApiOperation(value ="工单评论")
+    @PostMapping("/repairComment")
+    public Boolean repairComment(@RequestBody RepairCommentVo commentVo){
+        Boolean flag = false;
+        if(null == commentVo.getWorkOrderCode()  || "".equals(commentVo.getWorkOrderCode())){
+            throw new BizException("工单编号不能为空");
+        }
+        String workOrderCode = commentVo.getWorkOrderCode() ;
+        RepairVo repairVo = repairService.getRepairById(workOrderCode);
+        if(repairVo != null) {
+            //更新工单状态为已评论
+            LambdaUpdateWrapper<ManageWorkOrderDO> lambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+            lambdaUpdateWrapper.eq(ManageWorkOrderDO::getWorkOrderCode,workOrderCode).set(ManageWorkOrderDO::getWorkOrderStatus,"10")
+            .set(ManageWorkOrderDO::getRating,commentVo.getRating())
+            .set(ManageWorkOrderDO::getRatingNote,commentVo.getRatingNote());
+            flag = repairService.update(lambdaUpdateWrapper);
+        }
+        return flag ;
+    }
+
 
 }

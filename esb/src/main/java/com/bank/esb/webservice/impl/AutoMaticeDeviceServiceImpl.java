@@ -100,18 +100,17 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
 //                InspectionSheetsVo inspectionSheet = JSON.parseObject(JSON.toJSONString(body), InspectionSheetsVo.class);
 //                returnVO = JSON.parseObject(JSON.toJSONString(getInspectionSheets(inspectionSheet)), Map.class);
 //                break;
-//            case "WBMP10011":
-//                InspectionSheetsVo inspectionSheet = JSON.parseObject(JSON.toJSONString(body), InspectionSheetsVo.class);
-//                returnVO = JSON.parseObject(JSON.toJSONString(getInspectionSheets(inspectionSheet)), Map.class);
-//                break;
+            case "WBMP10011"://投诉工单回复接口
+                RepairOrderBVo repairOrderBVo = JSON.parseObject(JSON.toJSONString(body), RepairOrderBVo.class);
+                returnVO = JSON.parseObject(JSON.toJSONString(repairOrder(repairOrderBVo)), Map.class);
+                break;
 //            case "WBMP10012":
 //                InspectionSheetsVo inspectionSheet = JSON.parseObject(JSON.toJSONString(body), InspectionSheetsVo.class);
 //                returnVO = JSON.parseObject(JSON.toJSONString(getInspectionSheets(inspectionSheet)), Map.class);
 //                break;
-//            case "WBMP10013":
-//                InspectionSheetsVo inspectionSheet = JSON.parseObject(JSON.toJSONString(body), InspectionSheetsVo.class);
-//                returnVO = JSON.parseObject(JSON.toJSONString(getInspectionSheets(inspectionSheet)), Map.class);
-//                break;
+            case "WBMP10013"://设备详细信息查询接口
+                returnVO = JSON.parseObject(JSON.toJSONString(getDeviceInfo(body.get("deviceId"))), Map.class);
+                break;
 //            case "WBMP10014":
 //                InspectionSheetsVo inspectionSheet = JSON.parseObject(JSON.toJSONString(body), InspectionSheetsVo.class);
 //                returnVO = JSON.parseObject(JSON.toJSONString(getInspectionSheets(inspectionSheet)), Map.class);
@@ -143,6 +142,12 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         response.put("Body", responseBody);
 
         return "<Service>" + ESBUtil.convert(response) + "</Service>";
+    }
+
+    private Object getDeviceInfo(Object deviceId) {
+        Map<String, Object> deviceInfo = datWorkOrderDao.getDeviceInfo(deviceId.toString());
+        deviceInfo.put("serverList","");
+        return deviceInfo;
     }
 
 
@@ -344,7 +349,19 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
 
     private RepairOrderBDto repairOrder(RepairOrderBVo repairOrderBVo) {
         RepairOrderBDto repairOrderBDto = new RepairOrderBDto();
-        repairOrderBDto.setRepcode("0");
+        String orderNo = repairOrderBVo.getOrderNo();
+        String engineerId = repairOrderBVo.getEngineerId();
+        //获取工单
+        WorkOrderDO orderDO = workOrderService.getOne(new LambdaQueryWrapper<WorkOrderDO>().eq(WorkOrderDO::getWorkOrderCode, orderNo));
+        if (orderDO != null) {
+            orderDO.setEngineer(engineerId);
+            orderDO.setSuggestion(repairOrderBVo.getOrderDescribe());
+            orderDO.setWorkOrderStatus("5");
+            workOrderService.saveOrUpdate(orderDO);
+            repairOrderBDto.setRepcode("0");
+        }else {
+            repairOrderBDto.setRepcode("-1");
+        }
         return repairOrderBDto;
     }
 

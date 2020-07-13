@@ -1,4 +1,4 @@
-package com.bank.esb.dos;
+package com.bank.manage.dos;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @TableName("t_work_order")
 @ApiModel(value = "WorkOrder对象", description = "工单表")
-public class WorkOrderDO implements Serializable {
+public class ManageWorkOrderDO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -68,14 +68,9 @@ public class WorkOrderDO implements Serializable {
   @ApiModelProperty(value = "工单编号")
   private String workOrderCode;
     /**
-     * 回复意见
+     * 工单状态  0 :待处理；1：待评价；2：办接；3：待分行确认；4：待总行确认；4：待厂商回复；6：总行知悉；7：分行知悉；8：退回；9：已关闭
      */
-  @ApiModelProperty(value = "回复意见")
-  private String suggestion;
-    /**
-     * 工单状态  0 :待处理；1：待评价；2：办接；3：分行确认；4：总行确认；5：厂商回复；6：总行知悉；7：分行知悉；8：退回；9：已关闭 10：已评价
-     */
-  @ApiModelProperty(value = "工单状态  0 :待处理；1：待评价；2：办接；3：分行确认；4：总行确认；5：厂商回复；6：总行知悉；7：分行知悉；8：退回；9：已关闭 10：已评价")
+  @ApiModelProperty(value = "工单状态  0 :待处理；1：待评价；2：办接；3：待分行确认；4：待总行确认；4：待厂商回复；6：总行知悉；7：分行知悉；8：退回；9：已关闭")
   private String workOrderStatus;
     /**
      * 工单描述
