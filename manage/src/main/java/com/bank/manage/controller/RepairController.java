@@ -75,10 +75,11 @@ public class RepairController {
         return repairService.saveComplaintsWorkOrder(complaintsWorkOrderDto);
     }
 
-    @GetMapping("/getDevicesNumber")
+    @GetMapping("/getDevicesNumber/{orgId}")
     @ApiOperation(value ="设备管理首页-设备状态")
-    public DevicesNumberVo getDevicesNumber(){
-        return  repairService. getDevicesNumber();
+    public DevicesNumberVo getDevicesNumber(@PathVariable String orgId){
+
+        return  repairService. getDevicesNumber(orgId);
     }
 
     @PostMapping("/getLargerScreen")

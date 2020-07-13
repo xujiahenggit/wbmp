@@ -24,7 +24,7 @@ public interface RepairDao extends BaseMapper<RepairDao> {
 
     List<InspectionEquipmentVo> getInspectionEquipment(InspectionEquipmentDto inspectionEquipmentDto);
 
-    DevicesNumberVo getDevicesNumber();
+    DevicesNumberVo getDevicesNumber( @Param("orgId") String orgId);
 
     IPage<LargerScreenVo> getLargerScreen(Page<LargerScreenVo> page, @Param("branchCode")String branchCode,
                                           @Param("terminalCode") String terminalCode,@Param("selfBankCode") String selfBankCode);

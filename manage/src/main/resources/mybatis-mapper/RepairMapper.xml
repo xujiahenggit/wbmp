@@ -293,6 +293,16 @@
                           1
                     end )/count(*),0),2) availability
      from dat_device device
+     left join dat_branch branch
+        on device.STRBRANCHNUM = branch.STRBRANCHNUM
+     left join dat_subbranch subbranch
+        on  subbranch.STRBRANCHNUM = branch.STRBRANCHNUM
+     <where>
+         <if test="orgId != null">
+             branch.org_code = #{orgId} or subbranch.org_code = #{orgId}
+         </if>
+     </where>
+
     </select>
 
     <select id="getLargerScreen" resultType="com.bank.manage.vo.LargerScreenVo">

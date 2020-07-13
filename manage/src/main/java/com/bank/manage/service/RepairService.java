@@ -18,7 +18,7 @@ public interface RepairService {
 
     List<InspectionEquipmentVo> getInspectionEquipmentByCode(InspectionEquipmentDto inspectionEquipmentDto);
 
-    DevicesNumberVo getDevicesNumber();
+    DevicesNumberVo getDevicesNumber(String orgId);
 
     IPage<LargerScreenVo> getLargerScreen(LargerScreenDto largerScreenDto);
 

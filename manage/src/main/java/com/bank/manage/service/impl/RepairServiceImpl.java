@@ -71,8 +71,8 @@ public class RepairServiceImpl implements RepairService {
     }
 
     @Override
-    public DevicesNumberVo getDevicesNumber() {
-        return repairDao.getDevicesNumber();
+    public DevicesNumberVo getDevicesNumber(String orgId) {
+        return repairDao.getDevicesNumber(orgId);
     }
 
     @Override
