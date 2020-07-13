@@ -164,7 +164,7 @@
                     repair_code repairCode,
                     repair_status repairStatus,
                     priority_code priorityCode
-                from t_repair
+                from t_work_order
                 where repair_code= #{repairCode}
     </select>
 
