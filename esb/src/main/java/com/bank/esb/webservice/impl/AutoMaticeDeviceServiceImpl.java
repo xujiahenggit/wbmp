@@ -3,6 +3,7 @@ package com.bank.esb.webservice.impl;
 import cn.hutool.core.lang.UUID;
 import com.alibaba.fastjson.JSON;
 import com.bank.core.entity.BizException;
+import com.bank.esb.dao.DatWorkOrderDao;
 import com.bank.esb.dto.*;
 import com.bank.esb.util.ESBUtil;
 import com.bank.esb.vo.*;
@@ -16,6 +17,7 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import javax.jws.WebService;
 import java.io.ByteArrayInputStream;
 import java.text.SimpleDateFormat;
@@ -137,18 +139,18 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
     }
 
 
+    @Resource
+    DatWorkOrderDao datWorkOrderDao;
+
     private ResponseDto getOrders(OrderNumVo orderNumVo) {
         ResponseDto responseDto = new ResponseDto();
         responseDto.setStatus("0");
-        responseDto.setPageIndex(orderNumVo.getPageIndex());
-        responseDto.setPageSize(orderNumVo.getPageSize());
-        List<OrderDto> orderDtoList = new ArrayList<>();
-        OrderDto orderDto1 = new OrderDto();
-        orderDto1.setDeviceType("deviceType");
-        orderDtoList.add(orderDto1);
-        OrderDto orderDto2 = new OrderDto();
-        orderDto2.setDeviceName("deviceName");
-        orderDtoList.add(orderDto2);
+        int pageIndex = orderNumVo.getPageIndex();
+        responseDto.setPageIndex(pageIndex);
+        int pageSize = orderNumVo.getPageSize();
+        responseDto.setPageSize(pageSize);
+        orderNumVo.setPageIndex((pageIndex-1)*pageSize);
+        List<OrderDto> orderDtoList = datWorkOrderDao.queryOrders(orderNumVo);
         responseDto.setList(orderDtoList);
         return responseDto;
     }
@@ -156,6 +158,10 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
     private OrderDealWithDto orderDealWith(OrderDealWithVo orderDealWithVo) {
         OrderDealWithDto orderDealWithDto = new OrderDealWithDto();
         orderDealWithDto.setRepcode("0");
+
+
+
+
         return orderDealWithDto;
     }
 

@@ -1,20 +1,26 @@
 import com.bank.gen.GeneratorCode;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Test;
 
 @Slf4j
 public class GeneratorTest {
 
-//    @Test
+    @Test
     public void generVUE() {
         GeneratorCode generator = new GeneratorCode();
-        generator.setPackageDir("E:\\IDEA\\wbmp-server\\manage");
-        generator.setPackageName("com.bank.manage");
+        generator.setPackageDir("E:\\IDEA\\wbmp-server\\esb");
+        generator.setPackageName("com.bank.esb");
         //        generator.setServiceName("沙龙活动");
         //        generator.setPackageWebDir("C:\\Users\\ZHAO\\Desktop\\view");
         generator.setIncludeTables(new String[]{
-                "wbmp_abs_teller_info",
-                "wbmp_abs_teller_online_time",
-                "wbmp_abs_online_time"
+               "dat_bank",
+               "dat_branch",
+               "dat_device",
+               "dat_selfsvcbank",
+               "dat_subbranch",
+               "dat_term",
+               "dat_termstatus",
+               "dat_work_order"
         });
         //        generator.setIncludeTables(new String[]{"T_ACTIVITIE_SALON",
         //                "T_ACTIVITIE_SALON_LOG"});

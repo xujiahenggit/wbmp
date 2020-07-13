@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.esb.dao.DatDeviceDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="datDeviceResultMap" type="com.bank.esb.dos.DatDeviceDO">
+        <id column="ID" property="id"/>
+        <result column="STRDEVSN" property="strdevsn"/>
+        <result column="STRDEVMODEL" property="strdevmodel"/>
+        <result column="ISTATUS" property="istatus"/>
+        <result column="STRBRANCHNUM" property="strbranchnum"/>
+        <result column="STRMEMO" property="strmemo"/>
+        <result column="IDEVTYPE" property="idevtype"/>
+        <result column="DTSTART" property="dtstart"/>
+        <result column="DTEND" property="dtend"/>
+        <result column="STRDEVMANU" property="strdevmanu"/>
+        <result column="ADDDATE" property="adddate"/>
+        <result column="ISAFEDOORPOSITION" property="isafedoorposition"/>
+        <result column="STRBANKNUM" property="strbanknum"/>
+        <result column="IDEVCLASS" property="idevclass"/>
+        <result column="reimbursementdate" property="reimbursementdate"/>
+        <result column="firstinstalldate" property="firstinstalldate"/>
+        <result column="assetnum" property="assetnum"/>
+        <result column="freetimelimit" property="freetimelimit"/>
+        <result column="freeduedate" property="freeduedate"/>
+        <result column="STRPROFILESTYLE" property="strprofilestyle"/>
+    </resultMap>
+
+
+    <select id="listPage" resultMap="datDeviceResultMap">
+        select * from dat_device
+        <where>
+                <if test="model!=null">
+                    <if test="model.id != null and model.id !=''">
+                        ID = #{model.id}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strdevsn != null and model.strdevsn !=''">
+ AND                         STRDEVSN = #{model.strdevsn}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strdevmodel != null and model.strdevmodel !=''">
+ AND                         STRDEVMODEL = #{model.strdevmodel}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.istatus != null and model.istatus !=''">
+ AND                         ISTATUS = #{model.istatus}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strbranchnum != null and model.strbranchnum !=''">
+ AND                         STRBRANCHNUM = #{model.strbranchnum}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strmemo != null and model.strmemo !=''">
+ AND                         STRMEMO = #{model.strmemo}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.idevtype != null and model.idevtype !=''">
+ AND                         IDEVTYPE = #{model.idevtype}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.dtstart != null and model.dtstart !=''">
+ AND                         DTSTART = #{model.dtstart}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.dtend != null and model.dtend !=''">
+ AND                         DTEND = #{model.dtend}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strdevmanu != null and model.strdevmanu !=''">
+ AND                         STRDEVMANU = #{model.strdevmanu}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.adddate != null and model.adddate !=''">
+ AND                         ADDDATE = #{model.adddate}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.isafedoorposition != null and model.isafedoorposition !=''">
+ AND                         ISAFEDOORPOSITION = #{model.isafedoorposition}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strbanknum != null and model.strbanknum !=''">
+ AND                         STRBANKNUM = #{model.strbanknum}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.idevclass != null and model.idevclass !=''">
+ AND                         IDEVCLASS = #{model.idevclass}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.reimbursementdate != null and model.reimbursementdate !=''">
+ AND                         reimbursementdate = #{model.reimbursementdate}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.firstinstalldate != null and model.firstinstalldate !=''">
+ AND                         firstinstalldate = #{model.firstinstalldate}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.assetnum != null and model.assetnum !=''">
+ AND                         assetnum = #{model.assetnum}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.freetimelimit != null and model.freetimelimit !=''">
+ AND                         freetimelimit = #{model.freetimelimit}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.freeduedate != null and model.freeduedate !=''">
+ AND                         freeduedate = #{model.freeduedate}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strprofilestyle != null and model.strprofilestyle !=''">
+ AND                         STRPROFILESTYLE = #{model.strprofilestyle}
+                    </if>
+                </if>
+        </where>
+    </select>
+
+
+</mapper>
