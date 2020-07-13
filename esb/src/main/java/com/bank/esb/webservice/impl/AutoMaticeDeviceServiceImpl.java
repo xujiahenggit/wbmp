@@ -74,7 +74,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                 InstitutionsVo institutionsVo = JSON.parseObject(JSON.toJSONString(body), InstitutionsVo.class);
                 returnVO = JSON.parseObject(JSON.toJSONString(getInstitutions(institutionsVo)), Map.class);
                 break;
-            case "WBMP10004"://巡检单创建查询接口
+            case "WBMP10004"://巡检单查询接口
                 InspectionSheetVo inspectionSheetVo = JSON.parseObject(JSON.toJSONString(body), InspectionSheetVo.class);
                 returnVO = JSON.parseObject(JSON.toJSONString(getInspectionSheet(inspectionSheetVo)), Map.class);
                 break;

@@ -1,11 +1,11 @@
 package com.bank.esb.dao;
 
 import com.bank.esb.dos.WorkOrderAttachmentDO;
-import com.bank.esb.vo.WorkOrderAttachmentVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 /**
  * 处理附件表 Mapper 接口
  *
