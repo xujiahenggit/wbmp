@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
@@ -27,6 +26,7 @@ import com.sunyard.client.bean.ClientFileBean;
 import com.sunyard.client.impl.SunEcmClientSocketApiImpl;
 import com.sunyard.util.OptionKey;
 
+import cn.hutool.core.lang.UUID;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -53,15 +53,15 @@ public class ImagePlatformUtils {
     password:fxyj1234
     MODEL_CODE:XCJC
     filePartName:XCJC_PART
-    
-    
+
+
     预警编号：9401000000
     预警监测
     userName：fxyj
     password:fxyj1234
     MODEL_CODE:YJJC
     filePartName:YJJC_PART
-    
+
     1、上传： 总数（AMOUNT:代表上传图片的总数） 页码（BUSI_PAGENUM_NUMBER：影像平台前端需要，参数逻辑为 初始为1 有几张图片就+1的形式传 每个图片对应一个页码 不能重复）
     2、更新：更新-追加  需要注意 总数会发生变化，所以首先要查询出原批次总数是多少（调用查询批次接口）。然后追加几张 更新时候总数就得加上你追加得那集中得出得总数
     页码逻辑也是一样，比如原批次总数为5  那么他的最大页码应该也是5 所以后续追加 是从6开始 根据你图片几张定义到几
@@ -138,7 +138,7 @@ public class ImagePlatformUtils {
         clientBatchBean.setBreakPoint(false);
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        String busiSerialNo = UUID.randomUUID().toString();
+        String busiSerialNo = UUID.randomUUID().toString(true);
         String busiStartDate = sdf.format(new Date());
 
         ClientBatchIndexBean clientBatchIndexBean = new ClientBatchIndexBean();
@@ -300,6 +300,8 @@ public class ImagePlatformUtils {
 
         clientBatchBean.getIndex_Object().setContentID(contentId);
         clientBatchBean.getIndex_Object().addCustomMap("BUSI_START_DATE", busiStartDate);
+        //先获取最大版本号去查询最新影像数据
+        clientBatchBean.getIndex_Object().setVersion(queryMaxVer(contentId, busiStartDate));
 
         ClientBatchFileBean clientBatchFileBean = new ClientBatchFileBean();
         clientBatchFileBean.setFilePartName(filePartName);
@@ -353,6 +355,42 @@ public class ImagePlatformUtils {
             throw new BizException("影像平台查询错误：" + e.getMessage());
         }
         return response;
+    }
+
+    public String queryMaxVer(String contentId, String busiStartDate) {
+        ClientBatchBean clientBatchBean = new ClientBatchBean();
+        clientBatchBean.setUser(userName);
+        clientBatchBean.setPassWord(passWord);
+        clientBatchBean.setModelCode(modelCode);
+
+        clientBatchBean.getIndex_Object().setContentID(contentId);
+        clientBatchBean.getIndex_Object().addCustomMap("BUSI_START_DATE", busiStartDate);
+
+        ClientBatchFileBean clientBatchFileBean = new ClientBatchFileBean();
+        clientBatchFileBean.setFilePartName(filePartName);
+        clientBatchBean.addDocument_Object(clientBatchFileBean);
+        String maxVer = "1";
+        try {
+            String resultMsg = clientApi.queryBatch(clientBatchBean, groupName);
+
+            String[] result = resultMsg.split("<<::>>");
+            if (result[0].equals("0001")) {
+                ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(result[1].getBytes());
+                SAXReader builder = new SAXReader();
+                Document doc = builder.read(byteArrayInputStream);
+                Element rootElement = doc.getRootElement();
+
+                maxVer = rootElement.element("BatchBean").element("index_Object").attribute("MAX_VERSION").getValue();
+            }
+            else {
+                throw new BizException("影像平台查询最大版本号错误：" + resultMsg);
+            }
+            log.info("查询批次返回的信息[{}]", resultMsg);
+        }
+        catch (Exception e) {
+            throw new BizException("影像平台查询最大版本号错误：" + e.getMessage());
+        }
+        return maxVer;
     }
 
     public static void main(String[] args) {
