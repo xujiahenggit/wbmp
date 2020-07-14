@@ -488,7 +488,7 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         } catch (Exception e) {
             throw new BizException("查看用户角色报错！"+e.getMessage());
         }
-        if(!"0".equals((String)report.get("status"))){
+        if(!"1".equals((String)report.get("status"))){
             throw new BizException("执行失败,状态码:"+(String)report.get("status"));
         }
         return report;
