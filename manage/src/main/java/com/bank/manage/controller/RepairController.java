@@ -160,8 +160,9 @@ public class RepairController {
         if(repairVo != null){
             //更新工单状态为退回
             LambdaUpdateWrapper<ManageWorkOrderDO> lambdaUpdateWrapper = new LambdaUpdateWrapper<>();
-            //TODO 新增退回原因
-            lambdaUpdateWrapper.eq(ManageWorkOrderDO::getWorkOrderCode,workOrderCode).set(ManageWorkOrderDO::getWorkOrderStatus,"8");
+            //更新工单状态为退回和更新退回原因字段
+            lambdaUpdateWrapper.eq(ManageWorkOrderDO::getWorkOrderCode,workOrderCode).set(ManageWorkOrderDO::getWorkOrderStatus,"8")
+            .set(ManageWorkOrderDO::getReturnOpinion,repairRebackVo.getDealWithNote());
             flag = repairService.update(lambdaUpdateWrapper);
             //插入工单流水
             WorkWaterDO  workWater = new WorkWaterDO();
