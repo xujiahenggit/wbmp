@@ -17,6 +17,13 @@ public class OrderDealWithVo {
     @ApiModelProperty(value = "工单号")
     private String orderNo;
 
+    @ApiModelProperty(value = "处理人id")
+    private String engineerId;
+
+    @ApiModelProperty(value = "工单状态")
+    private String orderStatus;
+
+
     @ApiModelProperty(value = "处理方式")
     private String processMode;
 

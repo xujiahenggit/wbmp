@@ -19,6 +19,8 @@ public class UpdateDealRecordsDo implements Serializable {
     private String beinvted;
     @ApiModelProperty("调查结论")
     private String verdict;
+    @ApiModelProperty("任务编号")
+    private String taskkey;
     @ApiModelProperty("过程描述")
     private String processdes;
 

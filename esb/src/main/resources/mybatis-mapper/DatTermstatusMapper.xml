@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.esb.dao.DatTermstatusDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="datTermstatusResultMap" type="com.bank.esb.dos.DatTermstatusDO">
+        <id column="ID" property="id"/>
+        <result column="STRTERMNUM" property="strtermnum"/>
+        <result column="SVCSTATUS" property="svcstatus"/>
+        <result column="IHDWSTATUS" property="ihdwstatus"/>
+        <result column="DTSVCSTATUSBEGIN" property="dtsvcstatusbegin"/>
+        <result column="IAGENTSTATUS" property="iagentstatus"/>
+        <result column="VMCARDREADER" property="vmcardreader"/>
+        <result column="VMRFCARDREADER" property="vmrfcardreader"/>
+        <result column="VMPINPAD" property="vmpinpad"/>
+        <result column="VMJOURNALPRINTER" property="vmjournalprinter"/>
+        <result column="VMCASHDISPENSER" property="vmcashdispenser"/>
+        <result column="VMCASHACCEPTOR" property="vmcashacceptor"/>
+        <result column="VMRECEIPTPRINTER" property="vmreceiptprinter"/>
+        <result column="VMSTATEMENTPRINTER" property="vmstatementprinter"/>
+        <result column="VMPASSBOOKPRINTER" property="vmpassbookprinter"/>
+        <result column="VMINVOICEPRINTER" property="vminvoiceprinter"/>
+        <result column="VMINVOICEPRINTER2" property="vminvoiceprinter2"/>
+        <result column="CASHACCEPTORINFO" property="cashacceptorinfo"/>
+        <result column="CASHDISPENSERINFO" property="cashdispenserinfo"/>
+        <result column="DCBarcode" property="DCBarcode"/>
+        <result column="DCCardReaderIndi" property="DCCardReaderIndi"/>
+        <result column="DCCardDispenser" property="DCCardDispenser"/>
+        <result column="DCCardDispenserIndi" property="DCCardDispenserIndi"/>
+        <result column="DCUKeyDispenser" property="DCUKeyDispenser"/>
+        <result column="DCUKeyReader" property="DCUKeyReader"/>
+    </resultMap>
+
+
+    <select id="listPage" resultMap="datTermstatusResultMap">
+        select * from dat_termstatus
+        <where>
+                <if test="model!=null">
+                    <if test="model.id != null and model.id !=''">
+                        ID = #{model.id}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strtermnum != null and model.strtermnum !=''">
+ AND                         STRTERMNUM = #{model.strtermnum}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.svcstatus != null and model.svcstatus !=''">
+ AND                         SVCSTATUS = #{model.svcstatus}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.ihdwstatus != null and model.ihdwstatus !=''">
+ AND                         IHDWSTATUS = #{model.ihdwstatus}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.dtsvcstatusbegin != null and model.dtsvcstatusbegin !=''">
+ AND                         DTSVCSTATUSBEGIN = #{model.dtsvcstatusbegin}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.iagentstatus != null and model.iagentstatus !=''">
+ AND                         IAGENTSTATUS = #{model.iagentstatus}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.vmcardreader != null and model.vmcardreader !=''">
+ AND                         VMCARDREADER = #{model.vmcardreader}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.vmrfcardreader != null and model.vmrfcardreader !=''">
+ AND                         VMRFCARDREADER = #{model.vmrfcardreader}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.vmpinpad != null and model.vmpinpad !=''">
+ AND                         VMPINPAD = #{model.vmpinpad}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.vmjournalprinter != null and model.vmjournalprinter !=''">
+ AND                         VMJOURNALPRINTER = #{model.vmjournalprinter}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.vmcashdispenser != null and model.vmcashdispenser !=''">
+ AND                         VMCASHDISPENSER = #{model.vmcashdispenser}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.vmcashacceptor != null and model.vmcashacceptor !=''">
+ AND                         VMCASHACCEPTOR = #{model.vmcashacceptor}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.vmreceiptprinter != null and model.vmreceiptprinter !=''">
+ AND                         VMRECEIPTPRINTER = #{model.vmreceiptprinter}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.vmstatementprinter != null and model.vmstatementprinter !=''">
+ AND                         VMSTATEMENTPRINTER = #{model.vmstatementprinter}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.vmpassbookprinter != null and model.vmpassbookprinter !=''">
+ AND                         VMPASSBOOKPRINTER = #{model.vmpassbookprinter}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.vminvoiceprinter != null and model.vminvoiceprinter !=''">
+ AND                         VMINVOICEPRINTER = #{model.vminvoiceprinter}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.vminvoiceprinter2 != null and model.vminvoiceprinter2 !=''">
+ AND                         VMINVOICEPRINTER2 = #{model.vminvoiceprinter2}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.cashacceptorinfo != null and model.cashacceptorinfo !=''">
+ AND                         CASHACCEPTORINFO = #{model.cashacceptorinfo}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.cashdispenserinfo != null and model.cashdispenserinfo !=''">
+ AND                         CASHDISPENSERINFO = #{model.cashdispenserinfo}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.DCBarcode != null and model.DCBarcode !=''">
+ AND                         DCBarcode = #{model.DCBarcode}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.DCCardReaderIndi != null and model.DCCardReaderIndi !=''">
+ AND                         DCCardReaderIndi = #{model.DCCardReaderIndi}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.DCCardDispenser != null and model.DCCardDispenser !=''">
+ AND                         DCCardDispenser = #{model.DCCardDispenser}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.DCCardDispenserIndi != null and model.DCCardDispenserIndi !=''">
+ AND                         DCCardDispenserIndi = #{model.DCCardDispenserIndi}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.DCUKeyDispenser != null and model.DCUKeyDispenser !=''">
+ AND                         DCUKeyDispenser = #{model.DCUKeyDispenser}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.DCUKeyReader != null and model.DCUKeyReader !=''">
+ AND                         DCUKeyReader = #{model.DCUKeyReader}
+                    </if>
+                </if>
+        </where>
+    </select>
+
+
+</mapper>

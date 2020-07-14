@@ -4,8 +4,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.util.Date;
-
 /**
  * @Author: cq
  * @Date: 2020/7/2
@@ -21,10 +19,10 @@ public class InspectionSheetsVo {
     private String accompany;
 
     @ApiModelProperty(value = "巡检开始时间")
-    private Date startTime;
+    private String startTime;
 
     @ApiModelProperty(value = "巡检结束时间")
-    private Date endTime;
+    private String endTime;
 
     @ApiModelProperty(value = "处理方式1-机芯清洁和校准；" +
             "2-清洁各打印机内灰尘及纸屑；" +

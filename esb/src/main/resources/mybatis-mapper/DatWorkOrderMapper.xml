@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.esb.dao.DatWorkOrderDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="datWorkOrderResultMap" type="com.bank.esb.dos.DatWorkOrderDO">
+        <id column="ID" property="id"/>
+        <result column="strTermNum" property="strTermNum"/>
+        <result column="strBankNum" property="strBankNum"/>
+        <result column="STRBRANCHNUM" property="strbranchnum"/>
+        <result column="STRSUBBRANCHNUM" property="strsubbranchnum"/>
+        <result column="STRSSBNUM" property="strssbnum"/>
+        <result column="strTermAddr" property="strTermAddr"/>
+        <result column="deviceType" property="deviceType"/>
+        <result column="deviceClass" property="deviceClass"/>
+        <result column="deviceManu" property="deviceManu"/>
+        <result column="deviceModel" property="deviceModel"/>
+        <result column="strDCName" property="strDCName"/>
+        <result column="strDCNameCN" property="strDCNameCN"/>
+        <result column="errorType" property="errorType"/>
+        <result column="errorCode" property="errorCode"/>
+        <result column="errorDesc" property="errorDesc"/>
+        <result column="status" property="status"/>
+        <result column="type" property="type"/>
+        <result column="bankReceiveNum" property="bankReceiveNum"/>
+        <result column="bankReceiveMobile" property="bankReceiveMobile"/>
+        <result column="bankReceiveName" property="bankReceiveName"/>
+        <result column="manuReceiveMobile" property="manuReceiveMobile"/>
+        <result column="manuReceiveName" property="manuReceiveName"/>
+        <result column="beginDate" property="beginDate"/>
+        <result column="endDate" property="endDate"/>
+        <result column="remark" property="remark"/>
+    </resultMap>
+
+
+    <select id="listPage" resultMap="datWorkOrderResultMap">
+        select * from dat_work_order
+        <where>
+                <if test="model!=null">
+                    <if test="model.id != null and model.id !=''">
+                        ID = #{model.id}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strTermNum != null and model.strTermNum !=''">
+ AND                         strTermNum = #{model.strTermNum}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strBankNum != null and model.strBankNum !=''">
+ AND                         strBankNum = #{model.strBankNum}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strbranchnum != null and model.strbranchnum !=''">
+ AND                         STRBRANCHNUM = #{model.strbranchnum}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strsubbranchnum != null and model.strsubbranchnum !=''">
+ AND                         STRSUBBRANCHNUM = #{model.strsubbranchnum}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strssbnum != null and model.strssbnum !=''">
+ AND                         STRSSBNUM = #{model.strssbnum}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strTermAddr != null and model.strTermAddr !=''">
+ AND                         strTermAddr = #{model.strTermAddr}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.deviceType != null and model.deviceType !=''">
+ AND                         deviceType = #{model.deviceType}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.deviceClass != null and model.deviceClass !=''">
+ AND                         deviceClass = #{model.deviceClass}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.deviceManu != null and model.deviceManu !=''">
+ AND                         deviceManu = #{model.deviceManu}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.deviceModel != null and model.deviceModel !=''">
+ AND                         deviceModel = #{model.deviceModel}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strDCName != null and model.strDCName !=''">
+ AND                         strDCName = #{model.strDCName}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strDCNameCN != null and model.strDCNameCN !=''">
+ AND                         strDCNameCN = #{model.strDCNameCN}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.errorType != null and model.errorType !=''">
+ AND                         errorType = #{model.errorType}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.errorCode != null and model.errorCode !=''">
+ AND                         errorCode = #{model.errorCode}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.errorDesc != null and model.errorDesc !=''">
+ AND                         errorDesc = #{model.errorDesc}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.status != null and model.status !=''">
+ AND                         status = #{model.status}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.type != null and model.type !=''">
+ AND                         type = #{model.type}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.bankReceiveNum != null and model.bankReceiveNum !=''">
+ AND                         bankReceiveNum = #{model.bankReceiveNum}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.bankReceiveMobile != null and model.bankReceiveMobile !=''">
+ AND                         bankReceiveMobile = #{model.bankReceiveMobile}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.bankReceiveName != null and model.bankReceiveName !=''">
+ AND                         bankReceiveName = #{model.bankReceiveName}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.manuReceiveMobile != null and model.manuReceiveMobile !=''">
+ AND                         manuReceiveMobile = #{model.manuReceiveMobile}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.manuReceiveName != null and model.manuReceiveName !=''">
+ AND                         manuReceiveName = #{model.manuReceiveName}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.beginDate != null and model.beginDate !=''">
+ AND                         beginDate = #{model.beginDate}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.endDate != null and model.endDate !=''">
+ AND                         endDate = #{model.endDate}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.remark != null and model.remark !=''">
+ AND                         remark = #{model.remark}
+                    </if>
+                </if>
+        </where>
+    </select>
+
+
+    <select id="queryOrders" resultType="com.bank.esb.dto.OrderDto">
+         SELECT
+            a.work_order_status as orderStatus,
+            a.work_order_code orderNo,
+            a.create_name createUser,
+            a.requir_complete_time serviceTime,
+            a.create_time createTime,
+            a.priority_code priority,
+            b.STRORGNO orgId,
+            b.STRSSBNAME orgName,
+            a.terminal_code deviceNo,
+            b.IDEVTYPE deviceType,
+            b.IDEVTYPE deviceName,
+            b.STRDEVMODEL deviceBrand, -- 设备型号
+            a.work_order_describe orderDetail
+         FROM t_work_order a LEFT JOIN (
+            SELECT d.*,c.STRORGNO,c.STRTERMNUM,e.STRSSBNAME FROM dat_term c
+            left JOIN dat_device d on c.DEVICEID = d.ID
+            left JOIN dat_selfsvcbank e on c.STRORGNO=e.STRSSBNUM
+            ) b ON a.terminal_code=b.STRTERMNUM
+         <where>
+            <if test="m.userId != null and related = '1'">
+                a.create_id= #{m.userId}
+            </if>
+            <if test="m.orderType != null">
+                a.work_order_type= #{m.orderType}
+            </if>
+            <if test="m.deviceClassify != null">
+                b.IDEVCLASS = #{m.deviceClassify}
+            </if>
+            <if test="m.deviceType != null">
+                a.IDEVTYPE= #{m.deviceType}
+            </if>
+            <if test="m.deviceNo != null">
+                a.terminal_code= #{m.deviceNo}
+            </if>
+            <if test="m.orderNo != null">
+                a.work_order_code= #{m.orderNo}
+            </if>
+            <if test="m.startTime != null">
+                a.create_time BETWEEN #{m.startTime} AND #{m.endTime}
+            </if>
+            <if test="m.orderStatus != null">
+                a.work_order_status= #{m.orderStatus}
+            </if>
+         </where>
+            LIMIT #{m.pageIndex},#{m.pageSize}
+    </select>
+    <select id="getDeviceInfo" resultType="java.util.Map">
+        SELECT
+        STRTERMNUM deviceId,
+        STRDEVMODEL deviceModel,
+        STRORGNO orgId,
+        STRSSBNAME orgName,
+        STRTERMADDR address,
+        firstinstalldate installDate,
+        STRDEVMANU deviceVendor
+        FROM (
+        SELECT d.*,c.STRORGNO,c.STRTERMNUM,c.STRTERMADDR,e.STRSSBNAME FROM dat_term c
+        left JOIN dat_device d on c.DEVICEID = d.ID
+        left JOIN dat_selfsvcbank e on c.STRSSBNUM=e.STRSSBNUM
+        ) b
+    </select>
+
+
+</mapper>
