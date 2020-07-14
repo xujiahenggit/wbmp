@@ -29,9 +29,10 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
     }
 
     @Override
-    public Object getT69Alerts(String alertkey) {
+    public Object getT69Alerts(AlertsDo alertsDo) {
         Map<String, Object> parmMap = new HashMap<>();
-        parmMap.put("alertkey",alertkey);
+        parmMap.put("alertKey",alertsDo.getAlertKey());
+        parmMap.put("userNo",alertsDo.getUserNo());
         Map report = null;
         try {
             report = SoapUtil.sendReport("FXYJ10002","812",parmMap);
@@ -53,7 +54,7 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
     @Override
     public Object getTaskDetails(String alertKey) {
         Map<String, Object> parmMap = new HashMap<>();
-        parmMap.put("alertKey",alertKey);
+        parmMap.put("TASKKEY",alertKey);
         Map report = null;
         try {
             report = SoapUtil.sendReport("FXYJ10003","812",parmMap);

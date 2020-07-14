@@ -40,10 +40,9 @@ public class EarlyWarnMonitorController {
     }
 
     @ApiOperation("预警任务基本信息查询接口10002")
-    @GetMapping("/getT69Alerts/{alertkey}")
-    @ApiImplicitParam(name = "alertkey",value = "预警编号",required = true,paramType = "path")
-    public Object getT69Alerts(@PathVariable("alertkey") String alertKey){
-        return earlyWarnMonitorService.getT69Alerts(alertKey);
+    @PostMapping("/getT69Alerts")
+    public Object getT69Alerts(@RequestBody AlertsDo alertsDo){
+        return earlyWarnMonitorService.getT69Alerts(alertsDo);
     }
 
     @ApiOperation("协查组任务查看详情数据查询接口（有、无调查记录)10003")

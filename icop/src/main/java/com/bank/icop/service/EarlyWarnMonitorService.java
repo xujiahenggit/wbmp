@@ -6,7 +6,7 @@ import com.bank.icop.dto.TaskListsDto;
 public interface EarlyWarnMonitorService {
     Object getdealDatas(String userNo);
 
-    Object getT69Alerts(String alertkey);
+    Object getT69Alerts(AlertsDo alertsDo);
 
     Object getTaskDetails(String taskkey);
 
