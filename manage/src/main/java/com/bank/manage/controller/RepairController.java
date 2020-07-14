@@ -3,13 +3,16 @@ package com.bank.manage.controller;
 import com.bank.core.entity.BizException;
 import com.bank.manage.dao.InspectionEquipmentDto;
 import com.bank.manage.dao.LargerScreenDto;
+import com.bank.manage.dos.ManageWorkOrderAttachmentDO;
 import com.bank.manage.dos.ManageWorkOrderDO;
 import com.bank.manage.dos.WorkWaterDO;
 import com.bank.manage.dto.*;
+import com.bank.manage.service.ManageWorkOrderAttachmentService;
 import com.bank.manage.service.ManageWorkWaterService;
 import com.bank.manage.service.RepairService;
 import com.bank.manage.util.Tools;
 import com.bank.manage.vo.*;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
@@ -18,9 +21,10 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /***
@@ -33,8 +37,11 @@ import java.util.List;
 public class RepairController {
     @Autowired
     private RepairService repairService;
-    @Resource
+    @Autowired
     private ManageWorkWaterService manageWorkWaterService;
+    @Autowired
+    private ManageWorkOrderAttachmentService manageWorkOrderAttachmentService;
+
 
 
     @ApiOperation(value ="故障工单新增")
@@ -153,8 +160,9 @@ public class RepairController {
         if(repairVo != null){
             //更新工单状态为退回
             LambdaUpdateWrapper<ManageWorkOrderDO> lambdaUpdateWrapper = new LambdaUpdateWrapper<>();
-            //TODO 新增退回原因
-            lambdaUpdateWrapper.eq(ManageWorkOrderDO::getWorkOrderCode,workOrderCode).set(ManageWorkOrderDO::getWorkOrderStatus,"8");
+            //更新工单状态为退回和更新退回原因字段
+            lambdaUpdateWrapper.eq(ManageWorkOrderDO::getWorkOrderCode,workOrderCode).set(ManageWorkOrderDO::getWorkOrderStatus,"8")
+            .set(ManageWorkOrderDO::getReturnOpinion,repairRebackVo.getDealWithNote());
             flag = repairService.update(lambdaUpdateWrapper);
             //插入工单流水
             WorkWaterDO  workWater = new WorkWaterDO();
@@ -194,5 +202,41 @@ public class RepairController {
         return flag ;
     }
 
+    @ApiOperation(value ="工单流转历史")
+    @GetMapping("/repairHistory/{repairCode}")
+    @ApiImplicitParam(name = "repairCode",value = "工单编号",required = true,paramType = "path")
+    public Object repairHistory(@PathVariable String repairCode){
+        Map<String,Object> map = new HashMap<>();
+        if("".equals(repairCode) || null == repairCode ){
+            throw new BizException("工单编号不能为空");
+        }
+        RepairVo repairVo = repairService.getRepairById(repairCode);
+        if(repairVo != null) {
+            ManageWorkOrderDO workOrderDO = repairService.getById(repairVo.getId());
+            //截图URL的list
+            QueryWrapper<ManageWorkOrderAttachmentDO> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("repair_id",repairCode);
+            List<ManageWorkOrderAttachmentDO>  list = manageWorkOrderAttachmentService.list(queryWrapper);
+            map.put("repairHistory",workOrderDO);
+            map.put("imageList",list);
+        }
+        return  map;
+    }
 
+    @ApiOperation(value ="自助设备列表查询")
+    @PostMapping("/getKioskList")
+    public IPage<KioskVo> getKioskList(@RequestBody KioskDto kioskDto){
+        return repairService.getKioskList(kioskDto);
+
+    }
+
+    @ApiOperation(value ="自助设备详情查询")
+    @GetMapping("/getKioskById/{id}")
+    public CompletedWordOrderVo getKioskById(@PathVariable String id){
+        if("".equals(id) || null == id ){
+            throw new BizException("id不能为空");
+        }
+        return repairService.getKioskById(id);
+
+    }
 }

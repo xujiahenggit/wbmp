@@ -50,4 +50,13 @@ public class CheckPonitSaveDTO implements Serializable {
 
     @ApiModelProperty(value = "其他/回头看")
     private String checkOther;
+
+    @ApiModelProperty(value = "影像ID")
+    private String contentid;
+
+    @ApiModelProperty(value = "影像时间-yyyyMMdd")
+    private String busistartdate;
+
+    @ApiModelProperty(value = "影像流水号")
+    private String busiserialno;
 }

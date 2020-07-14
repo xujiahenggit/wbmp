@@ -353,11 +353,12 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("userNo",replyDataDo.getUserNo());
         parmMap.put("alertKey",replyDataDo.getAlertKey());
-        parmMap.put("alertdt",replyDataDo.getAlertdt());
+        parmMap.put("endDt",replyDataDo.getEndDt());
+        parmMap.put("startDt",replyDataDo.getStartDt());
         parmMap.put("risklev",replyDataDo.getRisklev());
         parmMap.put("dealflag",replyDataDo.getDealflag());
-        parmMap.put("fcettypecode",replyDataDo.getFcettypecode());
-        parmMap.put("cjstatus",replyDataDo.getCjstatus());
+//        parmMap.put("fcettypecode",replyDataDo.getFcettypecode());
+//        parmMap.put("cjstatus",replyDataDo.getCjstatus());
         Map report = null;
         try {
             report = SoapUtil.sendReport("FXYJ10023","812",parmMap);
@@ -375,11 +376,12 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("userNo",replyDataDo.getUserNo());
         parmMap.put("alertKey",replyDataDo.getAlertKey());
-        parmMap.put("alertdt",replyDataDo.getAlertdt());
+        parmMap.put("endDt",replyDataDo.getEndDt());
+        parmMap.put("startDt",replyDataDo.getStartDt());
         parmMap.put("risklev",replyDataDo.getRisklev());
         parmMap.put("dealflag",replyDataDo.getDealflag());
-        parmMap.put("fcettypecode",replyDataDo.getFcettypecode());
-        parmMap.put("cjstatus",replyDataDo.getCjstatus());
+//        parmMap.put("fcettypecode",replyDataDo.getFcettypecode());
+//        parmMap.put("cjstatus",replyDataDo.getCjstatus());
         Map report = null;
         try {
             report = SoapUtil.sendReport("FXYJ10024","812",parmMap);

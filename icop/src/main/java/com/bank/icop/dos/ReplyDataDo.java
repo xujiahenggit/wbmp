@@ -13,14 +13,16 @@ public class ReplyDataDo {
     private String userNo;
     @ApiModelProperty("预警编号")
     private String alertKey;
-    @ApiModelProperty("预警时间")
-    private Date alertdt;
+    @ApiModelProperty("预警开始时间")
+    private Date startDt;
+    @ApiModelProperty("预警结束时间")
+    private Date endDt;
     @ApiModelProperty("风险度")
     private String risklev;
     @ApiModelProperty("状态")
     private String dealflag;
-    @ApiModelProperty("客户经理号")
-    private String fcettypecode;
-    @ApiModelProperty("抽检状态")
-    private String cjstatus;
+//    @ApiModelProperty("客户经理号")
+//    private String fcettypecode;
+//    @ApiModelProperty("抽检状态")
+//    private String cjstatus;
 }

@@ -548,24 +548,24 @@
 
     <select id="getCompletedWordOrderByCode" resultType="com.bank.manage.vo.CompletedWordOrderVo">
         select
-                a.id id,
-                device.STRDEVMANU deviceVendor,
-                device.STRDEVMODEL deviceModel,
-                termstatus.CASHACCEPTORINFO depositStatus,
-                termstatus.CASHDISPENSERINFO withDrawalsStatus,
-                termstatus.VMCARDREADER readerStatus,
-                termstatus.VMPINPAD passWordStatus,
-                termstatus.VMJOURNALPRINTER flowPrinterStatus,
-                termstatus.VMRECEIPTPRINTER slipPrinterStatus,
-                termstatus.VMSTATEMENTPRINTER reconciliationPrinterStatus,
-                termstatus.VMPASSBOOKPRINTER passbookPrinterStatus ,
-                termstatus.DTSVCSTATUSBEGIN serviceStatus,
-                branch.org_code orgId,
-                selfsvcbank.STRADDRESS address,
-                device.firstinstalldate installationTime,
-                a.terminal_code terminalCode,
-                device.IDEVTYPE,
-                a.director director
+                    a.id id,
+                    device.STRDEVMANU deviceVendor,
+                    device.STRDEVMODEL deviceModel,
+                    termstatus.CASHACCEPTORINFO depositStatus,
+                    termstatus.CASHDISPENSERINFO withDrawalsStatus,
+                    termstatus.VMCARDREADER readerStatus,
+                    termstatus.VMPINPAD passWordStatus,
+                    termstatus.VMJOURNALPRINTER flowPrinterStatus,
+                    termstatus.VMRECEIPTPRINTER slipPrinterStatus,
+                    termstatus.VMSTATEMENTPRINTER reconciliationPrinterStatus,
+                    termstatus.VMPASSBOOKPRINTER passbookPrinterStatus ,
+                    termstatus.SVCSTATUS serviceStatus,
+                    branch.org_code orgId,
+                    term.STRTERMADDR address,
+                    device.firstinstalldate installationTime,
+                    a.terminal_code terminalCode,
+                    device.IDEVTYPE,
+                    a.director director
 
             from t_work_order a
                left join dat_term term
@@ -576,8 +576,6 @@
             on termstatus.STRTERMNUM = a.terminal_code
                left join dat_branch branch
             on branch.STRBRANCHNUM = device.STRBRANCHNUM
-               left join dat_selfsvcbank selfsvcbank
-            on selfsvcbank.STRBRANCHNUM =device.STRBRANCHNUM
 
             <where>
                 <if test="workOrderCode != null">
@@ -614,5 +612,64 @@
 
                 from t_work_order t
                 where t.work_order_code  = #{repairCode}
+    </select>
+
+    <select id="kioskDto" resultType="com.bank.manage.vo.KioskVo">
+            select
+                    dev.id id,
+                    dev.IDEVTYPE equipmentName,
+                    dev.ISTATUS status,
+                    term.STRTERMNUM terminalCode,
+                    selfsvcbank.STRADDRESS address
+
+            from dat_device dev
+               left join dat_term term
+            on term.DEVICEID = dev.id
+               left join dat_branch branch
+            on branch.STRBRANCHNUM = dev.STRBRANCHNUM
+               left join dat_selfsvcbank selfsvcbank
+            on selfsvcbank.STRBRANCHNUM = branch.STRBRANCHNUM
+            <where>
+                <if test="model.status != null">
+                    and dev.ISTATUS = #{model.status}
+                </if>
+                <if test="model.terminalCode != null">
+                    and term.STRTERMNUM = #{model.terminalCode}
+                </if>
+            </where>
+
+    </select>
+
+    <select id ="getKioskById" resultType="com.bank.manage.vo.CompletedWordOrderVo">
+            select
+                device.id id,
+                device.STRDEVMANU deviceVendor,
+                device.STRDEVMODEL deviceModel,
+                termstatus.CASHACCEPTORINFO depositStatus,
+                termstatus.CASHDISPENSERINFO withDrawalsStatus,
+                termstatus.VMCARDREADER readerStatus,
+                termstatus.VMPINPAD passWordStatus,
+                termstatus.VMJOURNALPRINTER flowPrinterStatus,
+                termstatus.VMRECEIPTPRINTER slipPrinterStatus,
+                termstatus.VMSTATEMENTPRINTER reconciliationPrinterStatus,
+                termstatus.VMPASSBOOKPRINTER passbookPrinterStatus ,
+                termstatus.SVCSTATUS serviceStatus,
+                branch.org_code orgId,
+                term.STRTERMADDR address,
+                device.firstinstalldate installationTime,
+                term.STRTERMNUM terminalCode,
+                device.IDEVTYPE,
+                a.director director
+
+            from dat_device device
+               left join dat_term term
+            on device.id = term.DEVICEID
+               left join dat_termstatus termstatus
+            on termstatus.STRTERMNUM = term.STRTERMNUM
+               left join dat_branch branch
+            on branch.STRBRANCHNUM = device.STRBRANCHNUM
+               left join t_work_order a
+            on a.terminal_code = term.STRTERMNUM
+            where device.id = #{id}
     </select>
 </mapper>

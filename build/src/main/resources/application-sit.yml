@@ -26,16 +26,28 @@ spring:
       max-file-size: 1024MB
       max-request-size: 1024MB
   datasource:
-    # 如果存在多个数据源，监控的时候可以通过名字来区分开来
-    name: mysql
-    # 连接数据库的url
-    url: jdbc:mysql://162.16.14.77:3306/wbmp?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true&failOverReadOnly=false&serverTimezone=GMT%2B8
-    # 连接数据库的账号
-    username: root
-    #  连接数据库的密码
-    password: root77
-    # 使用druid数据源
-    type: com.alibaba.druid.pool.DruidDataSource
+    master:
+      # 如果存在多个数据源，监控的时候可以通过名字来区分开来
+      name: master
+      # 连接数据库的url
+      url: jdbc:mysql://162.16.14.77:3306/wbmp?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true&failOverReadOnly=false&serverTimezone=GMT%2B8
+      # 连接数据库的账号
+      username: root
+      #  连接数据库的密码
+      password: root77
+      # 使用druid数据源
+      type: com.alibaba.druid.pool.DruidDataSource
+    esb:
+      # 如果存在多个数据源，监控的时候可以通过名字来区分开来
+      name: esb
+      # 连接数据库的url
+      url: jdbc:mysql://162.16.21.122:3306/ssamgt?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true&failOverReadOnly=false&serverTimezone=GMT%2B8
+      # 连接数据库的账号
+      username: query
+      #  连接数据库的密码
+      password: query
+      # 使用druid数据源
+      type: com.alibaba.druid.pool.DruidDataSource
     druid:
       # 扩展插件
       # 监控统计用的filter:stat 日志用的filter:log4j 防御sql注入的filter:wall
@@ -94,6 +106,12 @@ logging:
 ICOP:
   PATH: http://dev-icop-qdzh.prod.bcs:43294/icop/services/JTService?wsdl
   TIMEOUT: 15000 #毫秒
+#影像平台
+IMAGE_PLATFORM:
+  IP: 162.16.1.224
+  PORT: 8021
+  USER_NAME: fxyj
+  PASS_WORD: fxyj1234
 #自定义属性
 #日志版本
 LOG:
