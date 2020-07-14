@@ -222,4 +222,20 @@ public class RepairController {
         return  map;
     }
 
+    @ApiOperation(value ="自助设备列表查询")
+    @PostMapping("/getKioskList")
+    public IPage<KioskVo> getKioskList(@RequestBody KioskDto kioskDto){
+        return repairService.getKioskList(kioskDto);
+
+    }
+
+    @ApiOperation(value ="自助设备详情查询")
+    @GetMapping("/getKioskById/{id}")
+    public CompletedWordOrderVo getKioskById(@PathVariable String id){
+        if("".equals(id) || null == id ){
+            throw new BizException("id不能为空");
+        }
+        return repairService.getKioskById(id);
+
+    }
 }
