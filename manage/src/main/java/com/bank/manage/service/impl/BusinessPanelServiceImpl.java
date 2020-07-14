@@ -220,6 +220,18 @@ public class BusinessPanelServiceImpl implements BusinessPanelService {
         return list;
     }
 
+    @Override
+    public List<DeviceTradeTrendVo> deviceOrgTradeList(String orgId, String queryType) {
+        List<DeviceTradeTrendVo> list = new ArrayList<>();
+        if (WbmpConstFile.DATE_TYPE_MONTH.equals(queryType)) {
+            //查询条件是按月查询
+            list = businessPanelDao.orgDeviceMonthTradeList(orgId);
+        } else if (WbmpConstFile.DATE_TYPE_YEAR.equals(queryType)) {
+            list = businessPanelDao.orgDeviceYearTradeList(orgId);
+        }
+        return list;
+    }
+
     private boolean valueContainNull(Number num1, Integer num2) {
         return num1 == null | num2 == null ? true : false;
     }

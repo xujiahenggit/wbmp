@@ -53,4 +53,12 @@ public interface BusinessPanelService {
      * @return
      */
     List<DeviceTradeTrendVo> deviceTradeList(String orgId,String termNo, String queryType);
+
+    /**
+     * 网点自助设备交易趋势
+     * @param orgId
+     * @param queryType
+     * @return
+     */
+    List<DeviceTradeTrendVo> deviceOrgTradeList(String orgId, String queryType);
 }

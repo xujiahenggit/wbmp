@@ -579,5 +579,76 @@
                 t2.day_str
     </select>
 
+    <!--网点自助设备近一年交易趋势-->
+    <select id="orgDeviceYearTradeList" resultType="com.bank.manage.vo.DeviceTradeTrendVo">
+              SELECT
+                    CONVERT (t2.day_str, CHAR) `date`,
+                IFNULL(sum(i.trans_cnt), 0) AS tradeCount
+            FROM
+                (
+                    SELECT
+                        @rownum :=@rownum + 1 AS num,
+                        date_format(
+                            DATE_SUB(NOW(), INTERVAL @rownum MONTH),
+                            '%Y-%m'
+                        ) AS day_str
+                    FROM
+                        (SELECT @rownum := - 1) AS r_init,
+                        (
+                            SELECT
+                                c.trans_cnt
+                            FROM
+                                 wbmp_atmp_tran_info c
+                            LIMIT 12
+                        ) AS c_init
+                ) t2
+            LEFT JOIN wbmp_atmp_tran_info AS i ON (
+                CONCAT(
+                    DATE_FORMAT(i.data_dt, '%Y'),
+                    '-',
+                    DATE_FORMAT(i.data_dt, '%m')
+                ) = t2.day_str
+             and  i.org_id = #{orgId}
+            )
+            GROUP BY
+                t2.day_str
+    </select>
+
+    <!--网点自助设备按近一月查询交易趋势-->
+    <select id="orgDeviceMonthTradeList" resultType="com.bank.manage.vo.DeviceTradeTrendVo">
+          SELECT
+                    CONVERT (t2.day_str, CHAR) `date`,
+                    IFNULL(sum(i.trans_cnt), 0) AS tradeCount
+            FROM
+                (
+                    SELECT
+                        @rownum :=@rownum + 1 AS num,
+                        date_format(
+                            DATE_SUB(NOW(), INTERVAL @rownum DAY),
+                            '%Y-%m-%d'
+                        ) AS day_str
+                    FROM
+                        (SELECT @rownum := - 1) AS r_init,
+                        (
+                            SELECT
+                                c.trans_cnt
+                            FROM
+                                 wbmp_atmp_tran_info c
+                            LIMIT 30
+                        ) AS c_init
+                ) t2
+            LEFT JOIN wbmp_atmp_tran_info AS i ON (
+                CONCAT(
+                    DATE_FORMAT(i.data_dt, '%Y'),
+                    '-',
+                    DATE_FORMAT(i.data_dt, '%m'),
+                            '-',
+                    DATE_FORMAT(i.data_dt, '%d')
+                ) = t2.day_str
+             and  i.org_id = #{orgId}
+            )
+            GROUP BY
+                t2.day_str
+    </select>
 
 </mapper>

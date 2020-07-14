@@ -126,5 +126,15 @@ public class BusinessPanelController {
     }
 
 
+    @GetMapping("/deviceOrgTradeList/{orgId}/{queryType}")
+    @ApiOperation(value = "网点自助设备交易趋势")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "orgId", value = "机构号", required = true, paramType = "path"),
+            @ApiImplicitParam(name = "queryType", value = "按月查询-01，按年查询-02", required = true, paramType = "path")
+    })
+    public List<DeviceTradeTrendVo> deviceOrgTradeList(@PathVariable String orgId, @PathVariable String queryType) {
+        List<DeviceTradeTrendVo> list = businessPanelService.deviceOrgTradeList(orgId,queryType);
+        return list;
+    }
 
 }
