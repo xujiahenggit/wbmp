@@ -173,6 +173,25 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
         return repairDao.getServiceInformationByCode(repairCode);
     }
 
+    @Override
+    public IPage<KioskVo> getKioskList(KioskDto kioskDto) {
+        Page<LargerScreenVo> page = new Page<>(kioskDto.getPageIndex(), kioskDto.getPageSize());
+        if (StringUtils.isNotBlank(kioskDto.getSort())) {
+            if (StringUtils.equalsIgnoreCase("DESC", kioskDto.getOrder())) {
+                page.setDesc(kioskDto.getSort());
+            }
+            else {
+                page.setAsc(kioskDto.getSort());
+            }
+        }
+        return repairDao.kioskDto(page,kioskDto);
+    }
+
+    @Override
+    public CompletedWordOrderVo getKioskById(String id) {
+        return  repairDao.getKioskById(id);
+    }
+
     public void getTime(InspectionEquipmentDto inspectionEquipmentDto){
         //获取当前系统的月份
         Calendar calendar =Calendar.getInstance();

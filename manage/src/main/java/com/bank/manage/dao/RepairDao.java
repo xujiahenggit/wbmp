@@ -49,4 +49,8 @@ public interface RepairDao extends BaseMapper<ManageWorkOrderDO> {
     List<CompletedWordOrderVo> getCompletedWordOrderByCode(CompletedWordOrderDto completedWordOrderDto);
 
     ServiceInformationsVo getServiceInformationByCode( @Param("repairCode") String repairCode);
+
+    IPage<KioskVo> kioskDto(Page<LargerScreenVo> page,@Param("model") KioskDto kioskDto);
+
+    CompletedWordOrderVo getKioskById(@Param("id") String id);
 }
