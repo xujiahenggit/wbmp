@@ -94,6 +94,12 @@ logging:
 ICOP:
   PATH: http://dev-icop-qdzh.prod.bcs:43294/icop/services/JTService?wsdl
   TIMEOUT: 15000 #毫秒
+#影像平台
+IMAGE_PLATFORM:
+  IP: 162.16.1.224
+  PORT: 8021
+  USER_NAME: fxyj
+  PASS_WORD: fxyj1234
 #自定义属性
 #日志版本
 LOG:
