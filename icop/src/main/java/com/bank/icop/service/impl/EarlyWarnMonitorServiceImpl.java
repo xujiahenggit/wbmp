@@ -353,7 +353,8 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("userNo",replyDataDo.getUserNo());
         parmMap.put("alertKey",replyDataDo.getAlertKey());
-        parmMap.put("alertdt",replyDataDo.getAlertdt());
+        parmMap.put("endDt",replyDataDo.getEndDt());
+        parmMap.put("startDt",replyDataDo.getStartDt());
         parmMap.put("risklev",replyDataDo.getRisklev());
         parmMap.put("dealflag",replyDataDo.getDealflag());
 //        parmMap.put("fcettypecode",replyDataDo.getFcettypecode());
@@ -375,7 +376,8 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("userNo",replyDataDo.getUserNo());
         parmMap.put("alertKey",replyDataDo.getAlertKey());
-        parmMap.put("alertdt",replyDataDo.getAlertdt());
+        parmMap.put("endDt",replyDataDo.getEndDt());
+        parmMap.put("startDt",replyDataDo.getStartDt());
         parmMap.put("risklev",replyDataDo.getRisklev());
         parmMap.put("dealflag",replyDataDo.getDealflag());
 //        parmMap.put("fcettypecode",replyDataDo.getFcettypecode());
