@@ -2,6 +2,8 @@ package com.bank.core.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -157,8 +159,18 @@ public class ImagePlatformController {
             @ApiImplicitParam(name = "contentId", value = "影像ID", required = true, dataType = "String"),
             @ApiImplicitParam(name = "busiStartDate", value = "影像时间", required = true, dataType = "String")
     })
-    public ImagePlatformResponse imagePlatformQuery(@RequestParam(value = "type") String type, @RequestParam(value = "contentId") String contentId, @RequestParam(value = "busiStartDate") String busiStartDate) {
+    public ImagePlatformResponse imagePlatformQuery(@RequestParam(value = "type") String type, @RequestParam(value = "contentId", defaultValue = "") String contentId, @RequestParam(value = "busiStartDate", defaultValue = "") String busiStartDate) {
         ImagePlatformUtils imagePlatformUtils = new ImagePlatformUtils(type);
+
+        if (StringUtils.isBlank(contentId)) {
+            ImagePlatformResponse response = new ImagePlatformResponse();
+            response.setContentId(contentId);
+            response.setBusiStartDate(busiStartDate);
+            response.setAmount(0);
+            List<ImagePlatformFile> imagePlatformFileList = new ArrayList<ImagePlatformFile>();
+            response.setImagePlatformFileList(imagePlatformFileList);
+            return response;
+        }
         return imagePlatformUtils.query(contentId, busiStartDate);
     }
 
