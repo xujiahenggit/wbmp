@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
  * 工单表 服务实现类
  *
  * @author 代码自动生成
- * @since 2020-07-13
+ * @since 2020-07-14
  */
 @Service
         public class WorkOrderServiceImpl extends ServiceImpl<WorkOrderDao, WorkOrderDO>implements WorkOrderService {
