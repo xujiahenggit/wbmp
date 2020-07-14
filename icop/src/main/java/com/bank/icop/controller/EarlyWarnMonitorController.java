@@ -193,7 +193,7 @@ public class EarlyWarnMonitorController {
     }
 
     @ApiOperation("获取角色 11032")
-    @GetMapping("/returnNotReplyLists/{userNo}")
+    @GetMapping("/returnRoleLists/{userNo}")
     @ApiImplicitParam(name = "userNo",value = "主键",required = true,paramType = "path")
     public Object returnRoleLists(@PathVariable("userNo") String userNo){
         return earlyWarnMonitorService.returnRoleLists(userNo);
