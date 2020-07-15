@@ -158,9 +158,9 @@ public class WbmpOperateScoreServiceImpl extends ServiceImpl<WbmpOperateScoreDao
             if(WbmpConstFile.SMZ_RACING_003.equals(item.getIndexNo())){
                 yq=WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*yqper*100);
             }
-            //电子对账率(12.5%)
+            //电子对账率(12.5%)[源数据电子对账率已经*100]
             if(WbmpConstFile.SMZ_RACING_004.equals(item.getIndexNo())){
-                dz=WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*dzper*100);
+                dz=WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*dzper);
             }
             //对公账户线上开户率(12.5%)
             if(WbmpConstFile.SMZ_RACING_007.equals(item.getIndexNo())){

@@ -96,8 +96,10 @@ public class WbmpOperateRacingIndexMServiceImpl extends ServiceImpl<WbmpOperateR
             for(HouseRaceItem item:sortItem){
 
                 float dataNumber= Tools.formatFloat(wbmpOperateRacingIndexMDao.getData(orgId,date,item.getId()));
+                if(item.getId().equals("RACING_004")){
+                    dataNumber = dataNumber/100;
+                }
                 data.add(dataNumber);
-
             }
         }
         //按顺序 排序
