@@ -53,15 +53,15 @@ public class ImagePlatformUtils {
     password:fxyj1234
     MODEL_CODE:XCJC
     filePartName:XCJC_PART
-
-
+    
+    
     预警编号：9401000000
     预警监测
     userName：fxyj
     password:fxyj1234
     MODEL_CODE:YJJC
     filePartName:YJJC_PART
-
+    
     1、上传： 总数（AMOUNT:代表上传图片的总数） 页码（BUSI_PAGENUM_NUMBER：影像平台前端需要，参数逻辑为 初始为1 有几张图片就+1的形式传 每个图片对应一个页码 不能重复）
     2、更新：更新-追加  需要注意 总数会发生变化，所以首先要查询出原批次总数是多少（调用查询批次接口）。然后追加几张 更新时候总数就得加上你追加得那集中得出得总数
     页码逻辑也是一样，比如原批次总数为5  那么他的最大页码应该也是5 所以后续追加 是从6开始 根据你图片几张定义到几
@@ -190,6 +190,9 @@ public class ImagePlatformUtils {
      * @return
      */
     public boolean update(String contentId, String busiStartDate, File[] listFiles) {
+        if (StringUtils.isBlank(contentId) || StringUtils.isBlank(busiStartDate)) {
+            throw new BizException("影像ID、影像时间参数未传入，影像文件更新接口调用失败！");
+        }
         boolean result = false;
         ClientBatchBean clientBatchBean = new ClientBatchBean();
         clientBatchBean.setUser(userName);
@@ -245,6 +248,9 @@ public class ImagePlatformUtils {
      * @return
      */
     public boolean delete(String contentId, String busiStartDate, List<String> deleteFileNames) {
+        if (StringUtils.isBlank(contentId) || StringUtils.isBlank(busiStartDate)) {
+            throw new BizException("影像ID、影像时间参数未传入，影像文件删除接口调用失败！");
+        }
         boolean result = false;
         ClientBatchBean clientBatchBean = new ClientBatchBean();
         clientBatchBean.setUser(userName);
