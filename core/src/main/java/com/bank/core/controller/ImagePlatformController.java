@@ -162,6 +162,7 @@ public class ImagePlatformController {
     public ImagePlatformResponse imagePlatformQuery(@RequestParam(value = "type") String type, @RequestParam(value = "contentId", defaultValue = "") String contentId, @RequestParam(value = "busiStartDate", defaultValue = "") String busiStartDate) {
         ImagePlatformUtils imagePlatformUtils = new ImagePlatformUtils(type);
 
+        //影像ID没有时不调用影像平台查询接口
         if (StringUtils.isBlank(contentId)) {
             ImagePlatformResponse response = new ImagePlatformResponse();
             response.setContentId(contentId);
