@@ -145,8 +145,8 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
     }
 
     private Object getDeviceInfo(Object deviceId) {
-        Map<String, Object> deviceInfo = datWorkOrderDao.getDeviceInfo(deviceId.toString());
-        deviceInfo.put("serverList","");
+        Map<String, Object> deviceInfo = esbService.getDeviceInfo(deviceId.toString());
+        deviceInfo.put("serverList",esbService.getManager(deviceId));
         return deviceInfo;
     }
 

@@ -8,7 +8,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 故障工单表 Mapper 接口
@@ -29,5 +28,4 @@ public interface DatWorkOrderDao extends BaseMapper<DatWorkOrderDO> {
 
     List<OrderDto> queryOrders(@Param("m") OrderNumVo orderNumVo);
 
-	Map<String, Object> getDeviceInfo(String toString);
 }
