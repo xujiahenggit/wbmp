@@ -227,7 +227,6 @@ public class RepairController {
     @PostMapping("/getKioskList")
     public IPage<KioskVo> getKioskList(@RequestBody KioskDto kioskDto){
         return repairService.getKioskList(kioskDto);
-
     }
 
     @ApiOperation(value ="自助设备详情查询")
