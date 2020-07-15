@@ -14,9 +14,9 @@ public class ReplyDataDo {
     @ApiModelProperty("预警编号")
     private String alertKey;
     @ApiModelProperty("预警开始时间")
-    private Date startDt;
+    private String startDt;
     @ApiModelProperty("预警结束时间")
-    private Date endDt;
+    private String endDt;
     @ApiModelProperty("风险度")
     private String risklev;
     @ApiModelProperty("状态")

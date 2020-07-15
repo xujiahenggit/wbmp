@@ -2,6 +2,8 @@ package com.bank.core.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -154,12 +156,46 @@ public class ImagePlatformController {
     @ApiOperation("影像平台文件查询")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "type", value = "类型（现场检查-xcjc；预警监测-yjjc；）等", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "pathId", value = "文件目录主键", required = true, dataType = "String"),
             @ApiImplicitParam(name = "contentId", value = "影像ID", required = true, dataType = "String"),
             @ApiImplicitParam(name = "busiStartDate", value = "影像时间", required = true, dataType = "String")
     })
-    public ImagePlatformResponse imagePlatformQuery(@RequestParam(value = "type") String type, @RequestParam(value = "contentId") String contentId, @RequestParam(value = "busiStartDate") String busiStartDate) {
+    public ImagePlatformResponse imagePlatformQuery(@RequestParam(value = "type") String type, @RequestParam(value = "pathId") String pathId, @RequestParam(value = "contentId", defaultValue = "") String contentId, @RequestParam(value = "busiStartDate", defaultValue = "") String busiStartDate) {
+        String dir = imagePlatformPath + "/" + type + "/" + pathId;
+        //判断目录是否存在
+        File f = new File(dir);
+        if (!f.exists()) {
+            f.mkdirs();
+        }
+        File fileDir = new File(dir);
+        File[] listFiles = fileDir.listFiles();
+        //首先列出本地文件
+        List<ImagePlatformFile> imagePlatformFileList = new ArrayList<ImagePlatformFile>();
+        for (int i = 0; i < listFiles.length; i++) {
+            ImagePlatformFile imagePlatformFile = new ImagePlatformFile();
+            String name = listFiles[i].getName();
+            imagePlatformFile.setFileType("1");
+            imagePlatformFile.setFilePath(dir);
+            imagePlatformFile.setFileName(name);
+            imagePlatformFile.setHttpFilePath(netUtil.getUrlSuffix("") + dir + "/" + name);
+            imagePlatformFileList.add(imagePlatformFile);
+        }
+
         ImagePlatformUtils imagePlatformUtils = new ImagePlatformUtils(type);
-        return imagePlatformUtils.query(contentId, busiStartDate);
+        //影像ID没有时不调用影像平台查询接口
+        if (StringUtils.isBlank(contentId)) {
+            ImagePlatformResponse response = new ImagePlatformResponse();
+            response.setContentId(contentId);
+            response.setBusiStartDate(busiStartDate);
+            response.setAmount(0);
+            response.setImagePlatformFileList(imagePlatformFileList);
+            return response;
+        }
+
+        //整合影像文件与本地文件
+        ImagePlatformResponse response = imagePlatformUtils.query(contentId, busiStartDate);
+        response.getImagePlatformFileList().addAll(imagePlatformFileList);
+        return response;
     }
 
 }

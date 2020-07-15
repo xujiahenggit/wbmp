@@ -22,5 +22,7 @@ public class KioskVo {
     private String status;
     @ApiModelProperty(value = "地址")
     private String address;
+    @ApiModelProperty(value = "机构号")
+    private String organization;
 
 }

@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
  * 工单表实体类
  *
  * @author 代码自动生成
- * @since 2020-07-13
+ * @since 2020-07-15
  */
 @Data
 @Builder
@@ -32,15 +32,19 @@ public class WorkOrderDO implements Serializable {
   @TableId(value = "id", type = IdType.AUTO)
   private Integer id;
     /**
+     * 退回意见
+     */
+  @ApiModelProperty(value = "退回意见")
+  private String returnOpinion;
+    /**
      * 终端编号
      */
   @ApiModelProperty(value = "终端编号")
   private String terminalCode;
     /**
      * 工单类型：1-故障工单；2-投诉工单；3-巡检
-
      */
-  @ApiModelProperty(value = "工单类型：1-故障工单；2-投诉工单；3-巡检 ")
+  @ApiModelProperty(value = "工单类型：1-故障工单；2-投诉工单；3-巡检")
   private String workOrderType;
     /**
      * 优先级编号（1：一般 2：紧急）

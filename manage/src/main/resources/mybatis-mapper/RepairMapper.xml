@@ -620,24 +620,13 @@
                     dev.IDEVTYPE equipmentName,
                     dev.ISTATUS status,
                     term.STRTERMNUM terminalCode,
-                    selfsvcbank.STRADDRESS address
-
+                    term.STRTERMADDR address,
+                    term.ORGANIZATION
             from dat_device dev
                left join dat_term term
             on term.DEVICEID = dev.id
-               left join dat_branch branch
-            on branch.STRBRANCHNUM = dev.STRBRANCHNUM
-               left join dat_selfsvcbank selfsvcbank
-            on selfsvcbank.STRBRANCHNUM = branch.STRBRANCHNUM
-            <where>
-                <if test="model.status != null">
-                    and dev.ISTATUS = #{model.status}
-                </if>
-                <if test="model.terminalCode != null">
-                    and term.STRTERMNUM = #{model.terminalCode}
-                </if>
-            </where>
-
+           where
+                term.ORGANIZATION = #{model.organization}
     </select>
 
     <select id ="getKioskById" resultType="com.bank.manage.vo.CompletedWordOrderVo">

@@ -218,6 +218,7 @@
          </where>
             LIMIT #{m.pageIndex},#{m.pageSize}
     </select>
+
     <select id="getDeviceInfo" resultType="java.util.Map">
         SELECT
         STRTERMNUM deviceId,

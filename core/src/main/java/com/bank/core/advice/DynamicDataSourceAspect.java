@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 @Order(1)
 @Slf4j
 public class DynamicDataSourceAspect {
-    //切入点只对@Service注解的类上的@DataSource方法生效
     @Pointcut(value="@within(org.springframework.stereotype.Service) && @annotation(dataSource)" )
     public void dynamicDataSourcePointCut(DataSource dataSource){}
 
