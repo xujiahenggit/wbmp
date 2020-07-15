@@ -336,7 +336,10 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         parmMap.put("risklev",alertListDo.getRisklev());
         parmMap.put("dealflag",alertListDo.getDealflag());
         parmMap.put("fcettypecode",alertListDo.getFcettypecode());
-        parmMap.put("cjstatus",alertListDo.getCjstatus());
+        if(alertListDo.getCjstatus() != null && !"".equals(alertListDo.getCjstatus())){
+            parmMap.put("cjstatus",alertListDo.getCjstatus());
+        }
+
         parmMap.put("limit",alertListDo.getLimit());
         parmMap.put("offset",alertListDo.getOffset());
         Map report = null;
