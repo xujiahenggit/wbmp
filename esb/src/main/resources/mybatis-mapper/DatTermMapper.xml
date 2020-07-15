@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.esb.dao.DatTermDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="datTermResultMap" type="com.bank.esb.dos.DatTermDO">
+        <id column="ID" property="id"/>
+        <result column="STRBANKNUM" property="strbanknum"/>
+        <result column="STRTERMNUM" property="strtermnum"/>
+        <result column="DEVICEID" property="deviceid"/>
+        <result column="STRBRANCHNUM" property="strbranchnum"/>
+        <result column="STRSUBBRANCHNUM" property="strsubbranchnum"/>
+        <result column="STRSSBNUM" property="strssbnum"/>
+        <result column="STRNETADDR" property="strnetaddr"/>
+        <result column="STRTELLERNUM" property="strtellernum"/>
+        <result column="USINGSTATUS" property="usingstatus"/>
+        <result column="STRPINKEY" property="strpinkey"/>
+        <result column="STRMACKEY" property="strmackey"/>
+        <result column="STRUISTYLE" property="struistyle"/>
+        <result column="STRPROFILESTYLE" property="strprofilestyle"/>
+        <result column="STRMEMO" property="strmemo"/>
+        <result column="STRPINPADTYPE" property="strpinpadtype"/>
+        <result column="DTSTART" property="dtstart"/>
+        <result column="DTEND" property="dtend"/>
+        <result column="CURTERMTSN" property="curtermtsn"/>
+        <result column="DTLASTREFILLCASHTIME" property="dtlastrefillcashtime"/>
+        <result column="AGENNOACCEPT" property="agennoaccept"/>
+        <result column="AGENNOCASH" property="agennocash"/>
+        <result column="APTLID" property="aptlid"/>
+        <result column="STRTERMADDR" property="strtermaddr"/>
+        <result column="TRANSOTHERFG" property="transotherfg"/>
+        <result column="AGENNOCLTM" property="agennocltm"/>
+        <result column="AGENNOADMN" property="agennoadmn"/>
+        <result column="STRORGNO" property="strorgno"/>
+        <result column="SERVICETYPE" property="servicetype"/>
+        <result column="PBOCTYPE" property="pboctype"/>
+        <result column="FORVERIFICATION" property="forverification"/>
+        <result column="ORGANIZATION" property="organization"/>
+        <result column="masterkeytype" property="masterkeytype"/>
+    </resultMap>
+
+
+    <select id="listPage" resultMap="datTermResultMap">
+        select * from dat_term
+        <where>
+                <if test="model!=null">
+                    <if test="model.id != null and model.id !=''">
+                        ID = #{model.id}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strbanknum != null and model.strbanknum !=''">
+ AND                         STRBANKNUM = #{model.strbanknum}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strtermnum != null and model.strtermnum !=''">
+ AND                         STRTERMNUM = #{model.strtermnum}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.deviceid != null and model.deviceid !=''">
+ AND                         DEVICEID = #{model.deviceid}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strbranchnum != null and model.strbranchnum !=''">
+ AND                         STRBRANCHNUM = #{model.strbranchnum}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strsubbranchnum != null and model.strsubbranchnum !=''">
+ AND                         STRSUBBRANCHNUM = #{model.strsubbranchnum}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strssbnum != null and model.strssbnum !=''">
+ AND                         STRSSBNUM = #{model.strssbnum}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strnetaddr != null and model.strnetaddr !=''">
+ AND                         STRNETADDR = #{model.strnetaddr}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strtellernum != null and model.strtellernum !=''">
+ AND                         STRTELLERNUM = #{model.strtellernum}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.usingstatus != null and model.usingstatus !=''">
+ AND                         USINGSTATUS = #{model.usingstatus}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strpinkey != null and model.strpinkey !=''">
+ AND                         STRPINKEY = #{model.strpinkey}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strmackey != null and model.strmackey !=''">
+ AND                         STRMACKEY = #{model.strmackey}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.struistyle != null and model.struistyle !=''">
+ AND                         STRUISTYLE = #{model.struistyle}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strprofilestyle != null and model.strprofilestyle !=''">
+ AND                         STRPROFILESTYLE = #{model.strprofilestyle}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strmemo != null and model.strmemo !=''">
+ AND                         STRMEMO = #{model.strmemo}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strpinpadtype != null and model.strpinpadtype !=''">
+ AND                         STRPINPADTYPE = #{model.strpinpadtype}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.dtstart != null and model.dtstart !=''">
+ AND                         DTSTART = #{model.dtstart}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.dtend != null and model.dtend !=''">
+ AND                         DTEND = #{model.dtend}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.curtermtsn != null and model.curtermtsn !=''">
+ AND                         CURTERMTSN = #{model.curtermtsn}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.dtlastrefillcashtime != null and model.dtlastrefillcashtime !=''">
+ AND                         DTLASTREFILLCASHTIME = #{model.dtlastrefillcashtime}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.agennoaccept != null and model.agennoaccept !=''">
+ AND                         AGENNOACCEPT = #{model.agennoaccept}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.agennocash != null and model.agennocash !=''">
+ AND                         AGENNOCASH = #{model.agennocash}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.aptlid != null and model.aptlid !=''">
+ AND                         APTLID = #{model.aptlid}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strtermaddr != null and model.strtermaddr !=''">
+ AND                         STRTERMADDR = #{model.strtermaddr}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.transotherfg != null and model.transotherfg !=''">
+ AND                         TRANSOTHERFG = #{model.transotherfg}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.agennocltm != null and model.agennocltm !=''">
+ AND                         AGENNOCLTM = #{model.agennocltm}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.agennoadmn != null and model.agennoadmn !=''">
+ AND                         AGENNOADMN = #{model.agennoadmn}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strorgno != null and model.strorgno !=''">
+ AND                         STRORGNO = #{model.strorgno}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.servicetype != null and model.servicetype !=''">
+ AND                         SERVICETYPE = #{model.servicetype}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.pboctype != null and model.pboctype !=''">
+ AND                         PBOCTYPE = #{model.pboctype}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.forverification != null and model.forverification !=''">
+ AND                         FORVERIFICATION = #{model.forverification}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.organization != null and model.organization !=''">
+ AND                         ORGANIZATION = #{model.organization}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.masterkeytype != null and model.masterkeytype !=''">
+ AND                         masterkeytype = #{model.masterkeytype}
+                    </if>
+                </if>
+        </where>
+    </select>
+
+
+</mapper>

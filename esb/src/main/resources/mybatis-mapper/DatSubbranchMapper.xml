@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.esb.dao.DatSubbranchDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="datSubbranchResultMap" type="com.bank.esb.dos.DatSubbranchDO">
+        <id column="ID" property="id"/>
+        <result column="STRSUBBRANCHNUM" property="strsubbranchnum"/>
+        <result column="STRSUBBRANCHNAME" property="strsubbranchname"/>
+        <result column="STRBRANCHNUM" property="strbranchnum"/>
+        <result column="STRBANKNUM" property="strbanknum"/>
+        <result column="org_code" property="orgCode"/>
+        <result column="virtual_org" property="virtualOrg"/>
+    </resultMap>
+
+
+    <select id="listPage" resultMap="datSubbranchResultMap">
+        select * from dat_subbranch
+        <where>
+                <if test="model!=null">
+                    <if test="model.id != null and model.id !=''">
+                        ID = #{model.id}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strsubbranchnum != null and model.strsubbranchnum !=''">
+ AND                         STRSUBBRANCHNUM = #{model.strsubbranchnum}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strsubbranchname != null and model.strsubbranchname !=''">
+ AND                         STRSUBBRANCHNAME = #{model.strsubbranchname}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strbranchnum != null and model.strbranchnum !=''">
+ AND                         STRBRANCHNUM = #{model.strbranchnum}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strbanknum != null and model.strbanknum !=''">
+ AND                         STRBANKNUM = #{model.strbanknum}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.orgCode != null and model.orgCode !=''">
+ AND                         org_code = #{model.orgCode}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.virtualOrg != null and model.virtualOrg !=''">
+ AND                         virtual_org = #{model.virtualOrg}
+                    </if>
+                </if>
+        </where>
+    </select>
+
+
+</mapper>

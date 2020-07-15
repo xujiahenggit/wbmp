@@ -34,11 +34,11 @@ public interface EarlyWarnMonitorService {
 
     Object submitTasks(SubmitTasksDo submitTasksDo);
 
-    Object getT69AlertList(String userNo);
+    Object getT69AlertList(AlertListDo alertListDo);
 
-    Object getReplyDataList(String userNo);
+    Object getReplyDataList(ReplyDataDo replyDataDo);
 
-    Object getNotReplyLists(String userNo);
+    Object getNotReplyLists(ReplyDataDo replyDataDo);
 
     Object returnAlerts(String alertkey);
 
@@ -49,4 +49,18 @@ public interface EarlyWarnMonitorService {
     Object getTplakeyLists(String tplakey);
 
     Object returnNotReplyLists(String taskkey);
+
+    Object returnRoleLists(String userNo);
+
+    Object getTaskByCode(String taskkey);
+
+    Object getUserByNo(String userNo);
+
+    Object getProcessingRecords(ProcessingRecordsDo processingRecordsDo);
+
+    Object getRecordByKey(String taskkey);
+
+    Object getMyTaskByNo(String userNo);
+
+    Object getUpdateByKey(String alertKey);
 }
