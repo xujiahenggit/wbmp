@@ -3,11 +3,19 @@
 <mapper namespace="com.bank.manage.dao.SsarunDeviceDao">
 
 
-    <!--查询设备列表-->
+    <!--查询设备列表 ssarun库-->
     <select id="ssarunDeviceList" resultType="com.bank.manage.vo.SsarunDeviceVo">
-             select
-                    dev.id,
-                    dev.idevtype AS deviceName,
+            select  dev.id,
+                    case dev.idevtype
+                    WHEN '1' then '自动取款机'
+                    WHEN '2' then '自动存款机'
+                    WHEN '3' then '自动存取款机'
+                    WHEN '4' then '自动查询机'
+                    WHEN '5' then '多媒体终端'
+                    WHEN '6' then '个性化发卡机'
+                    WHEN '7' then '回单打印机'
+                    WHEN '8' then	'智能现金柜'
+                    END AS deviceName,
                     term.strtermnum AS termNo,
                     dev.strdevmodel,
                     dev.strdevmanu,
@@ -19,5 +27,30 @@
                 term.organization = #{model.organization}
     </select>
 
+    <!--查询终端状态列表 ssaview库-->
+    <select id="termStatusList" resultType="com.bank.manage.vo.SsaViewTermStatusVo" parameterType="java.util.List">
+            select id ,strtermnum ,
+            case svcstatus
+            WHEN '-1' then '无效'
+            WHEN '0' then '空闲'
+            WHEN '1' then '交易中'
+            WHEN '2' then '硬件故障停止服务'
+            WHEN '3' then '管理命令暂停服务'
+            WHEN '4' then '维护中'
+            WHEN '5' then '通讯中断'
+            WHEN '6' then '耗材尽停止服务'
+            WHEN '7' then '已关机'
+            WHEN '8' then '正在重新启动'
+            END AS svcstatus
+            ,ihdwstatus, dtsvcstatusbegin,iagentstatus,vmcardreader,vmrfcardreader
+            vmpinpad ,vmjournalprinter ,vmcashdispenser ,vmcashacceptor,vmreceiptprinter,vmstatementprinter,
+            vmpassbookprinter,cashacceptorinfo,cashdispenserinfo,dccarddispenser
+            from termstatus
+           where
+                STRTERMNUM in
+            <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+    </select>
 
 </mapper>
