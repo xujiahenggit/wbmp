@@ -38,16 +38,42 @@ spring:
       # 使用druid数据源
       type: com.alibaba.druid.pool.DruidDataSource
     esb:
-      # 如果存在多个数据源，监控的时候可以通过名字来区分开来
-      name: esb
-      # 连接数据库的url
-      url: jdbc:mysql://162.16.21.122:3306/ssamgt?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true&failOverReadOnly=false&serverTimezone=GMT%2B8
-      # 连接数据库的账号
-      username: query
-      #  连接数据库的密码
-      password: query
-      # 使用druid数据源
-      type: com.alibaba.druid.pool.DruidDataSource
+      esb:
+        # 连接数据库的url
+        url: jdbc:mysql://162.16.21.122:3306/ssamgt?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true&failOverReadOnly=false&serverTimezone=GMT%2B8
+        # 连接数据库的账号
+        username: query
+        #  连接数据库的密码
+        password: query
+        # 使用druid数据源
+        type: com.alibaba.druid.pool.DruidDataSource
+      esbrun:
+        # 连接数据库的url
+        url: jdbc:mysql://162.16.21.122:3306/ssarun?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true&failOverReadOnly=false&serverTimezone=GMT%2B8
+        # 连接数据库的账号
+        username: query
+        #  连接数据库的密码
+        password: query
+        # 使用druid数据源
+        type: com.alibaba.druid.pool.DruidDataSource
+      esbview:
+        # 连接数据库的url
+        url: jdbc:mysql://162.16.21.122:3306/ssaview?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true&failOverReadOnly=false&serverTimezone=GMT%2B8
+        # 连接数据库的账号
+        username: query
+        #  连接数据库的密码
+        password: query
+        # 使用druid数据源
+        type: com.alibaba.druid.pool.DruidDataSource
+      dev:
+        # 连接数据库的url
+        url: jdbc:mysql://162.16.4.33:3306/ssamgt?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true&failOverReadOnly=false&serverTimezone=GMT%2B8
+        # 连接数据库的账号
+        username: query
+        #  连接数据库的密码
+        password: Query@123
+        # 使用druid数据源
+        type: com.alibaba.druid.pool.DruidDataSource
     druid:
       # 扩展插件
       # 监控统计用的filter:stat 日志用的filter:log4j 防御sql注入的filter:wall

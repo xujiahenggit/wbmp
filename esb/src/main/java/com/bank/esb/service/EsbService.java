@@ -1,9 +1,10 @@
 package com.bank.esb.service;
 
+import com.bank.esb.dto.EngineerDto;
+
 import java.util.List;
-import java.util.Map;
 
 public interface EsbService {
 
-    List<Map<String,Object>> getEngineer(String engineerMId, String seachTxt);
+    List<EngineerDto> getEngineer(String engineerMId, String seachTxt);
 }

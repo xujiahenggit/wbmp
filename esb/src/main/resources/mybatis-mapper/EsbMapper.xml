@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.esb.dao.EsbDao">
+    <select id="getEngineer" resultType="com.bank.esb.dto.EngineerDto">
+        SELECT ID engineerId,
+        NAME engineerName,
+        TELEPHONE phone
+        FROM vendorpersonnel WHERE DEVICEMANU=(
+        SELECT DEVICEMANU FROM vendorpersonnel WHERE ID = #{id} )
+        <if test="seachTxt!=null">
+        AND (NAME=#{seachTxt} or TELEPHONE=#{seachTxt})
+        </if>
+        AND MANUEMPNATURE='2'
+    </select>
+</mapper>

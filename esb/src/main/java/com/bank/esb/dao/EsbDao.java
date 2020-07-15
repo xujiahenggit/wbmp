@@ -1,14 +1,13 @@
 package com.bank.esb.dao;
 
-import org.apache.ibatis.annotations.Select;
+import com.bank.esb.dto.EngineerDto;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public interface EsbDao {
 
-    @Select("select * from vendorpersonnel")
-    List<Map<String, Object>> getEngineer(String engineerMId, String seachTxt);
+    List<EngineerDto> getEngineer(@Param("id") String engineerMId, @Param("seachTxt") String seachTxt);
 }

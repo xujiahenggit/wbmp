@@ -295,8 +295,8 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
     private ResponseEngineerDto getEngineer(EngineerVo engineerVo) {
         ResponseEngineerDto responseEngineerDto = new ResponseEngineerDto();
         responseEngineerDto.setRepcode("0");
-        List<Map<String, Object>> engineerDtoList = esbService.getEngineer(engineerVo.getEngineerMId(),engineerVo.getSeachTxt());
-//        responseEngineerDto.setEngineerDtoList(engineerDtoList);
+        List<EngineerDto> engineerDtoList = esbService.getEngineer(engineerVo.getEngineerMId(),engineerVo.getSeachTxt());
+        responseEngineerDto.setEngineerDtoList(engineerDtoList);
         return responseEngineerDto;
     }
     private ResponseEngineerDto getEngineer(EngineerDto engineerDto) {
