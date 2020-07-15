@@ -19,6 +19,6 @@ public class VoucherStockDo implements Serializable {
     @ApiModelProperty("凭证状态")
     private String voucherStatus;
     @ApiModelProperty("凭证代码")
-    private String voucherNo;
+    private String voucherCode;
 
 }

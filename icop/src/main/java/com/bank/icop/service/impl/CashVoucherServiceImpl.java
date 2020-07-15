@@ -31,7 +31,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         parmMap.put("userId", voucherStockDo.getUserId());
         parmMap.put("orgId", getOrgId(voucherStockDo.getOrgId()));
         parmMap.put("voucherStatus", voucherStockDo.getVoucherStatus());
-        parmMap.put("voucherNo", voucherStockDo.getVoucherNo());
+        parmMap.put("voucherNo", voucherStockDo.getVoucherCode());
         Map report = null;
         try {
             report = SoapUtil.sendReport("VTMS0016", parmMap);
