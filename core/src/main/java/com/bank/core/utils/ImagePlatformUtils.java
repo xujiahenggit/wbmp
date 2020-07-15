@@ -190,6 +190,9 @@ public class ImagePlatformUtils {
      * @return
      */
     public boolean update(String contentId, String busiStartDate, File[] listFiles) {
+        if (StringUtils.isBlank(contentId) || StringUtils.isBlank(busiStartDate)) {
+            throw new BizException("影像ID、影像时间参数未传入，影像文件更新接口调用失败！");
+        }
         boolean result = false;
         ClientBatchBean clientBatchBean = new ClientBatchBean();
         clientBatchBean.setUser(userName);
@@ -245,6 +248,9 @@ public class ImagePlatformUtils {
      * @return
      */
     public boolean delete(String contentId, String busiStartDate, List<String> deleteFileNames) {
+        if (StringUtils.isBlank(contentId) || StringUtils.isBlank(busiStartDate)) {
+            throw new BizException("影像ID、影像时间参数未传入，影像文件删除接口调用失败！");
+        }
         boolean result = false;
         ClientBatchBean clientBatchBean = new ClientBatchBean();
         clientBatchBean.setUser(userName);
