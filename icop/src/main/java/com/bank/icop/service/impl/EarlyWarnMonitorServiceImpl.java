@@ -31,7 +31,7 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
     @Override
     public Object getT69Alerts(AlertsDo alertsDo) {
         Map<String, Object> parmMap = new HashMap<>();
-        parmMap.put("alertKey",alertsDo.getAlertKey());
+        parmMap.put("alertkey",alertsDo.getAlertKey());
         parmMap.put("userNo",alertsDo.getUserNo());
         Map report = null;
         try {
