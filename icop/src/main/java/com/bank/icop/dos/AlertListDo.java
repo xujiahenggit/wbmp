@@ -27,5 +27,10 @@ public class AlertListDo implements Serializable {
     private String fcettypecode;
     @ApiModelProperty("抽检状态")
     private String cjstatus;
+    @ApiModelProperty("条数")
+    private String limit;
+    @ApiModelProperty("取数")
+    private String offset;
+
 
 }

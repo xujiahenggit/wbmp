@@ -337,6 +337,8 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         parmMap.put("dealflag",alertListDo.getDealflag());
         parmMap.put("fcettypecode",alertListDo.getFcettypecode());
         parmMap.put("cjstatus",alertListDo.getCjstatus());
+        parmMap.put("limit",alertListDo.getLimit());
+        parmMap.put("offset",alertListDo.getOffset());
         Map report = null;
         try {
             report = SoapUtil.sendReport("FXYJ10022","812",parmMap);
