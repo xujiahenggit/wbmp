@@ -41,27 +41,21 @@ public class CashVoucherServiceImpl implements CashVoucherService {
         List<VoucherStockVo> list = new ArrayList<>();
         Object objectData = report.get("data");
         if (isObjectIsNotEmpty(objectData)) {
-            Map<String, Object> dataMap = (Map<String, Object>) report.get("data");
-            Object data = dataMap.get("data");
-            if (data != null) {//多条数据
-                List<Map<String, Object>> dataList = (List<Map<String, Object>>) data;
-                if (CollectionUtil.isNotEmpty(dataList)) {
-                    for (int i = 0; i < dataList.size(); i++) {
-                        VoucherStockVo vo = new VoucherStockVo();
-                        vo.setNum((String) dataList.get(i).get("num"));
-                        vo.setVoucherName((String) dataList.get(i).get("voucherName"));
-                        vo.setVoucherStatus((String) dataList.get(i).get("voucherStatus"));
-                        vo.setVoucherNo((String) dataList.get(i).get("voucherNo"));
-                        list.add(vo);
-                    }
-                }
+            List<Map<String, Object>> dataList = new ArrayList<>();
+            if (objectData instanceof HashMap) {
+                dataList.add((Map<String, Object>) report.get("data"));
             } else {
-                VoucherStockVo vo = new VoucherStockVo();
-                vo.setNum((String) report.get("num"));
-                vo.setVoucherName((String) report.get("voucherName"));
-                vo.setVoucherStatus((String) report.get("voucherStatus"));
-                vo.setVoucherNo((String) report.get("voucherNo"));
-                list.add(vo);
+                dataList = (List<Map<String, Object>>) report.get("data");
+            }
+            if (CollectionUtil.isNotEmpty(dataList)) {
+                for (int i = 0; i < dataList.size(); i++) {
+                    VoucherStockVo vo = new VoucherStockVo();
+                    vo.setNum((String) dataList.get(i).get("num"));
+                    vo.setVoucherName((String) dataList.get(i).get("voucherName"));
+                    vo.setVoucherStatus((String) dataList.get(i).get("voucherStatus"));
+                    vo.setVoucherNo((String) dataList.get(i).get("voucherNo"));
+                    list.add(vo);
+                }
             }
         }
         return list;
@@ -589,7 +583,7 @@ public class CashVoucherServiceImpl implements CashVoucherService {
      */
     @Override
     public OrderVoucherDetailResponseVo getOrderVoucherDetailInfo(OrderVoucherDetailVo orderVoucherDetailVo) {
-        log.info("接受到的参数："+orderVoucherDetailVo.toString());
+        log.info("接受到的参数：" + orderVoucherDetailVo.toString());
         OrderVoucherDetailResponseVo orderVoucherDetailResponseVo = new OrderVoucherDetailResponseVo();
         HashMap<String, Object> parmMap = new HashMap<>();
         parmMap.put("userId", orderVoucherDetailVo.getUserId());
@@ -618,9 +612,9 @@ public class CashVoucherServiceImpl implements CashVoucherService {
             orderVoucherDetailResponseVo.setSpec((String) report.get("spec"));
             orderVoucherDetailResponseVo.setRemark((String) report.get("remark"));
             orderVoucherDetailResponseVo.setEnterNum((String) report.get("enterNum"));
-            Object objectData=report.get("data");
+            Object objectData = report.get("data");
             List<Map<String, Object>> dataList = new ArrayList<>();
-            if(isObjectIsNotEmpty(objectData)){
+            if (isObjectIsNotEmpty(objectData)) {
                 if (objectData instanceof HashMap) {
                     dataList.add((Map<String, Object>) report.get("data"));
                 } else {
