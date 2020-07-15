@@ -424,6 +424,7 @@
                 '回单打印机'
                 WHEN 7 THEN
                  '智能现金柜'
+                else '未知设备'
                 END AS deviceName,
                  term_no AS termNo,
                CASE device_run_status

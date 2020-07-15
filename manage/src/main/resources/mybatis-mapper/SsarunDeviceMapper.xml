@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.SsarunDeviceDao">
+
+
+    <!--查询设备列表-->
+    <select id="ssarunDeviceList" resultType="com.bank.manage.vo.SsarunDeviceVo">
+             select
+                    dev.id,
+                    dev.idevtype AS deviceName,
+                    term.strtermnum AS termNo,
+                    dev.strdevmodel,
+                    dev.strdevmanu,
+                    term.organization
+            from device dev
+               left join term term
+            on term.deviceid = dev.id
+           where
+                term.organization = #{model.organization}
+    </select>
+
+
+</mapper>
