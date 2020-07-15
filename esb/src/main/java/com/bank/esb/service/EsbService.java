@@ -1,5 +1,6 @@
 package com.bank.esb.service;
 
+import com.bank.esb.dto.CSInfoDto;
 import com.bank.esb.dto.EngineerDto;
 import com.bank.esb.dto.ManagerDto;
 
@@ -13,4 +14,6 @@ public interface EsbService {
     List<ManagerDto> getManager(Object deviceId);
 
     Map<String, Object> getDeviceInfo(String toString);
+
+    List<CSInfoDto> getCSInfo();
 }

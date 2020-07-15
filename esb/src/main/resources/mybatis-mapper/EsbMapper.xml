@@ -41,4 +41,8 @@
             WHERE c.STRTERMNUM= #{id}
             ) b
     </select>
+
+    <select id="getCSInfo" resultType="com.bank.esb.dto.CSInfoDto">
+        SELECT ID,DEVICEMANU FROM vendorcontract
+    </select>
 </mapper>

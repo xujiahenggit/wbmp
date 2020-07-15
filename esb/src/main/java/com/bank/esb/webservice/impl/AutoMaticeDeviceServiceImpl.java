@@ -2,6 +2,7 @@ package com.bank.esb.webservice.impl;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.UUID;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.bank.core.entity.BizException;
@@ -84,11 +85,11 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                 InspectionSheetsVo inspectionSheet = JSON.parseObject(JSON.toJSONString(body), InspectionSheetsVo.class);
                 returnVO = JSON.parseObject(JSON.toJSONString(getInspectionSheets(inspectionSheet)), Map.class);
                 break;
-            case "WBMP10007"://工程师列表查询接口
+            case "WBMP10007"://工程师列表查询接口    1
                 EngineerVo engineerVo = JSON.parseObject(JSON.toJSONString(body), EngineerVo.class);
                 returnVO = JSON.parseObject(JSON.toJSONString(getEngineer(engineerVo)), Map.class);
                 break;
-            case "WBMP10008":
+            case "WBMP10008"://工单分派查询
                 EngineerDto engineerDto = JSON.parseObject(JSON.toJSONString(body), EngineerDto.class);
                 returnVO = JSON.parseObject(JSON.toJSONString(getEngineer(engineerDto)), Map.class);
                 break;
@@ -96,29 +97,27 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                 StateChangesVo changeStatus = JSON.parseObject(JSON.toJSONString(body), StateChangesVo.class);
                 returnVO = JSON.parseObject(JSON.toJSONString(stateChanges(changeStatus)), Map.class);
                 break;
-//            case "WBMP10010":
-//                InspectionSheetsVo inspectionSheet = JSON.parseObject(JSON.toJSONString(body), InspectionSheetsVo.class);
-//                returnVO = JSON.parseObject(JSON.toJSONString(getInspectionSheets(inspectionSheet)), Map.class);
-//                break;
+            case "WBMP10010"://工单提交接口
+                returnVO = JSON.parseObject(JSON.toJSONString(WBMP10010(body)), Map.class);
+                break;
             case "WBMP10011"://投诉工单回复接口
                 RepairOrderBVo repairOrderBVo = JSON.parseObject(JSON.toJSONString(body), RepairOrderBVo.class);
                 returnVO = JSON.parseObject(JSON.toJSONString(repairOrder(repairOrderBVo)), Map.class);
                 break;
-//            case "WBMP10012":
-//                InspectionSheetsVo inspectionSheet = JSON.parseObject(JSON.toJSONString(body), InspectionSheetsVo.class);
-//                returnVO = JSON.parseObject(JSON.toJSONString(getInspectionSheets(inspectionSheet)), Map.class);
-//                break;
-            case "WBMP10013"://设备详细信息查询接口
-                returnVO = JSON.parseObject(JSON.toJSONString(getDeviceInfo(body.get("deviceId"))), Map.class);
+            case "WBMP10012"://设备厂商列表查询接口   0
+                returnVO = JSON.parseObject(JSON.toJSONString(WBMP10012()), Map.class);
                 break;
-//            case "WBMP10014":
-//                InspectionSheetsVo inspectionSheet = JSON.parseObject(JSON.toJSONString(body), InspectionSheetsVo.class);
-//                returnVO = JSON.parseObject(JSON.toJSONString(getInspectionSheets(inspectionSheet)), Map.class);
-//                break;
-//            case "WBMP10015":
-//                InspectionSheetsVo inspectionSheet = JSON.parseObject(JSON.toJSONString(body), InspectionSheetsVo.class);
-//                returnVO = JSON.parseObject(JSON.toJSONString(getInspectionSheets(inspectionSheet)), Map.class);
-//                break;
+            case "WBMP10013"://设备详细信息查询接口   1
+                returnVO = JSON.parseObject(JSON.toJSONString(WBMP10013(body.get("deviceId"))), Map.class);
+                break;
+            case "WBMP10014":
+                TransferInformationVo transferInformationVo = JSON.parseObject(JSON.toJSONString(body), TransferInformationVo.class);
+                returnVO = JSON.parseObject(JSON.toJSONString(getTransferInformation(transferInformationVo)), Map.class);
+                break;
+            case "WBMP10015"://服务信息查询接口
+                TransferInformationVo orderId = JSON.parseObject(JSON.toJSONString(body), TransferInformationVo.class);
+                returnVO = JSON.parseObject(JSON.toJSONString(WBMP10015(orderId)), Map.class);
+                break;
             default:
                 break;
         }
@@ -144,10 +143,39 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         return "<Service>" + ESBUtil.convert(response) + "</Service>";
     }
 
-    private Object getDeviceInfo(Object deviceId) {
-        Map<String, Object> deviceInfo = esbService.getDeviceInfo(deviceId.toString());
-        deviceInfo.put("serverList",esbService.getManager(deviceId));
-        return deviceInfo;
+    private Object WBMP10010(Map<String, Object> body) {
+        Map<Object, Object> map = MapUtil.newHashMap();
+        //工单保存
+
+
+
+
+        map.put("repcode","1");
+        return map;
+    }
+
+    private Object WBMP10012() {
+        Map<Object, Object> map = MapUtil.newHashMap();
+        map.put("repcode","1");
+        map.put("List",esbService.getCSInfo());
+        return map;
+
+    }
+
+    private ResponServiceInformationDto WBMP10015(TransferInformationVo transferInformationVo) {
+        String orderId = transferInformationVo.getOrderId();
+        ResponServiceInformationDto responseDto = new ResponServiceInformationDto();
+        responseDto.setRepcode("1");
+//        responseDto.setServiceInformationDtoList();
+        return responseDto;
+    }
+
+    private Object WBMP10013(Object deviceId) {
+        Map<Object, Object> map = MapUtil.newHashMap();
+        map.put("repcode","1");
+        map.put("serverList",esbService.getManager(deviceId));
+        map.put("List",esbService.getDeviceInfo(deviceId.toString()));
+        return map;
     }
 
 
@@ -301,7 +329,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
     }
     private ResponseEngineerDto getEngineer(EngineerDto engineerDto) {
         ResponseEngineerDto responseEngineerDto = new ResponseEngineerDto();
-        responseEngineerDto.setRepcode("0");
+        responseEngineerDto.setRepcode("1");
         String engineerId = engineerDto.getEngineerId();
         String orderId = engineerDto.getOrderId();
         //工单分派
@@ -319,11 +347,6 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         return responseEngineerDto;
     }
 
-    private RepairOrderDispatchDto getRepairOrderDispatch(RepairOrderDispatchVo repairOrderDispatchVo) {
-        RepairOrderDispatchDto repairOrderDispatchDto = new RepairOrderDispatchDto();
-        return repairOrderDispatchDto;
-    }
-
     private StateChangesDto stateChanges(StateChangesVo stateChangesVo) {
         StateChangesDto stateChangesDto = new StateChangesDto();
         stateChangesDto.setRepcode("0");
@@ -335,12 +358,6 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                 , engineerId, "工程师到达现场处理状态变更", null,null,null
         ));
         return stateChangesDto;
-    }
-
-    private OrderSubmissionDto orderSubmission(OrderSubmissionVo orderSubmissionVo) {
-        OrderSubmissionDto orderSubmissionDto = new OrderSubmissionDto();
-        orderSubmissionDto.setRepcode("0");
-        return orderSubmissionDto;
     }
 
     private RepairOrderBDto repairOrder(RepairOrderBVo repairOrderBVo) {
@@ -361,55 +378,10 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         return repairOrderBDto;
     }
 
-    private ResponseEquipmentDetailDto getEquipmentDetail(EquipmentDetailVo equipmentDetailVo) {
-        ResponseEquipmentDetailDto responseEquipmentDetailDto = new ResponseEquipmentDetailDto();
-        responseEquipmentDetailDto.setRepcode("0");
-        List<EquipmentDetailDto> equipmentDetailDtoList = new ArrayList<>();
-        for (int i = 0; i < 2; i++) {
-            EquipmentDetailDto engineerDto = new EquipmentDetailDto();
-            engineerDto.setAddress("湖南省" + i);
-            engineerDto.setDeviceId("1" + i);
-            engineerDto.setDeviceModel("asda");
-            engineerDto.setDeviceVendor("asda");
-            engineerDto.setOrgId("10010" + i);
-            engineerDto.setInstallDate(new Date());
-            engineerDto.setOrgName("测试" + i);
-            List<ServiceSupervisorDto> serviceSupervisorDto = new ArrayList<>();
-            ServiceSupervisorDto supervisorDto = new ServiceSupervisorDto();
-            supervisorDto.setServerId("1" + i);
-            supervisorDto.setServerName("擦拭" + i);
-            serviceSupervisorDto.add(supervisorDto);
-            engineerDto.setServiceSupervisorDtoList(serviceSupervisorDto);
-            equipmentDetailDtoList.add(engineerDto);
-        }
-        responseEquipmentDetailDto.setEquipmentDetailDtoList(equipmentDetailDtoList);
-        return responseEquipmentDetailDto;
-    }
-
     private ResonseTransferInformationDto getTransferInformation(TransferInformationVo transferInformationVo) {
         ResonseTransferInformationDto resonseTransferInformationDto = new ResonseTransferInformationDto();
-        return resonseTransferInformationDto;
-    }
 
-    private ResponServiceInformationDto getServiceInformation(ServiceInformationVo serviceInformationVo) {
-        ResponServiceInformationDto responServiceInformationDto = new ResponServiceInformationDto();
-        responServiceInformationDto.setRepcode("0");
-        List<ServiceInformationDto> list = new ArrayList<>();
-        for (int i = 0; i < 2; i++) {
-            ServiceInformationDto serviceInformationDto = new ServiceInformationDto();
-            serviceInformationDto.setEngineerId("1" + i);
-            serviceInformationDto.setEngineerName("测试" + i);
-            serviceInformationDto.setEngineerPhone("123456789632");
-            serviceInformationDto.setFinishTime(new Date());
-            serviceInformationDto.setProcessMode("asda");
-            serviceInformationDto.setServerId("1" + i);
-            serviceInformationDto.setServerName("测试" + i);
-            serviceInformationDto.setServerPhone("12365246985");
-            serviceInformationDto.setServiceProvider("asdsssss");
-            list.add(serviceInformationDto);
-        }
-        responServiceInformationDto.setServiceInformationDtoList(list);
-        return responServiceInformationDto;
+        return resonseTransferInformationDto;
     }
 
 }

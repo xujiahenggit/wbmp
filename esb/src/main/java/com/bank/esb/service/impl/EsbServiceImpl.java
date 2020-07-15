@@ -3,6 +3,7 @@ package com.bank.esb.service.impl;
 import com.bank.core.config.DataSource;
 import com.bank.core.config.DynamicDataSourceSwitcher;
 import com.bank.esb.dao.EsbDao;
+import com.bank.esb.dto.CSInfoDto;
 import com.bank.esb.dto.EngineerDto;
 import com.bank.esb.dto.ManagerDto;
 import com.bank.esb.service.EsbService;
@@ -35,6 +36,12 @@ public class EsbServiceImpl implements EsbService {
     @DataSource(DynamicDataSourceSwitcher.esb_dev)
     public Map<String, Object> getDeviceInfo(String deviceId) {
         return esbDao.getDeviceInfo(deviceId);
+    }
+
+    @Override
+    @DataSource(DynamicDataSourceSwitcher.esb_dev)
+    public List<CSInfoDto> getCSInfo() {
+        return esbDao.getCSInfo();
     }
 
 }

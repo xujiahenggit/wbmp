@@ -1,5 +1,6 @@
 package com.bank.esb.dao;
 
+import com.bank.esb.dto.CSInfoDto;
 import com.bank.esb.dto.EngineerDto;
 import com.bank.esb.dto.ManagerDto;
 import org.apache.ibatis.annotations.Param;
@@ -13,9 +14,9 @@ public interface EsbDao {
 
     List<EngineerDto> getEngineer(@Param("id") String engineerMId, @Param("seachTxt") String seachTxt);
 
-    String getCSName(@Param("id") String termid);
-
     List<ManagerDto> getCSMaster(@Param("id")String deviceid);
 
     Map<String, Object> getDeviceInfo(@Param("id")String deviceId);
+
+    List<CSInfoDto> getCSInfo();
 }
