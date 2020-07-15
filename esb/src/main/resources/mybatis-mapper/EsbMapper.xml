@@ -12,4 +12,33 @@
         </if>
         AND MANUEMPNATURE='2'
     </select>
+
+    <select id="getCSMaster" resultType="com.bank.esb.dto.ManagerDto">
+            SELECT ID serverId,
+            NAME serverName
+            FROM vendorpersonnel
+            WHERE
+            DEVICEMANU = (SELECT b.STRDEVMANU FROM ssarun.term a
+                    LEFT JOIN ssarun.device b ON a.DEVICEID=b.ID
+                    WHERE a.STRTERMNUM = #{id})
+            AND MANUEMPNATURE='1'
+    </select>
+
+
+    <select id="getDeviceInfo" resultType="java.util.Map">
+         SELECT
+            STRTERMNUM deviceId,
+            STRDEVMODEL deviceModel,
+            STRORGNO orgId,
+            STRSSBNAME orgName,
+            STRTERMADDR address,
+            firstinstalldate installDate,
+            STRDEVMANU deviceVendor
+            FROM (
+            SELECT d.*,c.STRORGNO,c.STRTERMNUM,c.STRTERMADDR,e.STRSSBNAME FROM ssarun.term c
+            left JOIN ssarun.device d on c.DEVICEID = d.ID
+            left JOIN selfsvcbank e on c.STRSSBNUM=e.STRSSBNUM
+            WHERE c.STRTERMNUM= #{id}
+            ) b
+    </select>
 </mapper>
