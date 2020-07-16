@@ -2,8 +2,7 @@ package com.bank.manage.service;
 
 
 import com.bank.manage.dto.KioskDto;
-import com.bank.manage.vo.SsaViewTermStatusVo;
-import com.bank.manage.vo.SsarunDeviceVo;
+import com.bank.manage.vo.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.ibatis.annotations.Param;
 
@@ -25,4 +24,25 @@ public interface SsarunDeviceService {
      * @return
      */
     List<SsaViewTermStatusVo>termStatusList(@Param("list") List<String> list);
+
+    /**
+     * 根据id查询设备信息
+     * @param id
+     * @return
+     */
+    DeviceDetailsVo getDeviceDetailsById(String id);
+
+    /**
+     * 获取终端状态
+     * @param terminalCode
+     * @return
+     */
+    TerminalDetailsVo getTerminalDetailsById(String terminalCode);
+
+    /**
+     * 厂商信息
+     * @param deviceVendor
+     * @return
+     */
+    DeviceVendorVo getDeviceVendorByCode(String deviceVendor);
 }

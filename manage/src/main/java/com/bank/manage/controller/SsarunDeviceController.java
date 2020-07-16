@@ -1,21 +1,20 @@
 package com.bank.manage.controller;
 
 import com.bank.auth.base.BaseController;
+import com.bank.core.entity.BizException;
 import com.bank.manage.dto.KioskDto;
 import com.bank.manage.service.SsarunDeviceService;
-import com.bank.manage.vo.SsaViewTermStatusVo;
-import com.bank.manage.vo.SsarunDeviceVo;
+import com.bank.manage.vo.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 设备信息
@@ -58,5 +57,27 @@ public class SsarunDeviceController extends BaseController {
         return page;
     }
 
+    @ApiOperation(value ="自助设备详情查询")
+    @GetMapping("/getKioskById/{code}")
+    public Map getKioskById(@PathVariable String code){
+        if("".equals(code) || null == code ){
+            throw new BizException("终端编号不能为空");
+        }
+        //获取设备信息
+        DeviceDetailsVo deviceDetailsVo = ssarunDeviceService.getDeviceDetailsById(code);
+        TerminalDetailsVo terminalDetailsVo = null;
+        DeviceVendorVo deviceVendorVo = null;
+        //获取终端状态
+        if(deviceDetailsVo != null){
+             terminalDetailsVo = ssarunDeviceService.getTerminalDetailsById(deviceDetailsVo.getTerminalCode());
+            //服务厂商
+            deviceVendorVo = ssarunDeviceService.getDeviceVendorByCode(deviceDetailsVo.getDeviceVendor());
+        }
+            Map map =new HashMap();
+            map.put("deviceDetailsVo",deviceDetailsVo);
+            map.put("terminalDetailsVo",terminalDetailsVo);
+            map.put("deviceVendorVo",deviceVendorVo);
+            return map;
+    }
 
 }

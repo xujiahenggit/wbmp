@@ -5,8 +5,7 @@ import com.bank.core.config.DynamicDataSourceSwitcher;
 import com.bank.manage.dao.SsarunDeviceDao;
 import com.bank.manage.dto.KioskDto;
 import com.bank.manage.service.SsarunDeviceService;
-import com.bank.manage.vo.SsaViewTermStatusVo;
-import com.bank.manage.vo.SsarunDeviceVo;
+import com.bank.manage.vo.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.stereotype.Service;
@@ -31,5 +30,23 @@ public class SsarunDeviceServiceImpl implements SsarunDeviceService {
     @DataSource(DynamicDataSourceSwitcher.esb_mgt)
     public List<SsaViewTermStatusVo> termStatusList(List<String> list) {
         return ssarunDeviceDao.termStatusList(list);
+    }
+
+    @Override
+    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
+    public DeviceDetailsVo getDeviceDetailsById(String id) {
+        return ssarunDeviceDao.getDeviceDetailsById(id);
+    }
+
+    @Override
+    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
+    public TerminalDetailsVo getTerminalDetailsById(String terminalCode) {
+        return ssarunDeviceDao.getTerminalDetailsById(terminalCode);
+    }
+
+    @Override
+    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
+    public DeviceVendorVo getDeviceVendorByCode(String deviceVendor) {
+        return ssarunDeviceDao.getDeviceVendorByCode(deviceVendor);
     }
 }
