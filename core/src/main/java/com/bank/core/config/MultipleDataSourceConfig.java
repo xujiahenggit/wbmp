@@ -27,26 +27,8 @@ public class MultipleDataSourceConfig {
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "spring.datasource.esb.esbmgt")
+    @ConfigurationProperties(prefix = "spring.datasource.esbmgt")
     public DataSource esb() {
-        DataSource build = DruidDataSourceBuilder.create().build();
-        return build;
-    }
-    @Bean
-    @ConfigurationProperties(prefix = "spring.datasource.esb.dev")
-    public DataSource esbDev() {
-        DataSource build = DruidDataSourceBuilder.create().build();
-        return build;
-    }
-    @Bean
-    @ConfigurationProperties(prefix = "spring.datasource.esb.esbrun")
-    public DataSource esbRun() {
-        DataSource build = DruidDataSourceBuilder.create().build();
-        return build;
-    }
-    @Bean
-    @ConfigurationProperties(prefix = "spring.datasource.esb.esbview")
-    public DataSource esbView() {
         DataSource build = DruidDataSourceBuilder.create().build();
         return build;
     }
@@ -66,9 +48,6 @@ public class MultipleDataSourceConfig {
         Map<Object, Object> map = new HashMap<>();
         map.put(DynamicDataSourceSwitcher.Mater, master());
         map.put(DynamicDataSourceSwitcher.esb_mgt, esb());
-        map.put(DynamicDataSourceSwitcher.esb_dev, esbDev());
-        map.put(DynamicDataSourceSwitcher.esb_run, esbRun());
-        map.put(DynamicDataSourceSwitcher.esb_view, esbView());
         dynamicDataSource.setTargetDataSources(map);
         return dynamicDataSource;
     }
