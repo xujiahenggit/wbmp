@@ -368,7 +368,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         WorkOrderDO orderDO = workOrderService.getOne(new LambdaQueryWrapper<WorkOrderDO>().eq(WorkOrderDO::getWorkOrderCode, orderNo));
         if (orderDO != null) {
             orderDO.setEngineer(engineerId);
-            orderDO.setSuggestion(repairOrderBVo.getOrderDescribe());
+            orderDO.setSuggestion(repairOrderBVo.getOrderDescribe());//记录厂商回复意见
             orderDO.setWorkOrderStatus("5");
             workOrderService.saveOrUpdate(orderDO);
             repairOrderBDto.setRepcode("0");

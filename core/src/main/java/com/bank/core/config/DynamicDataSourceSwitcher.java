@@ -13,7 +13,7 @@ public class DynamicDataSourceSwitcher {
 
 
     public static final String Mater = "master";
-    public static final String Slave = "esb";
+    public static final String esb_mgt = "esb_mgt";
     public static final String esb_dev = "esb_dev";
     public static final String esb_run = "esb_run";
     public static final String esb_view = "esb_view";

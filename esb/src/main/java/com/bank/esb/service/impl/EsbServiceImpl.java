@@ -21,25 +21,25 @@ public class EsbServiceImpl implements EsbService {
     EsbDao esbDao;
 
     @Override
-    @DataSource(DynamicDataSourceSwitcher.esb_dev)
+    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
     public List<EngineerDto> getEngineer(String engineerMId, String seachTxt) {
         return esbDao.getEngineer(engineerMId,seachTxt);
     }
 
     @Override
-    @DataSource(DynamicDataSourceSwitcher.esb_dev)
+    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
     public List<ManagerDto> getManager(Object deviceId) {
         return esbDao.getCSMaster(deviceId.toString());
     }
 
     @Override
-    @DataSource(DynamicDataSourceSwitcher.esb_dev)
+    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
     public Map<String, Object> getDeviceInfo(String deviceId) {
         return esbDao.getDeviceInfo(deviceId);
     }
 
     @Override
-    @DataSource(DynamicDataSourceSwitcher.esb_dev)
+    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
     public List<CSInfoDto> getCSInfo() {
         return esbDao.getCSInfo();
     }
