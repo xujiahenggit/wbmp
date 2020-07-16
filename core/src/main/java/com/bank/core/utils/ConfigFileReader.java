@@ -3,6 +3,7 @@ package com.bank.core.utils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import cscb.password.ThreeDes;
 import lombok.Data;
 
 /**
@@ -45,6 +46,12 @@ public class ConfigFileReader {
     @Value("${DAT.FTP_PASS_WORD}")
     private String FTP_PASSWORD;
 
+    //行里进行密码加密改造
+    public String getFTP_PASSWORD() {
+        //解密
+        return ThreeDes.dePassword(this.FTP_PASSWORD);
+    }
+    
     /**
      * FTP 人力资源文件路径
      */
