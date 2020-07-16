@@ -17,21 +17,18 @@ import java.util.List;
 @Service
 public class SsarunDeviceServiceImpl implements SsarunDeviceService {
 
-
     @Resource
     SsarunDeviceDao ssarunDeviceDao;
 
-
-
     @Override
-    @DataSource(DynamicDataSourceSwitcher.esb_run)
+    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
     public IPage<SsarunDeviceVo> ssarunDeviceList(KioskDto kioskDto) {
         Page<SsarunDeviceVo> page = new Page<>(kioskDto.getPageIndex(), kioskDto.getPageSize());
         return ssarunDeviceDao.ssarunDeviceList(page,kioskDto);
     }
 
     @Override
-    @DataSource(DynamicDataSourceSwitcher.esb_view)
+    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
     public List<SsaViewTermStatusVo> termStatusList(List<String> list) {
         return ssarunDeviceDao.termStatusList(list);
     }

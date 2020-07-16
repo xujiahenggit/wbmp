@@ -20,8 +20,8 @@
                     dev.strdevmodel,
                     dev.strdevmanu,
                     term.organization
-            from device dev
-               left join term term
+            from ssarun.device dev
+               left join ssarun.term term
             on term.deviceid = dev.id
            where
                 term.organization = #{model.organization}
@@ -45,7 +45,7 @@
             ,ihdwstatus, dtsvcstatusbegin,iagentstatus,vmcardreader,vmrfcardreader
             vmpinpad ,vmjournalprinter ,vmcashdispenser ,vmcashacceptor,vmreceiptprinter,vmstatementprinter,
             vmpassbookprinter,cashacceptorinfo,cashdispenserinfo,dccarddispenser
-            from termstatus
+            from ssaview.termstatus
            where
                 STRTERMNUM in
             <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
