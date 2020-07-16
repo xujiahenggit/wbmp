@@ -79,17 +79,11 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
 
     @Override
     public IPage<LargerScreenVo> getLargerScreen(LargerScreenDto largerScreenDto) {
-        Page<LargerScreenVo> page = new Page<>(largerScreenDto.getPageIndex(), largerScreenDto.getPageSize());
-        if (StringUtils.isNotBlank(largerScreenDto.getSort())) {
-            if (StringUtils.equalsIgnoreCase("DESC", largerScreenDto.getOrder())) {
-                page.setDesc(largerScreenDto.getSort());
-            }
-            else {
-                page.setAsc(largerScreenDto.getSort());
-            }
+        if(largerScreenDto.getTerminalCode() ==null || "".equals(largerScreenDto.getTerminalCode()) ){
+            largerScreenDto.setTerminalCode(null);
         }
-
-        return repairDao.getLargerScreen(page,largerScreenDto.getBranchCode(),largerScreenDto.getTerminalCode(),largerScreenDto.getSelfBankCode());
+        Page<LargerScreenVo> page = new Page<>(largerScreenDto.getPageIndex(), largerScreenDto.getPageSize());
+        return repairDao.getLargerScreen(page,largerScreenDto.getBranchCode(),largerScreenDto.getTerminalCode());
     }
 
     @Override
