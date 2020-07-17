@@ -3,6 +3,9 @@ package com.bank.esb.service.impl;
 import com.bank.core.config.DataSource;
 import com.bank.core.config.DynamicDataSourceSwitcher;
 import com.bank.esb.dao.EsbDao;
+import com.bank.esb.dos.DatBranchDO;
+import com.bank.esb.dos.DatSelfsvcbankDO;
+import com.bank.esb.dos.DatSubbranchDO;
 import com.bank.esb.dto.CSInfoDto;
 import com.bank.esb.dto.EngineerDto;
 import com.bank.esb.dto.ManagerDto;
@@ -56,6 +59,24 @@ public class EsbServiceImpl implements EsbService {
     @DataSource(DynamicDataSourceSwitcher.esb_mgt)
     public Map<String, String> getEngineerInfo(String engineerId) {
         return esbDao.getEngineerInfo(engineerId);
+    }
+
+    @Override
+    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
+    public List<DatBranchDO> getBranch(String orgId) {
+        return esbDao.getBranch(orgId);
+    }
+
+    @Override
+    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
+    public List<DatSubbranchDO> getSubBranch(String orgId) {
+        return esbDao.getSubBranch(orgId);
+    }
+
+    @Override
+    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
+    public List<DatSelfsvcbankDO> getSelfBranch(String orgId) {
+        return esbDao.getSelfBranch(orgId);
     }
 
 }

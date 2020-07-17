@@ -91,4 +91,16 @@
         LEFT JOIN ssarun.domaindict b ON a.DEVICEMANU= b.STRNAME
         where a.ID = #{engineerId}
     </select>
+
+    <select id="getBranch" resultType="com.bank.esb.dos.DatBranchDO">
+        select * from  branch where STRBANKNUM=#{orgid}
+    </select>
+
+    <select id="getSubBranch" resultType="com.bank.esb.dos.DatSubbranchDO">
+        select * from  subbranch where STRBRANCHNUM=#{orgid}
+    </select>
+
+    <select id="getSelfBranch" resultType="com.bank.esb.dos.DatSelfsvcbankDO">
+        select * from  selfsvcbank where STRSUBBRANCHNUM=#{orgid}
+    </select>
 </mapper>
