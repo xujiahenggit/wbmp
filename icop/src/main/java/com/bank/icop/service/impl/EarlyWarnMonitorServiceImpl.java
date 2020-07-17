@@ -608,4 +608,20 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         }
         return report;
     }
+
+    @Override
+    public Object returnCounterNo(String userNo) {
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("userNo",userNo);
+        Map report = null;
+        try {
+            report = SoapUtil.sendReport("FXYJ10030","812",parmMap);
+        } catch (Exception e) {
+            throw new BizException("柜员号接口！"+e.getMessage());
+        }
+        if(!"0".equals((String)report.get("status"))){
+            throw new BizException("执行失败,状态码:"+(String)report.get("status"));
+        }
+        return report;
+    }
 }

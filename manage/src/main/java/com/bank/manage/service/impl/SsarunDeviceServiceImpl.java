@@ -55,4 +55,16 @@ public class SsarunDeviceServiceImpl implements SsarunDeviceService {
     public List<SsarunDeviceModelVo> getDeviceModelList(String deviceId) {
         return ssarunDeviceDao.getDeviceModelList(deviceId);
     }
+
+    @Override
+    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
+    public List<ReaderStatusList> getReaderStatusListById(String terminalCode) {
+        return ssarunDeviceDao.getReaderStatusListById(terminalCode);
+    }
+
+    @Override
+    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
+    public List<PrinterListVo> getPrinterListById(String terminalCode) {
+        return ssarunDeviceDao.getPrinterListById(terminalCode);
+    }
 }

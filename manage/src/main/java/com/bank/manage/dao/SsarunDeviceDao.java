@@ -51,5 +51,12 @@ public interface SsarunDeviceDao {
      */
     List<SsarunDeviceModelVo> getDeviceModelList(@Param("deviceId") String deviceId);
 
+    /**
+     * 读卡器
+     * @param terminalCode
+     * @return
+     */
+    List<ReaderStatusList> getReaderStatusListById(@Param("terminalCode") String terminalCode);
 
+    List<PrinterListVo> getPrinterListById(@Param("terminalCode") String terminalCode);
 }

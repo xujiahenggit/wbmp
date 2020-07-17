@@ -52,4 +52,8 @@ public interface SsarunDeviceService {
      * @return
      */
     List<SsarunDeviceModelVo> getDeviceModelList(@Param("deviceId") String deviceId);
+
+    List<ReaderStatusList> getReaderStatusListById(String terminalCode);
+
+    List<PrinterListVo> getPrinterListById(String terminalCode);
 }

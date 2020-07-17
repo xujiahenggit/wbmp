@@ -65,18 +65,28 @@ public class SsarunDeviceController extends BaseController {
         }
         //获取设备信息
         DeviceDetailsVo deviceDetailsVo = ssarunDeviceService.getDeviceDetailsById(code);
-        TerminalDetailsVo terminalDetailsVo = null;
-        DeviceVendorVo deviceVendorVo = null;
         //获取终端状态
         if(deviceDetailsVo != null){
-             terminalDetailsVo = ssarunDeviceService.getTerminalDetailsById(deviceDetailsVo.getTerminalCode());
+
+            TerminalDetailsVo terminalDetailsVo = ssarunDeviceService.getTerminalDetailsById(deviceDetailsVo.getTerminalCode());
+              //1.获取读卡器
+            List<ReaderStatusList> readerStatusList =ssarunDeviceService.getReaderStatusListById(deviceDetailsVo.getTerminalCode());
+            terminalDetailsVo.setReaderStatusListList(readerStatusList);
+
+              //2.获取打印机
+            List<PrinterListVo> printerListVoList = ssarunDeviceService.getPrinterListById(deviceDetailsVo.getTerminalCode());
+            terminalDetailsVo.setPrinterListVoList(printerListVoList);
+
+            deviceDetailsVo.setTerminalDetailsVo(terminalDetailsVo);
             //服务厂商
-            deviceVendorVo = ssarunDeviceService.getDeviceVendorByCode(deviceDetailsVo.getDeviceVendor());
+            DeviceVendorVo deviceVendorVo = ssarunDeviceService.getDeviceVendorByCode(deviceDetailsVo.getDeviceVendor());
+            deviceDetailsVo.setDeviceVendorVo(deviceVendorVo);
+
+
         }
-            Map map =new HashMap();
+
+            Map<String,Object> map =new HashMap<String,Object>();
             map.put("deviceDetailsVo",deviceDetailsVo);
-            map.put("terminalDetailsVo",terminalDetailsVo);
-            map.put("deviceVendorVo",deviceVendorVo);
             return map;
     }
 
