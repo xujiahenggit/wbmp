@@ -49,4 +49,10 @@ public class SsarunDeviceServiceImpl implements SsarunDeviceService {
     public DeviceVendorVo getDeviceVendorByCode(String deviceVendor) {
         return ssarunDeviceDao.getDeviceVendorByCode(deviceVendor);
     }
+
+    @Override
+    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
+    public List<SsarunDeviceModelVo> getDeviceModelList(String deviceId) {
+        return ssarunDeviceDao.getDeviceModelList(deviceId);
+    }
 }

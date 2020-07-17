@@ -80,4 +80,15 @@ public class SsarunDeviceController extends BaseController {
             return map;
     }
 
+    @ApiOperation(value ="自助设备模块查询")
+    @GetMapping("/getDeviceMouldByDeviceId/{deviceId}")
+    public List<SsarunDeviceModelVo> getDeviceMouldByDeviceId(@PathVariable String deviceId){
+        if("".equals(deviceId) || null == deviceId ){
+            throw new BizException("设备ID不能为空");
+        }
+       List<SsarunDeviceModelVo> list =  ssarunDeviceService.getDeviceModelList(deviceId);
+        return list;
+    }
+
+
 }

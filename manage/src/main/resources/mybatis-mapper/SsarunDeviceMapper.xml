@@ -181,4 +181,25 @@
                 where  vendorpersonnel.DEVICEMANU = #{deviceVendor}
 
     </select>
+
+    <!--根据设备id获取设备模块列表-->
+    <select id="getDeviceModelList" resultType="com.bank.manage.vo.SsarunDeviceModelVo">
+
+                    SELECT
+                        d.DEVICEID,
+                        m.ID,
+                        m.CLASSID,
+                        m.DCNAME,
+                        m.DCDESC,
+                        m.VERSIONNUM
+                    FROM
+                       ssarun.devicedc d
+                    LEFT JOIN ssarun.devicecontroller m
+                    ON d.dcId = m.ID
+                    WHERE
+                        d.DEVICEID = #{deviceId}
+
+    </select>
+    
+    
 </mapper>
