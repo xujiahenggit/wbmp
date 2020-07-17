@@ -78,7 +78,10 @@
        </if>
     </select>
 
+
+
+
     <select id="getCSInfo" resultType="com.bank.esb.dto.CSInfoDto">
-        SELECT ID,DEVICEMANU FROM vendorcontract
+       SELECT STRNAME vendorId,STRVALUE vendorName from ssarun.domaindict where STRTYPE = 'DevManu'
     </select>
 </mapper>
