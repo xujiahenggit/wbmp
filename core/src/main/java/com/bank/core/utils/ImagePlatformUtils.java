@@ -54,6 +54,12 @@ public class ImagePlatformUtils {
     MODEL_CODE:XCJC
     filePartName:XCJC_PART
 
+    整改反馈：9501010000
+     整改反馈
+    userName：fxyj
+    password:fxyj1234
+    MODEL_CODE:FKZG
+    filePartName:FKZG_PART
 
     预警编号：9401000000
     预警监测
@@ -91,17 +97,27 @@ public class ImagePlatformUtils {
 
     public ImagePlatformUtils(String type) {
         Environment env = (Environment) ApplicationContextUtil.getBeanByClass(Environment.class);
-        boolean flag = StringUtils.equals(type, "xcjc");
-        modelCode = flag ? "XCJC" : "YJJC";
-        filePartName = flag ? "XCJC_PART" : "YJJC_PART";
-        busiFileType = flag ? "9301010000" : "9401000000";
-
         ip = env.getProperty("IMAGE_PLATFORM.IP");
         socketPort = Integer.parseInt(env.getProperty("IMAGE_PLATFORM.PORT"));
         userName = env.getProperty("IMAGE_PLATFORM.USER_NAME");
         passWord = env.getProperty("IMAGE_PLATFORM.PASS_WORD");
-
         clientApi = new SunEcmClientSocketApiImpl(ip, socketPort);
+
+        modelCode = StringUtils.upperCase(type);
+        filePartName = StringUtils.upperCase(type) + "_PART";
+        switch (type) {
+            case "xcjc":
+                busiFileType = "9301010000";
+                break;
+            case "yjjc":
+                busiFileType = "9401000000";
+                break;
+            case "fkzg":
+                busiFileType = "9501010000";
+                break;
+            default:
+                break;
+        }
     }
 
     public void login() {

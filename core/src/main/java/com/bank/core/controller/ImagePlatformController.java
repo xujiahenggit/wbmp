@@ -56,7 +56,7 @@ public class ImagePlatformController {
     @PostMapping("/localUpload")
     @ApiOperation("影像文件本地上传")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "type", value = "类型（现场检查-xcjc；预警监测-yjjc；）等", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "type", value = "类型（现场检查-xcjc；预警监测-yjjc；整改反馈-fkzg；）等", required = true, dataType = "String"),
             @ApiImplicitParam(name = "pathId", value = "文件目录主键", required = true, dataType = "String")
     })
     public ImagePlatformFile localUpload(@RequestParam(value = "file") MultipartFile file, @RequestParam(value = "type") String type, @RequestParam(value = "pathId") String pathId) {
@@ -155,7 +155,7 @@ public class ImagePlatformController {
     @GetMapping("/imagePlatformQuery")
     @ApiOperation("影像平台文件查询")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "type", value = "类型（现场检查-xcjc；预警监测-yjjc；）等", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "type", value = "类型（现场检查-xcjc；预警监测-yjjc；整改反馈-fkzg；）等", required = true, dataType = "String"),
             @ApiImplicitParam(name = "pathId", value = "文件目录主键（上传时必传、查看时可以不用传）", required = false, dataType = "String"),
             @ApiImplicitParam(name = "contentId", value = "影像ID", required = true, dataType = "String"),
             @ApiImplicitParam(name = "busiStartDate", value = "影像时间", required = true, dataType = "String")
