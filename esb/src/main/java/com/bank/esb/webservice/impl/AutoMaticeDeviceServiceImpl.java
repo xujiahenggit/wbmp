@@ -164,7 +164,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
             List<String> pictureUrl = orderSubmissionVo.getPictureUrl();
             ArrayList<WorkOrderAttachmentDO> list = new ArrayList<>();
             for (String url : pictureUrl) {
-                list.add(new WorkOrderAttachmentDO(null, orderNo, url, url.substring(url.lastIndexOf("/")), null));
+                list.add(new WorkOrderAttachmentDO(null, orderNo, url, url, null));
             }
             workOrderAttachmentService.saveBatch(list);
             map.put("repcode", "0");
@@ -303,7 +303,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
             if (pictureUrl.size() > 0) {
                 for (String url : pictureUrl) {
                     list.add(new WorkOrderAttachmentDO(null, orderNo, url,
-                            url.substring(url.lastIndexOf("/")), null));
+                            url, null));
                 }
 
             }
