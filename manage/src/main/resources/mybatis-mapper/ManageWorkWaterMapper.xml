@@ -72,5 +72,16 @@
                 </if>
         </where>
     </select>
+    <select id="getwater" resultType="java.util.Map">
+            SELECT a.deal_with_people_id uid,
+            a.deal_with_type operatorStatus,
+            u.USER_NAME name,u.USER_PHONE phone,
+            w.work_order_status status
+            FROM t_work_water a
+            LEFT JOIN t_user u on a.deal_with_people_id=u.USER_ID
+            LEFT JOIN t_work_order w ON a.word_order_id = w.work_order_code
+            WHERE a.word_order_id = #{id}
+            ORDER BY a.create_time DESC
+    </select>
 
 </mapper>

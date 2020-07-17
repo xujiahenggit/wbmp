@@ -23,4 +23,6 @@ public interface EsbDao {
     List<CSInfoDto> getCSInfo();
 
     List<OrderDto> getEsbErrOrder(@Param("o") OrderNumVo orderNumVo);
+
+    Map<String, String> getEngineerInfo(@Param("engineerId") String engineerId);
 }

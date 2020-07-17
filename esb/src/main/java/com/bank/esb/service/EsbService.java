@@ -20,4 +20,6 @@ public interface EsbService {
     List<CSInfoDto> getCSInfo();
 
     List<OrderDto> getEsbErrOrder(OrderNumVo orderNumVo);
+
+    Map<String, String> getEngineerInfo(String engineerId);
 }
