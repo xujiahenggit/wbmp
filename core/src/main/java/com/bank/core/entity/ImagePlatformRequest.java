@@ -24,7 +24,7 @@ import lombok.Data;
 @ApiModel(description = "影像平台上传请求")
 public class ImagePlatformRequest {
 
-    @ApiModelProperty(value = "类型（现场检查-xcjc；预警监测-yjjc；）等")
+    @ApiModelProperty(value = "类型（现场检查-xcjc；预警监测-yjjc；整改反馈-fkzg；）等")
     private String type;
 
     @ApiModelProperty(value = "文件目录主键")
