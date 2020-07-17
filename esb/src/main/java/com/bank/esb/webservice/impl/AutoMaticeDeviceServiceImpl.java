@@ -37,7 +37,6 @@ import java.util.*;
 @Service
 @WebService(name = "automaticedeviceservice", targetNamespace = "http://webservice.wbmp.com")
 public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
-    @SuppressWarnings("unchecked")
     @Override
     public String esbService(String requestXml) {
         if (StringUtils.isBlank(requestXml)) {

@@ -207,6 +207,64 @@
                         d.DEVICEID = #{deviceId}
 
     </select>
-    
+
+    <!--按年查询监控设备交易趋势-->
+    <select id="getDeviceTradeMouthList" resultType="com.bank.manage.vo.DeviceTradeTrendVo">
+        SELECT
+            CONVERT (t2.day_str, CHAR) `date`,
+            IFNULL(count(i.id), 0) AS tradeCount
+        FROM
+            (
+            SELECT
+            @rownum :=@rownum + 1 AS num,
+            date_format(DATE_SUB(NOW(), INTERVAL @rownum DAY),'%Y-%m') AS day_str
+            FROM
+            (SELECT @rownum := - 1) AS r_init,
+            (
+            SELECT  c.id FROM  ssamgt.vw_translog c  LIMIT 30
+            ) AS c_init
+            ) t2
+            LEFT JOIN ssamgt.vw_translog AS i ON (
+            DATE_FORMAT(i.trans_time, '%Y-%m') = t2.day_str
+            <if test="dto.orgId != null">
+                and i.trans_orgno = #{dto.orgId}
+            </if>
+            <if test="dto.termNum != null">
+                and i.term_num = #{dto.termNum}
+            </if>
+            )
+        GROUP BY
+            t2.day_str
+    </select>
+
+    <!--按月查询监控设备交易趋势-->
+    <select id="getDeviceTradeYearsList" resultType="com.bank.manage.vo.DeviceTradeTrendVo">
+        SELECT
+        CONVERT (t2.day_str, CHAR) `date`,
+        IFNULL(count(i.id), 0) AS tradeCount
+        FROM
+        (
+            SELECT
+                 @rownum :=@rownum + 1 AS num,
+                 date_format(DATE_SUB(NOW(), INTERVAL @rownum DAY),'%Y-%m-%d') AS day_str
+            FROM
+            (SELECT @rownum := - 1) AS r_init,
+            (
+            SELECT  c.id FROM  ssamgt.vw_translog c  LIMIT 30
+            ) AS c_init
+        ) t2
+        LEFT JOIN ssamgt.vw_translog AS i ON (
+            DATE_FORMAT(i.trans_time, '%Y-%m-%d') = t2.day_str
+            <if test="dto.orgId != null">
+                and i.trans_orgno = #{dto.orgId}
+            </if>
+            <if test="dto.termNum != null">
+                and i.term_num = #{dto.termNum}
+            </if>
+        )
+        GROUP BY
+        t2.day_str
+    </select>
+
     
 </mapper>

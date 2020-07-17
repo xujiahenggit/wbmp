@@ -30,9 +30,9 @@ public class TransferInformationDto {
     private String operatorStatus;
 
     @ApiModelProperty(value = "操作时间")
-    private Date operatorTime;
+    private String operatorTime;
 
     @ApiModelProperty(value = "安装日期")
-    private Date installDate;
+    private String installDate;
 
 }
