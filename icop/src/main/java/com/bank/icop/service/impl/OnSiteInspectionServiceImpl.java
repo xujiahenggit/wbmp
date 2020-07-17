@@ -298,11 +298,15 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
     }
 
     @Override
-    public Object feedbackSave(String currentUserId, String key, String feedbackdes) {
+    public Object feedbackSave(String currentUserId, String key, String feedbackdes, String contentid, String busistartdate, String busiserialno) {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("userNo", currentUserId);
         parmMap.put("cpk", key);
         parmMap.put("feedbackdes", feedbackdes);
+        parmMap.put("contentid", contentid);
+        parmMap.put("busistartdate", busistartdate);
+        parmMap.put("busiserialno", busiserialno);
+
         Map report = getReport(parmMap,
                 "FXYJ11019",
                 "整改反馈说明保存",

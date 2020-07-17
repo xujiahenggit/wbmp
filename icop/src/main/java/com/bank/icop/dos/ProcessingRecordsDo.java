@@ -23,4 +23,10 @@ public class ProcessingRecordsDo {
     private String topic;
     @ApiModelProperty("调查结论")
     private String verdict;
+    @ApiModelProperty("影像id")
+    private String CONTENTID;
+    @ApiModelProperty("影像时间")
+    private String BUSISTARTDATE;
+    @ApiModelProperty("影响流水号")
+    private String BUSISERIALNO;
 }

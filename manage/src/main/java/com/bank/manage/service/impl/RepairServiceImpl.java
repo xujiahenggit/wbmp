@@ -32,7 +32,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
     public int saveRepair(WorkOrderDto workOrderDto) {
         //生成工单编号  工单类型 1-故障工单；2-投诉工单；3-巡检
         LocalDateTime now =LocalDateTime.now();
-        workOrderDto.setWorkOrderCode("1"+now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")));
+        workOrderDto.setWorkOrderCode("01"+now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")));
         //工单状态默认  0 :待处理；1：待评价；2：办接；3：待分行确认；4：待总行确认；4：待厂商回复；6：总行知悉；7：分行知悉；8：退回；9：已关闭
         workOrderDto.setWorkOrderStatus("0");
         workOrderDto.setCreateTime(new Date());
@@ -79,17 +79,11 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
 
     @Override
     public IPage<LargerScreenVo> getLargerScreen(LargerScreenDto largerScreenDto) {
-        Page<LargerScreenVo> page = new Page<>(largerScreenDto.getPageIndex(), largerScreenDto.getPageSize());
-        if (StringUtils.isNotBlank(largerScreenDto.getSort())) {
-            if (StringUtils.equalsIgnoreCase("DESC", largerScreenDto.getOrder())) {
-                page.setDesc(largerScreenDto.getSort());
-            }
-            else {
-                page.setAsc(largerScreenDto.getSort());
-            }
+        if(largerScreenDto.getTerminalCode() ==null || "".equals(largerScreenDto.getTerminalCode()) ){
+            largerScreenDto.setTerminalCode(null);
         }
-
-        return repairDao.getLargerScreen(page,largerScreenDto.getBranchCode(),largerScreenDto.getTerminalCode(),largerScreenDto.getSelfBankCode());
+        Page<LargerScreenVo> page = new Page<>(largerScreenDto.getPageIndex(), largerScreenDto.getPageSize());
+        return repairDao.getLargerScreen(page,largerScreenDto.getBranchCode(),largerScreenDto.getTerminalCode());
     }
 
     @Override
@@ -131,11 +125,11 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
     public int saveInspectionWorkOrder(InspectionWorkOrderDto inspectionWorkOrderDto) {
         //生成工单编号  工单类型 1-故障工单；2-投诉工单；3-巡检
         LocalDateTime now =LocalDateTime.now();
-        inspectionWorkOrderDto.setWorkOrderCode("3"+now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")));
+        inspectionWorkOrderDto.setWorkOrderCode("03"+now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")));
         //工单状态默认  0 :待处理；1：待评价；2：办接；3：待分行确认；4：待总行确认；4：待厂商回复；6：总行知悉；7：分行知悉；8：退回；9：已关闭
         inspectionWorkOrderDto.setWorkOrderStatus("0");
         inspectionWorkOrderDto.setCreateTime(new Date());
-        inspectionWorkOrderDto.setWorkOrderType("3");
+        inspectionWorkOrderDto.setWorkOrderType("03");
         //将处理方式拼接在 json
         StringBuffer stringBuffer =new StringBuffer();
         for(int i=0;i<inspectionWorkOrderDto.getEscortsHandlingList().size();i++){
@@ -149,11 +143,11 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
     public int saveComplaintsWorkOrder(ComplaintsWorkOrderDto complaintsWorkOrderDto) {
         //生成工单编号  工单类型 1-故障工单；2-投诉工单；3-巡检
         LocalDateTime now =LocalDateTime.now();
-        complaintsWorkOrderDto.setWorkOrderCode("2"+now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")));
+        complaintsWorkOrderDto.setWorkOrderCode("02"+now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")));
         //工单状态默认  0 :待处理；1：待评价；2：办接；3：待分行确认；4：待总行确认；4：待厂商回复；6：总行知悉；7：分行知悉；8：退回；9：已关闭
         complaintsWorkOrderDto.setWorkOrderStatus("0");
         complaintsWorkOrderDto.setCreateTime(new Date());
-        complaintsWorkOrderDto.setWorkOrderType("2");
+        complaintsWorkOrderDto.setWorkOrderType("02");
         return repairDao.saveComplaintsWorkOrder(complaintsWorkOrderDto);
     }
 

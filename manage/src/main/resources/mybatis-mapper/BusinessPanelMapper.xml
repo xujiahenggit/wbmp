@@ -426,6 +426,8 @@
                 '智能现金柜'
                 ELSE
                 '未知设备'
+                 '智能现金柜'
+                ELSE '未知设备'
                 END AS deviceName,
                  term_no AS termNo,
                CASE device_run_status

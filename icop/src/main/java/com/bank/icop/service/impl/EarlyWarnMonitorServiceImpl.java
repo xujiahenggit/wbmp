@@ -276,6 +276,9 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         parmMap.put("taskkey",updateDealRecordsDo.getTaskkey());
         parmMap.put("verdict",updateDealRecordsDo.getVerdict());
         parmMap.put("processdes",updateDealRecordsDo.getProcessdes());
+        parmMap.put("CONTENTID",updateDealRecordsDo.getCONTENTID());
+        parmMap.put("BUSISTARTDATE",updateDealRecordsDo.getBUSISTARTDATE());
+        parmMap.put("BUSISERIALNO",updateDealRecordsDo.getBUSISERIALNO());
         Map report = null;
         try {
             report = SoapUtil.sendReport("FXYJ10019","812",parmMap);
@@ -336,7 +339,10 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         parmMap.put("risklev",alertListDo.getRisklev());
         parmMap.put("dealflag",alertListDo.getDealflag());
         parmMap.put("fcettypecode",alertListDo.getFcettypecode());
-        parmMap.put("cjstatus",alertListDo.getCjstatus());
+        if(alertListDo.getCjstatus() != null && !"".equals(alertListDo.getCjstatus())){
+            parmMap.put("cjstatus",alertListDo.getCjstatus());
+        }
+
         parmMap.put("limit",alertListDo.getLimit());
         parmMap.put("offset",alertListDo.getOffset());
         Map report = null;
@@ -539,6 +545,9 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         parmMap.put("taskkey",processingRecordsDo.getTaskkey());
         parmMap.put("topic",processingRecordsDo.getTopic());
         parmMap.put("verdict",processingRecordsDo.getVerdict());
+        parmMap.put("CONTENTID",processingRecordsDo.getCONTENTID());
+        parmMap.put("BUSISTARTDATE",processingRecordsDo.getBUSISTARTDATE());
+        parmMap.put("BUSISERIALNO",processingRecordsDo.getBUSISERIALNO());
 
         Map report = null;
         try {

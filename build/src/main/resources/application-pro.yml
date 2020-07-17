@@ -105,8 +105,8 @@ DAT:
   FTP_PORT: 21
   #FTP 用户名
   FTP_USER_NAME: newfrt
-  #FTP 密码
-  FTP_PASS_WORD: newfrt
+  #FTP 密码 改造为密文
+  FTP_PASS_WORD: 6kGcEAbr3MQ=
   #FTP 文件路径
   FTP_FILE_PATH: /nhr/
   #FTP 核心文件 文件

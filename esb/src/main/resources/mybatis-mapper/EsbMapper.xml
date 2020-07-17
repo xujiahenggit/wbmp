@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.esb.dao.EsbDao">
+    <select id="getEngineer" resultType="com.bank.esb.dto.EngineerDto">
+        SELECT ID engineerId,
+        NAME engineerName,
+        TELEPHONE phone
+        FROM vendorpersonnel WHERE DEVICEMANU=(
+        SELECT DEVICEMANU FROM vendorpersonnel WHERE ID = #{id} )
+        <if test="seachTxt!=null">
+        AND (NAME=#{seachTxt} or TELEPHONE=#{seachTxt})
+        </if>
+        AND MANUEMPNATURE='2'
+    </select>
+
+    <select id="getCSMaster" resultType="com.bank.esb.dto.ManagerDto">
+            SELECT ID serverId,
+            NAME serverName
+            FROM vendorpersonnel
+            WHERE
+            DEVICEMANU = (SELECT b.STRDEVMANU FROM ssarun.term a
+                    LEFT JOIN ssarun.device b ON a.DEVICEID=b.ID
+                    WHERE a.STRTERMNUM = #{id})
+            AND MANUEMPNATURE='1'
+    </select>
+
+
+    <select id="getDeviceInfo" resultType="java.util.Map">
+         SELECT
+            STRTERMNUM deviceId,
+            STRDEVMODEL deviceModel,
+            STRORGNO orgId,
+            STRSSBNAME orgName,
+            STRTERMADDR address,
+            firstinstalldate installDate,
+            STRDEVMANU deviceVendor
+            FROM (
+            SELECT d.*,c.STRORGNO,c.STRTERMNUM,c.STRTERMADDR,e.STRSSBNAME FROM ssarun.term c
+            left JOIN ssarun.device d on c.DEVICEID = d.ID
+            left JOIN selfsvcbank e on c.STRSSBNUM=e.STRSSBNUM
+            WHERE c.STRTERMNUM= #{id}
+            ) b
+    </select>
+
+    <select id="getEsbErrOrder" resultType="com.bank.esb.dto.OrderDto">
+        SELECT
+        a.status orderStatus,
+        a.orderNo ID,
+        "sys" createUser,
+        "" serviceTime,
+        a.beginDate createTime,
+        a.strTermNum deviceNo,
+        a.deviceType,
+        a.errorDesc orderDetail,
+        a.deviceType deviceName,
+        a.deviceManu deviceBrand,
+        a.STRSSBNUM orgId,
+        b.STRSSBNAME orgName
+        FROM work_order a LEFT JOIN selfsvcbank b ON a.STRSSBNUM=b.STRSSBNUM
+        WHERE
+        <if test="o.deviceClassify!=null">
+            a.deviceClass = #{o.deviceClassify}
+        </if>
+       <if test="o.orderStatus!=null">
+           a.status = #{o.orderStatus}
+       </if>
+       <if test="o.startTime and o.endTime!=null">
+           a.beginDate BETWEEN #{o.startTime} AND #{o.endTime}
+       </if>
+       <if test="o.orderNo!=null">
+           a.ID = #{o.orderNo}
+       </if>
+       <if test="o.deviceNo!=null">
+           a.strTermNum = #{o.deviceNo}
+       </if>
+       <if test="o.deviceType!=null">
+           a.deviceType = #{o.deviceType}
+       </if>
+    </select>
+
+
+
+
+    <select id="getCSInfo" resultType="com.bank.esb.dto.CSInfoDto">
+       SELECT STRNAME vendorId,STRVALUE vendorName from ssarun.domaindict where STRTYPE = 'DevManu'
+    </select>
+</mapper>

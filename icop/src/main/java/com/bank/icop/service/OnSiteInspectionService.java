@@ -46,7 +46,7 @@ public interface OnSiteInspectionService {
 
     Object problemRectifyInfo(String currentUserId, String key);
 
-    Object feedbackSave(String currentUserId, String key, String feedbackdes);
+    Object feedbackSave(String currentUserId, String key, String feedbackdes, String contentid, String busistartdate, String busiserialno);
 
     Object feedbackSubmit(String currentUserId, String cpk);
 

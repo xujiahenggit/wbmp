@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.SsarunDeviceDao">
+
+
+    <!--查询设备列表 ssarun库-->
+    <select id="ssarunDeviceList" resultType="com.bank.manage.vo.SsarunDeviceVo">
+            select  dev.id,
+                    case dev.idevtype
+                    WHEN '1' then '自动取款机'
+                    WHEN '2' then '自动存款机'
+                    WHEN '3' then '自动存取款机'
+                    WHEN '4' then '自动查询机'
+                    WHEN '5' then '多媒体终端'
+                    WHEN '6' then '个性化发卡机'
+                    WHEN '7' then '回单打印机'
+                    WHEN '8' then	'智能现金柜'
+                    END AS deviceName,
+                    term.strtermnum AS termNo,
+                    dev.strdevmodel,
+                    dev.strdevmanu,
+                    term.organization
+            from ssarun.device dev
+               left join ssarun.term term
+            on term.deviceid = dev.id
+           where
+                term.organization = #{model.organization}
+    </select>
+
+    <!--查询终端状态列表 ssaview库-->
+    <select id="termStatusList" resultType="com.bank.manage.vo.SsaViewTermStatusVo" parameterType="java.util.List">
+            select id ,strtermnum ,
+            case svcstatus
+            WHEN '-1' then '无效'
+            WHEN '0' then '空闲'
+            WHEN '1' then '交易中'
+            WHEN '2' then '硬件故障停止服务'
+            WHEN '3' then '管理命令暂停服务'
+            WHEN '4' then '维护中'
+            WHEN '5' then '通讯中断'
+            WHEN '6' then '耗材尽停止服务'
+            WHEN '7' then '已关机'
+            WHEN '8' then '正在重新启动'
+            END AS svcstatus
+            ,ihdwstatus, dtsvcstatusbegin,iagentstatus,vmcardreader,vmrfcardreader
+            vmpinpad ,vmjournalprinter ,vmcashdispenser ,vmcashacceptor,vmreceiptprinter,vmstatementprinter,
+            vmpassbookprinter,cashacceptorinfo,cashdispenserinfo,dccarddispenser
+            from ssaview.termstatus
+           where
+                STRTERMNUM in
+            <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+    </select>
+
+    <select id="getDeviceDetailsById" resultType="com.bank.manage.vo.DeviceDetailsVo">
+           select
+                device.id id,
+                device.STRDEVMANU deviceVendor,        -- 设备厂商
+                device.STRDEVMODEL deviceModel,       -- 设备型号
+                term.ORGANIZATION orgId,        --  所属机构号
+                term.STRTERMADDR address,         --  终端地址
+                device.firstinstalldate installationTime,  -- 首次安装日期
+                term.STRTERMNUM terminalCode,          -- 终端编号
+                case when device.IDEVTYPE = '1' then      -- '设备类型：自动取款机 1，自动存款机 2，自动存取款机 3，自动查询机 4',
+                          '自动取款机'
+                     when device.IDEVTYPE = '2' then
+                          '自动存款机'
+                     when device.IDEVTYPE = '3' then
+                          '自动存取款机'
+                     when device.IDEVTYPE = '4' then
+                          '自动查询机'
+                     end deviceType,
+
+                case when device.ISTATUS = '0' then       -- '设备状态：待签收设备 0，库存设备 1，停用未回库设备 2，拒收设备 3，上线设备 4，已报废设备 5',
+                          '待签收设备'
+                     when device.ISTATUS = '1' then
+                          '库存设备'
+                         when device.ISTATUS = '2' then
+                                  '停用未回库设备'
+                         when device.ISTATUS = '3' then
+                                  '拒收设备'
+                         when device.ISTATUS = '4' then
+                                  '上线设备'
+                         when device.ISTATUS = '5' then
+                                  '已报废设备'
+                     end deviceStatus
+
+            from  ssarun.device device
+            left join ssarun.term term
+                on term.DEVICEID = device.id
+            where  term.STRTERMNUM = #{id}
+    </select>
+
+    <select id="getTerminalDetailsById" resultType="com.bank.manage.vo.TerminalDetailsVo">
+           select
+
+                    case when termstatus.CASHACCEPTORINFO ='-1' then     -- 存款箱状态：无效 -1，正常 0，存款钞多 1，存款钞满 2
+                               '无效'
+                         when termstatus.CASHACCEPTORINFO ='0' then
+                              '正常'
+                         when termstatus.CASHACCEPTORINFO ='1' then
+                              '存款钞多'
+                         when termstatus.CASHACCEPTORINFO ='2' then
+                              '存款钞满'
+                         else termstatus.CASHACCEPTORINFO
+                         end depositStatus,
+                    case when termstatus.CASHDISPENSERINFO ='-1'  then   --  '取款箱状态：无效 -1，正常 0，取款钞少 1，取款钞尽 2',
+                               '无效'
+                         when termstatus.CASHDISPENSERINFO ='0'  then
+                               '正常'
+                         when termstatus.CASHDISPENSERINFO ='1'  then
+                               '取款钞少'
+                         when termstatus.CASHDISPENSERINFO ='2'  then
+                                 '取款钞尽'
+                         else termstatus.CASHDISPENSERINFO
+                         end withDrawalsStatus,
+                    case when  termstatus.VMCARDREADER ='CARD'     then   --  '读卡器状态：CARD 读卡器故障, CARDJAM 读卡器卡被卡住, CARDBIN 读卡器回收盒满',
+                              '读卡器故障'
+                         when   termstatus.VMCARDREADER ='CARDJAM'     then
+                               '读卡器卡被卡住'
+                         when   termstatus.VMCARDREADER ='CARDBIN'     then
+                               '读卡器回收盒满'
+                         else termstatus.VMCARDREADER
+                         end readerStatus,
+                    termstatus.VMPINPAD passWordStatus,
+                    case when termstatus.VMRECEIPTPRINTER ='REC' then     --   '凭条打印机状态：REC 凭条打印机故障，RECPEPT 缺凭条纸，RECPJAM 凭条打印机卡纸',
+                              '凭条打印机故障'
+                         when  termstatus.VMRECEIPTPRINTER ='RECPEPT' then
+                              '缺凭条纸'
+                         when  termstatus.VMRECEIPTPRINTER ='RECPJAM' then
+                               '凭条打印机卡纸'
+                         else termstatus.VMRECEIPTPRINTER
+                         end slipPrinterStatus,
+                    case when termstatus.VMSTATEMENTPRINTER ='DOC' then    --  '对帐单打印机状态：DOC 对帐单打印机故障，DOCPEPT 缺对账单纸，DOCPJAM 对帐单打印机卡纸',
+                              '对帐单打印机故障'
+                         when  termstatus.VMSTATEMENTPRINTER ='DOCPEPT' then
+                              '缺对账单纸'
+                         when  termstatus.VMSTATEMENTPRINTER ='DOCPJAM' then
+                               '对帐单打印机卡纸'
+                         else termstatus.VMSTATEMENTPRINTER
+                         end reconciliationPrinterStatus,
+                    termstatus.VMPASSBOOKPRINTER passbookPrinterStatus,     -- 存折打印机状态
+                    case when termstatus.SVCSTATUS ='-1' then     -- 服务状态  '无效 : -1,空闲: 0,交易中 : 1,硬件故障停止服务 : 2,管理命令暂停服务 : 3,维护中 : 4,通讯中断: 5,耗材尽停止服务: 6,已关机 : 7,正在重新启动 : 8'
+                              '无效'
+                         when termstatus.SVCSTATUS ='0' then
+                              '空闲'
+                         when termstatus.SVCSTATUS ='1' then
+                              '交易中'
+                         when termstatus.SVCSTATUS ='2' then
+                              '硬件故障停止服务'
+                         when termstatus.SVCSTATUS ='3' then
+                              '管理命令暂停服务'
+                         when termstatus.SVCSTATUS ='4' then
+                              '维护中'
+                        when termstatus.SVCSTATUS ='5' then
+                              '通讯中断'
+                        when termstatus.SVCSTATUS ='6' then
+                              '耗材尽停止服务'
+                        when termstatus.SVCSTATUS ='7' then
+                              '已关机'
+                        when termstatus.SVCSTATUS ='8' then
+                              '正在重新启动'
+                        else termstatus.SVCSTATUS
+                         end serviceStatus,
+                    case when termstatus.VMJOURNALPRINTER ='JRN' then         -- '流水打印机状态：JRN 流水打印机故障，JRNPEPT 缺流水纸，JRNPJAM 流水打印机卡纸',
+                               '流水打印机故障'
+                         when termstatus.VMJOURNALPRINTER ='JRNPEPT' then
+                               '缺流水纸'
+                         when termstatus.VMJOURNALPRINTER ='JRNPJAM' then
+                               '流水打印机卡纸'
+                    else termstatus.VMJOURNALPRINTER
+                    end waterPrinterStatus
+            from  ssaview.termstatus termstatus
+            where termstatus.STRTERMNUM = #{terminalCode}
+    </select>
+
+    <select id="getDeviceVendorByCode" resultType="com.bank.manage.vo.DeviceVendorVo">
+                select
+
+                        case when vendorpersonnel.MANUEMPNATURE ='1' then                    -- '员工角色：1 服务主管，2 服务工程师',
+                                   '服务主管'
+                             else '服务工程师'
+                             end,
+                        vendorpersonnel.NAME,
+                        vendorpersonnel.TELEPHONE
+                from   ssamgt.vendorpersonnel vendorpersonnel
+                where  vendorpersonnel.DEVICEMANU = #{deviceVendor}
+
+    </select>
+
+    <!--根据设备id获取设备模块列表-->
+    <select id="getDeviceModelList" resultType="com.bank.manage.vo.SsarunDeviceModelVo">
+
+                    SELECT
+                        d.DEVICEID,
+                        m.ID,
+                        m.CLASSID,
+                        m.DCNAME,
+                        m.DCDESC,
+                        m.VERSIONNUM
+                    FROM
+                       ssarun.devicedc d
+                    LEFT JOIN ssarun.devicecontroller m
+                    ON d.dcId = m.ID
+                    WHERE
+                        d.DEVICEID = #{deviceId}
+
+    </select>
+    
+    
+</mapper>

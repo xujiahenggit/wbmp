@@ -210,10 +210,14 @@ public class OnSiteInspectionController extends BaseIcopController {
     @PostMapping("/feedbackSave")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "key", value = "整改PK", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "feedbackdes", value = "整改反馈说明", required = true, dataType = "String")
+            @ApiImplicitParam(name = "feedbackdes", value = "整改反馈说明", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "contentid", value = "影像ID", required = false, dataType = "String"),
+            @ApiImplicitParam(name = "busistartdate", value = "影像时间", required = false, dataType = "String"),
+            @ApiImplicitParam(name = "busiserialno", value = "影像流水号", required = false, dataType = "String")
     })
-    public Object feedbackSave(String key, String feedbackdes) {
-        return onSiteInspectionService.feedbackSave(getCurrentUserId(request), key, feedbackdes);
+    public Object feedbackSave(@RequestParam(value = "key") String key, @RequestParam(value = "feedbackdes") String feedbackdes, @RequestParam(value = "contentid", required = false, defaultValue = "") String contentid, @RequestParam(value = "busistartdate", required = false,
+            defaultValue = "") String busistartdate, @RequestParam(value = "busiserialno", required = false, defaultValue = "") String busiserialno) {
+        return onSiteInspectionService.feedbackSave(getCurrentUserId(request), key, feedbackdes, contentid, busistartdate, busiserialno);
     }
 
     @ApiOperation("整改提交【FXYJ11020】")

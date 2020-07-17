@@ -37,15 +37,13 @@ spring:
       password: root77
       # 使用druid数据源
       type: com.alibaba.druid.pool.DruidDataSource
-    esb:
-      # 如果存在多个数据源，监控的时候可以通过名字来区分开来
-      name: esb
+    esbmgt:
       # 连接数据库的url
-      url: jdbc:mysql://162.16.21.122:3306/ssamgt?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true&failOverReadOnly=false&serverTimezone=GMT%2B8
+      url: jdbc:mysql://162.16.4.33:3306/ssamgt?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true&failOverReadOnly=false&serverTimezone=GMT%2B8
       # 连接数据库的账号
       username: query
       #  连接数据库的密码
-      password: query
+      password: Query@123
       # 使用druid数据源
       type: com.alibaba.druid.pool.DruidDataSource
     druid:
@@ -124,7 +122,7 @@ DAT:
   #FTP 用户名
   FTP_USER_NAME: ftpuser
   #FTP 密码
-  FTP_PASS_WORD: abc@1234
+  FTP_PASS_WORD: Sf7Bh97NnFrvXndE0G017w==
   #FTP 文件路径
   FTP_FILE_PATH: /nhr/
   #FTP 核心文件 文件

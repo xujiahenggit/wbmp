@@ -19,6 +19,9 @@ public class OrderSubmissionVo {
     @ApiModelProperty(value = "工单编号")
     private String orderNo;
 
+    @ApiModelProperty(value = "工单类型")
+    private String orderType;
+
     @ApiModelProperty(value = "工单描述")
     private String orderDescribe;
 

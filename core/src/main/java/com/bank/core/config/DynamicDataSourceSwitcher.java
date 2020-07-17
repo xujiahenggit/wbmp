@@ -13,7 +13,7 @@ public class DynamicDataSourceSwitcher {
 
 
     public static final String Mater = "master";
-    public static final String Slave = "esb";
+    public static final String esb_mgt = "esb_mgt";
 
     private static final ThreadLocal<String> contextHolder = new ThreadLocal<>();
 

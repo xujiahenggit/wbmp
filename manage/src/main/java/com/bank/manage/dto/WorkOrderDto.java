@@ -16,7 +16,7 @@ import java.util.Date;
 public class WorkOrderDto {
     @ApiModelProperty(value = "终端编号")
     private String terminalCode;
-    @ApiModelProperty(value = "工单类型 1-故障工单；2-投诉工单；3-巡检")
+    @ApiModelProperty(value = "工单类型 01-故障工单；02-投诉工单；03-巡检")
     private String workOrderType;
     @ApiModelProperty(value = "优先级编号")
     private String priorityCode;

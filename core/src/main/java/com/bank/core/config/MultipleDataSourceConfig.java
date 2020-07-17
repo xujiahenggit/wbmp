@@ -27,7 +27,7 @@ public class MultipleDataSourceConfig {
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "spring.datasource.esb")
+    @ConfigurationProperties(prefix = "spring.datasource.esbmgt")
     public DataSource esb() {
         DataSource build = DruidDataSourceBuilder.create().build();
         return build;
@@ -47,7 +47,7 @@ public class MultipleDataSourceConfig {
         //配置多数据源
         Map<Object, Object> map = new HashMap<>();
         map.put(DynamicDataSourceSwitcher.Mater, master());
-        map.put(DynamicDataSourceSwitcher.Slave, esb());
+        map.put(DynamicDataSourceSwitcher.esb_mgt, esb());
         dynamicDataSource.setTargetDataSources(map);
         return dynamicDataSource;
     }
