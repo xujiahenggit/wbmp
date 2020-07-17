@@ -6,7 +6,9 @@ import com.bank.esb.dao.EsbDao;
 import com.bank.esb.dto.CSInfoDto;
 import com.bank.esb.dto.EngineerDto;
 import com.bank.esb.dto.ManagerDto;
+import com.bank.esb.dto.OrderDto;
 import com.bank.esb.service.EsbService;
+import com.bank.esb.vo.OrderNumVo;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -42,6 +44,12 @@ public class EsbServiceImpl implements EsbService {
     @DataSource(DynamicDataSourceSwitcher.esb_mgt)
     public List<CSInfoDto> getCSInfo() {
         return esbDao.getCSInfo();
+    }
+
+    @Override
+    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
+    public List<OrderDto> getEsbErrOrder(OrderNumVo orderNumVo) {
+        return esbDao.getEsbErrOrder(orderNumVo);
     }
 
 }

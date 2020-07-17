@@ -42,6 +42,42 @@
             ) b
     </select>
 
+    <select id="getEsbErrOrder" resultType="com.bank.esb.dto.OrderDto">
+        SELECT
+        a.status orderStatus,
+        a.orderNo ID,
+        "sys" createUser,
+        "" serviceTime,
+        a.beginDate createTime,
+        a.strTermNum deviceNo,
+        a.deviceType,
+        a.errorDesc orderDetail,
+        a.deviceType deviceName,
+        a.deviceManu deviceBrand,
+        a.STRSSBNUM orgId,
+        b.STRSSBNAME orgName
+        FROM work_order a LEFT JOIN selfsvcbank b ON a.STRSSBNUM=b.STRSSBNUM
+        WHERE
+        <if test="o.deviceClassify!=null">
+            a.deviceClass = #{o.deviceClassify}
+        </if>
+       <if test="o.orderStatus!=null">
+           a.status = #{o.orderStatus}
+       </if>
+       <if test="o.startTime and o.endTime!=null">
+           a.beginDate BETWEEN #{o.startTime} AND #{o.endTime}
+       </if>
+       <if test="o.orderNo!=null">
+           a.ID = #{o.orderNo}
+       </if>
+       <if test="o.deviceNo!=null">
+           a.strTermNum = #{o.deviceNo}
+       </if>
+       <if test="o.deviceType!=null">
+           a.deviceType = #{o.deviceType}
+       </if>
+    </select>
+
     <select id="getCSInfo" resultType="com.bank.esb.dto.CSInfoDto">
         SELECT ID,DEVICEMANU FROM vendorcontract
     </select>

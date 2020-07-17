@@ -18,6 +18,7 @@ import com.bank.esb.webservice.entity.ESBResponseHeader;
 import com.bank.manage.dos.WorkWaterDO;
 import com.bank.manage.service.ManageWorkWaterService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -31,7 +32,7 @@ import java.io.ByteArrayInputStream;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
-
+@Slf4j
 @Service
 @WebService(name = "automaticedeviceservice", targetNamespace = "http://webservice.wbmp.com")
 public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
@@ -97,14 +98,15 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                 StateChangesVo changeStatus = JSON.parseObject(JSON.toJSONString(body), StateChangesVo.class);
                 returnVO = JSON.parseObject(JSON.toJSONString(stateChanges(changeStatus)), Map.class);
                 break;
-            case "WBMP10010"://工单提交接口
-                returnVO = JSON.parseObject(JSON.toJSONString(WBMP10010(body)), Map.class);
+            case "WBMP10010"://工单提交接口   1
+                OrderSubmissionVo orderSubmissionVo=JSON.parseObject(JSON.toJSONString(body), OrderSubmissionVo.class);
+                returnVO = JSON.parseObject(JSON.toJSONString(WBMP10010(orderSubmissionVo)), Map.class);
                 break;
-            case "WBMP10011"://投诉工单回复接口
+            case "WBMP10011"://投诉工单回复接口 1
                 RepairOrderBVo repairOrderBVo = JSON.parseObject(JSON.toJSONString(body), RepairOrderBVo.class);
                 returnVO = JSON.parseObject(JSON.toJSONString(repairOrder(repairOrderBVo)), Map.class);
                 break;
-            case "WBMP10012"://设备厂商列表查询接口   0
+            case "WBMP10012"://设备厂商列表查询接口   ?
                 returnVO = JSON.parseObject(JSON.toJSONString(WBMP10012()), Map.class);
                 break;
             case "WBMP10013"://设备详细信息查询接口   1
@@ -143,14 +145,32 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         return "<Service>" + ESBUtil.convert(response) + "</Service>";
     }
 
-    private Object WBMP10010(Map<String, Object> body) {
+    private Object WBMP10010(OrderSubmissionVo orderSubmissionVo) {
         Map<Object, Object> map = MapUtil.newHashMap();
         //工单保存
+        try {
+            String orderNo = orderSubmissionVo.getOrderNo();
+            WorkOrderDO workOrderDO= WorkOrderDO.builder()
+                    .workOrderType(orderSubmissionVo.getOrderType())
+                    .workOrderCode(orderNo)
+                    .engineer(orderSubmissionVo.getEngineerId())
+                    .workOrderDescribe(orderSubmissionVo.getOrderDescribe())
+                    .build();
 
+            workOrderService.saveOrUpdate(workOrderDO);
 
-
-
-        map.put("repcode","1");
+            //附件列表
+            List<String> pictureUrl = orderSubmissionVo.getPictureUrl();
+            ArrayList<WorkOrderAttachmentDO> list = new ArrayList<>();
+            for (String url : pictureUrl) {
+                list.add(new WorkOrderAttachmentDO(null,orderNo,url,url.substring(url.lastIndexOf("/")),null));
+            }
+            workOrderAttachmentService.saveBatch(list);
+            map.put("repcode","0");
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            map.put("repcode","-1");
+        }
         return map;
     }
 
@@ -186,12 +206,21 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         ResponseDto responseDto = new ResponseDto();
         responseDto.setStatus("0");
         int pageIndex = orderNumVo.getPageIndex();
-        responseDto.setPageIndex(pageIndex);
         int pageSize = orderNumVo.getPageSize();
+        responseDto.setPageIndex(pageIndex);
         responseDto.setPageSize(pageSize);
         orderNumVo.setPageIndex((pageIndex - 1) * pageSize);
         List<OrderDto> orderDtoList = datWorkOrderDao.queryOrders(orderNumVo);
+        String orderType = orderNumVo.getOrderType();
+        if (orderType !=null && orderNumVo.getUserId()!=null
+                && orderNumVo.getRelated()!=null
+                && orderNumVo.equals("1")){
+            List<OrderDto> esblist=esbService.getEsbErrOrder(orderNumVo);
+
+        }
+
         responseDto.setList(orderDtoList);
+
         return responseDto;
     }
 

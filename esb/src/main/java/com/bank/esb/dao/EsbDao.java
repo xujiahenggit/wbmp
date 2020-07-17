@@ -3,6 +3,8 @@ package com.bank.esb.dao;
 import com.bank.esb.dto.CSInfoDto;
 import com.bank.esb.dto.EngineerDto;
 import com.bank.esb.dto.ManagerDto;
+import com.bank.esb.dto.OrderDto;
+import com.bank.esb.vo.OrderNumVo;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -19,4 +21,6 @@ public interface EsbDao {
     Map<String, Object> getDeviceInfo(@Param("id")String deviceId);
 
     List<CSInfoDto> getCSInfo();
+
+    List<OrderDto> getEsbErrOrder(@Param("o") OrderNumVo orderNumVo);
 }
