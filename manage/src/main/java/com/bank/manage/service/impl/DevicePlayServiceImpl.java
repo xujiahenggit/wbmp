@@ -79,12 +79,21 @@ public class DevicePlayServiceImpl extends ServiceImpl<DevicePlayDao,DevicePlayD
             }
         }
         //条件查询
-        Map<String, Object> queryParam = pageQueryModel.getQueryParam();
-        String terminalNum = (String) queryParam.get("terminalNum");
-        String startTime = (String) queryParam.get("startTime");
-        String endTime = (String) queryParam.get("endTime");
         QueryWrapper<DevicePlayDO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq(StringUtils.isNotBlank(terminalNum), "TERMINAL_NUM", terminalNum);
+        Map<String, Object> queryParam = pageQueryModel.getQueryParam();
+        if(queryParam.get("terminalNum") !=null && !"".equals(queryParam.get("terminalNum"))){
+            String terminalNum = (String) queryParam.get("terminalNum");
+            queryWrapper.eq(StringUtils.isNotBlank(terminalNum), "TERMINAL_NUM", terminalNum);
+        }
+
+        String startTime = "";
+        String endTime = "";
+        if(queryParam.get("startTime") !=null  ){
+            startTime = (String) queryParam.get("startTime");
+        }
+        if(queryParam.get("endTime") !=null ){
+            endTime = (String) queryParam.get("endTime");
+        }
         if(StringUtils.isNotBlank(startTime) && StringUtils.isNotBlank(endTime)){
             queryWrapper.between("CREATE_TIME",startTime,endTime);
         }
