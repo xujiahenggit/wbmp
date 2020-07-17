@@ -1,6 +1,7 @@
 package com.bank.esb.dto;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @Builder
+@AllArgsConstructor
 public class TransferInformationDto {
     @ApiModelProperty(value = "操作人ID")
     private String operatorUserId;
