@@ -611,14 +611,35 @@
                 where t.work_order_code  = #{repairCode}
     </select>
 
+    <!-- 设备状态：待签收设备 0，库存设备 1，停用未回库设备 2，拒收设备 3，上线设备 4，已报废设备 5 ;;  设备类型：自动取款机 1，自动存款机 2，自动存取款机 3，自动查询机 4 -->
     <select id="kioskDto" resultType="com.bank.manage.vo.KioskVo">
              select
                     dev.id id,
-                    dev.IDEVTYPE equipmentName,
-                    dev.ISTATUS status,
+                    case when  dev.IDEVTYPE = '1' then
+                               '自动取款机'
+                      when  dev.IDEVTYPE = '2' then
+                                '自动存款机'
+                      when  dev.IDEVTYPE = '3' then
+                                '自动存取款机'
+                      when  dev.IDEVTYPE = '4' then
+                                '自动查询机'
+                    end  equipmentName,
+                    case when dev.ISTATUS ='0'   then
+                            '待签收设备'
+                      when dev.ISTATUS ='1'   then
+                             '库存设备'
+											when dev.ISTATUS ='2'   then
+                             '停用未回库设备'
+											when dev.ISTATUS ='3'   then
+                             '拒收设备'
+											when dev.ISTATUS ='4'   then
+                             '上线设备'
+											when dev.ISTATUS ='5'   then
+                             '已报废设备'
+                    end status,
                     term.STRTERMNUM terminalCode,
                     term.STRTERMADDR address,
-                    term.ORGANIZATION
+                    term.ORGANIZATION organization
             from ssarun.device dev
                left join ssarun.term term
             on term.DEVICEID = dev.id
