@@ -34,7 +34,8 @@ spring:
       # 连接数据库的账号
       username: root
       #  连接数据库的密码
-      password: root77
+      #password: root77
+      password: qTRmRMPu/gk=
       # 使用druid数据源
       type: com.alibaba.druid.pool.DruidDataSource
     esbmgt:
@@ -43,7 +44,8 @@ spring:
       # 连接数据库的账号
       username: query
       #  连接数据库的密码
-      password: Query@123
+      #password: Query@123
+      password: Z4gKzn+Et8Oty7suge9jHw==
       # 使用druid数据源
       type: com.alibaba.druid.pool.DruidDataSource
     druid:

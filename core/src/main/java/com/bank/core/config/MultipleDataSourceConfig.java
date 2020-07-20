@@ -1,14 +1,16 @@
 package com.bank.core.config;
 
-import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.sql.DataSource;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
-import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.Map;
+import com.bank.core.entity.UmspscDataSource;
 
 /**
  * 多数据源bean的配置类
@@ -18,18 +20,19 @@ import java.util.Map;
 @Configuration
 public class MultipleDataSourceConfig {
 
-
     @Bean
     @ConfigurationProperties(prefix = "spring.datasource.master")
     public DataSource master() {
-        DataSource build = DruidDataSourceBuilder.create().build();
+        //DataSource build = DruidDataSourceBuilder.create().build();
+        DataSource build = new UmspscDataSource();
         return build;
     }
 
     @Bean
     @ConfigurationProperties(prefix = "spring.datasource.esbmgt")
     public DataSource esb() {
-        DataSource build = DruidDataSourceBuilder.create().build();
+        //DataSource build = DruidDataSourceBuilder.create().build();
+        DataSource build = new UmspscDataSource();
         return build;
     }
 
