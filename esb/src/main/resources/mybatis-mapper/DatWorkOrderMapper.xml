@@ -191,28 +191,28 @@
             left JOIN dat_selfsvcbank e on c.STRORGNO=e.STRSSBNUM
             ) b ON a.terminal_code=b.STRTERMNUM
          <where>
-            <if test="m.userId != null and related = '1'">
+            <if test="m.userId != '' and related = '1'">
                 a.create_id= #{m.userId}
             </if>
-            <if test="m.orderType != null">
+            <if test="m.orderType != ''">
                 a.work_order_type= #{m.orderType}
             </if>
-            <if test="m.deviceClassify != null">
+            <if test="m.deviceClassify != ''">
                 b.IDEVCLASS = #{m.deviceClassify}
             </if>
-            <if test="m.deviceType != null">
+            <if test="m.deviceType != ''">
                 a.IDEVTYPE= #{m.deviceType}
             </if>
-            <if test="m.deviceNo != null">
+            <if test="m.deviceNo != ''">
                 a.terminal_code= #{m.deviceNo}
             </if>
-            <if test="m.orderNo != null">
+            <if test="m.orderNo != ''">
                 a.work_order_code= #{m.orderNo}
             </if>
-            <if test="m.startTime != null">
+            <if test="m.startTime != ''">
                 a.create_time BETWEEN #{m.startTime} AND #{m.endTime}
             </if>
-            <if test="m.orderStatus != null">
+            <if test="m.orderStatus != ''">
                 a.work_order_status= #{m.orderStatus}
             </if>
          </where>
