@@ -27,5 +27,11 @@ public class PrinterListVo {
     private String passbookPrinterStatus;
     @ApiModelProperty(value = "存折打印机名称")
     private String passbookPrinterName;
+    @ApiModelProperty(value = "用户类型")
+    private String userType;
+    @ApiModelProperty(value = "姓名")
+    private String name;
+    @ApiModelProperty(value = "电话")
+    private String phone;
 
 }

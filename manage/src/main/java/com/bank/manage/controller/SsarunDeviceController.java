@@ -80,8 +80,8 @@ public class SsarunDeviceController extends BaseController {
 
             deviceDetailsVo.setTerminalDetailsVo(terminalDetailsVo);
             //服务厂商
-            DeviceVendorVo deviceVendorVo = ssarunDeviceService.getDeviceVendorByCode(deviceDetailsVo.getDeviceVendor());
-            deviceDetailsVo.setDeviceVendorVo(deviceVendorVo);
+          //  DeviceVendorVo deviceVendorVo = ssarunDeviceService.getDeviceVendorByCode(deviceDetailsVo.getDeviceVendor());
+         //   deviceDetailsVo.setDeviceVendorVo(deviceVendorVo);
 
 
         }

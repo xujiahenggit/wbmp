@@ -234,8 +234,20 @@
                                            '流水打印机卡纸'
                                 else termstatus.VMJOURNALPRINTER
                                 end waterPrinterStatus,
-                              "流水打印机" waterPrinterName
+                              "流水打印机" waterPrinterName,
+                     case when ven.MANUEMPNATURE ='1' then
+                               '服务主管'
+                         else '服务工程师'
+                         end userType,
+                        ven.NAME AS name,
+                        ven.TELEPHONE phone
         from ssaview.termstatus termstatus
+        left join ssarun.term term
+          on term.STRTERMNUM = termstatus.STRTERMNUM
+        left join ssarun.device dev
+          on dev.id = term.DEVICEID
+        left join ssamgt.vendorpersonnel ven
+          on ven.DEVICEMANU = dev.STRDEVMANU
          where termstatus.STRTERMNUM = #{terminalCode}
     </select>
 
