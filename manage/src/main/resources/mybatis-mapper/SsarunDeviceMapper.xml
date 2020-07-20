@@ -145,14 +145,14 @@
             where termstatus.STRTERMNUM = #{terminalCode}
     </select>
 
+    <!--  '员工角色：1 服务主管，2 服务工程师'-->
     <select id="getDeviceVendorByCode" resultType="com.bank.manage.vo.DeviceVendorVo">
                 select
-
-                        case when vendorpersonnel.MANUEMPNATURE ='1' then                    -- '员工角色：1 服务主管，2 服务工程师',
-                                   '服务主管'
-                             else '服务工程师'
-                             end userType,
-                        vendorpersonnel.NAME name,
+                        case when vendorpersonnel.MANUEMPNATURE ='1' then
+                               '服务主管'
+                         else '服务工程师'
+                         end userType,
+                        vendorpersonnel.NAME AS name,
                         vendorpersonnel.TELEPHONE phone
                 from   ssamgt.vendorpersonnel vendorpersonnel
                 where  vendorpersonnel.DEVICEMANU = #{deviceVendor}
