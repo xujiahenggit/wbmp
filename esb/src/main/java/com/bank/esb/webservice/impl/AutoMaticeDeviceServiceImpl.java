@@ -55,7 +55,8 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         Map<String, Object> requestMap = ESBUtil.elementTomap(serviceElement);
 
         Map<String, Object> header = (Map<String, Object>) requestMap.get("Header");
-        Map<String, Object> body = (Map<String, Object>) requestMap.get("Body");
+        Map<String, Object> request = (Map<String, Object>) requestMap.get("Body");
+        Map<String, Object> body= (Map<String, Object>) request.get("Request");
         if (header == null) {
             throw new BizException("获取ESB请求报文头失败");
         }
