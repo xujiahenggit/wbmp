@@ -191,29 +191,29 @@
             left JOIN dat_selfsvcbank e on c.STRORGNO=e.STRSSBNUM
             ) b ON a.terminal_code=b.STRTERMNUM
          <where>
-            <if test="m.userId != null and m.userId != '' and m.related = '1'">
-                a.create_id= #{m.userId}
+            <if test='m.userId != null and m.userId != "" and m.related != null and m.related == "1"'>
+                and a.create_id= #{m.userId}
             </if>
             <if test="m.orderType != null and m.orderType != ''">
-                a.work_order_type= #{m.orderType}
+                and  a.work_order_type= #{m.orderType}
             </if>
             <if test="m.deviceClassify != null and m.deviceClassify != ''">
-                b.IDEVCLASS = #{m.deviceClassify}
+                and b.IDEVCLASS = #{m.deviceClassify}
             </if>
             <if test="m.deviceType !=null and m.deviceType != ''">
-                a.IDEVTYPE= #{m.deviceType}
+                and a.IDEVTYPE= #{m.deviceType}
             </if>
             <if test="m.deviceNo !=null and m.deviceNo != ''">
-                a.terminal_code= #{m.deviceNo}
+                and  a.terminal_code= #{m.deviceNo}
             </if>
             <if test="m.orderNo !=null and m.orderNo != ''">
-                a.work_order_code= #{m.orderNo}
+                and a.work_order_code= #{m.orderNo}
             </if>
             <if test="m.startTime !=null and m.startTime != ''">
-                a.create_time BETWEEN #{m.startTime} AND #{m.endTime}
+                and a.create_time BETWEEN #{m.startTime} AND #{m.endTime}
             </if>
             <if test="m.orderStatus != null and m.orderStatus != ''">
-                a.work_order_status= #{m.orderStatus}
+                and a.work_order_status= #{m.orderStatus}
             </if>
          </where>
             LIMIT #{m.pageIndex},#{m.pageSize}

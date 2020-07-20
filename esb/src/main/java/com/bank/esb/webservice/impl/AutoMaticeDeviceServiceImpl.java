@@ -265,7 +265,6 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         responseDto.setPageIndex(pageIndex);
         responseDto.setPageSize(pageSize);
         orderNumVo.setPageIndex((pageIndex - 1) * pageSize);
-        orderNumVo.setPageIndex(pageIndex);
         orderNumVo.setPageSize(pageSize);
         List<OrderDto> orderDtoList = datWorkOrderDao.queryOrders(orderNumVo);
         String orderType = orderNumVo.getOrderType();
