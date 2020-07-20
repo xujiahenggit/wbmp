@@ -1,5 +1,8 @@
 package com.bank.esb.dao;
 
+import com.bank.esb.dos.DatBranchDO;
+import com.bank.esb.dos.DatSelfsvcbankDO;
+import com.bank.esb.dos.DatSubbranchDO;
 import com.bank.esb.dto.CSInfoDto;
 import com.bank.esb.dto.EngineerDto;
 import com.bank.esb.dto.ManagerDto;
@@ -23,4 +26,12 @@ public interface EsbDao {
     List<CSInfoDto> getCSInfo();
 
     List<OrderDto> getEsbErrOrder(@Param("o") OrderNumVo orderNumVo);
+
+    Map<String, String> getEngineerInfo(@Param("engineerId") String engineerId);
+
+    List<DatBranchDO> getBranch(@Param("orgid") String orgId);
+
+    List<DatSubbranchDO> getSubBranch(@Param("orgid")String orgId);
+
+    List<DatSelfsvcbankDO> getSelfBranch(@Param("orgid")String orgId);
 }

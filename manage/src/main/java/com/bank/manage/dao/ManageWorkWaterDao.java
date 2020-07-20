@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
+
 /**
  * 工单流水表 Mapper 接口
  *
@@ -23,4 +25,5 @@ public interface ManageWorkWaterDao extends BaseMapper<WorkWaterDO> {
 	 */
 	List<WorkWaterDO> listPage(IPage page,@Param("model") WorkWaterDO workWater);
 
+    List<Map<String, String>> getwater(@Param("id") String orderId);
 }

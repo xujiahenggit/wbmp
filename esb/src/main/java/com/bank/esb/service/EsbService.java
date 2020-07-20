@@ -1,5 +1,8 @@
 package com.bank.esb.service;
 
+import com.bank.esb.dos.DatBranchDO;
+import com.bank.esb.dos.DatSelfsvcbankDO;
+import com.bank.esb.dos.DatSubbranchDO;
 import com.bank.esb.dto.CSInfoDto;
 import com.bank.esb.dto.EngineerDto;
 import com.bank.esb.dto.ManagerDto;
@@ -20,4 +23,12 @@ public interface EsbService {
     List<CSInfoDto> getCSInfo();
 
     List<OrderDto> getEsbErrOrder(OrderNumVo orderNumVo);
+
+    Map<String, String> getEngineerInfo(String engineerId);
+
+    List<DatBranchDO> getBranch(String orgId);
+
+    List<DatSubbranchDO> getSubBranch(String orgId);
+
+    List<DatSelfsvcbankDO> getSelfBranch(String orgId);
 }

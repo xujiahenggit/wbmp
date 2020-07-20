@@ -198,6 +198,13 @@ public class EarlyWarnMonitorController {
         return earlyWarnMonitorService.returnRoleLists(userNo);
     }
 
+    @ApiOperation("柜员号 10030")
+    @GetMapping("/returnCounterNo/{userNo}")
+    @ApiImplicitParam(name = "userNo",value = "主键",required = true,paramType = "path")
+    public Object returnCounterNo(@PathVariable("userNo") String userNo){
+        return earlyWarnMonitorService.returnCounterNo(userNo);
+    }
+
     @ApiOperation("调查任务详情接口029")
     @GetMapping("/getTaskByCode/{taskkey}")
     @ApiImplicitParam(name = "taskkey",value = "主键",required = true,paramType = "path")

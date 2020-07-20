@@ -63,4 +63,6 @@ public interface EarlyWarnMonitorService {
     Object getMyTaskByNo(String userNo);
 
     Object getUpdateByKey(String alertKey);
+
+    Object returnCounterNo(String userNo);
 }

@@ -31,7 +31,7 @@ import java.util.Map;
  * 陈强
  *
  */
-@Api(tags = "设备管理--工单")
+@Api(tags = "监控平台-工单信息接口")
 @RestController
 @RequestMapping("/repair")
 public class RepairController {

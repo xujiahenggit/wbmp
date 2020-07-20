@@ -2,6 +2,7 @@ package com.bank.manage.controller;
 
 import com.bank.auth.base.BaseController;
 import com.bank.core.entity.BizException;
+import com.bank.manage.dto.DeviceTradeDto;
 import com.bank.manage.dto.KioskDto;
 import com.bank.manage.service.SsarunDeviceService;
 import com.bank.manage.vo.*;
@@ -65,18 +66,28 @@ public class SsarunDeviceController extends BaseController {
         }
         //获取设备信息
         DeviceDetailsVo deviceDetailsVo = ssarunDeviceService.getDeviceDetailsById(code);
-        TerminalDetailsVo terminalDetailsVo = null;
-        DeviceVendorVo deviceVendorVo = null;
         //获取终端状态
         if(deviceDetailsVo != null){
-             terminalDetailsVo = ssarunDeviceService.getTerminalDetailsById(deviceDetailsVo.getTerminalCode());
+
+            TerminalDetailsVo terminalDetailsVo = ssarunDeviceService.getTerminalDetailsById(deviceDetailsVo.getTerminalCode());
+              //1.获取读卡器
+            List<ReaderStatusList> readerStatusList =ssarunDeviceService.getReaderStatusListById(deviceDetailsVo.getTerminalCode());
+            terminalDetailsVo.setReaderStatusListList(readerStatusList);
+
+              //2.获取打印机
+            List<PrinterListVo> printerListVoList = ssarunDeviceService.getPrinterListById(deviceDetailsVo.getTerminalCode());
+            terminalDetailsVo.setPrinterListVoList(printerListVoList);
+
+            deviceDetailsVo.setTerminalDetailsVo(terminalDetailsVo);
             //服务厂商
-            deviceVendorVo = ssarunDeviceService.getDeviceVendorByCode(deviceDetailsVo.getDeviceVendor());
+            DeviceVendorVo deviceVendorVo = ssarunDeviceService.getDeviceVendorByCode(deviceDetailsVo.getDeviceVendor());
+            deviceDetailsVo.setDeviceVendorVo(deviceVendorVo);
+
+
         }
-            Map map =new HashMap();
+
+            Map<String,Object> map =new HashMap<String,Object>();
             map.put("deviceDetailsVo",deviceDetailsVo);
-            map.put("terminalDetailsVo",terminalDetailsVo);
-            map.put("deviceVendorVo",deviceVendorVo);
             return map;
     }
 
@@ -90,5 +101,14 @@ public class SsarunDeviceController extends BaseController {
         return list;
     }
 
+    /**
+     * 监控设备交易趋势
+     */
+    @ApiOperation(value ="监控设备交易趋势")
+    @PostMapping("/DeviceTradeTend")
+    public List<DeviceTradeTrendVo> DeviceTradeTrend(@RequestBody DeviceTradeDto deviceTradeDto){
+        List<DeviceTradeTrendVo> list = ssarunDeviceService.getDeviceTradeList(deviceTradeDto);
+        return list;
+    }
 
 }

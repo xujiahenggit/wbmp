@@ -172,20 +172,17 @@
             SELECT
                     term.STRTERMNUM terminalCode,
                     device.IDEVTYPE equipmentType,
-                    branch.org_code branchOrgId,
-                    subbranch.org_code subbranchOrgId,
-                    selfsvcbank.STRADDRESS address,
+                    term.ORGANIZATION branchOrgId,
+
+                    term.STRTERMADDR address,
                     device.firstinstalldate installationTime,
-                    device.STRDEVMANU deviceVendor
-            from dat_term term
-            left join dat_device device
+                    device.STRDEVMANU deviceVendor,
+                    vendorpersonnel.NAME name
+            from ssarun.term term
+            left join ssarun.device device
             on device.id = term.DEVICEID
-            left join dat_branch branch
-            on branch.STRBRANCHNUM =device.STRBRANCHNUM
-            left join dat_subbranch subbranch
-            on subbranch.STRBRANCHNUM = branch.STRBRANCHNUM
-            left join dat_selfsvcbank selfsvcbank
-            on selfsvcbank.STRBRANCHNUM = subbranch.STRBRANCHNUM
+            left join ssamgt.vendorpersonnel vendorpersonnel
+            on vendorpersonnel.DEVICEMANU = device.STRDEVMANU
             where term.STRTERMNUM =#{terminalCode}
     </select>
 
