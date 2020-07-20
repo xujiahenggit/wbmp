@@ -72,4 +72,13 @@ public interface SsarunDeviceDao {
      * @return
      */
     List<DeviceTradeTrendVo> getDeviceTradeYearsList(@Param("dto") DeviceTradeDto deviceTradeDto);
+
+    /**
+     *
+     *
+     * 获取打印机
+     * @param terminalCode
+     * @return
+     */
+    List<PrinterListVo> getPrinterListById(@Param("terminalCode") String terminalCode);
 }
