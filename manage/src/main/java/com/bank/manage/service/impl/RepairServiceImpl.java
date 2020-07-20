@@ -171,8 +171,9 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
     }
 
     @Override
+    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
     public IPage<KioskVo> getKioskList(KioskDto kioskDto) {
-        Page<LargerScreenVo> page = new Page<>(kioskDto.getPageIndex(), kioskDto.getPageSize());
+        Page<KioskVo> page = new Page<>(kioskDto.getPageIndex(), kioskDto.getPageSize());
         return repairDao.kioskDto(page,kioskDto);
     }
 

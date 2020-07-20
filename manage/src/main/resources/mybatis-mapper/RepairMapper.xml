@@ -612,18 +612,25 @@
     </select>
 
     <select id="kioskDto" resultType="com.bank.manage.vo.KioskVo">
-            select
+             select
                     dev.id id,
                     dev.IDEVTYPE equipmentName,
                     dev.ISTATUS status,
                     term.STRTERMNUM terminalCode,
                     term.STRTERMADDR address,
                     term.ORGANIZATION
-            from dat_device dev
-               left join dat_term term
+            from ssarun.device dev
+               left join ssarun.term term
             on term.DEVICEID = dev.id
+               left join ssamgt.branch branch
+            on branch.STRBRANCHNUM = term.STRSUBBRANCHNUM
+              left join ssamgt.subbranch subbranch
+            on subbranch.STRSUBBRANCHNUM = term.STRSUBBRANCHNUM
+
            where
                 term.ORGANIZATION = #{model.organization}
+                or branch.org_code = #{model.organization}
+                or subbranch.org_code= #{model.organization}
     </select>
 
     <select id ="getKioskById" resultType="com.bank.manage.vo.CompletedWordOrderVo">
