@@ -21,6 +21,6 @@ public interface WorkOrderDao extends BaseMapper<WorkOrderDO> {
 	 * @param workOrder
 	 * @return
 	 */
-	List<WorkOrderDO> listPage(IPage page,@Param("model") WorkOrderDO workOrder);
+	List<WorkOrderDO> listPage(IPage page, @Param("model") WorkOrderDO workOrder);
 
 }

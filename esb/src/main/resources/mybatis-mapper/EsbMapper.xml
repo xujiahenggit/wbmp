@@ -103,4 +103,13 @@
     <select id="getSelfBranch" resultType="com.bank.esb.dos.DatSelfsvcbankDO">
         select * from  selfsvcbank where STRSUBBRANCHNUM=#{orgid}
     </select>
+
+    <select id="getXjdInfo" resultType="java.util.Map">
+        SELECT b.STRDEVSN,b.IDEVTYPE,b.IDEVCLASS,b.STRDEVMANU,c.STRVALUE,
+        a.STRBRANCHNUM,a.STRSUBBRANCHNUM,a.STRSSBNUM,a.STRORGNO
+        FROM ssarun.term a
+        LEFT JOIN ssarun.device b on a.DEVICEID=b.ID
+        LEFT JOIN ssarun.domaindict c ON b.STRDEVMANU = c.STRNAME
+        WHERE a.STRTERMNUM=#{deviceId}
+    </select>
 </mapper>

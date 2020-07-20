@@ -79,4 +79,10 @@ public class EsbServiceImpl implements EsbService {
         return esbDao.getSelfBranch(orgId);
     }
 
+    @Override
+    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
+    public Map<String, Object> getXjdInfo(String deviceNo) {
+        return esbDao.getXjdInfo(deviceNo);
+    }
+
 }

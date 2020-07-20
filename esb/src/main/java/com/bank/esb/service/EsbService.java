@@ -31,4 +31,6 @@ public interface EsbService {
     List<DatSubbranchDO> getSubBranch(String orgId);
 
     List<DatSelfsvcbankDO> getSelfBranch(String orgId);
+
+    Map<String, Object> getXjdInfo(String deviceNo);
 }

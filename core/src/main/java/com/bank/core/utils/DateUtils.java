@@ -549,4 +549,8 @@ public class DateUtils {
         List<String> list = getDateBefor30();
         System.out.println( Arrays.toString(list.toArray()));
     }
+
+    public static String now() {
+        return DateUtil.format(LocalDateTime.now(), "yyyyMMddHHmmssSSS");
+    }
 }

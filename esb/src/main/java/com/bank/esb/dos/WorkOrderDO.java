@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
  * 工单表实体类
  *
  * @author 代码自动生成
- * @since 2020-07-15
+ * @since 2020-07-20
  */
 @Data
 @Builder
@@ -32,19 +32,34 @@ public class WorkOrderDO implements Serializable {
   @TableId(value = "id", type = IdType.AUTO)
   private Integer id;
     /**
-     * 退回意见
+     * 工单编号
      */
-  @ApiModelProperty(value = "退回意见")
-  private String returnOpinion;
+  @ApiModelProperty(value = "工单编号")
+  private String workOrderCode;
     /**
      * 终端编号
      */
   @ApiModelProperty(value = "终端编号")
   private String terminalCode;
     /**
-     * 工单类型：1-故障工单；2-投诉工单；3-巡检
+     * 设备序列号
      */
-  @ApiModelProperty(value = "工单类型：1-故障工单；2-投诉工单；3-巡检")
+  @ApiModelProperty(value = "设备序列号")
+  private String serialNum;
+    /**
+     * 设备类型：1 自动取款机,2 自动存款机,3 自动存取款机,4 自动查询机,5 多媒体终端,6 个性化发卡机,7 回单打印机,8 智能现金柜
+     */
+  @ApiModelProperty(value = "设备类型：1 自动取款机,2 自动存款机,3 自动存取款机,4 自动查询机,5 多媒体终端,6 个性化发卡机,7 回单打印机,8 智能现金柜")
+  private Integer deviceType;
+    /**
+     * 设备分类：0 现金自助,1 非现金自助,2 快柜设备,3 大额机,4 智能现金柜
+     */
+  @ApiModelProperty(value = "设备分类：0 现金自助,1 非现金自助,2 快柜设备,3 大额机,4 智能现金柜")
+  private String deviceClass;
+    /**
+     * 工单类型：01-故障工单；02-投诉工单；03-巡检
+     */
+  @ApiModelProperty(value = "工单类型：01-故障工单；02-投诉工单；03-巡检")
   private String workOrderType;
     /**
      * 优先级编号（1：一般 2：紧急）
@@ -67,10 +82,10 @@ public class WorkOrderDO implements Serializable {
   @ApiModelProperty(value = "创建人id")
   private String createId;
     /**
-     * 工单编号
+     * 创建人姓名
      */
-  @ApiModelProperty(value = "工单编号")
-  private String workOrderCode;
+  @ApiModelProperty(value = "创建人姓名")
+  private String createName;
     /**
      * 回复意见
      */
@@ -87,14 +102,14 @@ public class WorkOrderDO implements Serializable {
   @ApiModelProperty(value = "工单描述")
   private String workOrderDescribe;
     /**
-     * 服务主管
+     * 服务主管id
      */
-  @ApiModelProperty(value = "服务主管")
+  @ApiModelProperty(value = "服务主管id")
   private String director;
     /**
-     * 服务工程师
+     * 服务工程师id
      */
-  @ApiModelProperty(value = "服务工程师")
+  @ApiModelProperty(value = "服务工程师id")
   private String engineer;
     /**
      * 工单完成时间
@@ -106,6 +121,11 @@ public class WorkOrderDO implements Serializable {
      */
   @ApiModelProperty(value = "描述类型")
   private String describeType;
+    /**
+     * 退回意见
+     */
+  @ApiModelProperty(value = "退回意见")
+  private String returnOpinion;
     /**
      * 评价等级（1：优 2：良 3：一般 4：差）
      */
@@ -169,15 +189,15 @@ public class WorkOrderDO implements Serializable {
   @ApiModelProperty(value = "自助行")
   private String buffetLine;
     /**
-     * 厂商
+     * 厂商id
      */
-  @ApiModelProperty(value = "厂商")
+  @ApiModelProperty(value = "厂商id")
   private String vendor;
     /**
-     * 创建人姓名
+     * 厂商名字
      */
-  @ApiModelProperty(value = "创建人姓名")
-  private String createName;
+  @ApiModelProperty(value = "厂商名字")
+  private String vendorName;
 
 
 }

@@ -6,6 +6,7 @@ import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.bank.core.entity.BizException;
+import com.bank.core.utils.DateUtils;
 import com.bank.esb.dao.DatWorkOrderDao;
 import com.bank.esb.dos.*;
 import com.bank.esb.dto.*;
@@ -249,9 +250,9 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         ResponseDto responseDto = new ResponseDto();
         responseDto.setStatus("0");
         int pageIndex = orderNumVo.getPageIndex();
-        int pageSize = orderNumVo.getPageSize();
+        Integer pageSize = orderNumVo.getPageSize();
         responseDto.setPageIndex(pageIndex);
-        responseDto.setPageSize(pageSize);
+        responseDto.setPageSize(pageSize==null?10:pageSize);
         orderNumVo.setPageIndex((pageIndex - 1) * pageSize);
         List<OrderDto> orderDtoList = datWorkOrderDao.queryOrders(orderNumVo);
         String orderType = orderNumVo.getOrderType();
@@ -349,18 +350,8 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
     private ResponseInspectionSheetDto getInspectionSheet(InspectionSheetVo inspectionSheetVo) {
         ResponseInspectionSheetDto responseInspectionSheetDto = new ResponseInspectionSheetDto();
         responseInspectionSheetDto.setRepcode("0");
-        List<InspectionSheetDto> list = new ArrayList<>();
-        for (int i = 0; i < 2; i++) {
-            InspectionSheetDto institutionsDto = new InspectionSheetDto();
-            institutionsDto.setOrgId("10010" + i);
-            institutionsDto.setDeviceProperty("阿萨");
-            institutionsDto.setInprocessNo("1111");
-            institutionsDto.setOrgAddress("湖南省");
-            institutionsDto.setSerialNum("101");
-            institutionsDto.setWarrantyTime(new Date());
-            list.add(institutionsDto);
-        }
-        responseInspectionSheetDto.setInspectionSheetDtoList(list);
+//        List<InspectionSheetDto> list =
+//        responseInspectionSheetDto.setInspectionSheetDtoList(list);
         return responseInspectionSheetDto;
     }
 
@@ -368,10 +359,21 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         InspectionSheetsDto inspectionSheetsDto = new InspectionSheetsDto();
         inspectionSheetsDto.setRepcode("0");
         //巡检单创建
+        String deviceNo = inspectionSheetsVo.getDeviceNo();
+        Map<String,Object> xjdInfo=esbService.getXjdInfo(deviceNo);
+
         WorkOrderDO workOrderDO = WorkOrderDO.builder()
-                .terminalCode(inspectionSheetsVo.getDeviceNo())
-                .workOrderType("3")
-                .workOrderCode(UUID.randomUUID().toString())
+                .terminalCode(deviceNo)
+                .workOrderType("03")
+                .workOrderCode("03"+ DateUtils.now())
+                .deviceType(Integer.parseInt((String) xjdInfo.get("IDEVTYPE")))
+                .deviceClass(xjdInfo.get("IDEVCLASS").toString())
+                .serialNum(xjdInfo.get("STRDEVSN").toString())
+                .vendor(xjdInfo.get("STRDEVMANU").toString())
+                .vendorName(xjdInfo.get("STRVALUE").toString())
+                .branch(xjdInfo.get("STRBRANCHNUM").toString())
+                .subBranch(xjdInfo.get("STRSUBBRANCHNUM").toString())
+                .buffetLine(xjdInfo.get("STRSSBNUM").toString())
                 .workOrderStatus("0")
                 .escortsPatrol(inspectionSheetsVo.getAccompany())
                 .escortsStartTime(DateUtil.parseLocalDateTime(inspectionSheetsVo.getStartTime()))
