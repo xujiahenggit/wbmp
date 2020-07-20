@@ -326,19 +326,22 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         String orgId = institutionsVo.getOrgId();
         List<InstitutionsDto> list = new ArrayList<>();
         if (StrUtil.isBlankIfStr(orgId)) {
-            List<DatBranchDO> datBranchDOS = datBranchService.list(new LambdaQueryWrapper<DatBranchDO>().eq(DatBranchDO::getStrbanknum, orgId));
+            List<DatBranchDO> datBranchDOS = esbService.getBranch(orgId);
+//                    datBranchService.list(new LambdaQueryWrapper<DatBranchDO>().eq(DatBranchDO::getStrbanknum, orgId));
             if (datBranchDOS.size() > 0) {
                 for (DatBranchDO datBranchDO : datBranchDOS) {
                     list.add(new InstitutionsDto(datBranchDO.getStrbranchnum(), datBranchDO.getStrbranchname()));
                 }
             } else {
-                List<DatSubbranchDO> subbranchDOS = datSubbranchService.list(new LambdaQueryWrapper<DatSubbranchDO>().eq(DatSubbranchDO::getStrbranchnum, orgId));
+                List<DatSubbranchDO> subbranchDOS = esbService.getSubBranch(orgId);
+//                        datSubbranchService.list(new LambdaQueryWrapper<DatSubbranchDO>().eq(DatSubbranchDO::getStrbranchnum, orgId));
                 if (subbranchDOS.size() > 0) {
                     for (DatSubbranchDO subbranchDO : subbranchDOS) {
                         list.add(new InstitutionsDto(subbranchDO.getStrsubbranchnum(), subbranchDO.getStrsubbranchname()));
                     }
                 } else {
-                    List<DatSelfsvcbankDO> selfsvcbankDOS = datSelfsvcbankService.list(new LambdaQueryWrapper<DatSelfsvcbankDO>().eq(DatSelfsvcbankDO::getStrsubbranchnum, orgId));
+                    List<DatSelfsvcbankDO> selfsvcbankDOS = esbService.getSelfBranch(orgId);
+//                            datSelfsvcbankService.list(new LambdaQueryWrapper<DatSelfsvcbankDO>().eq(DatSelfsvcbankDO::getStrsubbranchnum, orgId));
                     if (selfsvcbankDOS.size() > 0) {
                         for (DatSelfsvcbankDO selfsvcbankDO : selfsvcbankDOS) {
                             list.add(new InstitutionsDto(selfsvcbankDO.getStrssbnum(), selfsvcbankDO.getStrssbname()));
