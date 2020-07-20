@@ -65,4 +65,6 @@ public interface EarlyWarnMonitorService {
     Object getUpdateByKey(String alertKey);
 
     Object returnCounterNo(String userNo);
+
+    Object getUserList(UserListDo userListDo);
 }

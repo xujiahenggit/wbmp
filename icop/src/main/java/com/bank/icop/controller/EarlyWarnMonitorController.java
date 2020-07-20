@@ -247,5 +247,9 @@ public class EarlyWarnMonitorController {
         return earlyWarnMonitorService.getUpdateByKey(alertKey);
     }
 
-
+    @ApiOperation("用户所属机构032")
+    @PostMapping("/getUserList")
+    public Object getUserList(@RequestBody UserListDo userListDo){
+        return earlyWarnMonitorService.getUserList(userListDo);
+    }
 }
