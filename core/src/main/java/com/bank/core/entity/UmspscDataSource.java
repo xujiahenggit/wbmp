@@ -3,8 +3,8 @@ package com.bank.core.entity;
 import org.apache.commons.lang.StringUtils;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.bank.core.utils.ThreeDes;
 
-import cscb.password.ThreeDes;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -37,9 +37,8 @@ public class UmspscDataSource extends DruidDataSource {
             throw new BizException("请正确配置数据源密码！");
         }
 
-        log.info("数据库密码密文：{}", encPassword);
+        log.info("长行数据库密码解密===数据库密码密文：{}", encPassword);
         String password = ThreeDes.dePassword(encPassword);
-        log.info("数据库密码解密后明文：{}", password);
         return password;
     }
 

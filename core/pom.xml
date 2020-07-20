@@ -11,7 +11,6 @@
 
 	<artifactId>core</artifactId>
 
-
 	<dependencies>
 		<!-- WebSocket -->
 		<dependency>
@@ -31,15 +30,6 @@
 			<version>3.3.0</version>
 		</dependency>
 
-		<!-- 应用连接服务器/数据库加解密码机制 本地jar包 -->
-		<dependency>
-			<groupId>com.bcs.wechat.miniapp</groupId>
-			<artifactId>encPassword</artifactId>
-			<version>1.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/EncPassword.jar</systemPath>
-		</dependency>
-		
 		<!-- 影像平台jar包 -->
 		<dependency>
 			<groupId>com.thoughtworks.xstream</groupId>
