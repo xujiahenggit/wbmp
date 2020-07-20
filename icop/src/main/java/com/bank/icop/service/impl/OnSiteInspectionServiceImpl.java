@@ -107,7 +107,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         return getIcopTagData(parmMap,
                 "FXYJ11005",
                 "检查问题编辑",
-                "1,2",
+                "0,1",
                 "返回状态  -1:参数为空 , 0:未查询出数据 ,1:正常 ", "details");
     }
 
