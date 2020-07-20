@@ -33,11 +33,12 @@
             STRSSBNAME orgName,
             STRTERMADDR address,
             firstinstalldate installDate,
-            STRDEVMANU deviceVendor
+            STRVALUE deviceVendor
             FROM (
-            SELECT d.*,c.STRORGNO,c.STRTERMNUM,c.STRTERMADDR,e.STRSSBNAME FROM ssarun.term c
+            SELECT d.*,c.STRORGNO,c.STRTERMNUM,c.STRTERMADDR,e.STRSSBNAME,a.STRVALUE FROM ssarun.term c
             left JOIN ssarun.device d on c.DEVICEID = d.ID
             left JOIN selfsvcbank e on c.STRSSBNUM=e.STRSSBNUM
+			LEFT JOIN ssarun.domaindict a ON d.STRDEVMANU = a.STRNAME
             WHERE c.STRTERMNUM= #{id}
             ) b
     </select>
@@ -83,5 +84,11 @@
 
     <select id="getCSInfo" resultType="com.bank.esb.dto.CSInfoDto">
        SELECT STRNAME vendorId,STRVALUE vendorName from ssarun.domaindict where STRTYPE = 'DevManu'
+    </select>
+
+    <select id="getEngineerInfo" resultType="java.util.Map">
+        SELECT a.*,b.STRVALUE fws FROM vendorpersonnel a
+        LEFT JOIN ssarun.domaindict b ON a.DEVICEMANU= b.STRNAME
+        where a.ID = #{engineerId}
     </select>
 </mapper>

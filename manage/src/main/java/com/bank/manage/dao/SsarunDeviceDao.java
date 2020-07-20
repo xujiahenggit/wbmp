@@ -1,6 +1,7 @@
 package com.bank.manage.dao;
 
 
+import com.bank.manage.dto.DeviceTradeDto;
 import com.bank.manage.dto.KioskDto;
 import com.bank.manage.vo.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -58,5 +59,17 @@ public interface SsarunDeviceDao {
      */
     List<ReaderStatusList> getReaderStatusListById(@Param("terminalCode") String terminalCode);
 
-    List<PrinterListVo> getPrinterListById(@Param("terminalCode") String terminalCode);
+    /**
+     * 监控设备的交易趋势-按月查询
+     * @param deviceTradeDto
+     * @return
+     */
+    List<DeviceTradeTrendVo> getDeviceTradeMouthList(@Param("dto") DeviceTradeDto deviceTradeDto);
+
+    /**
+     * 监控设备的交易趋势-按年查询
+     * @param deviceTradeDto
+     * @return
+     */
+    List<DeviceTradeTrendVo> getDeviceTradeYearsList(@Param("dto") DeviceTradeDto deviceTradeDto);
 }

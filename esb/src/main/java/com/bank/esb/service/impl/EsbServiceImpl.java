@@ -52,4 +52,10 @@ public class EsbServiceImpl implements EsbService {
         return esbDao.getEsbErrOrder(orderNumVo);
     }
 
+    @Override
+    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
+    public Map<String, String> getEngineerInfo(String engineerId) {
+        return esbDao.getEngineerInfo(engineerId);
+    }
+
 }

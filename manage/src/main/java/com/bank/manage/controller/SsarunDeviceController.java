@@ -2,6 +2,7 @@ package com.bank.manage.controller;
 
 import com.bank.auth.base.BaseController;
 import com.bank.core.entity.BizException;
+import com.bank.manage.dto.DeviceTradeDto;
 import com.bank.manage.dto.KioskDto;
 import com.bank.manage.service.SsarunDeviceService;
 import com.bank.manage.vo.*;
@@ -100,5 +101,14 @@ public class SsarunDeviceController extends BaseController {
         return list;
     }
 
+    /**
+     * 监控设备交易趋势
+     */
+    @ApiOperation(value ="监控设备交易趋势")
+    @PostMapping("/DeviceTradeTend")
+    public List<DeviceTradeTrendVo> DeviceTradeTrend(@RequestBody DeviceTradeDto deviceTradeDto){
+        List<DeviceTradeTrendVo> list = ssarunDeviceService.getDeviceTradeList(deviceTradeDto);
+        return list;
+    }
 
 }

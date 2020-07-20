@@ -1,6 +1,7 @@
 package com.bank.manage.service;
 
 
+import com.bank.manage.dto.DeviceTradeDto;
 import com.bank.manage.dto.KioskDto;
 import com.bank.manage.vo.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -56,4 +57,10 @@ public interface SsarunDeviceService {
     List<ReaderStatusList> getReaderStatusListById(String terminalCode);
 
     List<PrinterListVo> getPrinterListById(String terminalCode);
+
+    /**
+     * 监控设备的交易趋势
+     * @return
+     */
+    List<DeviceTradeTrendVo> getDeviceTradeList(DeviceTradeDto deviceTradeDto);
 }
