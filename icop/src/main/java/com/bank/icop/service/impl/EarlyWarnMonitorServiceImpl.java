@@ -1,13 +1,18 @@
 package com.bank.icop.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 import com.bank.core.entity.BizException;
 import com.bank.icop.dos.*;
 import com.bank.icop.dto.TaskListsDto;
 import com.bank.icop.service.EarlyWarnMonitorService;
 import com.bank.icop.util.SoapUtil;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -345,16 +350,8 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
 
         parmMap.put("limit",alertListDo.getLimit());
         parmMap.put("offset",alertListDo.getOffset());
-        Map report = null;
-        try {
-            report = SoapUtil.sendReport("FXYJ10022","812",parmMap);
-        } catch (Exception e) {
-            throw new BizException("预警发起与识别数据列表报错！"+e.getMessage());
-        }
-        if(!"0".equals((String)report.get("status"))){
-            throw new BizException("执行失败,状态码:"+(String)report.get("status"));
-        }
-        return report;
+
+        return getIcopTagList(parmMap, "FXYJ10022", "预警发起与识别数据列表", "0", "执行失败");
     }
 
     @Override
@@ -641,5 +638,67 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
             throw new BizException("执行失败,状态码:"+(String)report.get("status"));
         }
         return report;
+    }
+
+    private Object getIcopTagData(Map<String, Object> parmMap, String serviceCode, String serviceName, String rightCode, String errMsg, String tag) {
+        Map report = getReport(parmMap, serviceCode, serviceName, rightCode, errMsg);
+        Object list = report.get(tag);
+        if (list != null) {
+            return list;
+        }
+        else {
+            throw new BizException("返回值不包含" + tag + "标签！");
+        }
+    }
+
+    private List getIcopTagList(Map<String, Object> parmMap, String serviceCode, String serviceName, String rightCode, String errMsg) {
+        Object data = getIcopTagData(parmMap, serviceCode, serviceName, rightCode, errMsg, "List");
+        return getArray(data);
+    }
+
+    private List getArray(Object data) {
+        if (data instanceof ArrayList) {
+            return (List) data;
+        }
+        else {
+            List result = new ArrayList();
+            if (data instanceof String) {
+            }
+            else {
+                result.add(data);
+            }
+            return result;
+        }
+    }
+
+    private Map getReport(Map<String, Object> parmMap, String serviceCode, String serviceName, String rightCode, String errMsg) {
+        Map report = null;
+        try {
+            report = SoapUtil.sendReport(serviceCode, "812", parmMap);
+        }
+        catch (Exception e) {
+            String errorMess = e.getMessage();
+            if (StringUtils.equals("Read timed out", e.getMessage())) {
+                errorMess = "请求超时！排查ICOP、ESB、源系统应用服务是否正常！";
+            }
+            throw new BizException(serviceName + "【" + serviceCode + "】报错：" + errorMess);
+        }
+        if (CollectionUtil.isEmpty(report)) {
+            throw new BizException("返回报文为空！");
+        }
+        checkStatus(serviceName, rightCode, errMsg, report);
+        return report;
+    }
+
+    private void checkStatus(String serviceName, String rightCode, String errMsg, Map report) {
+        String status = (String) report.get("status");
+        if (StrUtil.isBlankIfStr(status)) {
+            throw new BizException(serviceName + "接口返回状态码为空！");
+        }
+        else {
+            if (StringUtils.indexOf(rightCode, status) == -1) {
+                throw new BizException(errMsg + "；该接口返回状态码为：" + status + "！");
+            }
+        }
     }
 }
