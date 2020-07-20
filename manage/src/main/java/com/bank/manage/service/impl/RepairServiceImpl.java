@@ -1,5 +1,7 @@
 package com.bank.manage.service.impl;
 
+import com.bank.core.config.DataSource;
+import com.bank.core.config.DynamicDataSourceSwitcher;
 import com.bank.core.entity.BizException;
 import com.bank.manage.dao.InspectionEquipmentDto;
 import com.bank.manage.dao.LargerScreenDto;
@@ -45,6 +47,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
     }
 
     @Override
+    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
     public List<EquipmentVo> getEquipmentByCode(String terminalCode) {
         return repairDao.getEquipmentByCode(terminalCode);
     }
