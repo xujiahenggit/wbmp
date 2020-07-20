@@ -183,7 +183,7 @@
             a.terminal_code deviceNo,
             b.IDEVTYPE deviceType,
             b.IDEVTYPE deviceName,
-            b.STRDEVMODEL deviceBrand, -- 设备型号
+            b.STRDEVMODEL deviceBrand,
             a.work_order_describe orderDetail
          FROM t_work_order a LEFT JOIN (
             SELECT d.*,c.STRORGNO,c.STRTERMNUM,e.STRSSBNAME FROM dat_term c
@@ -191,7 +191,7 @@
             left JOIN dat_selfsvcbank e on c.STRORGNO=e.STRSSBNUM
             ) b ON a.terminal_code=b.STRTERMNUM
          <where>
-            <if test="m.userId != null and m.userId != '' and related = '1'">
+            <if test="m.userId != null and m.userId != '' and m.related = '1'">
                 a.create_id= #{m.userId}
             </if>
             <if test="m.orderType != null and m.orderType != ''">

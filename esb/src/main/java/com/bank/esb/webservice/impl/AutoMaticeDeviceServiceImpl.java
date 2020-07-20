@@ -67,63 +67,72 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         ESBRequestHeader requestHeader = JSON.parseObject(JSON.toJSONString(header), ESBRequestHeader.class);
 
         Map<String, Object> returnVO = new HashMap<String, Object>();
-        switch (requestHeader.getServiceCode()) {
-            case "WBMP10001"://工单查询
-                OrderNumVo orderNumVO = JSON.parseObject(JSON.toJSONString(body), OrderNumVo.class);
-                returnVO = JSON.parseObject(JSON.toJSONString(getOrders(orderNumVO)), Map.class);
-                break;
-            case "WBMP10002"://工单处理
-                OrderDealWithVo orderDealWithVo = JSON.parseObject(JSON.toJSONString(body), OrderDealWithVo.class);
-                returnVO = JSON.parseObject(JSON.toJSONString(orderDealWith(orderDealWithVo)), Map.class);
-                break;
-            case "WBMP10003"://机构列表接口
-                InstitutionsVo institutionsVo = JSON.parseObject(JSON.toJSONString(body), InstitutionsVo.class);
-                returnVO = JSON.parseObject(JSON.toJSONString(getInstitutions(institutionsVo)), Map.class);
-                break;
-            case "WBMP10004"://巡检单查询接口
-                InspectionSheetVo inspectionSheetVo = JSON.parseObject(JSON.toJSONString(body), InspectionSheetVo.class);
-                returnVO = JSON.parseObject(JSON.toJSONString(getInspectionSheet(inspectionSheetVo)), Map.class);
-                break;
-            case "WBMP10005"://巡检单创建接口
-                InspectionSheetsVo inspectionSheet = JSON.parseObject(JSON.toJSONString(body), InspectionSheetsVo.class);
-                returnVO = JSON.parseObject(JSON.toJSONString(getInspectionSheets(inspectionSheet)), Map.class);
-                break;
-            case "WBMP10007"://工程师列表查询接口    1
-                EngineerVo engineerVo = JSON.parseObject(JSON.toJSONString(body), EngineerVo.class);
-                returnVO = JSON.parseObject(JSON.toJSONString(getEngineer(engineerVo)), Map.class);
-                break;
-            case "WBMP10008"://工单分派查询
-                EngineerDto engineerDto = JSON.parseObject(JSON.toJSONString(body), EngineerDto.class);
-                returnVO = JSON.parseObject(JSON.toJSONString(getEngineer(engineerDto)), Map.class);
-                break;
-            case "WBMP10009"://状态变更（工程师到达现场）接口
-                StateChangesVo changeStatus = JSON.parseObject(JSON.toJSONString(body), StateChangesVo.class);
-                returnVO = JSON.parseObject(JSON.toJSONString(stateChanges(changeStatus)), Map.class);
-                break;
-            case "WBMP10010"://工单提交接口   1
-                OrderSubmissionVo orderSubmissionVo = JSON.parseObject(JSON.toJSONString(body), OrderSubmissionVo.class);
-                returnVO = JSON.parseObject(JSON.toJSONString(WBMP10010(orderSubmissionVo)), Map.class);
-                break;
-            case "WBMP10011"://投诉工单回复接口 1
-                RepairOrderBVo repairOrderBVo = JSON.parseObject(JSON.toJSONString(body), RepairOrderBVo.class);
-                returnVO = JSON.parseObject(JSON.toJSONString(repairOrder(repairOrderBVo)), Map.class);
-                break;
-            case "WBMP10012"://设备厂商列表查询接口   ?
-                returnVO = JSON.parseObject(JSON.toJSONString(WBMP10012()), Map.class);
-                break;
-            case "WBMP10013"://设备详细信息查询接口   1
-                returnVO = JSON.parseObject(JSON.toJSONString(WBMP10013(body.get("deviceId"))), Map.class);
-                break;
-            case "WBMP10014":
-                TransferInformationVo transferInformationVo = JSON.parseObject(JSON.toJSONString(body), TransferInformationVo.class);
-                returnVO = JSON.parseObject(JSON.toJSONString(getTransferInformation(transferInformationVo)), Map.class);
-                break;
-            case "WBMP10015"://服务信息查询接口
-                TransferInformationVo orderId = JSON.parseObject(JSON.toJSONString(body), TransferInformationVo.class);
-                returnVO = JSON.parseObject(JSON.toJSONString(WBMP10015(orderId)), Map.class);
-                break;
-            default:
-                break;
+
+        try {
+            switch (requestHeader.getServiceCode()) {
+                case "WBMP10001"://工单查询
+                    OrderNumVo orderNumVO = JSON.parseObject(JSON.toJSONString(body), OrderNumVo.class);
+                    returnVO = JSON.parseObject(JSON.toJSONString(getOrders(orderNumVO)), Map.class);
+                    break;
+                case "WBMP10002"://工单处理
+                    OrderDealWithVo orderDealWithVo = JSON.parseObject(JSON.toJSONString(body), OrderDealWithVo.class);
+                    returnVO = JSON.parseObject(JSON.toJSONString(orderDealWith(orderDealWithVo)), Map.class);
+                    break;
+                case "WBMP10003"://机构列表接口
+                    InstitutionsVo institutionsVo = JSON.parseObject(JSON.toJSONString(body), InstitutionsVo.class);
+                    returnVO = JSON.parseObject(JSON.toJSONString(getInstitutions(institutionsVo)), Map.class);
+                    break;
+                case "WBMP10004"://巡检单查询接口
+                    InspectionSheetVo inspectionSheetVo = JSON.parseObject(JSON.toJSONString(body), InspectionSheetVo.class);
+                    returnVO = JSON.parseObject(JSON.toJSONString(getInspectionSheet(inspectionSheetVo)), Map.class);
+                    break;
+                case "WBMP10005"://巡检单创建接口
+                    InspectionSheetsVo inspectionSheet = JSON.parseObject(JSON.toJSONString(body), InspectionSheetsVo.class);
+                    returnVO = JSON.parseObject(JSON.toJSONString(getInspectionSheets(inspectionSheet)), Map.class);
+                    break;
+                case "WBMP10007"://工程师列表查询接口    1
+                    EngineerVo engineerVo = JSON.parseObject(JSON.toJSONString(body), EngineerVo.class);
+                    returnVO = JSON.parseObject(JSON.toJSONString(getEngineer(engineerVo)), Map.class);
+                    break;
+                case "WBMP10008"://工单分派查询
+                    EngineerDto engineerDto = JSON.parseObject(JSON.toJSONString(body), EngineerDto.class);
+                    returnVO = JSON.parseObject(JSON.toJSONString(getEngineer(engineerDto)), Map.class);
+                    break;
+                case "WBMP10009"://状态变更（工程师到达现场）接口
+                    StateChangesVo changeStatus = JSON.parseObject(JSON.toJSONString(body), StateChangesVo.class);
+                    returnVO = JSON.parseObject(JSON.toJSONString(stateChanges(changeStatus)), Map.class);
+                    break;
+                case "WBMP10010"://工单提交接口   1
+                    OrderSubmissionVo orderSubmissionVo = JSON.parseObject(JSON.toJSONString(body), OrderSubmissionVo.class);
+                    returnVO = JSON.parseObject(JSON.toJSONString(WBMP10010(orderSubmissionVo)), Map.class);
+                    break;
+                case "WBMP10011"://投诉工单回复接口 1
+                    RepairOrderBVo repairOrderBVo = JSON.parseObject(JSON.toJSONString(body), RepairOrderBVo.class);
+                    returnVO = JSON.parseObject(JSON.toJSONString(repairOrder(repairOrderBVo)), Map.class);
+                    break;
+                case "WBMP10012"://设备厂商列表查询接口   ?
+                    returnVO = JSON.parseObject(JSON.toJSONString(WBMP10012()), Map.class);
+                    break;
+                case "WBMP10013"://设备详细信息查询接口   1
+                    returnVO = JSON.parseObject(JSON.toJSONString(WBMP10013(body.get("deviceId"))), Map.class);
+                    break;
+                case "WBMP10014":
+                    TransferInformationVo transferInformationVo = JSON.parseObject(JSON.toJSONString(body), TransferInformationVo.class);
+                    returnVO = JSON.parseObject(JSON.toJSONString(getTransferInformation(transferInformationVo)), Map.class);
+                    break;
+                case "WBMP10015"://服务信息查询接口
+                    TransferInformationVo orderId = JSON.parseObject(JSON.toJSONString(body), TransferInformationVo.class);
+                    returnVO = JSON.parseObject(JSON.toJSONString(WBMP10015(orderId)), Map.class);
+                    break;
+                default:
+                    break;
+            }
+        } catch (Exception e) {
+            String errid = UUID.randomUUID().toString().replaceAll("-","");
+            returnVO.put("repcode", "-1");
+            returnVO.put("errid", errid);
+            returnVO.put("errmsg","逻辑处理报错，错误id:"+errid+",请联系接口提供者");
+            log.error("errid:{},报错详情：{}",errid,e.getMessage());
         }
 
         Map<String, Object> response = new HashMap<String, Object>();
@@ -249,11 +258,15 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
     private ResponseDto getOrders(OrderNumVo orderNumVo) {
         ResponseDto responseDto = new ResponseDto();
         responseDto.setStatus("0");
-        int pageIndex = orderNumVo.getPageIndex();
+        Integer pageIndex = orderNumVo.getPageIndex();
         Integer pageSize = orderNumVo.getPageSize();
+        pageIndex=pageIndex==0?1:pageIndex;
+        pageSize=pageSize==0?10:pageSize;
         responseDto.setPageIndex(pageIndex);
-        responseDto.setPageSize(pageSize==null?10:pageSize);
+        responseDto.setPageSize(pageSize);
         orderNumVo.setPageIndex((pageIndex - 1) * pageSize);
+        orderNumVo.setPageIndex(pageIndex);
+        orderNumVo.setPageSize(pageSize);
         List<OrderDto> orderDtoList = datWorkOrderDao.queryOrders(orderNumVo);
         String orderType = orderNumVo.getOrderType();
         if (orderType != null && orderNumVo.getUserId() != null
@@ -320,7 +333,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         responseInstitutionsDto.setRepcode("0");
         String orgId = institutionsVo.getOrgId();
         List<InstitutionsDto> list = new ArrayList<>();
-        if (StrUtil.isBlankIfStr(orgId)) {
+        if (!StrUtil.isBlankIfStr(orgId)) {
             List<DatBranchDO> datBranchDOS = esbService.getBranch(orgId);
             if (datBranchDOS.size() > 0) {
                 for (DatBranchDO datBranchDO : datBranchDOS) {
