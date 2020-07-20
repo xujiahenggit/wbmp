@@ -17,6 +17,10 @@ public class DeviceTradeDto {
     @ApiModelProperty(value = "机构号")
     private String orgId;
 
+
+    @ApiModelProperty(value = "机构号类型 2-支行  3-网点")
+    private String orgType;
+
     @ApiModelProperty(value ="终端编号")
     private String termNum ;
 

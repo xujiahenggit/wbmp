@@ -251,7 +251,7 @@
          where termstatus.STRTERMNUM = #{terminalCode}
     </select>
 
-    <!--按年查询监控设备交易趋势-->
+    <!--按年查询监控设备交易趋势 dto.orgType==2 根据分行查询、dto.orgType==3 根据网点查询 -->
     <select id="getDeviceTradeMouthList" resultType="com.bank.manage.vo.DeviceTradeTrendVo">
         SELECT
             CONVERT (t2.day_str, CHAR) `date`,
@@ -269,10 +269,17 @@
             ) t2
             LEFT JOIN ssamgt.vw_translog AS i ON (
             DATE_FORMAT(i.trans_time, '%Y-%m') = t2.day_str
-            <if test="dto.orgId != null">
-                and i.trans_orgno = #{dto.orgId}
+            <if test="dto.orgType == 2">
+                <if test="dto.orgId != null and dto.orgId != ''">
+                    and substr(i.trans_orgno,1,6) = substr(#{dto.orgId},1,6)
+                </if>
             </if>
-            <if test="dto.termNum != null">
+            <if test="dto.orgType == 3">
+                <if test="dto.orgId != null and dto.orgId != ''">
+                    and i.trans_orgno = #{dto.orgId}
+                </if>
+            </if>
+            <if test="dto.termNum != null and dto.termNum != ''">
                 and i.term_num = #{dto.termNum}
             </if>
             )
@@ -298,8 +305,15 @@
         ) t2
         LEFT JOIN ssamgt.vw_translog AS i ON (
             DATE_FORMAT(i.trans_time, '%Y-%m-%d') = t2.day_str
-            <if test="dto.orgId != null">
-                and i.trans_orgno = #{dto.orgId}
+            <if test="dto.orgType == 2">
+                <if test="dto.orgId != null and dto.orgId != ''">
+                    and substr(i.trans_orgno,1,6) = substr(#{dto.orgId},1,6)
+                </if>
+            </if>
+            <if test="dto.orgType == 3">
+                <if test="dto.orgId != null and dto.orgId != ''">
+                    and i.trans_orgno = #{dto.orgId}
+                </if>
             </if>
             <if test="dto.termNum != null">
                 and i.term_num = #{dto.termNum}
