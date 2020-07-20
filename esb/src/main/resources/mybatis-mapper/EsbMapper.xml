@@ -7,7 +7,7 @@
         TELEPHONE phone
         FROM vendorpersonnel WHERE DEVICEMANU=(
         SELECT DEVICEMANU FROM vendorpersonnel WHERE ID = #{id} )
-        <if test="seachTxt!=null">
+        <if test="seachTxt!=''">
         AND (NAME=#{seachTxt} or TELEPHONE=#{seachTxt})
         </if>
         AND MANUEMPNATURE='2'
@@ -59,22 +59,22 @@
         b.STRSSBNAME orgName
         FROM work_order a LEFT JOIN selfsvcbank b ON a.STRSSBNUM=b.STRSSBNUM
         WHERE
-        <if test="o.deviceClassify!=null">
+        <if test="o.deviceClassify!=''">
             a.deviceClass = #{o.deviceClassify}
         </if>
-       <if test="o.orderStatus!=null">
+       <if test="o.orderStatus!=''">
            a.status = #{o.orderStatus}
        </if>
-       <if test="o.startTime and o.endTime!=null">
+       <if test="o.startTime and o.endTime!=''">
            a.beginDate BETWEEN #{o.startTime} AND #{o.endTime}
        </if>
-       <if test="o.orderNo!=null">
+       <if test="o.orderNo!=''">
            a.ID = #{o.orderNo}
        </if>
-       <if test="o.deviceNo!=null">
+       <if test="o.deviceNo!=''">
            a.strTermNum = #{o.deviceNo}
        </if>
-       <if test="o.deviceType!=null">
+       <if test="o.deviceType!=''">
            a.deviceType = #{o.deviceType}
        </if>
     </select>
