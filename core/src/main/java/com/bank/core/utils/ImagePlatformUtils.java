@@ -369,7 +369,7 @@ public class ImagePlatformUtils {
                 response.setImagePlatformFileList(imagePlatformFileList);
             }
             else {
-                throw new BizException("影像平台查询错误：" + resultMsg);
+                throw new BizException(resultMsg);
             }
             log.info("查询批次返回的信息[{}]", resultMsg);
         }
@@ -401,11 +401,15 @@ public class ImagePlatformUtils {
                 SAXReader builder = new SAXReader();
                 Document doc = builder.read(byteArrayInputStream);
                 Element rootElement = doc.getRootElement();
+                int data = rootElement.elements().size();
 
+                if (data == 0) {
+                    throw new BizException("根据影像ID[" + contentId + "]未获取到影像平台数据");
+                }
                 maxVer = rootElement.element("BatchBean").element("index_Object").attribute("MAX_VERSION").getValue();
             }
             else {
-                throw new BizException("影像平台查询最大版本号错误：" + resultMsg);
+                throw new BizException(resultMsg);
             }
             log.info("查询批次返回的信息[{}]", resultMsg);
         }
