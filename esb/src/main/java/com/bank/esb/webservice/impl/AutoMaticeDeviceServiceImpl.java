@@ -268,21 +268,35 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         Integer pageSize = orderNumVo.getPageSize();
         pageIndex = pageIndex == 0 ? 1 : pageIndex;
         pageSize = pageSize == 0 ? 10 : pageSize;
+        Integer total=0;
+
         responseDto.setPageIndex(pageIndex);
         responseDto.setPageSize(pageSize);
         orderNumVo.setPageIndex((pageIndex - 1) * pageSize);
         orderNumVo.setPageSize(pageSize);
         List<OrderDto> orderDtoList = datWorkOrderDao.queryOrders(orderNumVo);
         String orderType = orderNumVo.getOrderType();
+        List<OrderDto> esblist=new ArrayList<>();
         if (orderType != null && orderNumVo.getUserId() != null
                 && orderNumVo.getRelated() != null
-                && orderNumVo.equals("1")) {
-            List<OrderDto> esblist = esbService.getEsbErrOrder(orderNumVo);
+                && orderNumVo.equals("01")) {
+            esblist = esbService.getEsbErrOrder(orderNumVo);
 
         }
-
+        orderDtoList.addAll(esblist);
+        total=orderDtoList.size();
+        Integer offset=(pageIndex-1)*pageSize;
+        Integer limit=total-offset;
+        if(total>0){
+            if(pageIndex<=0){
+                offset=total%pageSize==0 ? (total/pageSize)-1*pageSize:total/pageSize*pageSize;
+                orderDtoList.subList(offset,total);
+            }else{
+                limit=pageSize>limit?limit:pageSize;
+                orderDtoList.subList(offset,offset*limit);
+            }
+        }
         responseDto.setList(orderDtoList);
-
         return responseDto;
     }
 

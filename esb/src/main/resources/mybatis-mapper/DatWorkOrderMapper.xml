@@ -216,7 +216,7 @@
                 and a.work_order_status= #{m.orderStatus}
             </if>
          </where>
-            LIMIT #{m.pageIndex},#{m.pageSize}
+--             LIMIT #{m.pageIndex},#{m.pageSize}
     </select>
 
 
