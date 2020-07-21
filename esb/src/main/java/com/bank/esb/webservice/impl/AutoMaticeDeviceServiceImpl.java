@@ -404,7 +404,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         ResponseEngineerDto responseEngineerDto = new ResponseEngineerDto();
         responseEngineerDto.setRepcode("0");
         List<EngineerDto> engineerDtoList = esbService.getEngineer(engineerVo.getEngineerMId(), engineerVo.getSeachTxt());
-        responseEngineerDto.setEngineerDtoList(engineerDtoList);
+        responseEngineerDto.setList(engineerDtoList);
         return responseEngineerDto;
     }
 
@@ -475,7 +475,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
             list.add(dto);
         }
         resonseTransferInformationDto.setRepcode("0");
-        resonseTransferInformationDto.setTransferInformationDtoList(list);
+        resonseTransferInformationDto.setList(list);
         if (workWaterDOS.size() > 0) {
             resonseTransferInformationDto.setOrderStatus(workWaterDOS.get(0).get("status"));
         }
