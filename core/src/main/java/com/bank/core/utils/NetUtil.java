@@ -45,7 +45,7 @@ public class NetUtil {
         return "http://" + ip + ":" + configFileReader.getApplicationPort() + configFileReader.getApplicationContextPath();
     }
 
-    private String getProIp() {
+    public String getProIp() {
         String ip = "";
         try {
             Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();

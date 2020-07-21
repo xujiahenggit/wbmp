@@ -36,6 +36,22 @@ public class SoapUtil {
 
     private static StringBuilder builder = new StringBuilder();
 
+    /**
+     * 新增icop流水逻辑
+     * @param serviceCode
+     * @param channelId
+     * @param icopSerialNumber
+     * @param paramMap
+     * @return
+     */
+    public static Map sendReport(String serviceCode, String channelId, String icopSerialNumber, Map<String, Object> paramMap) {
+        HeaderDO headerDO = new HeaderDO();
+        headerDO.setServiceCode(serviceCode);
+        headerDO.setChannelId(channelId);
+        headerDO.setExternalReference(icopSerialNumber);
+        return sendReport(headerDO, paramMap);
+    }
+
     public static Map sendReport(String serviceCode, String channelId, Map<String, Object> paramMap) {
         HeaderDO headerDO = new HeaderDO();
         headerDO.setServiceCode(serviceCode);
