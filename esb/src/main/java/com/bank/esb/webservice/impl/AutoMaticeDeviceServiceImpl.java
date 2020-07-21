@@ -148,6 +148,10 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         responseHeader.put("Response", JSON.parseObject(JSON.toJSONString(res), Map.class));
 
         Map<String, Object> responseBody = new HashMap<String, Object>();
+        if (returnVO.containsKey("list")){
+            returnVO.put("List", returnVO.get("list"));
+            returnVO.remove("list");
+        }
         responseBody.put("Response", returnVO);
 
         response.put("Header", responseHeader);
@@ -234,7 +238,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
 
         ArrayList<ServiceInformationDto> serviceInformationDtos = new ArrayList<>();
         serviceInformationDtos.add(dto);
-        responseDto.setServiceInformationDtoList(serviceInformationDtos);
+        responseDto.setList(serviceInformationDtos);
         return responseDto;
     }
 
@@ -356,7 +360,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                 }
             }
         }
-        responseInstitutionsDto.setInstitutionsDtoList(list);
+        responseInstitutionsDto.setList(list);
         return responseInstitutionsDto;
     }
 

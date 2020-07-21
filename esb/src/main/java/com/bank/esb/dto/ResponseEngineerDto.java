@@ -17,5 +17,5 @@ public class ResponseEngineerDto {
     private String repcode;
 
     @ApiModelProperty(value = "工程师dto")
-    private List<EngineerDto> list;
+    private List<EngineerDto> List;
 }

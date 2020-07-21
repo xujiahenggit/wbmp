@@ -15,5 +15,5 @@ public class ResponServiceInformationDto {
     private String repcode;
 
     @ApiModelProperty(value = "服务信息")
-    private List<ServiceInformationDto> serviceInformationDtoList;
+    private List<ServiceInformationDto> List;
 }
