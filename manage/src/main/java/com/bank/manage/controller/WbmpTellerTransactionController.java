@@ -1,7 +1,6 @@
 package com.bank.manage.controller;
 
 import com.bank.manage.service.WbmpTellerTransactionService;
-import com.bank.manage.vo.TellerTransactionVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;

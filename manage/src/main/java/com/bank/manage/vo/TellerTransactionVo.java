@@ -16,7 +16,7 @@ public class TellerTransactionVo implements Serializable {
     private String tranName;
     @ApiModelProperty("交易量")
     private BigDecimal tradeVolume;
-    @ApiModelProperty("交易总数")
+    @ApiModelProperty("柜员交易总数")
     private BigDecimal count;
 
 
