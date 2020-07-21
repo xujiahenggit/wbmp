@@ -320,9 +320,8 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                     list.add(new WorkOrderAttachmentDO(null, orderNo, url,
                             url, null));
                 }
-
+                workOrderAttachmentService.saveBatch(list);
             }
-            workOrderAttachmentService.saveBatch(list);
         } else {
             orderDealWithDto.setRepcode("-1");
         }
