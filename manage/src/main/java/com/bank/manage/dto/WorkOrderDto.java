@@ -20,8 +20,10 @@ public class WorkOrderDto {
     private String workOrderType;
     @ApiModelProperty(value = "优先级编号")
     private String priorityCode;
-    @ApiModelProperty(value = "服务主管")
+    @ApiModelProperty(value = "服务主管(手机号)")
     private String director;
+    @ApiModelProperty(value = "服务主管(名称)")
+    private String directorName;
     @ApiModelProperty(value = "要求完成时间")
     private Date requirCompleteTime;
     @ApiModelProperty(value = "工单描述")
@@ -39,5 +41,7 @@ public class WorkOrderDto {
     private String createId;
     @ApiModelProperty(value = "创建人姓名")
     private String createName;
+    @ApiModelProperty(value = "创建人手机号")
+    private String createUserPhone;
 
 }

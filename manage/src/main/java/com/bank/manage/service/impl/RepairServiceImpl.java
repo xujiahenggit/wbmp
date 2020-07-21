@@ -32,12 +32,13 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
 
     @Override
     public int saveRepair(WorkOrderDto workOrderDto) {
-        //生成工单编号  工单类型 1-故障工单；2-投诉工单；3-巡检
+        //生成工单编号  工单类型 01-故障工单；02-投诉工单；03-巡检
         LocalDateTime now =LocalDateTime.now();
         workOrderDto.setWorkOrderCode("01"+now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")));
         //工单状态默认  0 :待处理；1：待评价；2：办接；3：待分行确认；4：待总行确认；4：待厂商回复；6：总行知悉；7：分行知悉；8：退回；9：已关闭
         workOrderDto.setWorkOrderStatus("0");
         workOrderDto.setCreateTime(new Date());
+        workOrderDto.setWorkOrderType("01");
         return  repairDao.saveWorkOrder(workOrderDto);
     }
 

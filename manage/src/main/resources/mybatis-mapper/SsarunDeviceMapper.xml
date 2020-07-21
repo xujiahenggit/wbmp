@@ -155,7 +155,7 @@
                         vendorpersonnel.NAME AS name,
                         vendorpersonnel.TELEPHONE phone
                 from   ssamgt.vendorpersonnel vendorpersonnel
-                where  vendorpersonnel.DEVICEMANU = #{deviceVendor}
+                where  vendorpersonnel.DEVICEMANU = #{deviceVendor} and vendorpersonnel.MANUEMPNATURE='1'
 
     </select>
 

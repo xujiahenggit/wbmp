@@ -15,7 +15,9 @@
               work_order_status,
               create_time,
               create_id,
-              create_name
+              create_name,
+              createUserPhone,
+              directorName
 
            )
             values(
@@ -30,7 +32,9 @@
              #{workOrderStatus},
              #{createTime},
              #{createId},
-             #{createName}
+             #{createName},
+            #{createUserPhone},
+            #{directorName}
             )
 
     </insert>
@@ -171,7 +175,16 @@
     <select id="getEquipmentByCode" resultType="com.bank.manage.vo.EquipmentVo">
             SELECT
                     term.STRTERMNUM terminalCode,
-                    device.IDEVTYPE equipmentType,
+                   case when  device.IDEVTYPE='1' then
+                                '自动取款机'
+						when  device.IDEVTYPE='2' then
+							    '自动存款机'
+						when  device.IDEVTYPE='3' then
+								'自动存取款机'
+						when  device.IDEVTYPE='4' then
+								'自动查询机'
+						else device.IDEVTYPE
+						end equipmentType,   -- 自动取款机 1，自动存款机 2，自动存取款机 3，自动查询机 4',
                     term.ORGANIZATION branchOrgId,
 
                     term.STRTERMADDR address,
