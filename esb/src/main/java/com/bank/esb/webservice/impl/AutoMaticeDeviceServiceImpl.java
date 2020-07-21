@@ -379,7 +379,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                 .terminalCode(deviceNo)
                 .workOrderType("03")
                 .workOrderCode("03" + DateUtils.now())
-                .deviceType(Integer.parseInt((String) xjdInfo.get("IDEVTYPE")))
+                .deviceType(Integer.parseInt(xjdInfo.get("IDEVTYPE").toString()))
                 .deviceClass(xjdInfo.get("IDEVCLASS").toString())
                 .serialNum(xjdInfo.get("STRDEVSN").toString())
                 .vendor(xjdInfo.get("STRDEVMANU").toString())
