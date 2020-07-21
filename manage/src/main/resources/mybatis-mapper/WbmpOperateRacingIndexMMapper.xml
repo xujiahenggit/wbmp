@@ -57,4 +57,42 @@
         concat(substr(ORG_ID,1,6),'01') =  concat(substr(#{orgId},1,6),'01')
         AND DATE_FORMAT(DATA_DT,'%Y-%m')=#{date}
     </select>
+
+
+    <!--获取全行赛马制月度最大数值-->
+    <select id="getMouthMaxData" resultType="java.lang.Float">
+        SELECT
+            IFNULL(
+                (
+                    SELECT
+                          (max(INDEX_VAL) *100) AS INDEX_VAL
+                    FROM
+                        WBMP_OPERATE_RACING_INDEX_M
+                    WHERE
+                       INDEX_NO = #{id}  AND DATE_FORMAT(DATA_DT, '%Y-%m') = #{date}
+                    ORDER BY DATA_DT DESC
+					LIMIT  1
+                ),
+                0
+            )
+    </select>
+
+    <!--获取全行赛马制月度最小数值[取消无纸化率]-->
+    <select id="getMouthMinData" resultType="java.lang.Float">
+        SELECT
+            IFNULL(
+                (
+                    SELECT
+                          (min(INDEX_VAL) *100) AS INDEX_VAL
+                    FROM
+                        WBMP_OPERATE_RACING_INDEX_M
+                    WHERE
+                       INDEX_NO = #{id}  AND DATE_FORMAT(DATA_DT, '%Y-%m') = #{date}
+                    ORDER BY DATA_DT DESC
+					LIMIT  1
+                ),
+                0
+            )
+    </select>
+
 </mapper>

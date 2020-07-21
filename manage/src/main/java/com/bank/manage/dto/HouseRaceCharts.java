@@ -19,5 +19,5 @@ public class HouseRaceCharts implements Serializable {
     private List<HouseRaceItem> indicator;
 
     @ApiModelProperty(value = "值")
-    private List<Float> data;
+    private List<Map<String,Object>> data;
 }
