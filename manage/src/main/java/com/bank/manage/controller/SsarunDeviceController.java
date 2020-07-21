@@ -9,6 +9,7 @@ import com.bank.manage.vo.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -72,11 +73,17 @@ public class SsarunDeviceController extends BaseController {
             TerminalDetailsVo terminalDetailsVo = ssarunDeviceService.getTerminalDetailsById(deviceDetailsVo.getTerminalCode());
               //1.获取读卡器
             List<ReaderStatusList> readerStatusList =ssarunDeviceService.getReaderStatusListById(deviceDetailsVo.getTerminalCode());
-            terminalDetailsVo.setReaderStatusListList(readerStatusList);
+            if(CollectionUtils.isNotEmpty(readerStatusList)){
+                terminalDetailsVo.setReaderStatusListList(readerStatusList);
+            }
+
 
               //2.获取打印机
             List<PrinterListVo> printerListVoList = ssarunDeviceService.getPrinterListById(deviceDetailsVo.getTerminalCode());
-            terminalDetailsVo.setPrinterListVoList(printerListVoList);
+            if(CollectionUtils.isNotEmpty(printerListVoList)){
+                terminalDetailsVo.setPrinterListVoList(printerListVoList);
+            }
+
 
             deviceDetailsVo.setTerminalDetailsVo(terminalDetailsVo);
             //服务厂商

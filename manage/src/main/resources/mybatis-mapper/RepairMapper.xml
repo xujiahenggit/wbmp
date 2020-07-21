@@ -274,31 +274,33 @@
 
     <select id="getDevicesNumber"  resultType="com.bank.manage.vo.DevicesNumberVo">
         select    count(*) totalNumber,
-                  ifnull(sum( case when device.ISTATUS ='4' then
-                          1
-                    end ),0) onlineNumber,
-                  ifnull(sum( case when device.ISTATUS ='2' then
-                          1
-                    end ),0) suspendedNumber,
-                  ifnull(sum( case when device.ISTATUS ='5' then
-                          1
-                    end ),0) faultNumber,
-                  ifnull(sum( case when device.ISTATUS ='1' then
-                          1
-                    end ),0) offlineNumber,
-                  round(ifnull(sum( case when device.ISTATUS ='4' then
-                          1
-                    end )/count(*),0),2) availability
-     from dat_device device
-     left join dat_branch branch
+               ifnull(sum( case when device.ISTATUS ='4' then
+           1
+               end ),0) onlineNumber,
+        ifnull(sum( case when device.ISTATUS ='2' then
+        1
+        end ),0) suspendedNumber,
+        ifnull(sum( case when device.ISTATUS ='5' then
+        1
+        end ),0) faultNumber,
+        ifnull(sum( case when device.ISTATUS ='1' then
+        1
+        end ),0) offlineNumber,
+        round(ifnull(sum( case when device.ISTATUS ='4' then
+        1
+        end )/count(*),0),2) availability
+        from ssarun.device device
+            left join  ssamgt.branch branch
         on device.STRBRANCHNUM = branch.STRBRANCHNUM
-     left join dat_subbranch subbranch
+            left join ssamgt.subbranch subbranch
         on  subbranch.STRBRANCHNUM = branch.STRBRANCHNUM
-     <where>
-         <if test="orgId != null">
-             branch.org_code = #{orgId} or subbranch.org_code = #{orgId}
-         </if>
-     </where>
+           left join ssarun.term term
+        on term.DEVICEID = device.id
+        <where>
+            <if test="orgId != null">
+                branch.org_code = #{orgId} or subbranch.org_code = #{orgId} or term.ORGANIZATION = #{orgId}
+            </if>
+        </where>
 
     </select>
 
