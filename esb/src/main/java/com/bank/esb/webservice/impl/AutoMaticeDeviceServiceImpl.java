@@ -57,7 +57,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
 
         Map<String, Object> header = (Map<String, Object>) requestMap.get("Header");
         Map<String, Object> request = (Map<String, Object>) requestMap.get("Body");
-        Map<String, Object> body= (Map<String, Object>) request.get("Request");
+        Map<String, Object> body = (Map<String, Object>) request.get("Request");
         if (header == null) {
             throw new BizException("获取ESB请求报文头失败");
         }
@@ -128,11 +128,11 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                     break;
             }
         } catch (Exception e) {
-            String errid = UUID.randomUUID().toString().replaceAll("-","");
+            String errid = UUID.randomUUID().toString().replaceAll("-", "");
             returnVO.put("repcode", "-1");
             returnVO.put("errid", errid);
-            returnVO.put("errmsg","逻辑处理报错，错误id:"+errid+",请联系接口提供者");
-            log.error("errid:{},报错详情：{}",errid,e.getMessage());
+            returnVO.put("errmsg", "逻辑处理报错，错误id:" + errid + ",请联系接口提供者");
+            log.error("errid:{},报错详情：{}", errid, e.getMessage());
         }
 
         Map<String, Object> response = new HashMap<String, Object>();
@@ -172,11 +172,13 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
 
             //附件列表
             List<String> pictureUrl = orderSubmissionVo.getPictureUrl();
-            ArrayList<WorkOrderAttachmentDO> list = new ArrayList<>();
-            for (String url : pictureUrl) {
-                list.add(new WorkOrderAttachmentDO(null, orderNo, url, url, null));
+            if (pictureUrl != null && pictureUrl.size() > 0) {
+                ArrayList<WorkOrderAttachmentDO> list = new ArrayList<>();
+                for (String url : pictureUrl) {
+                    list.add(new WorkOrderAttachmentDO(null, orderNo, url, url, null));
+                }
+                workOrderAttachmentService.saveBatch(list);
             }
-            workOrderAttachmentService.saveBatch(list);
             map.put("repcode", "0");
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -201,26 +203,26 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         if (orderDO != null) {
             String engineerId = orderDO.getEngineer();
             dto.setEngineerId(engineerId);
-            Map<String,String> engineerInfo = esbService.getEngineerInfo(engineerId);
+            Map<String, String> engineerInfo = esbService.getEngineerInfo(engineerId);
             dto.setEngineerName(engineerInfo.get("NAME"));
             dto.setEngineerPhone(engineerInfo.get("TELEPHONE"));
             //主管信息
             String serverId = orderDO.getDirector();
-            Map<String,String> serverInfo = esbService.getEngineerInfo(serverId);
+            Map<String, String> serverInfo = esbService.getEngineerInfo(serverId);
             dto.setServerId(serverId);
             dto.setServerName(serverInfo.get("NAME"));
             dto.setServerPhone(serverInfo.get("TELEPHONE"));
 
             String workOrderType = orderDO.getWorkOrderType();
-            if (workOrderType.equals("01")){
+            if (workOrderType.equals("01")) {
                 dto.setProcessMode(orderDO.getDealType());
-            }else if (workOrderType.equals("03")){
+            } else if (workOrderType.equals("03")) {
                 dto.setProcessMode(orderDO.getEscortsHandling());
             }
             List<WorkWaterDO> workWaterDOS = workWaterService.list(new LambdaQueryWrapper<WorkWaterDO>().eq(WorkWaterDO::getWordOrderId, orderId).eq(WorkWaterDO::getDealWithType, "4"));
-            if (workWaterDOS.size()==1){
+            if (workWaterDOS.size() == 1) {
                 dto.setFinishTime(workWaterDOS.get(0).getDealWithTime().toString());
-            }else {
+            } else {
                 dto.setFinishTime("");
             }
             dto.setServiceProvider(serverInfo.get("fws"));
@@ -260,8 +262,8 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         responseDto.setStatus("0");
         Integer pageIndex = orderNumVo.getPageIndex();
         Integer pageSize = orderNumVo.getPageSize();
-        pageIndex=pageIndex==0?1:pageIndex;
-        pageSize=pageSize==0?10:pageSize;
+        pageIndex = pageIndex == 0 ? 1 : pageIndex;
+        pageSize = pageSize == 0 ? 10 : pageSize;
         responseDto.setPageIndex(pageIndex);
         responseDto.setPageSize(pageSize);
         orderNumVo.setPageIndex((pageIndex - 1) * pageSize);
@@ -313,7 +315,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
             //附件保存
             List<String> pictureUrl = orderDealWithVo.getPictureUrl();
             List list = new ArrayList<WorkOrderAttachmentDO>();
-            if (pictureUrl.size() > 0) {
+            if (pictureUrl != null && pictureUrl.size() > 0) {
                 for (String url : pictureUrl) {
                     list.add(new WorkOrderAttachmentDO(null, orderNo, url,
                             url, null));
@@ -372,12 +374,12 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         inspectionSheetsDto.setRepcode("0");
         //巡检单创建
         String deviceNo = inspectionSheetsVo.getDeviceNo();
-        Map<String,Object> xjdInfo=esbService.getXjdInfo(deviceNo);
+        Map<String, Object> xjdInfo = esbService.getXjdInfo(deviceNo);
 
         WorkOrderDO workOrderDO = WorkOrderDO.builder()
                 .terminalCode(deviceNo)
                 .workOrderType("03")
-                .workOrderCode("03"+ DateUtils.now())
+                .workOrderCode("03" + DateUtils.now())
                 .deviceType(Integer.parseInt((String) xjdInfo.get("IDEVTYPE")))
                 .deviceClass(xjdInfo.get("IDEVCLASS").toString())
                 .serialNum(xjdInfo.get("STRDEVSN").toString())
@@ -461,9 +463,9 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
     private ResonseTransferInformationDto getTransferInformation(TransferInformationVo transferInformationVo) {
         String orderId = transferInformationVo.getOrderId();
         ResonseTransferInformationDto resonseTransferInformationDto = new ResonseTransferInformationDto();
-        List<Map<String,String>> workWaterDOS = workWaterService.getwater(orderId);
+        List<Map<String, String>> workWaterDOS = workWaterService.getwater(orderId);
         ArrayList<TransferInformationDto> list = new ArrayList<>();
-        for (Map<String,String> waterDO : workWaterDOS) {
+        for (Map<String, String> waterDO : workWaterDOS) {
             TransferInformationDto dto = TransferInformationDto.builder()
                     .operatorUserId(waterDO.get("uid"))
                     .operatorUserName(waterDO.get("name"))
@@ -475,7 +477,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         }
         resonseTransferInformationDto.setRepcode("0");
         resonseTransferInformationDto.setTransferInformationDtoList(list);
-        if (workWaterDOS.size()>0){
+        if (workWaterDOS.size() > 0) {
             resonseTransferInformationDto.setOrderStatus(workWaterDOS.get(0).get("status"));
         }
         return resonseTransferInformationDto;
