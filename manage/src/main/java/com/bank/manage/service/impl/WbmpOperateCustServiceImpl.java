@@ -69,9 +69,6 @@ public class WbmpOperateCustServiceImpl extends ServiceImpl<WbmpOperateCustDao, 
             //按月统计
             List<String> months= DateUtils.getLatest12Month();
             List<Integer> data=new ArrayList<>();
-            //获取最近12个月的数据
-            List<WbmpOperateCustVo> custList = wbmpOperateCustDao.findMouthCust(customerAvgVo.getOrgId(),customerAvgVo.getCustomerTypeCode());
-
             if(WbmpConstFile.CUSTOMER_TYPE_CUST_000.equals(customerAvgVo.getCustomerTypeCode())){
                 for (String item:months){
                     int custValue =  wbmpOperateCustDao.findMouthsCustAll(customerAvgVo.getOrgId(),item);
@@ -79,6 +76,8 @@ public class WbmpOperateCustServiceImpl extends ServiceImpl<WbmpOperateCustDao, 
                 }
                 customerAvgDto=getCunstomerDtoModel(WbmpConstFile.DATE_TYPE_MONTH,WbmpConstFile.DATE_TYPE_MONTH_TXT,customerAvgVo.getCustomerTypeCode(),months,data);
             }else{
+                //获取最近12个月的数据
+                List<WbmpOperateCustVo> custList = wbmpOperateCustDao.findMouthCust(customerAvgVo.getOrgId(),customerAvgVo.getCustomerTypeCode());
                 for (String item:months){
                     int custValue = 0;
                     for(WbmpOperateCustVo cust:custList){
@@ -94,9 +93,6 @@ public class WbmpOperateCustServiceImpl extends ServiceImpl<WbmpOperateCustDao, 
             //按年统计
             List<String> years= DateUtils.getLatest3Year();
             List<Integer> data=new ArrayList<>();
-            //获取最近3年的数据
-            List<WbmpOperateCustVo> custList = wbmpOperateCustDao.findYearCust(customerAvgVo.getOrgId(),customerAvgVo.getCustomerTypeCode());
-
             if(WbmpConstFile.CUSTOMER_TYPE_CUST_000.equals(customerAvgVo.getCustomerTypeCode())){
                 for (String item:years){
                     int custValue =wbmpOperateCustDao.findYearCustAll(customerAvgVo.getOrgId(),item);
@@ -104,6 +100,8 @@ public class WbmpOperateCustServiceImpl extends ServiceImpl<WbmpOperateCustDao, 
                 }
                 customerAvgDto=getCunstomerDtoModel(WbmpConstFile.DATE_TYPE_YEAR,WbmpConstFile.DATE_TYPE_YEAR_TXT,customerAvgVo.getCustomerTypeCode(),years,data);
             }else{
+                //获取最近3年的数据
+                List<WbmpOperateCustVo> custList = wbmpOperateCustDao.findYearCust(customerAvgVo.getOrgId(),customerAvgVo.getCustomerTypeCode());
                 for (String item:years){
                     int custValue = 0;
                     for(WbmpOperateCustVo cust:custList){

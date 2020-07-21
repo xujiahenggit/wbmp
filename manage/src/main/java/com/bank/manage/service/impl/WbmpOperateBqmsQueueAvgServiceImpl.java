@@ -39,7 +39,7 @@ public class WbmpOperateBqmsQueueAvgServiceImpl extends ServiceImpl<WbmpOperateB
             BigDecimal abandonedLv = new BigDecimal(wbmpOperateBqmsQueueAvgDto.getAbandonedLv());
             BigDecimal indexCnt = new BigDecimal(wbmpOperateBqmsQueueAvgDto.getIndexCnt());
             //评价等待时长，单位由秒变为分钟【2020-07-20业务提出的优化】
-            indexCnt = indexCnt.divide(new BigDecimal("60"));
+            BigDecimal minIndexCnt =  indexCnt.divide(new BigDecimal("60"),1,BigDecimal.ROUND_HALF_UP);
 
             //平均弃号率[保留四位小数]
             wbmpOperateBqmsQueueAvgDto.setAvgAbandonedLv(Tools.formatBigdecimal(avgAbandonedLv,4));
@@ -48,7 +48,7 @@ public class WbmpOperateBqmsQueueAvgServiceImpl extends ServiceImpl<WbmpOperateB
 
             wbmpOperateBqmsQueueAvgDto.setCunstomerAvg(WbmpOperRateUtils.ComputeCustomerAvg(avgAbandonedLv,indexCnt));
 
-            wbmpOperateBqmsQueueAvgDto.setIndexCnt(Tools.formatBigdecimal(indexCnt,1));
+            wbmpOperateBqmsQueueAvgDto.setIndexCnt(Tools.formatBigdecimal(minIndexCnt,1));
         }else{
             wbmpOperateBqmsQueueAvgDto=new WbmpOperateBqmsQueueAvgDto();
             wbmpOperateBqmsQueueAvgDto.setCunstomerAvg(0);
