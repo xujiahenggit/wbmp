@@ -26,17 +26,28 @@ spring:
       max-file-size: 1024MB
       max-request-size: 1024MB
   datasource:
-    # 如果存在多个数据源，监控的时候可以通过名字来区分开来
-    name: mysql
-    # 连接数据库的url
-    url: jdbc:mysql://162.16.14.78:3306/wbmp?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true&failOverReadOnly=false&serverTimezone=GMT%2B8
-    # 连接数据库的账号
-    username: root
-    #  连接数据库的密码
-    #password: root78
-    password: 2iA6EctcLuo=
-    # 使用druid数据源
-    type: com.alibaba.druid.pool.DruidDataSource
+    master:
+      # 如果存在多个数据源，监控的时候可以通过名字来区分开来
+      name: master
+      # 连接数据库的url
+      url: jdbc:mysql://162.16.14.78:3306/wbmp?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true&failOverReadOnly=false&serverTimezone=GMT%2B8
+      # 连接数据库的账号
+      username: root
+      #  连接数据库的密码
+      #password: root78
+      password: 2iA6EctcLuo=
+      # 使用druid数据源
+      type: com.alibaba.druid.pool.DruidDataSource
+    esbmgt:
+      # 连接数据库的url
+      url: jdbc:mysql://162.16.4.33:3306/ssamgt?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true&failOverReadOnly=false&serverTimezone=GMT%2B8
+      # 连接数据库的账号
+      username: query
+      #  连接数据库的密码
+      #password: Query@123
+      password: Z4gKzn+Et8Oty7suge9jHw==
+      # 使用druid数据源
+      type: com.alibaba.druid.pool.DruidDataSource
     druid:
       # 扩展插件
       # 监控统计用的filter:stat 日志用的filter:log4j 防御sql注入的filter:wall
