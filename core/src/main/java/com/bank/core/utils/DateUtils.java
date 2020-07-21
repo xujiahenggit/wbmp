@@ -546,11 +546,14 @@ public class DateUtils {
 //        String date= LocalDate.now().minusDays(1).toString().substring(0, 7);
 //        System.out.println(date);
 
-        List<String> list = getDateBefor30();
+        List<String> list = getLatest12Month();
         System.out.println( Arrays.toString(list.toArray()));
     }
 
     public static String now() {
         return DateUtil.format(LocalDateTime.now(), "yyyyMMddHHmmssSSS");
     }
+
+
+
 }
