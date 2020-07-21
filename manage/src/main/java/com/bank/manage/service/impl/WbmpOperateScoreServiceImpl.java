@@ -152,7 +152,7 @@ public class WbmpOperateScoreServiceImpl extends ServiceImpl<WbmpOperateScoreDao
         for (WbmpOperateRacingIndexMDO item : listRacing) {
             //无纸化业务取消率(12.5%)
             if(WbmpConstFile.SMZ_RACING_001.equals(item.getIndexNo())){
-                wzh= WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*wzhper*100);
+                wzh= WbmpOperRateUtils.Maht2digit(100-(item.getIndexVal().floatValue()*wzhper*100));
             }
             //S21212=银企对账率(12.5%)
             if(WbmpConstFile.SMZ_RACING_003.equals(item.getIndexNo())){

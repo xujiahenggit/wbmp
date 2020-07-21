@@ -136,4 +136,54 @@
     </select>
 
 
+    <!--    按日统计所有用户-->
+    <select id="findDaysCustAll" resultType="java.lang.Integer">
+        SELECT
+        IFNULL(
+            (
+                SELECT
+                    SUM(INDEX_VAL)
+                FROM
+                    wbmp_operate_cust c
+                WHERE
+                    concat(substr(c.ORG_ID, 1, 6), '01') = concat(substr(#{orgId}, 1, 6), '01')
+                AND DATE_FORMAT(DATA_DT, '%Y-%m-%d') = DATE_FORMAT(#{date}, '%Y-%m-%d')
+            ),
+            0
+        )
+    </select>
+
+    <!--    按月统计所有用户-->
+    <select id="findMouthsCustAll" resultType="java.lang.Integer">
+        SELECT
+        IFNULL(
+            (
+                SELECT
+                    SUM(INDEX_VAL)
+                FROM
+                    wbmp_operate_cust c
+                WHERE
+                    concat(substr(c.ORG_ID, 1, 6), '01') = concat(substr(#{orgId}, 1, 6), '01')
+                AND DATE_FORMAT(DATA_DT, '%Y-%m') = #{date}
+            ),
+            0
+        )
+    </select>
+
+    <!--   按年统计 -->
+    <select id="findYearCustAll" resultType="java.lang.Integer">
+        SELECT
+        IFNULL(
+            (
+                SELECT
+                    SUM(INDEX_VAL)
+                FROM
+                    wbmp_operate_cust c
+                WHERE
+                    concat(substr(c.ORG_ID, 1, 6), '01') = concat(substr(#{orgId}, 1, 6), '01')
+                AND DATE_FORMAT(DATA_DT, '%Y') = #{date}
+            ),
+            0
+        )
+    </select>
 </mapper>
