@@ -92,11 +92,11 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                     break;
                 case "WBMP10007"://工程师列表查询接口    1
                     EngineerVo engineerVo = JSON.parseObject(JSON.toJSONString(body), EngineerVo.class);
-                    returnVO = JSON.parseObject(JSON.toJSONString(getEngineer(engineerVo)), Map.class);
+                    returnVO = JSON.parseObject(JSON.toJSONString(WBMP10007(engineerVo)), Map.class);
                     break;
                 case "WBMP10008"://工单分派查询
                     EngineerDto engineerDto = JSON.parseObject(JSON.toJSONString(body), EngineerDto.class);
-                    returnVO = JSON.parseObject(JSON.toJSONString(getEngineer(engineerDto)), Map.class);
+                    returnVO = JSON.parseObject(JSON.toJSONString(WBMP10008(engineerDto)), Map.class);
                     break;
                 case "WBMP10009"://状态变更（工程师到达现场）接口
                     StateChangesVo changeStatus = JSON.parseObject(JSON.toJSONString(body), StateChangesVo.class);
@@ -324,10 +324,12 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
             orderDO.setDealNote(serviceDescribe);
             workOrderService.saveOrUpdate(orderDO);
 
+            Map<String, String> engineerInfo = esbService.getEngineerInfo(engineerId);
+
             //插入流水，待处理
             workWaterService.save(new WorkWaterDO(null, null, orderNo,
                     processMode, LocalDateTime.now()
-                    , engineerId, serviceDescribe, null, null, null
+                    , engineerId, serviceDescribe, null, null, engineerInfo.get("NAME"),engineerInfo.get("TELEPHONE")
             ));
 
             //附件保存
@@ -418,7 +420,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
     @Resource
     EsbService esbService;
 
-    private ResponseEngineerDto getEngineer(EngineerVo engineerVo) {
+    private ResponseEngineerDto WBMP10007(EngineerVo engineerVo) {
         ResponseEngineerDto responseEngineerDto = new ResponseEngineerDto();
         responseEngineerDto.setRepcode("0");
         int pageIndex = engineerVo.getPageIndex();
@@ -429,7 +431,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         return responseEngineerDto;
     }
 
-    private ResponseEngineerDto getEngineer(EngineerDto engineerDto) {
+    private ResponseEngineerDto WBMP10008(EngineerDto engineerDto) {
         ResponseEngineerDto responseEngineerDto = new ResponseEngineerDto();
         responseEngineerDto.setRepcode("1");
         String engineerId = engineerDto.getEngineerId();
@@ -441,10 +443,11 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
             workOrderService.saveOrUpdate(orderDO);
 
         }
+        Map<String, String> engineerInfo = esbService.getEngineerInfo(engineerId);
         //插入流水
         workWaterService.save(new WorkWaterDO(null, null, orderId,
                 "2", LocalDateTime.now()
-                , engineerId, "工单分派", null, null, engineerDto.getEngineerName()
+                , engineerId, "工单分派", null, null, engineerDto.getEngineerName(),engineerInfo.get("TELEPHONE")
         ));
         return responseEngineerDto;
     }
@@ -454,10 +457,12 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         stateChangesDto.setRepcode("0");
         String engineerId = stateChangesVo.getEngineerId();
         String orderId = stateChangesVo.getOrderNo();
+
+        Map<String, String> engineerInfo = esbService.getEngineerInfo(engineerId);
         //更改状态
         workWaterService.save(new WorkWaterDO(null, null, orderId,
                 "3", LocalDateTime.now()
-                , engineerId, "工程师到达现场处理状态变更", null, null, null
+                , engineerId, "工程师到达现场处理状态变更", null, null,engineerInfo.get("NAME"),engineerInfo.get("TELEPHONE")
         ));
         return stateChangesDto;
     }

@@ -92,5 +92,8 @@ public class WorkWaterDO implements Serializable {
   @ApiModelProperty(value = "处理人姓名")
   private String dealWithPeopleName;
 
+  @ApiModelProperty(value = "处理人电话")
+  private String phone;
+
 
 }

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.bank.esb.dao.EsbDao">
     <select id="getEngineer" resultType="com.bank.esb.dto.EngineerDto">
-        SELECT ID engineerId,
+        SELECT TELEPHONE engineerId,
         NAME engineerName,
         TELEPHONE phone
         FROM vendorpersonnel
@@ -90,7 +90,7 @@
     <select id="getEngineerInfo" resultType="java.util.Map">
         SELECT a.*,b.STRVALUE fws FROM vendorpersonnel a
         LEFT JOIN ssarun.domaindict b ON a.DEVICEMANU= b.STRNAME
-        where a.ID = #{engineerId}
+        where a.TELEPHONE = #{engineerId}
     </select>
 
     <select id="getBranch" resultType="com.bank.esb.dos.DatBranchDO">
