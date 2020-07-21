@@ -234,7 +234,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
 
         ArrayList<ServiceInformationDto> serviceInformationDtos = new ArrayList<>();
         serviceInformationDtos.add(dto);
-        responseDto.setServiceInformationDtoList(serviceInformationDtos);
+        responseDto.setList(serviceInformationDtos);
         return responseDto;
     }
 
