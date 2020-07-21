@@ -1,5 +1,6 @@
 package com.bank.manage.controller;
 
+import com.alibaba.excel.util.StringUtils;
 import com.bank.auth.base.BaseController;
 import com.bank.core.entity.BizException;
 import com.bank.manage.dto.DeviceTradeDto;
@@ -78,9 +79,13 @@ public class SsarunDeviceController extends BaseController {
                 //判断设备状态是否全部ok
                 boolean temp = true;
                 for(ReaderStatusList list : readerStatusList){
-                    if(!"ok".equals(list.getStatus())){
-                        temp =false;
+                    if(!StringUtils.isEmpty(list.getStatus())){
+                        if(!"ok".equals(list.getStatus())){
+                            temp =false;
+                            break;
+                        }
                     }
+
                 }
 
                 if(!temp){
@@ -98,15 +103,19 @@ public class SsarunDeviceController extends BaseController {
                 //判断设备状态是否全部ok
                 boolean temp = true;
                 for(PrinterListVo list : printerListVoList){
-                    if(!"ok".equals(list.getStatus())){
-                        temp =false;
+                    if(!StringUtils.isEmpty(list.getStatus())){
+                        if(!"OK".equals(list.getStatus())){
+                            temp =false;
+                            break;
+                        }
                     }
+
                 }
 
                 if(!temp){
                     terminalDetailsVo.setTotalPrinterStatus("故障");
                 }else{
-                    terminalDetailsVo.setTotalPrinterStatus("ok");
+                    terminalDetailsVo.setTotalPrinterStatus("OK");
                 }
             }
 
