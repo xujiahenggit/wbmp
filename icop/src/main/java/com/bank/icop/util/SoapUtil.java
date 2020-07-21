@@ -4,7 +4,12 @@ import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
@@ -123,10 +128,10 @@ public class SoapUtil {
                 "      </ser:request>\n" +
                 "   </soapenv:Body>\n" +
                 "</soapenv:Envelope>";
-        StringBuffer sb=new StringBuffer();
+        StringBuffer sb = new StringBuffer();
         String xml = builder.append(document)
                 .insert(builder.indexOf("</Header>"), beanToXmlStr(headerDO))
-                .insert(builder.indexOf("</Request>"), mapToXmlStr2(paramMap,sb)).toString();
+                .insert(builder.indexOf("</Request>"), mapToXmlStr2(paramMap, sb)).toString();
         log.info("ICOP请求流水：[{}]，请求服务编码：[{}]，请求参数：[{}]", headerDO.getExternalReference(), headerDO.getServiceCode(), xml);
         HttpResponse response = HttpRequest.post(env.getProperty("ICOP.PATH")).header("SOAPAction", "application/soap+xml;charset=utf-8")
                 .body(xml, "text/xml").timeout(Integer.parseInt(env.getProperty("ICOP.TIMEOUT"))).execute();
@@ -137,12 +142,11 @@ public class SoapUtil {
             log.info("ICOP返回数据：[{}]", JSON.toJSONString(domParse));
         }
         catch (DocumentException e) {
-            throw new BizException("解析dom失败");
+            throw new BizException("ICOP接口请求返回报文格式错误，排查ICOP、ESB、源系统应用服务是否正常运行！");
         }
         return domParse;
 
     }
-
 
     /**
      * 通过XML转换为Map<String,Object>
@@ -236,25 +240,27 @@ public class SoapUtil {
         return builder.toString();
     }
 
-    public static String mapToXmlStr2(Map<String,Object> map,StringBuffer sb){
-        Set<?> set=map.keySet();
-        for (Iterator<?> it=set.iterator();it.hasNext();){
-            String key=(String) it.next();
-            Object value=map.get(key);
-            if(value instanceof Map){
-                sb.append("<"+key+">\n");
-                mapToXmlStr2((Map<String,Object>) value,sb);
-                sb.append("</"+key+">\n");
-            }else if(value instanceof List){
-                List<?> list= (List<?>) map.get(key);
-                for(int i=0;i<list.size();i++){
-                    sb.append("<"+key+">\n");
-                    Map<String,Object> hm= (Map<String, Object>) list.get(i);
-                    mapToXmlStr2(hm,sb);
-                    sb.append("</"+key+">\n");
+    public static String mapToXmlStr2(Map<String, Object> map, StringBuffer sb) {
+        Set<?> set = map.keySet();
+        for (Iterator<?> it = set.iterator(); it.hasNext();) {
+            String key = (String) it.next();
+            Object value = map.get(key);
+            if (value instanceof Map) {
+                sb.append("<" + key + ">\n");
+                mapToXmlStr2((Map<String, Object>) value, sb);
+                sb.append("</" + key + ">\n");
+            }
+            else if (value instanceof List) {
+                List<?> list = (List<?>) map.get(key);
+                for (int i = 0; i < list.size(); i++) {
+                    sb.append("<" + key + ">\n");
+                    Map<String, Object> hm = (Map<String, Object>) list.get(i);
+                    mapToXmlStr2(hm, sb);
+                    sb.append("</" + key + ">\n");
                 }
-            }else{
-                sb.append("<"+key+">"+value+"</"+key+">\n");
+            }
+            else {
+                sb.append("<" + key + ">" + value + "</" + key + ">\n");
             }
         }
         return sb.toString();

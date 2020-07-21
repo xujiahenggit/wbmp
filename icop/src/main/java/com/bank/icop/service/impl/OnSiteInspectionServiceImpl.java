@@ -529,7 +529,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         catch (Exception e) {
             String errorMess = e.getMessage();
             if (StringUtils.equals("Read timed out", e.getMessage())) {
-                errorMess = "请求超时！排查ICOP、ESB、源系统应用服务是否正常！";
+                errorMess = "请求超时！排查ICOP、ESB、源系统应用服务是否正常运行！";
             }
             throw new BizException(serviceName + "【" + serviceCode + "】报错：" + errorMess);
         }
