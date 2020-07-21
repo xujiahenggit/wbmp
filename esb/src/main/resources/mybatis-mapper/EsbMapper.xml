@@ -7,7 +7,7 @@
         TELEPHONE phone
         FROM vendorpersonnel WHERE DEVICEMANU=(
         SELECT DEVICEMANU FROM vendorpersonnel WHERE ID = #{id} )
-        <if test="seachTxt!=''">
+        <if test="seachTxt != null and seachTxt != ''">
         AND (NAME=#{seachTxt} or TELEPHONE=#{seachTxt})
         </if>
         AND MANUEMPNATURE='2'
