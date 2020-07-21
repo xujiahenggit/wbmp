@@ -17,5 +17,5 @@ public class ResonseTransferInformationDto {
     private String orderStatus;
 
     @ApiModelProperty(value = "流转信息")
-    private List<TransferInformationDto> list;
+    private List<TransferInformationDto> List;
 }

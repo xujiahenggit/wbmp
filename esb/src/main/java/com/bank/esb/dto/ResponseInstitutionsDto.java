@@ -17,5 +17,5 @@ public class ResponseInstitutionsDto {
     private String repcode;
 
     @ApiModelProperty(value = "机构列表")
-    private List<InstitutionsDto> institutionsDtoList;
+    private List<InstitutionsDto> List;
 }

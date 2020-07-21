@@ -356,7 +356,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                 }
             }
         }
-        responseInstitutionsDto.setInstitutionsDtoList(list);
+        responseInstitutionsDto.setList(list);
         return responseInstitutionsDto;
     }
 

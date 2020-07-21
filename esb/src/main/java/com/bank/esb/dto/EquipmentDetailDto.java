@@ -36,7 +36,7 @@ public class EquipmentDetailDto {
     private String deviceVendor;
 
     @ApiModelProperty(value = "服务主管集合")
-    private List<ServiceSupervisorDto> serviceSupervisorDtoList;
+    private List<ServiceSupervisorDto> List;
 
 
 }
