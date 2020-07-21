@@ -324,7 +324,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
             orderDO.setDealNote(serviceDescribe);
             workOrderService.saveOrUpdate(orderDO);
 
-            //插入流水
+            //插入流水，待处理
             workWaterService.save(new WorkWaterDO(null, null, orderNo,
                     processMode, LocalDateTime.now()
                     , engineerId, serviceDescribe, null, null, null
@@ -421,7 +421,10 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
     private ResponseEngineerDto getEngineer(EngineerVo engineerVo) {
         ResponseEngineerDto responseEngineerDto = new ResponseEngineerDto();
         responseEngineerDto.setRepcode("0");
-        List<EngineerDto> engineerDtoList = esbService.getEngineer(engineerVo.getEngineerMId(), engineerVo.getSeachTxt());
+        int pageIndex = engineerVo.getPageIndex();
+        int pageSize = engineerVo.getPageSize();
+        engineerVo.setPageIndex((pageIndex-1)*pageSize);
+        List<EngineerDto> engineerDtoList = esbService.getEngineer(engineerVo);
         responseEngineerDto.setList(engineerDtoList);
         return responseEngineerDto;
     }
@@ -488,6 +491,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                     .operatorUserName(waterDO.get("name"))
                     .operatorUserPhone(waterDO.get("phone"))
                     .operatorStatus(waterDO.get("operatorStatus"))
+                    .operatorTime(waterDO.get("time"))
                     .installDate(null)
                     .build();
             list.add(dto);

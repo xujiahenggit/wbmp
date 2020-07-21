@@ -11,6 +11,7 @@ import com.bank.esb.dto.EngineerDto;
 import com.bank.esb.dto.ManagerDto;
 import com.bank.esb.dto.OrderDto;
 import com.bank.esb.service.EsbService;
+import com.bank.esb.vo.EngineerVo;
 import com.bank.esb.vo.OrderNumVo;
 import org.springframework.stereotype.Service;
 
@@ -27,8 +28,8 @@ public class EsbServiceImpl implements EsbService {
 
     @Override
     @DataSource(DynamicDataSourceSwitcher.esb_mgt)
-    public List<EngineerDto> getEngineer(String engineerMId, String seachTxt) {
-        return esbDao.getEngineer(engineerMId,seachTxt);
+    public List<EngineerDto> getEngineer(EngineerVo engineerVo) {
+        return esbDao.getEngineer(engineerVo);
     }
 
     @Override

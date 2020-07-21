@@ -5,12 +5,13 @@
         SELECT ID engineerId,
         NAME engineerName,
         TELEPHONE phone
-        FROM vendorpersonnel WHERE DEVICEMANU=(
-        SELECT DEVICEMANU FROM vendorpersonnel WHERE ID = #{id} )
-        <if test="seachTxt != null and seachTxt != ''">
-        AND (NAME=#{seachTxt} or TELEPHONE=#{seachTxt})
-        </if>
-        AND MANUEMPNATURE='2'
+        FROM vendorpersonnel
+        <where>
+            <if test="m.seachTxt != null and m.seachTxt != ''">
+                NAME LIKE concat('%',#{m.seachTxt},'%') or TELEPHONE LIKE CONCAT('%',#{m.seachTxt},'%')
+            </if>
+        </where>
+      LIMIT #{m.pageIndex},#{m.pageSize}
     </select>
 
     <select id="getCSMaster" resultType="com.bank.esb.dto.ManagerDto">
