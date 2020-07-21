@@ -5,12 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.bank.core.entity.BizException;
+import com.bank.core.utils.SerialNumberUtil;
 import com.bank.icop.dto.CheckItemCheckSubmitDTO;
 import com.bank.icop.dto.CheckProblemDTO;
 import com.bank.icop.dto.CheckTaskSaveDTO;
@@ -36,6 +39,9 @@ import cn.hutool.core.util.StrUtil;
  */
 @Service
 public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
+
+    @Resource
+    SerialNumberUtil serialNumberUtil;
 
     @Override
     public List inspectionTaskList(String userId) {
@@ -524,7 +530,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
     private Map getReport(Map<String, Object> parmMap, String serviceCode, String serviceName, String rightCode, String errMsg) {
         Map report = null;
         try {
-            report = SoapUtil.sendReport(serviceCode, "812", parmMap);
+            report = SoapUtil.sendReport(serviceCode, "812", serialNumberUtil.getICOPSerialNumber(), parmMap);
         }
         catch (Exception e) {
             String errorMess = e.getMessage();
