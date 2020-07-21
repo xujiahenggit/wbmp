@@ -75,20 +75,49 @@ public class SsarunDeviceController extends BaseController {
             List<ReaderStatusList> readerStatusList =ssarunDeviceService.getReaderStatusListById(deviceDetailsVo.getTerminalCode());
             if(CollectionUtils.isNotEmpty(readerStatusList)){
                 terminalDetailsVo.setReaderStatusListList(readerStatusList);
-            }
+                //判断设备状态是否全部ok
+                boolean temp = true;
+                for(ReaderStatusList list : readerStatusList){
+                    if(!"ok".equals(list.getStatus())){
+                        temp =false;
+                    }
+                }
 
+                if(!temp){
+                    terminalDetailsVo.setTotalReaderStatus("故障");
+                }else{
+                    terminalDetailsVo.setTotalReaderStatus("ok");
+                }
+
+            }
 
               //2.获取打印机
             List<PrinterListVo> printerListVoList = ssarunDeviceService.getPrinterListById(deviceDetailsVo.getTerminalCode());
             if(CollectionUtils.isNotEmpty(printerListVoList)){
                 terminalDetailsVo.setPrinterListVoList(printerListVoList);
+                //判断设备状态是否全部ok
+                boolean temp = true;
+                for(PrinterListVo list : printerListVoList){
+                    if(!"ok".equals(list.getStatus())){
+                        temp =false;
+                    }
+                }
+
+                if(!temp){
+                    terminalDetailsVo.setTotalPrinterStatus("故障");
+                }else{
+                    terminalDetailsVo.setTotalPrinterStatus("ok");
+                }
             }
 
 
             deviceDetailsVo.setTerminalDetailsVo(terminalDetailsVo);
             //服务厂商
-          //  DeviceVendorVo deviceVendorVo = ssarunDeviceService.getDeviceVendorByCode(deviceDetailsVo.getDeviceVendor());
-         //   deviceDetailsVo.setDeviceVendorVo(deviceVendorVo);
+            List<DeviceVendorVo> deviceVendorVo = ssarunDeviceService.getDeviceVendorByCode(deviceDetailsVo.getDeviceVendor());
+
+            if(CollectionUtils.isNotEmpty(deviceVendorVo)){
+                deviceDetailsVo.setDeviceVendorVo(deviceVendorVo);
+            }
 
 
         }

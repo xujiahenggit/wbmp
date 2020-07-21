@@ -13,16 +13,8 @@ import lombok.Data;
 @ApiModel
 public class ReaderStatusList {
     @ApiModelProperty(value = "读卡器状态")
-    private String readerStatus;
+    private String status;
     @ApiModelProperty(value = "读卡器名称")
-    private String readerName;
-    @ApiModelProperty(value = "射频读卡器状态")
-    private String radioFrequencyReaderStatus;
-    @ApiModelProperty(value = "射频读卡器名称")
-    private String radioFrequencyReaderName;
-    @ApiModelProperty(value = "个性化读卡器状态")
-    private String personalizedReaderStatus;
-    @ApiModelProperty(value = "个性化读卡器名称")
-    private String personalizedReaderName;
+    private String name;
 
 }

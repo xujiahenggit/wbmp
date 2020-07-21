@@ -179,7 +179,7 @@
     </select>
     
     <select id="getReaderStatusListById" resultType="com.bank.manage.vo.ReaderStatusList">
-              select
+           select
                      case when  termstatus.VMCARDREADER ='CARD'     then   --  '读卡器状态：CARD 读卡器故障, CARDJAM 读卡器卡被卡住, CARDBIN 读卡器回收盒满',
                                                   '读卡器故障'
                                              when   termstatus.VMCARDREADER ='CARDJAM'     then
@@ -187,10 +187,23 @@
                                              when   termstatus.VMCARDREADER ='CARDBIN'     then
                                                    '读卡器回收盒满'
                                              else termstatus.VMCARDREADER
-                                             end readerStatus,
-                      "读卡器" readerName,
-                     termstatus.VMRFCARDREADER radioFrequencyReaderStatus,
-                      "射频读卡器" radioFrequencyReaderName,
+                                             end status,
+                      "读卡器" name
+
+             from ssaview.termstatus termstatus
+             where termstatus.STRTERMNUM = #{terminalCode}
+        union all
+            select
+
+                     termstatus.VMRFCARDREADER status,
+                      "射频读卡器" name
+
+             from ssaview.termstatus termstatus
+             where termstatus.STRTERMNUM = #{terminalCode}
+        union all
+             select
+
+
                      case when  termstatus.DCCardReaderIndi ='CARDINDI'     then   --   '个性化读卡器状态：CARDINDI 读卡器故障, CARDINDIJAM 读卡器卡被卡住, CARDINDIBIN 读卡器回收盒满',
                                                   '读卡器故障'
                                              when   termstatus.DCCardReaderIndi ='CARDINDIJAM'     then
@@ -198,14 +211,14 @@
                                              when   termstatus.DCCardReaderIndi ='CARDINDIBIN'     then
                                                    '读卡器回收盒满'
                                              else termstatus.DCCardReaderIndi
-                                             end personalizedReaderStatus,
-                     "个性化读卡器" personalizedReaderName
+                                             end status,
+                     "个性化读卡器" name
              from ssaview.termstatus termstatus
              where termstatus.STRTERMNUM = #{terminalCode}
     </select>
 
     <select id="getPrinterListById" resultType="com.bank.manage.vo.PrinterListVo">
-                    SELECT
+                     SELECT
                                 case when termstatus.VMRECEIPTPRINTER ='REC' then     --   '凭条打印机状态：REC 凭条打印机故障，RECPEPT 缺凭条纸，RECPJAM 凭条打印机卡纸',
                                           '凭条打印机故障'
                                      when  termstatus.VMRECEIPTPRINTER ='RECPEPT' then
@@ -213,8 +226,17 @@
                                      when  termstatus.VMRECEIPTPRINTER ='RECPJAM' then
                                            '凭条打印机卡纸'
                                      else termstatus.VMRECEIPTPRINTER
-                                     end slipPrinterStatus,
-                                    "凭条打印机" slipPrinterName,
+                                     end status,
+                                    "凭条打印机" name
+                    from ssaview.termstatus termstatus
+                    left join ssarun.term term
+                      on term.STRTERMNUM = termstatus.STRTERMNUM
+                    left join ssarun.device dev
+                      on dev.id = term.DEVICEID
+                       where termstatus.STRTERMNUM = #{terminalCode}
+              union all
+                    SELECT
+
                                 case when termstatus.VMSTATEMENTPRINTER ='DOC' then    --  '对帐单打印机状态：DOC 对帐单打印机故障，DOCPEPT 缺对账单纸，DOCPJAM 对帐单打印机卡纸',
                                           '对帐单打印机故障'
                                      when  termstatus.VMSTATEMENTPRINTER ='DOCPEPT' then
@@ -222,10 +244,31 @@
                                      when  termstatus.VMSTATEMENTPRINTER ='DOCPJAM' then
                                            '对帐单打印机卡纸'
                                      else termstatus.VMSTATEMENTPRINTER
-                                     end reconciliationPrinterStatus,
-                                    "对帐单打印机" reconciliationPrinterName,
-                                termstatus.VMPASSBOOKPRINTER passbookPrinterStatus,     -- 存折打印机状态
-                               "存折打印机" passbookPrinterName,
+                                     end status,
+                                    "对帐单打印机" name
+
+                    from ssaview.termstatus termstatus
+                    left join ssarun.term term
+                      on term.STRTERMNUM = termstatus.STRTERMNUM
+                    left join ssarun.device dev
+                      on dev.id = term.DEVICEID
+                   where termstatus.STRTERMNUM = #{terminalCode}
+             union all
+                    select
+                                termstatus.VMPASSBOOKPRINTER status,     -- 存折打印机状态
+                               "存折打印机" name
+
+                     from ssaview.termstatus termstatus
+                            left join ssarun.term term
+                              on term.STRTERMNUM = termstatus.STRTERMNUM
+                            left join ssarun.device dev
+                              on dev.id = term.DEVICEID
+                            left join ssamgt.vendorpersonnel ven
+                              on ven.DEVICEMANU = dev.STRDEVMANU
+                     where termstatus.STRTERMNUM = #{terminalCode}
+             union all
+                    select
+
                                 case when termstatus.VMJOURNALPRINTER ='JRN' then         -- '流水打印机状态：JRN 流水打印机故障，JRNPEPT 缺流水纸，JRNPJAM 流水打印机卡纸',
                                            '流水打印机故障'
                                      when termstatus.VMJOURNALPRINTER ='JRNPEPT' then
@@ -233,22 +276,14 @@
                                      when termstatus.VMJOURNALPRINTER ='JRNPJAM' then
                                            '流水打印机卡纸'
                                 else termstatus.VMJOURNALPRINTER
-                                end waterPrinterStatus,
-                              "流水打印机" waterPrinterName,
-                     case when ven.MANUEMPNATURE ='1' then
-                               '服务主管'
-                         else '服务工程师'
-                         end userType,
-                        ven.NAME AS name,
-                        ven.TELEPHONE phone
-        from ssaview.termstatus termstatus
-        left join ssarun.term term
-          on term.STRTERMNUM = termstatus.STRTERMNUM
-        left join ssarun.device dev
-          on dev.id = term.DEVICEID
-        left join ssamgt.vendorpersonnel ven
-          on ven.DEVICEMANU = dev.STRDEVMANU
-         where termstatus.STRTERMNUM = #{terminalCode}
+                                end status,
+                              "流水打印机" name
+                     from ssaview.termstatus termstatus
+                            left join ssarun.term term
+                              on term.STRTERMNUM = termstatus.STRTERMNUM
+                            left join ssarun.device dev
+                              on dev.id = term.DEVICEID
+                     where termstatus.STRTERMNUM = #{terminalCode}
     </select>
 
     <!--按年查询监控设备交易趋势 dto.orgType==2 根据分行查询、dto.orgType==3 根据网点查询 -->

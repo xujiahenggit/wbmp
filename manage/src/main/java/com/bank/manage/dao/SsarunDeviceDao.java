@@ -43,7 +43,7 @@ public interface SsarunDeviceDao {
      */
     TerminalDetailsVo getTerminalDetailsById(@Param("terminalCode") String terminalCode);
 
-    DeviceVendorVo getDeviceVendorByCode(@Param("deviceVendor") String deviceVendor);
+    List<DeviceVendorVo> getDeviceVendorByCode(@Param("deviceVendor") String deviceVendor);
 
     /**
      * 根据设备id获取设备模块列表

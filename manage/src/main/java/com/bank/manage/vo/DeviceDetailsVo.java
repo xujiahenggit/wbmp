@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Author: cq
@@ -35,7 +36,7 @@ public class DeviceDetailsVo {
     @ApiModelProperty(value = "终端详情")
     private TerminalDetailsVo terminalDetailsVo;
     @ApiModelProperty(value = "厂商详情")
-    private DeviceVendorVo deviceVendorVo;
+    private List<DeviceVendorVo> deviceVendorVo;
 
 
 }

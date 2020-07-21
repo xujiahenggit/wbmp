@@ -45,7 +45,7 @@ public interface SsarunDeviceService {
      * @param deviceVendor
      * @return
      */
-    DeviceVendorVo getDeviceVendorByCode(String deviceVendor);
+    List<DeviceVendorVo> getDeviceVendorByCode(String deviceVendor);
 
     /**
      * 根据设备id,获取设备模块列表

@@ -11,27 +11,9 @@ import lombok.Data;
 @Data
 @ApiModel
 public class PrinterListVo {
-    @ApiModelProperty(value = "凭条打印机状态")
-    private String slipPrinterStatus;
-    @ApiModelProperty(value = "凭条打印机名称")
-    private String slipPrinterName;
-    @ApiModelProperty(value = "对账打印机状态")
-    private String reconciliationPrinterStatus;
-    @ApiModelProperty(value = "对账打印机名称")
-    private String reconciliationPrinterName;
-    @ApiModelProperty(value = "流水打印机状态")
-    private String waterPrinterStatus;
-    @ApiModelProperty(value = "流水打印机名称")
-    private String waterPrinterName;
-    @ApiModelProperty(value = "存折打印机状态")
-    private String passbookPrinterStatus;
-    @ApiModelProperty(value = "存折打印机名称")
-    private String passbookPrinterName;
-    @ApiModelProperty(value = "用户类型")
-    private String userType;
-    @ApiModelProperty(value = "姓名")
+    @ApiModelProperty(value = "打印机状态")
+    private String status;
+    @ApiModelProperty(value = "名称")
     private String name;
-    @ApiModelProperty(value = "电话")
-    private String phone;
 
 }
