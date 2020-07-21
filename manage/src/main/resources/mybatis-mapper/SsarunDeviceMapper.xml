@@ -103,7 +103,7 @@
                               '存款钞多'
                          when termstatus.CASHACCEPTORINFO ='2' then
                               '存款钞满'
-                         else termstatus.CASHACCEPTORINFO
+                         else '正常'
                          end depositStatus,
                     case when termstatus.CASHDISPENSERINFO ='-1'  then   --  '取款箱状态：无效 -1，正常 0，取款钞少 1，取款钞尽 2',
                                '无效'
@@ -113,7 +113,7 @@
                                '取款钞少'
                          when termstatus.CASHDISPENSERINFO ='2'  then
                                  '取款钞尽'
-                         else termstatus.CASHDISPENSERINFO
+                         else '正常'
                          end withDrawalsStatus,
 
                     termstatus.VMPINPAD passWordStatus,
@@ -138,7 +138,7 @@
                               '已关机'
                         when termstatus.SVCSTATUS ='8' then
                               '正在重新启动'
-                        else termstatus.SVCSTATUS
+                        else '正常'
                          end serviceStatus
 
             from  ssaview.termstatus termstatus
@@ -179,23 +179,31 @@
     </select>
     
     <select id="getReaderStatusListById" resultType="com.bank.manage.vo.ReaderStatusList">
-           select
-                     case when  termstatus.VMCARDREADER ='CARD'     then   --  '读卡器状态：CARD 读卡器故障, CARDJAM 读卡器卡被卡住, CARDBIN 读卡器回收盒满',
+          select
+                     case when  LOCATE('CARD',termstatus.VMCARDREADER ) >0     then   --  '读卡器状态：CARD 读卡器故障, CARDJAM 读卡器卡被卡住, CARDBIN 读卡器回收盒满',
                                                   '读卡器故障'
-                                             when   termstatus.VMCARDREADER ='CARDJAM'     then
+                                             when   LOCATE('CARDJAM',termstatus.VMCARDREADER ) >0     then
                                                    '读卡器卡被卡住'
-                                             when   termstatus.VMCARDREADER ='CARDBIN'     then
+                                             when   LOCATE('CARDBIN',termstatus.VMCARDREADER ) >0      then
                                                    '读卡器回收盒满'
-                                             else termstatus.VMCARDREADER
+                                             when   termstatus.VMCARDREADER ='-1'          then
+                                                   '无效'
+                      else termstatus.VMCARDREADER
                                              end status,
-                      "读卡器" name
+
+                            "读卡器"  name
 
              from ssaview.termstatus termstatus
              where termstatus.STRTERMNUM = #{terminalCode}
         union all
             select
 
-                     termstatus.VMRFCARDREADER status,
+                    case when termstatus.VMRFCARDREADER ='-1' then
+                                '无效'
+                         else termstatus.VMRFCARDREADER
+                     end status,
+
+
                       "射频读卡器" name
 
              from ssaview.termstatus termstatus
@@ -204,17 +212,21 @@
              select
 
 
-                     case when  termstatus.DCCardReaderIndi ='CARDINDI'     then   --   '个性化读卡器状态：CARDINDI 读卡器故障, CARDINDIJAM 读卡器卡被卡住, CARDINDIBIN 读卡器回收盒满',
-                                                  '读卡器故障'
-                                             when   termstatus.DCCardReaderIndi ='CARDINDIJAM'     then
-                                                   '读卡器卡被卡住'
-                                             when   termstatus.DCCardReaderIndi ='CARDINDIBIN'     then
-                                                   '读卡器回收盒满'
+                     case when      LOCATE('CARDINDI',termstatus.DCCardReaderIndi ) >0     then   --   '个性化读卡器状态：CARDINDI 读卡器故障, CARDINDIJAM 读卡器卡被卡住, CARDINDIBIN 读卡器回收盒满',
+                                                  '个性化读卡器故障'
+                                             when   LOCATE('CARDINDIJAM',termstatus.DCCardReaderIndi ) >0      then
+                                                   '个性化读卡器卡被卡住'
+                                             when   LOCATE('CARDINDIBIN',termstatus.DCCardReaderIndi ) >0       then
+                                                   '个性化读卡器回收盒满'
+                                             when   termstatus.DCCardReaderIndi ='-1'     then
+                                                   '无效'
                                              else termstatus.DCCardReaderIndi
                                              end status,
+
                      "个性化读卡器" name
              from ssaview.termstatus termstatus
              where termstatus.STRTERMNUM = #{terminalCode}
+
     </select>
 
     <select id="getPrinterListById" resultType="com.bank.manage.vo.PrinterListVo">
