@@ -4,11 +4,14 @@
 
 
     <select id="queryTransaction" resultType="com.bank.manage.vo.TellerTransactionVo">
-        SELECT a.TRADE_VOLUME,a.TRAN_NAME,
-        (SELECT a.TRADE_VOLUME FROM wbmp_abs_transinfo a WHERE a.ORG_ID = #{orgId} and a.TELLER_ID=#{tellerId}  and a.FLAG = '3' AND
-            DATE_FORMAT(a.DATA_DT,'%Y-%m-%d') = DATE_FORMAT(CURDATE(),'%Y-%m-%d')) AS count
-        FROM wbmp_abs_transinfo a WHERE a.ORG_ID = #{orgId} and a.TELLER_ID=#{tellerId} and a.FLAG = '4'
-        AND DATE_FORMAT(a.DATA_DT,'%Y-%m-%d') = DATE_FORMAT(CURDATE(),'%Y-%m-%d')
+        SELECT TRADE_VOLUME,TRAN_NAME,
+        (SELECT TRADE_VOLUME FROM wbmp_abs_transinfo  WHERE ORG_ID = #{orgId} and TELLER_ID=#{tellerId}  and FLAG = '3' AND
+            DATE_FORMAT(DATA_DT,'%Y-%m-%d') = DATE_FORMAT(CURDATE(),'%Y-%m-%d')) AS count
+        FROM wbmp_abs_transinfo
+        WHERE ORG_ID = #{orgId} and TELLER_ID=#{tellerId} and FLAG = '4'
+        AND DATE_FORMAT(DATA_DT,'%Y-%m-%d') = DATE_FORMAT(CURDATE(),'%Y-%m-%d')
+        AND TRAN_CODE not in
+        (SELECT TRAN_CODE FROM `wbmp_abs_transinfo` where FLAG ='4' and  ( LENGTH(TRAN_NAME) &lt; 1 ) GROUP BY TRAN_CODE)
         ORDER BY TRADE_VOLUME DESC
         limit 5
     </select>

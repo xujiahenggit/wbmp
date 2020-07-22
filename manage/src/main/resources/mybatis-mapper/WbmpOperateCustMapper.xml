@@ -142,7 +142,7 @@
         IFNULL(
             (
                 SELECT
-                    SUM(INDEX_VAL)
+                    SUM(COMP_LASTD)
                 FROM
                     wbmp_operate_cust c
                 WHERE
@@ -159,7 +159,7 @@
         IFNULL(
             (
                 SELECT
-                    SUM(INDEX_VAL)
+                    SUM(COMP_LASTM)
                 FROM
                     wbmp_operate_cust c
                 WHERE
@@ -176,7 +176,7 @@
         IFNULL(
             (
                 SELECT
-                    SUM(INDEX_VAL)
+                    SUM(COMP_LASTY)
                 FROM
                     wbmp_operate_cust c
                 WHERE
