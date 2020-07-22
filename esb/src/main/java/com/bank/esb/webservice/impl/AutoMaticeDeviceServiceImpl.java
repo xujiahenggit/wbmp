@@ -348,7 +348,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
             orderDO.setDealNote(serviceDescribe);
             workOrderService.saveOrUpdate(orderDO);
 
-            Map<String, String> engineerInfo = esbService.getEngineerInfo(engineerId);
+            Map<String, String> engineerInfo = getEngineerInfo(engineerId);
             String name = "";
             String phone = "";
             if (engineerInfo != null) {
@@ -501,11 +501,17 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
             workOrderService.saveOrUpdate(orderDO);
 
         }
-        Map<String, String> engineerInfo = esbService.getEngineerInfo(engineerId);
+        Map<String, String> engineerInfo = getEngineerInfo(engineerId);
+        String name = "";
+        String phone = "";
+        if (engineerInfo != null) {
+            name = engineerInfo.get("NAME");
+            phone = engineerInfo.get("TELEPHONE");
+        }
         //插入流水
         workWaterService.save(new WorkWaterDO(null, null, orderId,
                 "2", LocalDateTime.now()
-                , engineerId, "工单分派", null, null, engineerDto.getEngineerName(), engineerInfo.get("TELEPHONE")
+                , engineerId, "工单分派", null, null, name, phone
         ));
         return responseEngineerDto;
     }
@@ -516,13 +522,23 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         String engineerId = stateChangesVo.getEngineerId();
         String orderId = stateChangesVo.getOrderNo();
 
-        Map<String, String> engineerInfo = esbService.getEngineerInfo(engineerId);
+        Map<String, String> engineerInfo = getEngineerInfo(engineerId);
+        String name = "";
+        String phone = "";
+        if (engineerInfo != null) {
+            name = engineerInfo.get("NAME");
+            phone = engineerInfo.get("TELEPHONE");
+        }
         //更改状态
         workWaterService.save(new WorkWaterDO(null, null, orderId,
                 "3", LocalDateTime.now()
-                , engineerId, "工程师到达现场处理状态变更", null, null, engineerInfo.get("NAME"), engineerInfo.get("TELEPHONE")
+                , engineerId, "工程师到达现场处理状态变更", null, null, name,phone
         ));
         return stateChangesDto;
+    }
+
+    private Map<String, String> getEngineerInfo(String engineerId) {
+        return esbService.getEngineerInfo(engineerId);
     }
 
     private RepairOrderBDto WBMP10011(RepairOrderBVo repairOrderBVo) {
