@@ -167,11 +167,19 @@
     <!--    获取所有核心机构号列表 计算综合分数用-->
     <select id="getAllOrgUseOperate" resultMap="nftOrgDto">
         SELECT DISTINCT
-            CONCAT(NFRT_ORG_ID, '01') AS NFRT_ORGID,
-            NFRT_ORG_NAME AS NFRT_ORGNAME
+            CONCAT(
+                nfrt.NFRT_ORG_ID,
+                nfrt.NFRT_ORG_NO
+            ) AS NFRT_ORGID,
+            nfrt.NFRT_ORG_NAME AS NFRT_ORGNAME
         FROM
-            t_nfrt_org
+            t_organization org
+        INNER JOIN t_nfrt_org nfrt ON CONCAT(
+            nfrt.NFRT_ORG_ID,
+            nfrt.NFRT_ORG_NO
+        ) = org.ORG_CODE
         WHERE
-            NFRT_ORG_NO='01'
+            nfrt.NFRT_ORG_NO = '01'
+        AND org.ORG_STATUS = '1'
     </select>
 </mapper>
