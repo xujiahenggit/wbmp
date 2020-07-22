@@ -402,19 +402,19 @@
 
         from t_work_order t
                 <where>
-                    <if test="model.workOrderType != null">
+                    <if test="model.workOrderType != null and model.workOrderType !=''">
                         and t.work_order_type = #{model.workOrderType}
                     </if>
-                    <if test="model.orgId != null">
+                    <if test="model.orgId != null and model.orgId !=''">
                         and t.org_id = #{model.orgId}
                     </if>
-                    <if test="model.vendor != null">
+                    <if test="model.vendor != null and model.vendor !=''">
                         and t.vendor_name like concat('%',#{model.vendor},'%')
                     </if>
-                    <if test="model.status != null">
+                    <if test="model.status != null and model.status != '' ">
                         and t.work_order_status = #{model.status}
                     </if>
-                    <if test="model.terminalCode != null">
+                    <if test="model.terminalCode != null and model.terminalCode !='' ">
                         and t.terminal_code = #{model.terminalCode}
                     </if>
                 </where>
@@ -460,19 +460,19 @@
         left join t_nfrt_org a
            on a.NFRT_ORG_ID  = t.org_id
         <where>
-            <if test="model.workOrderType != null || model.workOrderType !=''">
+            <if test="model.workOrderType != null and model.workOrderType !=''">
                 and t.work_order_type = #{model.workOrderType}
             </if>
-            <if test="model.orgId != null || model.orgId !='' ">
+            <if test="model.orgId != null and model.orgId !='' ">
                 and t.org_id = #{model.orgId}
             </if>
-            <if test="model.vendor != null || model.vendor != ''">
+            <if test="model.vendor != null and model.vendor != ''">
                 and t.vendor_name like concat('%',#{model.vendor},'%')
             </if>
-            <if test="model.status != null || model.status !=''">
+            <if test="model.status != null and model.status !=''">
                 and t.work_order_status = #{model.status}
             </if>
-            <if test="model.terminalCode != null || model.terminalCode !=''">
+            <if test="model.terminalCode != null and model.terminalCode !=''">
                 and t.terminal_code = #{model.terminalCode}
             </if>
                  t.create_id = #{model.logUserId}
@@ -516,22 +516,22 @@
         left join t_nfrt_org a
         on a.NFRT_ORG_ID  = t.org_id
         <where>
-            <if test="model.workOrderType != null">
+            <if test="model.workOrderType != null and model.workOrderType!=''">
                 and t.work_order_type = #{model.workOrderType}
             </if>
-            <if test="model.orgId != null">
+            <if test="model.orgId != null and model.orgId !='' ">
                 and t.org_id = #{model.orgId}
             </if>
-            <if test="model.vendor != null">
+            <if test="model.vendor != null and model.vendor !='' ">
                 and t.vendor_name like concat('%',#{model.vendor},'%')
             </if>
-            <if test="model.status != null">
+            <if test="model.status != null and model.status != '' ">
                 and t.work_order_status = #{model.status}
             </if>
-            <if test="model.terminalCode != null">
+            <if test="model.terminalCode != null and model.terminalCode !='' ">
                 and t.terminal_code = #{model.terminalCode}
             </if>
-            <if test="model.logUserId != null">
+            <if test="model.logUserId != null and model.logUserId !='' ">
                 and t.create_id = #{model.logUserId}
             </if>
             and  t.work_order_code  in (
@@ -575,19 +575,19 @@
         left join t_nfrt_org a
         on a.NFRT_ORG_ID  = t.org_id
         <where>
-            <if test="model.workOrderType != null">
+            <if test="model.workOrderType != null and model.workOrderType !=''">
                 and t.work_order_type = #{model.workOrderType}
             </if>
-            <if test="model.orgId != null">
+            <if test="model.orgId != null and model.orgId !='' ">
                 and subbranch.org_code= #{model.orgId}
             </if>
-            <if test="model.vendor != null">
+            <if test="model.vendor != null and model.vendor != '' ">
                 and device.STRDEVMANU like concat('%',#{model.vendor},'%')
             </if>
-            <if test="model.status != null">
+            <if test="model.status != null and model.status !=''">
                 and t.work_order_status = #{model.status}
             </if>
-            <if test="model.terminalCode != null">
+            <if test="model.terminalCode != null and model.terminalCode !='' ">
                 and t.terminal_code = #{model.terminalCode}
             </if>
             and  t.work_order_code  in (
