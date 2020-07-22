@@ -1,10 +1,12 @@
 package com.bank.manage.service;
 
+import com.bank.manage.dos.UsherSignDO;
 import com.bank.manage.dto.UsherSignDTO;
+import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.Map;
 
-public interface UsherSignService {
+public interface UsherSignService extends IService<UsherSignDO> {
 
     /**
      * 上班签
