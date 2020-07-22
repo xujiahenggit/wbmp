@@ -58,7 +58,11 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
 
     @Override
     public RepairVo getRepairById(String repairCode) {
-        return repairDao.getRepairById(repairCode);
+        RepairVo repairVo=  repairDao.getRepairById(repairCode);
+        //服务信息
+        List<ServiceInfoVo> list = repairDao.getServiceInfoList(repairCode);
+        repairVo.setServiceInfoVo(list);
+        return repairVo;
     }
 
     @Override

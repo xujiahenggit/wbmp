@@ -6,6 +6,8 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+
 /**
  * @Author: cq
  * @Date: 2020/5/8 22:50
@@ -44,4 +46,24 @@ public class RepairVo implements Serializable {
 
     @ApiModelProperty(value = "工单状态")
     private String repairStatus;
+
+    @ApiModelProperty(value = "创建人姓名")
+    private String createName;
+
+    @ApiModelProperty(value = "创建人手机号码")
+    private String createPhone;
+
+
+    @ApiModelProperty(value = "创建时间")
+    private Date createTime;
+
+    @ApiModelProperty(value = "描述类型")
+    private String describeType;
+    @ApiModelProperty(value = "描述描述")
+    private String workOrderDescribe;
+    @ApiModelProperty(value = "工单编号")
+    private String workOrderCode;
+    @ApiModelProperty(value = "服务信息")
+    private List<ServiceInfoVo> serviceInfoVo;
+
 }
