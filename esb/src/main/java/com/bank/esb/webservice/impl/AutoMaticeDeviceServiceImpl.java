@@ -296,28 +296,15 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         List<OrderDto> esblist=new ArrayList<>();
         if (orderType != null && orderNumVo.getUserId() != null
                 && orderNumVo.getRelated() != null
-                && orderNumVo.equals("01")) {
+                && orderNumVo.getOrderType().equals("01")) {
             esblist = esbService.getEsbErrOrder(orderNumVo);
 
         }
         orderDtoList.addAll(esblist);
         total=orderDtoList.size();
-        List list = PageUtils.startPage(orderDtoList,pageIndex,pageSize);
+        List list =PageUtils.startPage(orderDtoList,pageIndex,pageSize);
         responseDto.setTotal(total);
         responseDto.setList(list);
-        total = orderDtoList.size();
-        Integer offset = (pageIndex - 1) * pageSize;
-        Integer limit = total - offset;
-        if (total > 0) {
-            if (pageIndex <= 0) {
-                offset = total % pageSize == 0 ? (total / pageSize) - 1 * pageSize : total / pageSize * pageSize;
-                orderDtoList.subList(offset, total);
-            } else {
-                limit = pageSize > limit ? limit : pageSize;
-                orderDtoList.subList(offset, offset * limit);
-            }
-        }
-        responseDto.setList(orderDtoList);
         return responseDto;
     }
 

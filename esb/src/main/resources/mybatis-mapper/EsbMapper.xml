@@ -47,37 +47,43 @@
     <select id="getEsbErrOrder" resultType="com.bank.esb.dto.OrderDto">
         SELECT
         a.status orderStatus,
-        a.orderNo ID,
+        a.ID ID,
         "sys" createUser,
         "" serviceTime,
         a.beginDate createTime,
+        "" priority,
+        a.STRSSBNUM orgId,
+        b.STRSSBNAME orgName,
         a.strTermNum deviceNo,
         a.deviceType,
-        a.errorDesc orderDetail,
         a.deviceType deviceName,
         a.deviceManu deviceBrand,
-        a.STRSSBNUM orgId,
-        b.STRSSBNAME orgName
+        a.errorDesc orderDetail,
+        "" createUserPhone,
+        a.bankReceiveName sceneUserName,
+        a.manuReceiveMobile sceneUserPhone,
+        '03' orderType
         FROM work_order a LEFT JOIN selfsvcbank b ON a.STRSSBNUM=b.STRSSBNUM
-        WHERE
-        <if test="o.deviceClassify!=null and o.deviceClassify!=''">
-            a.deviceClass = #{o.deviceClassify}
-        </if>
-       <if test="o.orderStatus!=null and o.orderStatus!=''">
-           a.status = #{o.orderStatus}
-       </if>
-       <if test="o.startTime!=null and o.endTime!=null and o.startTime!='' and o.endTime!=''">
-           a.beginDate BETWEEN #{o.startTime} AND #{o.endTime}
-       </if>
-       <if test="o.orderNo!=null and o.orderNo!=''">
-           a.ID = #{o.orderNo}
-       </if>
-       <if test="o.deviceNo!=null and o.deviceNo!=''">
-           a.strTermNum = #{o.deviceNo}
-       </if>
-       <if test="o.deviceType!=null and o.deviceType!=''">
-           a.deviceType = #{o.deviceType}
-       </if>
+        <where>
+            <if test="o.deviceClassify!=null and o.deviceClassify!=''">
+                a.deviceClass = #{o.deviceClassify}
+            </if>
+            <if test="o.orderStatus!=null and o.orderStatus!=''">
+                and a.status = #{o.orderStatus}
+            </if>
+            <if test="o.startTime!=null and o.endTime!=null and o.startTime!='' and o.endTime!=''">
+                and a.beginDate BETWEEN #{o.startTime} AND #{o.endTime}
+            </if>
+            <if test="o.orderNo!=null and o.orderNo!=''">
+                and a.ID = #{o.orderNo}
+            </if>
+            <if test="o.deviceNo!=null and o.deviceNo!=''">
+                and a.strTermNum = #{o.deviceNo}
+            </if>
+            <if test="o.deviceType!=null and o.deviceType!=''">
+                and a.deviceType = #{o.deviceType}
+            </if>
+        </where>
     </select>
 
 
