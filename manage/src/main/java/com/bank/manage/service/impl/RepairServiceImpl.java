@@ -46,8 +46,13 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
         workOrderDto.setWorkOrderType("01");
         //获取现场联系人和号码
         OrgDetailDto orgDetailDto= orgDetailinfoDao.getOrgInfoByOrgId(workOrderDto.getOrgId());
-        workOrderDto.setContactName(orgDetailDto.getOrgContactMan());
-        workOrderDto.setContactPhone(orgDetailDto.getOrgPhone());
+
+        if(orgDetailDto != null){
+            workOrderDto.setContactName(orgDetailDto.getOrgContactMan());
+            workOrderDto.setContactPhone(orgDetailDto.getOrgPhone());
+        }
+
+
         return  repairDao.saveWorkOrder(workOrderDto);
     }
 
