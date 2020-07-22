@@ -41,7 +41,8 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
         workOrderDto.setWorkOrderCode("01"+now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")));
         //工单状态默认  0 :待处理；1：待评价；2：办接；3：待分行确认；4：待总行确认；4：待厂商回复；6：总行知悉；7：分行知悉；8：退回；9：已关闭
         workOrderDto.setWorkOrderStatus("0");
-        workOrderDto.setCreateTime(new Date());
+        SimpleDateFormat simpleDateFormat =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        workOrderDto.setCreateTime(simpleDateFormat.format(new Date()));
         workOrderDto.setWorkOrderType("01");
         //获取现场联系人和号码
         OrgDetailDto orgDetailDto= orgDetailinfoDao.getOrgInfoByOrgId(workOrderDto.getOrgId());
