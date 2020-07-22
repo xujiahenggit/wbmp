@@ -460,19 +460,19 @@
         left join t_nfrt_org a
            on a.NFRT_ORG_ID  = t.org_id
         <where>
-            <if test="model.workOrderType != null">
+            <if test="model.workOrderType != null || model.workOrderType !=''">
                 and t.work_order_type = #{model.workOrderType}
             </if>
-            <if test="model.orgId != null">
+            <if test="model.orgId != null || model.orgId !='' ">
                 and t.org_id = #{model.orgId}
             </if>
-            <if test="model.vendor != null">
+            <if test="model.vendor != null || model.vendor != ''">
                 and t.vendor_name like concat('%',#{model.vendor},'%')
             </if>
-            <if test="model.status != null">
+            <if test="model.status != null || model.status !=''">
                 and t.work_order_status = #{model.status}
             </if>
-            <if test="model.terminalCode != null">
+            <if test="model.terminalCode != null || model.terminalCode !=''">
                 and t.terminal_code = #{model.terminalCode}
             </if>
                  t.create_id = #{model.logUserId}
