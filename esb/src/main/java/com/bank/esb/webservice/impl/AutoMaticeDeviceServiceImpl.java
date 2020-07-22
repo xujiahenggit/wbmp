@@ -23,6 +23,7 @@ import com.bank.esb.webservice.entity.ESBResponseHeader;
 import com.bank.manage.dos.WorkWaterDO;
 import com.bank.manage.service.ManageWorkWaterService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
@@ -34,6 +35,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.jws.WebService;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -195,20 +197,34 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
             workOrderService.saveOrUpdate(workOrderDO);
 
             //附件列表
-            List<String> pictureUrl = orderSubmissionVo.getPictureUrl();
-            if (pictureUrl != null && pictureUrl.size() > 0) {
-                ArrayList<WorkOrderAttachmentDO> list = new ArrayList<>();
-                for (String url : pictureUrl) {
-                    list.add(new WorkOrderAttachmentDO(null, orderNo, url, url, null));
-                }
-                workOrderAttachmentService.saveBatch(list);
-            }
+            saveAttachment(orderNo,orderSubmissionVo.getList());
             map.put("repcode", "0");
         } catch (Exception e) {
             log.error(e.getMessage());
             map.put("repcode", "-1");
         }
         return map;
+    }
+
+    private void saveAttachment(String orderNo,List<String> pictureUrl) {
+        Map picMap = null;
+        try {
+            if (pictureUrl != null && pictureUrl.size() == 1) {
+                ObjectMapper objectMapper = new ObjectMapper();
+                picMap = objectMapper.readValue(pictureUrl.get(0), Map.class);
+                List<String> pic = (List<String>) picMap.get("pictureUrl");
+                List list = new ArrayList<WorkOrderAttachmentDO>();
+                if (pic != null && pic.size() > 0) {
+                    for (String url : pic) {
+                        list.add(new WorkOrderAttachmentDO(null, orderNo, url,
+                                url, null));
+                    }
+                    workOrderAttachmentService.saveBatch(list);
+                }
+            }
+        } catch (IOException e) {
+            log.error("转map失败，或许没有传附件");
+        }
     }
 
     private Object WBMP10012() {
@@ -333,23 +349,21 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
             workOrderService.saveOrUpdate(orderDO);
 
             Map<String, String> engineerInfo = esbService.getEngineerInfo(engineerId);
+            String name = "";
+            String phone = "";
+            if (engineerInfo != null) {
+                name = engineerInfo.get("NAME");
+                phone = engineerInfo.get("TELEPHONE");
+            }
 
             //插入流水，待处理
             workWaterService.save(new WorkWaterDO(null, null, orderNo,
                     processMode, LocalDateTime.now()
-                    , engineerId, serviceDescribe, null, null, engineerInfo.get("NAME"),engineerInfo.get("TELEPHONE")
+                    , engineerId, serviceDescribe, null, null, name, phone
             ));
 
             //附件保存
-            List<String> pictureUrl = orderDealWithVo.getPictureUrl();
-            List list = new ArrayList<WorkOrderAttachmentDO>();
-            if (pictureUrl != null && pictureUrl.size() > 0) {
-                for (String url : pictureUrl) {
-                    list.add(new WorkOrderAttachmentDO(null, orderNo, url,
-                            url, null));
-                }
-                workOrderAttachmentService.saveBatch(list);
-            }
+            saveAttachment(orderNo,orderDealWithVo.getList());
         } else {
             orderDealWithDto.setRepcode("-1");
         }
@@ -400,7 +414,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         responseInspectionSheetDto.setRepcode("0");
         int pageIndex = inspectionSheetVo.getPageIndex();
         int pageSize = inspectionSheetVo.getPageSize();
-        inspectionSheetVo.setPageIndex((pageIndex-1)*pageSize);
+        inspectionSheetVo.setPageIndex((pageIndex - 1) * pageSize);
         List<WorkOrderDO> list = datWorkOrderDao.getXjd(inspectionSheetVo);
         ArrayList<InspectionSheetDto> inspectionSheetDtos = new ArrayList<>();
         for (WorkOrderDO workOrderDO : list) {
@@ -410,7 +424,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                     .inprocessNo(workOrderDO.getTerminalCode())
                     .orderNo(workOrderDO.getWorkOrderCode())
                     .inprocessStatus(workOrderDO.getEscortsFlag())
-                    .deviceProperty(deviceType==null?"":deviceType.toString())
+                    .deviceProperty(deviceType == null ? "" : deviceType.toString())
                     .orgId(workOrderDO.getBuffetLine())
                     .orgAddress(workOrderDO.getBuffetLineName())
                     .warrantyTime(workOrderDO.getFreeduedate())
@@ -438,7 +452,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                 .workOrderCode("03" + DateUtils.now())
                 .deviceType(Integer.parseInt(xjdInfo.get("IDEVTYPE").toString()))
                 .deviceClass(xjdInfo.get("IDEVCLASS").toString())
-                .serialNum(strdevsn==null?"":strdevsn.toString())
+                .serialNum(strdevsn == null ? "" : strdevsn.toString())
                 .vendor(xjdInfo.get("STRDEVMANU").toString())
                 .vendorName(xjdInfo.get("STRVALUE").toString())
                 .branch(xjdInfo.get("STRBRANCHNUM").toString())
@@ -447,9 +461,9 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                 .subBranchName(xjdInfo.get("STRSUBBRANCHNAME").toString())
                 .buffetLine(xjdInfo.get("STRSSBNUM").toString())
                 .buffetLineName(xjdInfo.get("STRSSBNAME").toString())
-                .freeduedate(freeduedate==null?"":freeduedate.toString())
-                .installDate(firstinstalldate==null?"":firstinstalldate.toString())
-                .installAddr(strtermaddr==null?"":strtermaddr.toString())
+                .freeduedate(freeduedate == null ? "" : freeduedate.toString())
+                .installDate(firstinstalldate == null ? "" : firstinstalldate.toString())
+                .installAddr(strtermaddr == null ? "" : strtermaddr.toString())
                 .workOrderStatus("0")
                 .escortsPatrol(inspectionSheetsVo.getAccompany())
                 .escortsStartTime(DateUtil.parseLocalDateTime(inspectionSheetsVo.getStartTime()))
@@ -469,7 +483,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         responseEngineerDto.setRepcode("0");
         int pageIndex = engineerVo.getPageIndex();
         int pageSize = engineerVo.getPageSize();
-        engineerVo.setPageIndex((pageIndex-1)*pageSize);
+        engineerVo.setPageIndex((pageIndex - 1) * pageSize);
         List<EngineerDto> engineerDtoList = esbService.getEngineer(engineerVo);
         responseEngineerDto.setList(engineerDtoList);
         return responseEngineerDto;
@@ -491,7 +505,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         //插入流水
         workWaterService.save(new WorkWaterDO(null, null, orderId,
                 "2", LocalDateTime.now()
-                , engineerId, "工单分派", null, null, engineerDto.getEngineerName(),engineerInfo.get("TELEPHONE")
+                , engineerId, "工单分派", null, null, engineerDto.getEngineerName(), engineerInfo.get("TELEPHONE")
         ));
         return responseEngineerDto;
     }
@@ -506,7 +520,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         //更改状态
         workWaterService.save(new WorkWaterDO(null, null, orderId,
                 "3", LocalDateTime.now()
-                , engineerId, "工程师到达现场处理状态变更", null, null,engineerInfo.get("NAME"),engineerInfo.get("TELEPHONE")
+                , engineerId, "工程师到达现场处理状态变更", null, null, engineerInfo.get("NAME"), engineerInfo.get("TELEPHONE")
         ));
         return stateChangesDto;
     }

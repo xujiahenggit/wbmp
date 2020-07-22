@@ -31,7 +31,7 @@ public class OrderDealWithVo {
     private String serviceDescribe;
 
     @ApiModelProperty(value = "图片路径集合")
-    private List<String>  pictureUrl;
+    private List<String>  list;
 
 
 }

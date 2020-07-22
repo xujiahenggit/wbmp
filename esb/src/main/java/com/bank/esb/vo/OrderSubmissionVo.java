@@ -26,7 +26,7 @@ public class OrderSubmissionVo {
     private String orderDescribe;
 
     @ApiModelProperty(value = "图片路径集合")
-    private List<String> pictureUrl;
+    private List<String> list;
 
 
 }
