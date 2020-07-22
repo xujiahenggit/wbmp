@@ -32,13 +32,13 @@ public interface RepairDao extends BaseMapper<ManageWorkOrderDO> {
 
     PrinterVo getPrinterByCode(String terminalCode);
 
-    IPage<WorkOrderVO> getWorkOrder(Page<LargerScreenVo> page,@Param("model") WorkOrdersDto workOrdersDto);
+    IPage<WorkOrderVO> getWorkOrder(Page<WorkOrderVO> page,@Param("model") WorkOrdersDto workOrdersDto);
 
-    IPage<WorkOrderVO> getWorkOrderByMe(Page<LargerScreenVo> page,@Param("model") WorkOrdersDto workOrdersDto);
+    IPage<WorkOrderVO> getWorkOrderByMe(Page<WorkOrderVO> page,@Param("model") WorkOrdersDto workOrdersDto);
 
-    IPage<WorkOrderVO> getWorkOrderBySystem(Page<LargerScreenVo> page,@Param("model") WorkOrdersDto workOrdersDto);
+    IPage<WorkOrderVO> getWorkOrderBySystem(Page<WorkOrderVO> page,@Param("model") WorkOrdersDto workOrdersDto);
 
-    IPage<WorkOrderVO> getWorkOrderByOther(Page<LargerScreenVo> page,@Param("model") WorkOrdersDto workOrdersDto);
+    IPage<WorkOrderVO> getWorkOrderByOther(Page<WorkOrderVO> page,@Param("model") WorkOrdersDto workOrdersDto);
 
     int saveInspectionWorkOrder(InspectionWorkOrderDto inspectionWorkOrderDto);
 
@@ -53,4 +53,8 @@ public interface RepairDao extends BaseMapper<ManageWorkOrderDO> {
     IPage<KioskVo> kioskDto(Page<KioskVo> page,@Param("model") KioskDto kioskDto);
 
     CompletedWordOrderVo getKioskById(@Param("id") String id);
+
+    List<VendorVo> getVendorList();
+
+    String getBuffetLine(@Param("orgId")  String orgId);
 }

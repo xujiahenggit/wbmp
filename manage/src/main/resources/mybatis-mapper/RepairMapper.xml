@@ -19,8 +19,10 @@
               create_user_phone,
               director_name,
               contact_name,
-              contact_phone
-
+              contact_phone,
+              vendor,
+              device_model,
+              org_id
            )
             values(
              #{terminalCode},
@@ -38,7 +40,10 @@
             #{createUserPhone},
             #{directorName},
             #{contactName},
-            #{contactPhone}
+            #{contactPhone},
+            #{vendorId},
+            #{deviceModel},
+            #{orgId}
             )
 
     </insert>
@@ -347,26 +352,18 @@
     </select>
 
     <select id="getWorkOrder" resultType="com.bank.manage.vo.WorkOrderVO">
-               select
-                        t.id id,
-                        t.work_order_code workOrderCode,
-                        t.terminal_code terminalCode,
-                        t.create_time createTime,
-                        subbranch.org_code orgId,
-                        t.work_order_status status,
-                        device.STRDEVMANU vendor,
-                        device.STRDEVSN repairCode,
-                        t.deal_type way,
-                        device.IDEVTYPE repairName,
-                        t.engineer engineer
-                from t_work_order t
-                   left join dat_term term
-                on term.STRTERMNUM =t.terminal_code
-                   left join dat_device device
-                on device.id =term.DEVICEID
-                   left join dat_subbranch subbranch
-                on subbranch.STRSUBBRANCHNUM = term.STRSUBBRANCHNUM
+        select
+                t.id id,
+                t.work_order_code workOrderCode,
+                t.terminal_code terminalCode,
+                t.org_id orgId,
+                t.device_type deviceType,
+                t.device_model deviceModel,
+                t.vendor_name vendorName,
+                t.vendor vendorId,
+                t.work_order_status status
 
+        from t_work_order t
                 <where>
                     <if test="model.workOrderType != null">
                         and t.work_order_type = #{model.workOrderType}
@@ -375,7 +372,7 @@
                         and subbranch.org_code= #{model.orgId}
                     </if>
                     <if test="model.vendor != null">
-                        and device.STRDEVMANU like concat('%',#{model.vendor},'%')
+                        and t.vendor_name like concat('%',#{model.vendor},'%')
                     </if>
                     <if test="model.status != null">
                         and t.work_order_status = #{model.status}
@@ -383,39 +380,20 @@
                     <if test="model.terminalCode != null">
                         and t.terminal_code = #{model.terminalCode}
                     </if>
-                    <if test="model.logUserId != null">
-                        and t.create_id = #{model.logUserId}
-                    </if>
-                </where>
-                union all
-                select
-                    work_order.id id,
-                    "" workOrderCode,
-                    "" terminalCode,
-                    work_order.beginDate createTime,
-                    subbranch.org_code orgId,
-                    work_order.status status,
-                    work_order.deviceManu vendor,
-                    work_order.deviceModel repairCode,
-                    "" way,
-                    work_order.deviceType repairName,
-                    "" engineer
-
-                from dat_work_order work_order
-                left join dat_subbranch subbranch
-                on subbranch.STRSUBBRANCHNUM = work_order.STRSUBBRANCHNUM
-                <where>
-                    <if test="model.orgId != null">
-                        and subbranch.org_code = #{model.orgId}
-                    </if>
-                    <if test="model.vendor != null">
-                        and work_order.deviceManu like concat('%',#{model.vendor},'%')
-                    </if>
-                    <if test="model.terminalCode != null">
-                        and work_order.strTermNum = #{model.terminalCode}
-                    </if>
                 </where>
 
+    </select>
+
+    <select id="getBuffetLine" resultType="java.lang.String">
+        select
+        STRSSBNAME
+        from ssamgt.selfsvcbank a
+        left join ssamgt.branch b
+        on a.STRBRANCHNUM = b.STRBRANCHNUM
+        left join ssamgt.subbranch c
+        on a.STRSUBBRANCHNUM = c.STRSUBBRANCHNUM
+        where b.org_code = #{orgId}
+        or c.org_code = #{orgId}
     </select>
 
     <select id="getWorkOrderByMe" resultType="com.bank.manage.vo.WorkOrderVO">
@@ -423,23 +401,14 @@
                 t.id id,
                 t.work_order_code workOrderCode,
                 t.terminal_code terminalCode,
-                t.create_time createTime,
-                subbranch.org_code orgId,
-                t.work_order_status status,
-                device.STRDEVMANU vendor,
-                device.STRDEVSN  repairCode,
-                t.deal_type way,
-                device.IDEVTYPE repairName,
-                t.engineer engineer
+                t.org_id orgId,
+                t.device_type deviceType,
+                t.device_model deviceModel,
+                t.vendor_name vendorName,
+                t.vendor vendorId,
+                t.work_order_status status
+
         from t_work_order t
-        left join dat_term term
-        on term.STRTERMNUM =t.terminal_code
-        left join dat_device device
-        on device.id =term.DEVICEID
-        left join dat_subbranch subbranch
-        on subbranch.STRSUBBRANCHNUM = term.STRSUBBRANCHNUM
-        left join t_work_water water
-        on water.word_order_id =t.id
         <where>
             <if test="model.workOrderType != null">
                 and t.work_order_type = #{model.workOrderType}
@@ -448,7 +417,7 @@
                 and subbranch.org_code= #{model.orgId}
             </if>
             <if test="model.vendor != null">
-                and device.STRDEVMANU like concat('%',#{model.vendor},'%')
+                and t.vendor_name like concat('%',#{model.vendor},'%')
             </if>
             <if test="model.status != null">
                 and t.work_order_status = #{model.status}
@@ -457,12 +426,14 @@
                 and t.terminal_code = #{model.terminalCode}
             </if>
             <if test="model.logUserId != null">
-                and t.create_id  = #{model.logUserId}
+                and t.create_id = #{model.logUserId}
             </if>
             and  t.id not in (
-              select word_order_id   from t_work_water
+            select word_order_id   from t_work_water
             )
         </where>
+
+
     </select>
 
     <select id="getWorkOrderByOther" resultType="com.bank.manage.vo.WorkOrderVO">
@@ -704,5 +675,15 @@
                left join t_work_order a
             on a.terminal_code = term.STRTERMNUM
             where device.id = #{id}
+    </select>
+
+    <select id="getVendorList" resultType="com.bank.manage.vo.VendorVo">
+           select
+            a.STRNAME vendorId,
+            a.STRVALUE vendorName
+
+         from ssarun.domaindict a
+        where a.STRTYPE ='DevManu'
+
     </select>
 </mapper>

@@ -62,6 +62,12 @@ public class RepairController {
     }
 
 
+    @ApiOperation(value ="查询所有厂商")
+    @GetMapping("/getVendorList")
+    public List<VendorVo> getVendorList(){
+        return repairService.getVendorList();
+    }
+
     @ApiOperation(value ="工单详情查询")
     @GetMapping("/getRepairById/{repairCode}")
     @ApiImplicitParam(name = "repairCode",value = "工单编号",required = true,paramType = "path")

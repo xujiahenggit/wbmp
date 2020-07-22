@@ -41,4 +41,6 @@ public interface RepairService extends IService<ManageWorkOrderDO> {
     IPage<KioskVo> getKioskList(KioskDto kioskDto);
 
     CompletedWordOrderVo getKioskById(String id);
+
+    List<VendorVo> getVendorList();
 }

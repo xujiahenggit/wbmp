@@ -18,7 +18,7 @@ public class WorkOrderDto {
     private String terminalCode;
     @ApiModelProperty(value = "工单类型 01-故障工单；02-投诉工单；03-巡检")
     private String workOrderType;
-    @ApiModelProperty(value = "优先级编号")
+    @ApiModelProperty(value = "优先级编号（1：一般 2：紧急）")
     private String priorityCode;
     @ApiModelProperty(value = "服务主管(手机号)")
     private String director;
@@ -48,5 +48,10 @@ public class WorkOrderDto {
     private String contactName;
     @ApiModelProperty(value = "现场联系人号码")
     private String contactPhone;
+    @ApiModelProperty(value = "厂商Id")
+    private String vendorId;
+    @ApiModelProperty(value = "设备型号")
+    private String deviceModel;
+
 
 }
