@@ -34,6 +34,8 @@ public interface EsbDao {
 
     List<DatSubbranchDO> getSubBranch(@Param("orgid")String orgId);
 
+    List<DatSubbranchDO> getAllSubBranch();
+
     List<DatSelfsvcbankDO> getSelfBranch(@Param("orgid")String orgId);
 
     Map<String, Object> getXjdInfo(@Param("deviceId") String deviceNo);

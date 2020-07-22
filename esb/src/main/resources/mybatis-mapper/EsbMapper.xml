@@ -107,10 +107,19 @@
 
     <select id="getXjdInfo" resultType="java.util.Map">
         SELECT b.STRDEVSN,b.IDEVTYPE,b.IDEVCLASS,b.STRDEVMANU,c.STRVALUE,
-        a.STRBRANCHNUM,a.STRSUBBRANCHNUM,a.STRSSBNUM,a.STRORGNO
+        a.STRBRANCHNUM,d.STRBRANCHNAME,
+        a.STRSUBBRANCHNUM,e.STRSUBBRANCHNAME,
+        a.STRSSBNUM,f.STRSSBNAME,a.STRORGNO,b.freeduedate,a.STRTERMADDR,b.firstinstalldate
         FROM ssarun.term a
         LEFT JOIN ssarun.device b on a.DEVICEID=b.ID
         LEFT JOIN ssarun.domaindict c ON b.STRDEVMANU = c.STRNAME
+        LEFT JOIN branch d ON d.STRBRANCHNUM=a.STRBRANCHNUM
+        LEFT JOIN subbranch e ON e.STRSUBBRANCHNUM=a.STRSUBBRANCHNUM
+        LEFT JOIN selfsvcbank f ON a.STRSSBNUM=f.STRSSBNUM
         WHERE a.STRTERMNUM=#{deviceId}
+    </select>
+
+    <select id="getAllSubBranch" resultType="com.bank.esb.dos.DatSubbranchDO">
+        select * from  subbranch
     </select>
 </mapper>
