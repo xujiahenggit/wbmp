@@ -4,9 +4,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.util.Date;
-import java.util.List;
-
 /**
  * @Author: cq
  * @Date: 2020/7/2
@@ -31,6 +28,12 @@ public class InspectionSheetVo {
 
     @ApiModelProperty(value = "统计时间 1-上季度；2-本季度；3-上个半年；4-本半年")
     private String statisticalTime;
+
+    @ApiModelProperty(value = "开始时间")
+    private String startTime;
+
+    @ApiModelProperty(value = "结束时间")
+    private String endTime;
 
     @ApiModelProperty(value = "机构号")
     private String orgId;

@@ -41,7 +41,8 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
         workOrderDto.setWorkOrderCode("01"+now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")));
         //工单状态默认  0 :待处理；1：待评价；2：办接；3：待分行确认；4：待总行确认；4：待厂商回复；6：总行知悉；7：分行知悉；8：退回；9：已关闭
         workOrderDto.setWorkOrderStatus("0");
-        workOrderDto.setCreateTime(new Date());
+        SimpleDateFormat simpleDateFormat =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        workOrderDto.setCreateTime(simpleDateFormat.format(new Date()));
         workOrderDto.setWorkOrderType("01");
         //获取现场联系人和号码
         OrgDetailDto orgDetailDto= orgDetailinfoDao.getOrgInfoByOrgId(workOrderDto.getOrgId());
@@ -106,7 +107,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
 
     @Override
     public IPage<WorkOrderVO> getWorkOrder(WorkOrdersDto workOrdersDto) {
-        Page<LargerScreenVo> page = new Page<>(workOrdersDto.getPageIndex(), workOrdersDto.getPageSize());
+        Page<WorkOrderVO> page = new Page<>(workOrdersDto.getPageIndex(), workOrdersDto.getPageSize());
         if (StringUtils.isNotBlank(workOrdersDto.getSort())) {
             if (StringUtils.equalsIgnoreCase("DESC", workOrdersDto.getOrder())) {
                 page.setDesc(workOrdersDto.getSort());
@@ -118,7 +119,14 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
         //判断来源类型  1 我发起的，2 我审批的、3 我办结的、4 系统自建；5 所有
         if("5".equals(workOrdersDto.getSourceType())){
             //查询所有
-            return repairDao.getWorkOrder(page,workOrdersDto);
+            IPage<WorkOrderVO>  workOrderList=  repairDao.getWorkOrder(page,workOrdersDto);
+            //查询自助行信息
+
+            getBuffetLine(workOrderList);
+
+            return workOrderList;
+
+
         }else if("1".equals(workOrdersDto.getSourceType())){
             //我发起的
             return  repairDao.getWorkOrderByMe(page,workOrdersDto);
@@ -131,6 +139,16 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
         //其他类型
         return repairDao.getWorkOrderByOther(page,workOrdersDto);
 
+
+    }
+
+    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
+    private void getBuffetLine(IPage<WorkOrderVO> workOrderList) {
+        List<WorkOrderVO> list = workOrderList.getRecords();
+        for(int i=0;i<list.size();i++){
+          String name=  repairDao.getBuffetLine(list.get(i).getOrgId());
+            list.get(i).setOrgName(name);
+        }
 
     }
 
@@ -190,6 +208,13 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
     @Override
     public CompletedWordOrderVo getKioskById(String id) {
         return  repairDao.getKioskById(id);
+    }
+
+    @Override
+    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
+    public List<VendorVo> getVendorList() {
+
+        return repairDao.getVendorList();
     }
 
     public void getTime(InspectionEquipmentDto inspectionEquipmentDto){

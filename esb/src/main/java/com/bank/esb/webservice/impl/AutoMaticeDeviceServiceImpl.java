@@ -72,25 +72,25 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
             switch (requestHeader.getServiceCode()) {
                 case "WBMP10001"://工单查询
                     OrderNumVo orderNumVO = JSON.parseObject(JSON.toJSONString(body), OrderNumVo.class);
-                    returnVO = JSON.parseObject(JSON.toJSONString(getOrders(orderNumVO)), Map.class);
+                    returnVO = JSON.parseObject(JSON.toJSONString(WBMP10001(orderNumVO)), Map.class);
                     break;
                 case "WBMP10002"://工单处理
                     OrderDealWithVo orderDealWithVo = JSON.parseObject(JSON.toJSONString(body), OrderDealWithVo.class);
-                    returnVO = JSON.parseObject(JSON.toJSONString(orderDealWith(orderDealWithVo)), Map.class);
+                    returnVO = JSON.parseObject(JSON.toJSONString(WBMP10002(orderDealWithVo)), Map.class);
                     break;
                 case "WBMP10003"://机构列表接口
                     InstitutionsVo institutionsVo = JSON.parseObject(JSON.toJSONString(body), InstitutionsVo.class);
-                    returnVO = JSON.parseObject(JSON.toJSONString(getInstitutions(institutionsVo)), Map.class);
+                    returnVO = JSON.parseObject(JSON.toJSONString(WBMP10003(institutionsVo)), Map.class);
                     break;
                 case "WBMP10004"://巡检单查询接口
                     InspectionSheetVo inspectionSheetVo = JSON.parseObject(JSON.toJSONString(body), InspectionSheetVo.class);
-                    returnVO = JSON.parseObject(JSON.toJSONString(getInspectionSheet(inspectionSheetVo)), Map.class);
+                    returnVO = JSON.parseObject(JSON.toJSONString(WBMP10004(inspectionSheetVo)), Map.class);
                     break;
                 case "WBMP10005"://巡检单创建接口
                     InspectionSheetsVo inspectionSheet = JSON.parseObject(JSON.toJSONString(body), InspectionSheetsVo.class);
-                    returnVO = JSON.parseObject(JSON.toJSONString(getInspectionSheets(inspectionSheet)), Map.class);
+                    returnVO = JSON.parseObject(JSON.toJSONString(WBMP10005(inspectionSheet)), Map.class);
                     break;
-                case "WBMP10007"://工程师列表查询接口    1
+                case "WBMP10007"://工程师列表查询接口
                     EngineerVo engineerVo = JSON.parseObject(JSON.toJSONString(body), EngineerVo.class);
                     returnVO = JSON.parseObject(JSON.toJSONString(WBMP10007(engineerVo)), Map.class);
                     break;
@@ -100,25 +100,25 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                     break;
                 case "WBMP10009"://状态变更（工程师到达现场）接口
                     StateChangesVo changeStatus = JSON.parseObject(JSON.toJSONString(body), StateChangesVo.class);
-                    returnVO = JSON.parseObject(JSON.toJSONString(stateChanges(changeStatus)), Map.class);
+                    returnVO = JSON.parseObject(JSON.toJSONString(WBMP10009(changeStatus)), Map.class);
                     break;
-                case "WBMP10010"://工单提交接口   1
+                case "WBMP10010"://工单提交接口
                     OrderSubmissionVo orderSubmissionVo = JSON.parseObject(JSON.toJSONString(body), OrderSubmissionVo.class);
                     returnVO = JSON.parseObject(JSON.toJSONString(WBMP10010(orderSubmissionVo)), Map.class);
                     break;
-                case "WBMP10011"://投诉工单回复接口 1
+                case "WBMP10011"://投诉工单回复接口
                     RepairOrderBVo repairOrderBVo = JSON.parseObject(JSON.toJSONString(body), RepairOrderBVo.class);
-                    returnVO = JSON.parseObject(JSON.toJSONString(repairOrder(repairOrderBVo)), Map.class);
+                    returnVO = JSON.parseObject(JSON.toJSONString(WBMP10011(repairOrderBVo)), Map.class);
                     break;
-                case "WBMP10012"://设备厂商列表查询接口   ?
+                case "WBMP10012"://设备厂商列表查询接口
                     returnVO = JSON.parseObject(JSON.toJSONString(WBMP10012()), Map.class);
                     break;
-                case "WBMP10013"://设备详细信息查询接口   1
+                case "WBMP10013"://设备详细信息查询接口
                     returnVO = JSON.parseObject(JSON.toJSONString(WBMP10013(body.get("deviceId"))), Map.class);
                     break;
                 case "WBMP10014":
                     TransferInformationVo transferInformationVo = JSON.parseObject(JSON.toJSONString(body), TransferInformationVo.class);
-                    returnVO = JSON.parseObject(JSON.toJSONString(getTransferInformation(transferInformationVo)), Map.class);
+                    returnVO = JSON.parseObject(JSON.toJSONString(WBMP10014(transferInformationVo)), Map.class);
                     break;
                 case "WBMP10015"://服务信息查询接口
                     TransferInformationVo orderId = JSON.parseObject(JSON.toJSONString(body), TransferInformationVo.class);
@@ -261,7 +261,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
     @Resource
     DatWorkOrderDao datWorkOrderDao;
 
-    private ResponseDto getOrders(OrderNumVo orderNumVo) {
+    private ResponseDto WBMP10001(OrderNumVo orderNumVo) {
         ResponseDto responseDto = new ResponseDto();
         responseDto.setStatus("0");
         Integer pageIndex = orderNumVo.getPageIndex();
@@ -309,7 +309,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
     @Resource
     WorkOrderService workOrderService;
 
-    private OrderDealWithDto orderDealWith(OrderDealWithVo orderDealWithVo) {
+    private OrderDealWithDto WBMP10002(OrderDealWithVo orderDealWithVo) {
         OrderDealWithDto orderDealWithDto = new OrderDealWithDto();
         orderDealWithDto.setRepcode("0");
         String orderNo = orderDealWithVo.getOrderNo();
@@ -348,7 +348,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         return orderDealWithDto;
     }
 
-    private ResponseInstitutionsDto getInstitutions(InstitutionsVo institutionsVo) {
+    private ResponseInstitutionsDto WBMP10003(InstitutionsVo institutionsVo) {
         ResponseInstitutionsDto responseInstitutionsDto = new ResponseInstitutionsDto();
         responseInstitutionsDto.setRepcode("0");
         String orgId = institutionsVo.getOrgId();
@@ -375,20 +375,44 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
 
                 }
             }
+        }else{
+            //默认查询支行信息
+            List<DatSubbranchDO> subBranchs = esbService.getSubBranch();
+            for (DatSubbranchDO subbranchDO : subBranchs) {
+                list.add(new InstitutionsDto(subbranchDO.getStrsubbranchnum(), subbranchDO.getStrsubbranchname()));
+            }
+
         }
         responseInstitutionsDto.setList(list);
         return responseInstitutionsDto;
     }
 
-    private ResponseInspectionSheetDto getInspectionSheet(InspectionSheetVo inspectionSheetVo) {
+    private ResponseInspectionSheetDto WBMP10004(InspectionSheetVo inspectionSheetVo) {
         ResponseInspectionSheetDto responseInspectionSheetDto = new ResponseInspectionSheetDto();
         responseInspectionSheetDto.setRepcode("0");
-//        List<InspectionSheetDto> list =
-//        responseInspectionSheetDto.setInspectionSheetDtoList(list);
+        int pageIndex = inspectionSheetVo.getPageIndex();
+        int pageSize = inspectionSheetVo.getPageSize();
+        inspectionSheetVo.setPageIndex((pageIndex-1)*pageSize);
+        List<WorkOrderDO> list = datWorkOrderDao.getXjd(inspectionSheetVo);
+        ArrayList<InspectionSheetDto> inspectionSheetDtos = new ArrayList<>();
+        for (WorkOrderDO workOrderDO : list) {
+            inspectionSheetDtos.add(InspectionSheetDto.builder()
+                    .serialNum(workOrderDO.getSerialNum())
+                    .inprocessNo(workOrderDO.getTerminalCode())
+                    .orderNo(workOrderDO.getWorkOrderCode())
+                    .inprocessStatus(workOrderDO.getEscortsFlag())
+                    .deviceProperty(workOrderDO.getDeviceType().toString())
+                    .orgId(workOrderDO.getBuffetLine())
+                    .orgAddress(workOrderDO.getBuffetLineName())
+                    .warrantyTime(workOrderDO.getFreeduedate())
+                    .build()
+            );
+        }
+        responseInspectionSheetDto.setList(inspectionSheetDtos);
         return responseInspectionSheetDto;
     }
 
-    private InspectionSheetsDto getInspectionSheets(InspectionSheetsVo inspectionSheetsVo) {
+    private InspectionSheetsDto WBMP10005(InspectionSheetsVo inspectionSheetsVo) {
         InspectionSheetsDto inspectionSheetsDto = new InspectionSheetsDto();
         inspectionSheetsDto.setRepcode("0");
         //巡检单创建
@@ -405,14 +429,21 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                 .vendor(xjdInfo.get("STRDEVMANU").toString())
                 .vendorName(xjdInfo.get("STRVALUE").toString())
                 .branch(xjdInfo.get("STRBRANCHNUM").toString())
+                .branchName(xjdInfo.get("STRBRANCHNAME").toString())
                 .subBranch(xjdInfo.get("STRSUBBRANCHNUM").toString())
+                .subBranchName(xjdInfo.get("STRSUBBRANCHNAME").toString())
                 .buffetLine(xjdInfo.get("STRSSBNUM").toString())
+                .buffetLineName(xjdInfo.get("STRSSBNAME").toString())
+                .freeduedate(xjdInfo.get("freeduedate").toString())
+                .installDate(xjdInfo.get("firstinstalldate").toString())
+                .installAddr(xjdInfo.get("STRTERMADDR").toString())
                 .workOrderStatus("0")
                 .escortsPatrol(inspectionSheetsVo.getAccompany())
                 .escortsStartTime(DateUtil.parseLocalDateTime(inspectionSheetsVo.getStartTime()))
                 .escortsCompleteTime(DateUtil.parseLocalDateTime(inspectionSheetsVo.getEndTime()))
                 .escortsHandling(inspectionSheetsVo.getProcessMode())
-                .workOrderDescribe(inspectionSheetsVo.getOrderDescribe()).build();
+                .workOrderDescribe(inspectionSheetsVo.getOrderDescribe())
+                .build();
         workOrderService.save(workOrderDO);
         return inspectionSheetsDto;
     }
@@ -452,7 +483,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         return responseEngineerDto;
     }
 
-    private StateChangesDto stateChanges(StateChangesVo stateChangesVo) {
+    private StateChangesDto WBMP10009(StateChangesVo stateChangesVo) {
         StateChangesDto stateChangesDto = new StateChangesDto();
         stateChangesDto.setRepcode("0");
         String engineerId = stateChangesVo.getEngineerId();
@@ -467,7 +498,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         return stateChangesDto;
     }
 
-    private RepairOrderBDto repairOrder(RepairOrderBVo repairOrderBVo) {
+    private RepairOrderBDto WBMP10011(RepairOrderBVo repairOrderBVo) {
         RepairOrderBDto repairOrderBDto = new RepairOrderBDto();
         String orderNo = repairOrderBVo.getOrderNo();
         String engineerId = repairOrderBVo.getEngineerId();
@@ -485,7 +516,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         return repairOrderBDto;
     }
 
-    private ResonseTransferInformationDto getTransferInformation(TransferInformationVo transferInformationVo) {
+    private ResonseTransferInformationDto WBMP10014(TransferInformationVo transferInformationVo) {
         String orderId = transferInformationVo.getOrderId();
         ResonseTransferInformationDto resonseTransferInformationDto = new ResonseTransferInformationDto();
         List<Map<String, String>> workWaterDOS = workWaterService.getwater(orderId);
