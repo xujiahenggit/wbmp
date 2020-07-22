@@ -1,5 +1,6 @@
 package com.bank.esb.dao;
 
+import com.bank.esb.dos.WorkOrderDO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.ibatis.annotations.Param;
