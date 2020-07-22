@@ -1,9 +1,16 @@
 package com.bank.manage.service.impl;
 
-import cn.hutool.core.collection.ListUtil;
-import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.util.NumberUtil;
-import cn.hutool.core.util.StrUtil;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
 import com.bank.core.entity.BizException;
 import com.bank.manage.dao.HappyDao;
 import com.bank.manage.dos.ExamineDataAdminDO;
@@ -17,11 +24,12 @@ import com.bank.role.dos.UserRoleDO;
 import com.bank.role.service.RoleService;
 import com.bank.role.service.UserRoleService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-import java.util.*;
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.StrUtil;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
@@ -35,7 +43,6 @@ public class HappyServiceImpl implements HappyService {
 
     @Resource
     HappyDao happyDao;
-
 
     @Override
     public boolean hasAdminPermission(String userId) {
@@ -56,30 +63,61 @@ public class HappyServiceImpl implements HappyService {
     @Override
     public List<Map> starStatus(HappyParam param) {
         checkAndSetDefaultParam(param);
-        List<HashMap<Object, Object>> dict = ListUtil.toList(MapUtil.of(new Object[][]{
-                {"star", "无星"},
-                {"count", 0}
-        }), MapUtil.of(new Object[][]{
-                {"star", "三星级"},
-                {"count", 0}
-        }), MapUtil.of(new Object[][]{
-                {"star", "四星级"},
-                {"count", 0}
-        }), MapUtil.of(new Object[][]{
-                {"star", "五星级"},
-                {"count", 0}
-        }));
-        List<Map<String, Object>> data = happyDao.starStatus(param);
-        combineData(data);
-        return (List<Map>) fillDictData(dict, data, "star", "count");
+        List<Map> dictList = ListUtil.toList(
+                MapUtil.of(
+                        new Object[][] {
+                                { "star", "无星" },
+                                { "count", 0 },
+                                { "orgList", new ArrayList<>() }
+                        }),
+                MapUtil.of(
+                        new Object[][] {
+                                { "star", "三星级" },
+                                { "count", 0 },
+                                { "orgList", new ArrayList<>() }
+                        }),
+                MapUtil.of(
+                        new Object[][] {
+                                { "star", "四星级" },
+                                { "count", 0 },
+                                { "orgList", new ArrayList<>() }
+                        }),
+                MapUtil.of(
+                        new Object[][] {
+                                { "star", "五星级" },
+                                { "count", 0 },
+                                { "orgList", new ArrayList<>() }
+                        }));
+
+        List<Map<String, Object>> dataList = happyDao.starStatus(param);
+        //根据星级进行分组
+        Map<String, List<Map<String, Object>>> groupData = dataList.stream().collect(Collectors.groupingBy(e -> e.get("star").toString()));
+        List<Map<String, Object>> oneTwo = new ArrayList<>();
+        //一星级和二星级整合为无星
+        oneTwo.addAll(groupData.get("一星级"));
+        oneTwo.addAll(groupData.get("二星级"));
+        groupData.remove("一星级");
+        groupData.remove("二星级");
+        groupData.put("无星", oneTwo);
+
+        for (int i = 0; i < dictList.size(); i++) {
+            Map dict = dictList.get(i);
+            String star = dict.get("star").toString();
+
+            if (groupData.containsKey(star)) {
+                dict.put("count", groupData.get(star).size());
+                dict.put("orgList", groupData.get(star));
+            }
+        }
+        return dictList;
     }
 
     private void combineData(List<Map<String, Object>> data) {
         Integer one = getStar(data, "一星级");
         Integer two = getStar(data, "二星级");
-        Map<String, Object> map=new HashMap();
+        Map<String, Object> map = new HashMap();
         map.put("star", "无星");
-        map.put("count", one+two);
+        map.put("count", one + two);
         data.add(map);
     }
 
@@ -111,24 +149,51 @@ public class HappyServiceImpl implements HappyService {
     @Override
     public List<Map> serviceLevelStatus(HappyParam param) {
         checkAndSetDefaultParam(param);
-        List<HashMap<Object, Object>> dict = ListUtil.toList(MapUtil.of(new Object[][]{
-                {"level", "卓越"},
-                {"count", 0}
-        }), MapUtil.of(new Object[][]{
-                {"level", "优秀"},
-                {"count", 0}
-        }), MapUtil.of(new Object[][]{
-                {"level", "一般"},
-                {"count", 0}
-        }), MapUtil.of(new Object[][]{
-                {"level", "关注"},
-                {"count", 0}
-        }), MapUtil.of(new Object[][]{
-                {"level", "重点关注"},
-                {"count", 0}
-        }));
-        List<Map<String, Integer>> data = happyDao.serviceLevelStatus(param);
-        return (List<Map>) fillDictData(dict, data, "level", "count");
+        List<Map> dictList = ListUtil.toList(
+                MapUtil.of(
+                        new Object[][] {
+                                { "level", "卓越" },
+                                { "count", 0 },
+                                { "orgList", new ArrayList<>() }
+                        }),
+                MapUtil.of(
+                        new Object[][] {
+                                { "level", "优秀" },
+                                { "count", 0 },
+                                { "orgList", new ArrayList<>() }
+                        }),
+                MapUtil.of(
+                        new Object[][] {
+                                { "level", "一般" },
+                                { "count", 0 },
+                                { "orgList", new ArrayList<>() }
+                        }),
+                MapUtil.of(
+                        new Object[][] {
+                                { "level", "关注" },
+                                { "count", 0 },
+                                { "orgList", new ArrayList<>() }
+                        }),
+                MapUtil.of(
+                        new Object[][] {
+                                { "level", "重点关注" },
+                                { "count", 0 },
+                                { "orgList", new ArrayList<>() }
+                        }));
+        List<Map<String, Object>> dataList = happyDao.serviceLevelStatus(param);
+        //根据服务等级进行分组
+        Map<String, List<Map<String, Object>>> groupData = dataList.stream().collect(Collectors.groupingBy(e -> e.get("level").toString()));
+
+        for (int i = 0; i < dictList.size(); i++) {
+            Map dict = dictList.get(i);
+            String level = dict.get("level").toString();
+
+            if (groupData.containsKey(level)) {
+                dict.put("count", groupData.get(level).size());
+                dict.put("orgList", groupData.get(level));
+            }
+        }
+        return dictList;
     }
 
     private void checkAndSetDefaultParam(HappyParam param) {
@@ -148,10 +213,9 @@ public class HappyServiceImpl implements HappyService {
             if (!StrUtil.isBlankIfStr(orgids)) {
                 List<String> orgIds = happyDao.getOrgIds(orgids);
                 param.setOrgs(orgIds);
-//                param.setOrgids(orgIds.stream().collect(Collectors.joining("','")));
+                //                param.setOrgids(orgIds.stream().collect(Collectors.joining("','")));
             }
         }
-
 
     }
 
@@ -199,7 +263,8 @@ public class HappyServiceImpl implements HappyService {
     private Object getAverage(int yearScore, Integer count) {
         if (count == null || count == 0) {
             return 0;
-        } else {
+        }
+        else {
             double div = NumberUtil.div((float) yearScore, (float) count, 2);
             if (Math.abs(div - 0d) == 0) {
                 return 0;
@@ -210,9 +275,25 @@ public class HappyServiceImpl implements HappyService {
     }
 
     @Override
-    public List<Map<String, Integer>> HeadStatus(HappyParam param) {
+    public List<Map<String, Object>> HeadStatus(HappyParam param) {
         checkAndSetDefaultParam(param);
-        return happyDao.HeadStatus(param);
+        List<Map<String, Object>> dataList = happyDao.HeadStatus(param);
+
+        //根据类型进行分组
+        Map<String, List<Map<String, Object>>> groupData = dataList.stream().collect(Collectors.groupingBy(e -> e.get("type").toString()));
+        List<Map<String, Object>> resultList = new ArrayList<>();
+
+        //Map迭代
+        groupData.forEach((type, orgList) -> {
+            Map<String, Object> data = new HashMap<>();
+            data.put("type", type);
+            data.put("count", orgList.size());
+            data.put("orgList", orgList);
+
+            resultList.add(data);
+        });
+
+        return resultList;
     }
 
     @SuppressWarnings("all")
@@ -225,11 +306,14 @@ public class HappyServiceImpl implements HappyService {
 
         if (currentYearScorePresent && lastYearScorePresent) {
             YearScore = currentYearScore.get() - lastYearScore.get();
-        } else if (currentYearScorePresent && !lastYearScorePresent) {
+        }
+        else if (currentYearScorePresent && !lastYearScorePresent) {
             YearScore = currentYearScore.get();
-        } else if (!currentYearScorePresent && lastYearScorePresent) {
+        }
+        else if (!currentYearScorePresent && lastYearScorePresent) {
             YearScore = -lastYearScore.get();
-        } else if (!currentYearScorePresent && !lastYearScorePresent) {
+        }
+        else if (!currentYearScorePresent && !lastYearScorePresent) {
             YearScore = 0;
         }
         return YearScore;
