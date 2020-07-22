@@ -86,4 +86,9 @@ public class SsarunDeviceServiceImpl implements SsarunDeviceService {
 
     }
 
+    @Override
+    public String getOrgNameByOrgId(String orgId) {
+        return ssarunDeviceDao.getOrgNameByOrgId(orgId);
+    }
+
 }

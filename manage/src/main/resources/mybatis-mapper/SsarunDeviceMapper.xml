@@ -53,10 +53,17 @@
             </foreach>
     </select>
 
+    <select id="getOrgNameByOrgId" resultType="java.lang.String">
+             select NFRT_ORG_NAME
+             from t_nfrt_org
+           where NFRT_ORG_ID =#{orgId}  and NFRT_ORG_STATE ='1'
+    </select>
+
     <select id="getDeviceDetailsById" resultType="com.bank.manage.vo.DeviceDetailsVo">
            select
                 device.id id,
-                device.STRDEVMANU deviceVendor,        -- 设备厂商
+                device.STRDEVMANU deviceVendor,          -- 设备厂商id
+                 domaindict.STRVALUE deviceVendorName,    -- 设备厂商名称
                 device.STRDEVMODEL deviceModel,       -- 设备型号
                 term.ORGANIZATION orgId,        --  所属机构号
                 term.STRTERMADDR address,         --  终端地址
@@ -89,6 +96,8 @@
             from  ssarun.device device
             left join ssarun.term term
                 on term.DEVICEID = device.id
+            left join ssarun.domaindict domaindict
+                on domaindict.STRNAME =  device.STRDEVMANU
             where  term.STRTERMNUM = #{id}
     </select>
 

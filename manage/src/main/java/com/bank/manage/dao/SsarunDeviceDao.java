@@ -81,4 +81,6 @@ public interface SsarunDeviceDao {
      * @return
      */
     List<PrinterListVo> getPrinterListById(@Param("terminalCode") String terminalCode);
+
+    String getOrgNameByOrgId(@Param("orgId") String orgId);
 }

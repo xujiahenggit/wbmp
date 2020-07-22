@@ -63,4 +63,6 @@ public interface SsarunDeviceService {
      * @return
      */
     List<DeviceTradeTrendVo> getDeviceTradeList(DeviceTradeDto deviceTradeDto);
+
+    String getOrgNameByOrgId(String orgId);
 }
