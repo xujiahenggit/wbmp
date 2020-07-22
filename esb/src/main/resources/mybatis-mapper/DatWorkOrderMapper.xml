@@ -263,6 +263,7 @@
     <select id="getXjd" resultType="com.bank.esb.dos.WorkOrderDO">
         select * from t_work_order
         <where>
+            work_order_type= '03'
             <if test="m.deviceClassify != null and m.deviceClassify != ''">
                 and device_class= #{m.deviceClassify}
             </if>

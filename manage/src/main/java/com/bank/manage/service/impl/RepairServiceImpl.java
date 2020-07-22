@@ -134,17 +134,33 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
 
         }else if("1".equals(workOrdersDto.getSourceType())){
             //我发起的
-            return  repairDao.getWorkOrderByMe(page,workOrdersDto);
+            IPage<WorkOrderVO>  workOrderList= repairDao.getWorkOrderByMe(page,workOrdersDto);
+            getBuffetLine(workOrderList);
+            return  workOrderList;
         }
         else if("4".equals(workOrdersDto.getSourceType())){
             //系统自建
-             return  repairDao.getWorkOrderBySystem(page,workOrdersDto);
+            IPage<WorkOrderVO>  workOrderList=  getWorkOrderBySystem(page,workOrdersDto);
+            getBuffetLine(workOrderList);
+            return  workOrderList;
+        }else if("2".equals(workOrdersDto.getSourceType())){
+            //我审批的
+            IPage<WorkOrderVO>  workOrderList= repairDao.getWorkOrderByMeApp(page,workOrdersDto);
+            getBuffetLine(workOrderList);
+            return  workOrderList;
+
+        }else{
+            //我办结的
+            IPage<WorkOrderVO>  workOrderList= repairDao.getWorkOrderByOther(page,workOrdersDto);
+            getBuffetLine(workOrderList);
+            return  workOrderList;
         }
 
-        //其他类型
-        return repairDao.getWorkOrderByOther(page,workOrdersDto);
+    }
 
-
+    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
+    private IPage<WorkOrderVO> getWorkOrderBySystem(Page<WorkOrderVO> page, WorkOrdersDto workOrdersDto) {
+       return   repairDao.getWorkOrderBySystem(page,workOrdersDto);
     }
 
     @DataSource(DynamicDataSourceSwitcher.esb_mgt)

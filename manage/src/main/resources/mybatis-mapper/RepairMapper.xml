@@ -436,6 +436,45 @@
 
     </select>
 
+    <select id="getWorkOrderByMeApp" resultType="com.bank.manage.vo.WorkOrderVO">
+        select
+            t.id id,
+            t.work_order_code workOrderCode,
+            t.terminal_code terminalCode,
+            t.org_id orgId,
+            t.device_type deviceType,
+            t.device_model deviceModel,
+            t.vendor_name vendorName,
+            t.vendor vendorId,
+            t.work_order_status status
+
+        from t_work_order t
+        <where>
+            <if test="model.workOrderType != null">
+                and t.work_order_type = #{model.workOrderType}
+            </if>
+            <if test="model.orgId != null">
+                and subbranch.org_code= #{model.orgId}
+            </if>
+            <if test="model.vendor != null">
+                and t.vendor_name like concat('%',#{model.vendor},'%')
+            </if>
+            <if test="model.status != null">
+                and t.work_order_status = #{model.status}
+            </if>
+            <if test="model.terminalCode != null">
+                and t.terminal_code = #{model.terminalCode}
+            </if>
+            <if test="model.logUserId != null">
+                and t.create_id = #{model.logUserId}
+            </if>
+            and  t.work_order_code  in (
+            select word_order_id   from t_work_water
+            )
+        </where>
+
+    </select>
+
     <select id="getWorkOrderByOther" resultType="com.bank.manage.vo.WorkOrderVO">
         select
             t.id id,
@@ -477,7 +516,7 @@
             <if test="model.logUserId != null">
                 and t.create_id = #{model.logUserId}
             </if>
-            and  t.id  in (
+            and  t.work_order_code  in (
                    select word_order_id   from t_work_water
                    <where>
                        <if test="model.sourceType != null" >
@@ -502,8 +541,8 @@
         work_order.deviceModel repairCode,
         work_order.beginDate createTime
 
-        from dat_work_order work_order
-        left join dat_subbranch subbranch
+        from ssamgt.work_order work_order
+        left join ssamgt.subbranch subbranch
         on subbranch.STRSUBBRANCHNUM = work_order.STRSUBBRANCHNUM
 
         <where>
