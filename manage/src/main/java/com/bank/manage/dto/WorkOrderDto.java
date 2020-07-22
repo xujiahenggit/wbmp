@@ -32,7 +32,8 @@ public class WorkOrderDto {
     private String describeType;
     @ApiModelProperty(value = "工单编号")
     private String workOrderCode;
-
+    @ApiModelProperty(value = "机构id")
+    private String orgId;
     @ApiModelProperty(value = "工单状态 工单状态  0 :待处理；1：待评价；2：办接；3：待分行确认；4：待总行确认；4：待厂商回复；6：总行知悉；7：分行知悉；8：退回；9：已关闭")
     private String workOrderStatus;
     @ApiModelProperty(value = "创建时间")
@@ -43,5 +44,9 @@ public class WorkOrderDto {
     private String createName;
     @ApiModelProperty(value = "创建人手机号")
     private String createUserPhone;
+    @ApiModelProperty(value = "现场联系人")
+    private String contactName;
+    @ApiModelProperty(value = "现场联系人号码")
+    private String contactPhone;
 
 }

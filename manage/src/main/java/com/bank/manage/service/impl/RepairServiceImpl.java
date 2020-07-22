@@ -10,6 +10,8 @@ import com.bank.manage.dos.ManageWorkOrderDO;
 import com.bank.manage.dto.*;
 import com.bank.manage.service.RepairService;
 import com.bank.manage.vo.*;
+import com.bank.user.dao.OrgDetailinfoDao;
+import com.bank.user.dto.OrgDetailDto;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -29,6 +31,8 @@ import java.util.List;
 public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO> implements RepairService {
     @Resource
     private RepairDao repairDao;
+    @Resource
+    private OrgDetailinfoDao orgDetailinfoDao;
 
     @Override
     public int saveRepair(WorkOrderDto workOrderDto) {
@@ -39,6 +43,10 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
         workOrderDto.setWorkOrderStatus("0");
         workOrderDto.setCreateTime(new Date());
         workOrderDto.setWorkOrderType("01");
+        //获取现场联系人和号码
+        OrgDetailDto orgDetailDto= orgDetailinfoDao.getOrgInfoByOrgId(workOrderDto.getOrgId());
+        workOrderDto.setContactName(orgDetailDto.getOrgContactMan());
+        workOrderDto.setContactPhone(orgDetailDto.getOrgPhone());
         return  repairDao.saveWorkOrder(workOrderDto);
     }
 

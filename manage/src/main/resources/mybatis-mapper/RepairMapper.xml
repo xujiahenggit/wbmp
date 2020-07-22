@@ -16,8 +16,10 @@
               create_time,
               create_id,
               create_name,
-              createUserPhone,
-              directorName
+              create_user_phone,
+              director_name,
+              contact_name,
+              contact_phone
 
            )
             values(
@@ -34,7 +36,9 @@
              #{createId},
              #{createName},
             #{createUserPhone},
-            #{directorName}
+            #{directorName},
+            #{contactName},
+            #{contactPhone}
             )
 
     </insert>
