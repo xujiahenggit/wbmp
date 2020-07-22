@@ -76,6 +76,12 @@ public class EsbServiceImpl implements EsbService {
 
     @Override
     @DataSource(DynamicDataSourceSwitcher.esb_mgt)
+    public List<DatSubbranchDO> getSubBranch() {
+        return esbDao.getAllSubBranch();
+    }
+
+    @Override
+    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
     public List<DatSelfsvcbankDO> getSelfBranch(String orgId) {
         return esbDao.getSelfBranch(orgId);
     }
