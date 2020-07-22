@@ -226,22 +226,21 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         ServiceInformationDto dto = new ServiceInformationDto();
         if (orderDO != null) {
             String engineerId = orderDO.getEngineer();
+            dto.setServiceProvider(orderDO.getVendorName());
             dto.setEngineerId(engineerId);
-            Map<String, String> engineerInfo = esbService.getEngineerInfo(engineerId);
-            dto.setEngineerName(engineerInfo.get("NAME"));
-            dto.setEngineerPhone(engineerInfo.get("TELEPHONE"));
+            dto.setEngineerName(orderDO.getEngineerName());
+            dto.setEngineerPhone(engineerId);
             //主管信息
             String serverId = orderDO.getDirector();
-            Map<String, String> serverInfo = esbService.getEngineerInfo(serverId);
             dto.setServerId(serverId);
-            dto.setServerName(serverInfo.get("NAME"));
-            dto.setServerPhone(serverInfo.get("TELEPHONE"));
+            dto.setServerName(orderDO.getDirectorName());
+            dto.setServerPhone(serverId);
 
             String workOrderType = orderDO.getWorkOrderType();
-            if (workOrderType.equals("01")) {
-                dto.setProcessMode(orderDO.getDealType());
-            } else if (workOrderType.equals("03")) {
+            if (workOrderType.equals("03")) {
                 dto.setProcessMode(orderDO.getEscortsHandling());
+            } else {
+                dto.setProcessMode(orderDO.getDealType());
             }
             List<WorkWaterDO> workWaterDOS = workWaterService.list(new LambdaQueryWrapper<WorkWaterDO>().eq(WorkWaterDO::getWordOrderId, orderId).eq(WorkWaterDO::getDealWithType, "4"));
             if (workWaterDOS.size() == 1) {
@@ -249,8 +248,6 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
             } else {
                 dto.setFinishTime("");
             }
-            dto.setServiceProvider(serverInfo.get("fws"));
-
             responseDto.setRepcode("0");
         } else {
             responseDto.setRepcode("-1");
