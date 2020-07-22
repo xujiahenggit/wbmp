@@ -72,7 +72,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         Map<String, Object> request = (Map<String, Object>) requestMap.get("Body");
         Object requestArags = request.get("Request");
         Map<String, Object> body=null;
-        if (requestArags!=null){
+        if (requestArags!=null&& requestArags.toString().trim().equals("")){
             body = (Map<String, Object>) requestArags;
         }
         if (header == null) {
