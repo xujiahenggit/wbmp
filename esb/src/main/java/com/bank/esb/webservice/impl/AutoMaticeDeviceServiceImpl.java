@@ -11,7 +11,10 @@ import com.bank.core.utils.PageUtils;
 import com.bank.esb.dao.DatWorkOrderDao;
 import com.bank.esb.dos.*;
 import com.bank.esb.dto.*;
-import com.bank.esb.service.*;
+import com.bank.esb.service.EsbLogService;
+import com.bank.esb.service.EsbService;
+import com.bank.esb.service.WorkOrderAttachmentService;
+import com.bank.esb.service.WorkOrderService;
 import com.bank.esb.util.ESBUtil;
 import com.bank.esb.vo.*;
 import com.bank.esb.webservice.AutoMaticeDeviceService;
@@ -39,6 +42,11 @@ import java.util.*;
 @Service
 @WebService(name = "automaticedeviceservice", targetNamespace = "http://webservice.wbmp.com")
 public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
+
+
+    @Resource
+    EsbLogService esbLogService;
+
     @Override
     public String esbService(String requestXml) {
         if (StringUtils.isBlank(requestXml)) {
@@ -57,8 +65,16 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         Map<String, Object> requestMap = ESBUtil.elementTomap(serviceElement);
 
         Map<String, Object> header = (Map<String, Object>) requestMap.get("Header");
+        String reference = header.get("ExternalReference").toString();
+        log.info("请求流水号码：" + reference);
+        //记录流水
+        esbLogService.save(new EsbLogDO(reference, requestXml));
         Map<String, Object> request = (Map<String, Object>) requestMap.get("Body");
-        Map<String, Object> body = (Map<String, Object>) request.get("Request");
+        Object requestArags = request.get("Request");
+        Map<String, Object> body=null;
+        if (requestArags!=null){
+            body = (Map<String, Object>) requestArags;
+        }
         if (header == null) {
             throw new BizException("获取ESB请求报文头失败");
         }
@@ -286,9 +302,22 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         }
         orderDtoList.addAll(esblist);
         total=orderDtoList.size();
-        List list =PageUtils.startPage(orderDtoList,pageIndex,pageSize);
+        List list = PageUtils.startPage(orderDtoList,pageIndex,pageSize);
         responseDto.setTotal(total);
         responseDto.setList(list);
+        total = orderDtoList.size();
+        Integer offset = (pageIndex - 1) * pageSize;
+        Integer limit = total - offset;
+        if (total > 0) {
+            if (pageIndex <= 0) {
+                offset = total % pageSize == 0 ? (total / pageSize) - 1 * pageSize : total / pageSize * pageSize;
+                orderDtoList.subList(offset, total);
+            } else {
+                limit = pageSize > limit ? limit : pageSize;
+                orderDtoList.subList(offset, offset * limit);
+            }
+        }
+        responseDto.setList(orderDtoList);
         return responseDto;
     }
 
