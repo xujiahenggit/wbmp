@@ -9,6 +9,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.util.StrUtil;
 import com.bank.core.utils.DateUtils;
 import com.bank.manage.dos.UsherSignDO;
 import com.bank.manage.service.UsherSignService;
@@ -204,7 +205,7 @@ public class CardSuppleServiceImpl extends ServiceImpl<CardSuppleDao, CardSupple
     @Override
     public CardSuppleDto getInfo(Integer cardSuppleId) {
         CardSuppleDto cardSuppleDto = cardSuppleDao.getInfo(cardSuppleId);
-        if (cardSuppleDto != null) {
+        if (cardSuppleDto != null && StrUtil.isNotBlank(cardSuppleDto.getCardSuppleImg())) {
             cardSuppleDto.setCardSuppleImg(netUtil.getUrlSuffix("") + cardSuppleDto.getCardSuppleImg());
         }
         return cardSuppleDao.getInfo(cardSuppleId);
