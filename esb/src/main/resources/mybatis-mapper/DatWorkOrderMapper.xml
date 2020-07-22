@@ -287,10 +287,10 @@
             <if test="m.statisticalTime != null and m.statisticalTime != ''">
                 and create_time between #{m.startTime} and #{m.endTime}
             </if>
-            <if test='m.pageSize != "0"'>
-                LIMIT #{m.pageIndex},#{m.pageSize}
-            </if>
         </where>
+        <if test='m.pageSize != "0"'>
+            LIMIT #{m.pageIndex},#{m.pageSize}
+        </if>
     </select>
 
 

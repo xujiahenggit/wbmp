@@ -396,12 +396,13 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         List<WorkOrderDO> list = datWorkOrderDao.getXjd(inspectionSheetVo);
         ArrayList<InspectionSheetDto> inspectionSheetDtos = new ArrayList<>();
         for (WorkOrderDO workOrderDO : list) {
+            Integer deviceType = workOrderDO.getDeviceType();
             inspectionSheetDtos.add(InspectionSheetDto.builder()
                     .serialNum(workOrderDO.getSerialNum())
                     .inprocessNo(workOrderDO.getTerminalCode())
                     .orderNo(workOrderDO.getWorkOrderCode())
                     .inprocessStatus(workOrderDO.getEscortsFlag())
-                    .deviceProperty(workOrderDO.getDeviceType().toString())
+                    .deviceProperty(deviceType==null?"":deviceType.toString())
                     .orgId(workOrderDO.getBuffetLine())
                     .orgAddress(workOrderDO.getBuffetLineName())
                     .warrantyTime(workOrderDO.getFreeduedate())
@@ -419,13 +420,17 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         String deviceNo = inspectionSheetsVo.getDeviceNo();
         Map<String, Object> xjdInfo = esbService.getXjdInfo(deviceNo);
 
+        Object freeduedate = xjdInfo.get("freeduedate");
+        Object firstinstalldate = xjdInfo.get("firstinstalldate");
+        Object strtermaddr = xjdInfo.get("STRTERMADDR");
+        Object strdevsn = xjdInfo.get("STRDEVSN");
         WorkOrderDO workOrderDO = WorkOrderDO.builder()
                 .terminalCode(deviceNo)
                 .workOrderType("03")
                 .workOrderCode("03" + DateUtils.now())
                 .deviceType(Integer.parseInt(xjdInfo.get("IDEVTYPE").toString()))
                 .deviceClass(xjdInfo.get("IDEVCLASS").toString())
-                .serialNum(xjdInfo.get("STRDEVSN").toString())
+                .serialNum(strdevsn==null?"":strdevsn.toString())
                 .vendor(xjdInfo.get("STRDEVMANU").toString())
                 .vendorName(xjdInfo.get("STRVALUE").toString())
                 .branch(xjdInfo.get("STRBRANCHNUM").toString())
@@ -434,9 +439,9 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                 .subBranchName(xjdInfo.get("STRSUBBRANCHNAME").toString())
                 .buffetLine(xjdInfo.get("STRSSBNUM").toString())
                 .buffetLineName(xjdInfo.get("STRSSBNAME").toString())
-                .freeduedate(xjdInfo.get("freeduedate").toString())
-                .installDate(xjdInfo.get("firstinstalldate").toString())
-                .installAddr(xjdInfo.get("STRTERMADDR").toString())
+                .freeduedate(freeduedate==null?"":freeduedate.toString())
+                .installDate(firstinstalldate==null?"":firstinstalldate.toString())
+                .installAddr(strtermaddr==null?"":strtermaddr.toString())
                 .workOrderStatus("0")
                 .escortsPatrol(inspectionSheetsVo.getAccompany())
                 .escortsStartTime(DateUtil.parseLocalDateTime(inspectionSheetsVo.getStartTime()))

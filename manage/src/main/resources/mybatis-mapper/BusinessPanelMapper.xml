@@ -144,8 +144,10 @@
 
 
     <select id="tradeVolumeTop5" resultType="com.bank.manage.vo.TransCntInfo">
-        SELECT tran_name trans_name,SUM(trade_volume) sum FROM wbmp_abs_transinfo
+        SELECT tran_name AS trans_name,SUM(trade_volume) sum FROM wbmp_abs_transinfo
         WHERE flag='2' AND DATA_DT=CURDATE() AND ORG_ID =#{orgId}
+        and TRAN_CODE not in
+        (SELECT TRAN_CODE FROM `wbmp_abs_transinfo` where FLAG ='2' and  ( LENGTH(TRAN_NAME) &lt; 1 ) GROUP BY TRAN_CODE)
         GROUP BY tran_name
         ORDER BY sum DESC
         LIMIT 5
