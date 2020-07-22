@@ -72,13 +72,16 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         Map<String, Object> request = (Map<String, Object>) requestMap.get("Body");
         Object requestArags = request.get("Request");
         Map<String, Object> body=null;
-        if (requestArags!=null&& requestArags.toString().trim().equals("")){
+
+        try {
             body = (Map<String, Object>) requestArags;
+        } catch (Exception e) {
+          log.info("报文参数为空");
         }
         if (header == null) {
             throw new BizException("获取ESB请求报文头失败");
         }
-        if (body == null) {
+        if (body == null && !header.get("ServiceCode").equals("WBMP10012")) {
             throw new BizException("获取ESB请求报文体失败");
         }
         ESBRequestHeader requestHeader = JSON.parseObject(JSON.toJSONString(header), ESBRequestHeader.class);
