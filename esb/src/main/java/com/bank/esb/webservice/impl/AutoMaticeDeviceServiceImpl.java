@@ -7,6 +7,7 @@ import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.bank.core.entity.BizException;
 import com.bank.core.utils.DateUtils;
+import com.bank.core.utils.PageUtils;
 import com.bank.esb.dao.DatWorkOrderDao;
 import com.bank.esb.dos.*;
 import com.bank.esb.dto.*;
@@ -285,18 +286,9 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         }
         orderDtoList.addAll(esblist);
         total=orderDtoList.size();
-        Integer offset=(pageIndex-1)*pageSize;
-        Integer limit=total-offset;
-        if(total>0){
-            if(pageIndex<=0){
-                offset=total%pageSize==0 ? (total/pageSize)-1*pageSize:total/pageSize*pageSize;
-                orderDtoList.subList(offset,total);
-            }else{
-                limit=pageSize>limit?limit:pageSize;
-                orderDtoList.subList(offset,offset*limit);
-            }
-        }
-        responseDto.setList(orderDtoList);
+        List list =PageUtils.startPage(orderDtoList,pageIndex,pageSize);
+        responseDto.setTotal(total);
+        responseDto.setList(list);
         return responseDto;
     }
 
