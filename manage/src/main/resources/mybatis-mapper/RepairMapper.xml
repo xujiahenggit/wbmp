@@ -173,11 +173,30 @@
 
     <select id="getRepairById" resultType="com.bank.manage.vo.RepairVo">
                 select
-                    id,
-                    work_order_code AS repairCode,
+                    id id,
+                    work_order_code AS workOrderCode,
                     work_order_status AS repairStatus,
-                    priority_code AS priorityCode
+                    priority_code AS priorityCode,
+                    requir_complete_time completeTime,
+                    create_name createName,
+                    create_user_phone createPhone,
+                    create_time createTime,
+                    work_order_describe workOrderDescribe
                 from t_work_order
+                where work_order_code = #{repairCode}
+    </select>
+
+    <select id="getServiceInfoList" resultType="com.bank.manage.vo.ServiceInfoVo">
+             select
+                    t.vendor vendorId,
+                    t.vendor_name vendorName,
+                    t.director director,
+                    t.director_name directorName,
+                    t.engineer engineer,
+                    t.engineer_name engineerName,
+                    t.deal_type dealType,
+                    t.work_order_complete_time workOrderCompleteTime
+                from t_work_order t
                 where work_order_code = #{repairCode}
     </select>
 
