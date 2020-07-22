@@ -42,4 +42,6 @@ public class WorkOrderVO {
     private String way;
     @ApiModelProperty(value = "服务工程师")
     private String engineer;
+    @ApiModelProperty(value = "工单类型")
+    private String workOrderType;
 }

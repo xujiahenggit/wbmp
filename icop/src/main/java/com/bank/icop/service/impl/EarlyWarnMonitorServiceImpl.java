@@ -255,20 +255,9 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         parmMap.put("alertkey",taskListsDto.getAlertkey());
         parmMap.put("userNo",taskListsDto.getUserNo());
         Map report = null;
-        try {
-            report = SoapUtil.sendReport("FXYJ10018","812",parmMap);
-        } catch (Exception e) {
-            throw new BizException("协查任务基本信息查询报错！"+e.getMessage());
-        }
+        return getIcopTagList(parmMap, "FXYJ10018", "协查任务列表", "0", "执行失败");
 
-        if("-1".equals((String)report.get("status"))){
-            throw new BizException("预警编号为空,状态码:"+(String)report.get("status"));
-        }else if("1".equals((String)report.get("status"))){
-            throw new BizException("编号未查询出预警信息,状态码:"+(String)report.get("status"));
-        }else if("3".equals((String)report.get("status"))){
-            throw new BizException("无预警日志,状态码:"+(String)report.get("status"));
-        }
-        return report;
+
     }
 
     @Override
