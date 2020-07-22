@@ -1,16 +1,16 @@
 package com.bank.esb.dos;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import lombok.Data;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 /**
  * 实体类
@@ -28,12 +28,15 @@ public class EsbLogDO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @TableId(value = "uid", type = IdType.AUTO)
+    private String uid;
 
     /**
      * 流水号
      */
   @ApiModelProperty(value = "流水号")
   private String id;
+
     /**
      * 请求报文
      */
