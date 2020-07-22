@@ -1,5 +1,6 @@
 package com.bank.manage.service.impl;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -7,6 +8,11 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.util.StrUtil;
+import com.bank.core.utils.DateUtils;
+import com.bank.manage.dos.UsherSignDO;
+import com.bank.manage.service.UsherSignService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,6 +66,9 @@ public class CardSuppleServiceImpl extends ServiceImpl<CardSuppleDao, CardSupple
     @Resource
     private UsherService usherService;
 
+    @Resource
+    private UsherSignService usherSignService;
+
     /**
      * 获取待办列表
      * @param cardSuppleQueryVo 查询参数
@@ -101,8 +110,27 @@ public class CardSuppleServiceImpl extends ServiceImpl<CardSuppleDao, CardSupple
     @Transactional(rollbackFor = Exception.class)
     public boolean passProcess(CardSupplePassRejectVo cardSupplePassRejectVo, TokenUserInfo tokenUserInfo) {
         try {
+            //补卡申请通过
             CardSuppleDO cardSuppleDO = getCardUpdateModel(cardSupplePassRejectVo, tokenUserInfo, NewProcessStatusFile.CHECK_TYPE_PASS);
             this.updateById(cardSuppleDO);
+            //补卡申请通过后 需添加到 打卡签到中
+            UsherSignDO usherSignDO=new UsherSignDO();
+
+            //引导员ID
+            usherSignDO.setUsherId(Integer.parseInt(cardSuppleDO.getUsherId()));
+            //签到日期
+            usherSignDO.setSignDate(DateUtils.localDate2Date(cardSuppleDO.getCardSuppleDate()));
+            //签到状态
+            usherSignDO.setSignStatus("0");
+            //上班时间
+            usherSignDO.setOnDutyTime(DateUtils.localDateTime2Date(cardSuppleDO.getCardSuppleStartWorkTime()));
+            //下班时间
+            usherSignDO.setOffDutyTime(DateUtils.localDateTime2Date(cardSuppleDO.getCardSuppleEndWorkTime()));
+            //工时
+            BigDecimal workingHours = new BigDecimal(DateUtils.localDateTime2Date(cardSuppleDO.getCardSuppleStartWorkTime()).getTime() - DateUtils.localDateTime2Date(cardSuppleDO.getCardSuppleEndWorkTime()).getTime())
+                    .divide(new BigDecimal(DateUnit.HOUR.getMillis()), 2, BigDecimal.ROUND_HALF_UP);
+            usherSignDO.setWorkingHours(workingHours);
+            usherSignService.save(usherSignDO);
             return true;
         }
         catch (Exception e) {
@@ -177,7 +205,7 @@ public class CardSuppleServiceImpl extends ServiceImpl<CardSuppleDao, CardSupple
     @Override
     public CardSuppleDto getInfo(Integer cardSuppleId) {
         CardSuppleDto cardSuppleDto = cardSuppleDao.getInfo(cardSuppleId);
-        if (cardSuppleDto != null) {
+        if (cardSuppleDto != null && StrUtil.isNotBlank(cardSuppleDto.getCardSuppleImg())) {
             cardSuppleDto.setCardSuppleImg(netUtil.getUrlSuffix("") + cardSuppleDto.getCardSuppleImg());
         }
         return cardSuppleDao.getInfo(cardSuppleId);

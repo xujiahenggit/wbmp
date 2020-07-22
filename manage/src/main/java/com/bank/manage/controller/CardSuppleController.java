@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import cn.hutool.core.util.StrUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -79,7 +80,10 @@ public class CardSuppleController extends BaseController {
     @PostMapping("/saveCardSupple")
     @ApiOperation(value = "新增外包人员补卡申请")
     public Boolean saveCardSupple(@RequestBody CardSuppleDO cardSuppleDO) {
-        String path = StringSplitUtil.splitMaterialPath(cardSuppleDO.getCardSuppleImg(), netUtil.getUrlSuffix(""));
+        String path = "";
+        if(StrUtil.isNotBlank(cardSuppleDO.getCardSuppleImg())){
+            path=StringSplitUtil.splitMaterialPath(cardSuppleDO.getCardSuppleImg(), netUtil.getUrlSuffix(""));
+        }
         cardSuppleDO.setCardSuppleState("10");
         cardSuppleDO.setCardSuppleCreatetime(LocalDateTime.now());
         cardSuppleDO.setCardSuppleDeleteFlag("0");
