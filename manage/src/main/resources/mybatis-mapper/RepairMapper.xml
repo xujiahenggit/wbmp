@@ -378,7 +378,23 @@
                 t.work_order_code workOrderCode,
                 t.terminal_code terminalCode,
                 t.org_id orgId,
-                t.device_type deviceType,
+                case when  t.device_type ='1' then
+                '自动取款机'
+                when  t.device_type ='2' then
+                '自动存款机'
+                when  t.device_type ='3' then
+                '自动存取款机'
+                when  t.device_type ='4' then
+                '自动查询机'
+                when  t.device_type ='5' then
+                '多媒体终端'
+                when  t.device_type ='6' then
+                '个性化发卡机'
+                when  t.device_type ='7' then
+                '回单打印机'
+                when  t.device_type ='8' then
+                '智能现金柜'
+                else t.device_type end deviceType,
                 t.device_model deviceModel,
                 t.vendor_name vendorName,
                 t.vendor vendorId,
@@ -390,7 +406,7 @@
                         and t.work_order_type = #{model.workOrderType}
                     </if>
                     <if test="model.orgId != null">
-                        and subbranch.org_code= #{model.orgId}
+                        and t.org_id = #{model.orgId}
                     </if>
                     <if test="model.vendor != null">
                         and t.vendor_name like concat('%',#{model.vendor},'%')
@@ -406,15 +422,8 @@
     </select>
 
     <select id="getBuffetLine" resultType="java.lang.String">
-        select
-        STRSSBNAME
-        from ssamgt.selfsvcbank a
-        left join ssamgt.branch b
-        on a.STRBRANCHNUM = b.STRBRANCHNUM
-        left join ssamgt.subbranch c
-        on a.STRSUBBRANCHNUM = c.STRSUBBRANCHNUM
-        where b.org_code = #{orgId}
-        or c.org_code = #{orgId}
+       select  NFRT_ORG_name from  t_nfrt_org
+       where NFRT_ORG_ID =#{orgId}
     </select>
 
     <select id="getWorkOrderByMe" resultType="com.bank.manage.vo.WorkOrderVO">
@@ -423,19 +432,39 @@
                 t.work_order_code workOrderCode,
                 t.terminal_code terminalCode,
                 t.org_id orgId,
-                t.device_type deviceType,
+                case when  t.device_type ='1' then
+                '自动取款机'
+                when  t.device_type ='2' then
+                '自动存款机'
+                when  t.device_type ='3' then
+                '自动存取款机'
+                when  t.device_type ='4' then
+                '自动查询机'
+                when  t.device_type ='5' then
+                '多媒体终端'
+                when  t.device_type ='6' then
+                '个性化发卡机'
+                when  t.device_type ='7' then
+                '回单打印机'
+                when  t.device_type ='8' then
+                '智能现金柜'
+                else t.device_type end deviceType,
                 t.device_model deviceModel,
                 t.vendor_name vendorName,
                 t.vendor vendorId,
-                t.work_order_status status
-
+                t.work_order_status status,
+                t.work_order_type workOrderType,
+                a.NFRT_ORG_NAME orgName,
+                t.create_time
         from t_work_order t
+        left join t_nfrt_org a
+           on a.NFRT_ORG_ID  = t.org_id
         <where>
             <if test="model.workOrderType != null">
                 and t.work_order_type = #{model.workOrderType}
             </if>
             <if test="model.orgId != null">
-                and subbranch.org_code= #{model.orgId}
+                and t.org_id = #{model.orgId}
             </if>
             <if test="model.vendor != null">
                 and t.vendor_name like concat('%',#{model.vendor},'%')
@@ -446,12 +475,8 @@
             <if test="model.terminalCode != null">
                 and t.terminal_code = #{model.terminalCode}
             </if>
-            <if test="model.logUserId != null">
-                and t.create_id = #{model.logUserId}
-            </if>
-            and  t.id not in (
-            select word_order_id   from t_work_water
-            )
+                 t.create_id = #{model.logUserId}
+
         </where>
 
 
@@ -459,23 +484,43 @@
 
     <select id="getWorkOrderByMeApp" resultType="com.bank.manage.vo.WorkOrderVO">
         select
-            t.id id,
-            t.work_order_code workOrderCode,
-            t.terminal_code terminalCode,
-            t.org_id orgId,
-            t.device_type deviceType,
-            t.device_model deviceModel,
-            t.vendor_name vendorName,
-            t.vendor vendorId,
-            t.work_order_status status
-
+                t.id id,
+                t.work_order_code workOrderCode,
+                t.terminal_code terminalCode,
+                t.org_id orgId,
+                case when  t.device_type ='1' then
+                '自动取款机'
+                when  t.device_type ='2' then
+                '自动存款机'
+                when  t.device_type ='3' then
+                '自动存取款机'
+                when  t.device_type ='4' then
+                '自动查询机'
+                when  t.device_type ='5' then
+                '多媒体终端'
+                when  t.device_type ='6' then
+                '个性化发卡机'
+                when  t.device_type ='7' then
+                '回单打印机'
+                when  t.device_type ='8' then
+                '智能现金柜'
+                else t.device_type end deviceType,
+                t.device_model deviceModel,
+                t.vendor_name vendorName,
+                t.vendor vendorId,
+                t.work_order_status status,
+                t.work_order_type workOrderType,
+                a.NFRT_ORG_NAME orgName,
+                t.create_time
         from t_work_order t
+        left join t_nfrt_org a
+        on a.NFRT_ORG_ID  = t.org_id
         <where>
             <if test="model.workOrderType != null">
                 and t.work_order_type = #{model.workOrderType}
             </if>
             <if test="model.orgId != null">
-                and subbranch.org_code= #{model.orgId}
+                and t.org_id = #{model.orgId}
             </if>
             <if test="model.vendor != null">
                 and t.vendor_name like concat('%',#{model.vendor},'%')
@@ -498,26 +543,37 @@
 
     <select id="getWorkOrderByOther" resultType="com.bank.manage.vo.WorkOrderVO">
         select
-            t.id id,
-            t.work_order_code workOrderCode,
-            t.terminal_code terminalCode,
-            t.create_time createTime,
-            subbranch.org_code orgId,
-            t.work_order_status status,
-            device.STRDEVMANU vendor,
-            device.STRDEVSN  repairCode,
-            t.deal_type way,
-            device.IDEVTYPE repairName,
-            t.engineer engineer
+                t.id id,
+                t.work_order_code workOrderCode,
+                t.terminal_code terminalCode,
+                t.org_id orgId,
+        case when  t.device_type ='1' then
+                    '自动取款机'
+                    when  t.device_type ='2' then
+                    '自动存款机'
+                    when  t.device_type ='3' then
+                    '自动存取款机'
+                    when  t.device_type ='4' then
+                    '自动查询机'
+                    when  t.device_type ='5' then
+                    '多媒体终端'
+                    when  t.device_type ='6' then
+                    '个性化发卡机'
+                    when  t.device_type ='7' then
+                    '回单打印机'
+                    when  t.device_type ='8' then
+                    '智能现金柜'
+                   else t.device_type end deviceType,
+                t.device_model deviceModel,
+                t.vendor_name vendorName,
+                t.vendor vendorId,
+                t.work_order_status status,
+                t.work_order_type workOrderType,
+                a.NFRT_ORG_NAME orgName,
+                t.create_time
         from t_work_order t
-        left join dat_term term
-        on term.STRTERMNUM =t.terminal_code
-        left join dat_device device
-        on device.id =term.DEVICEID
-        left join dat_subbranch subbranch
-        on subbranch.STRSUBBRANCHNUM = term.STRSUBBRANCHNUM
-        left join t_work_water water
-        on water.word_order_id =t.id
+        left join t_nfrt_org a
+        on a.NFRT_ORG_ID  = t.org_id
         <where>
             <if test="model.workOrderType != null">
                 and t.work_order_type = #{model.workOrderType}
@@ -534,17 +590,9 @@
             <if test="model.terminalCode != null">
                 and t.terminal_code = #{model.terminalCode}
             </if>
-            <if test="model.logUserId != null">
-                and t.create_id = #{model.logUserId}
-            </if>
             and  t.work_order_code  in (
                    select word_order_id   from t_work_water
-                   <where>
-                       <if test="model.sourceType != null" >
-                           and deal_with_type = #{model.sourceType}
-                       </if>
-                   </where>
-
+                  where deal_with_type ='4' and deal_with_people_id = #{model.logUserId}
             )
         </where>
     </select>
@@ -553,28 +601,52 @@
 
 
     <select id="getWorkOrderBySystem" resultType="com.bank.manage.vo.WorkOrderVO">
-        select
+        SELECT
         work_order.id id,
-        subbranch.org_code orgId,
-        work_order.status status,
-        work_order.deviceType repairName,
-        work_order.deviceManu vendor,
-        work_order.deviceModel repairCode,
-        work_order.beginDate createTime
-
-        from ssamgt.work_order work_order
-        left join ssamgt.subbranch subbranch
-        on subbranch.STRSUBBRANCHNUM = work_order.STRSUBBRANCHNUM
-
+        work_order.strTermNum terminalCode,
+        work_order.beginDate createTime,
+        CASE
+        WHEN work_order.`status` = '1' THEN
+        '故障中'
+        WHEN work_order.`status` = '2' THEN
+        '警告中'
+        WHEN work_order.`status` = '3' THEN
+        '处理中'
+        WHEN work_order.`status` = '4' THEN
+        '完成'
+        ELSE
+        work_order.`status`
+        END status,
+        CASE
+        WHEN c.IDEVTYPE = '1' THEN
+        '自动取款机'
+        WHEN c.IDEVTYPE = '2' THEN
+        '自动存款机'
+        WHEN c.IDEVTYPE = '3' THEN
+        '自动存取款机'
+        WHEN c.IDEVTYPE = '4' THEN
+        '自动查询机'
+        ELSE
+        c.IDEVTYPE
+        END deviceType,
+        c.STRDEVMODEL deviceModel,
+        d.STRVALUE vendorName,
+        b.ORGANIZATION orgId
+        FROM
+        ssamgt.work_order work_order
+        LEFT JOIN ssarun.term b ON b.STRTERMNUM = work_order.strTermNum
+        LEFT JOIN ssarun.device c ON c.id = b.DEVICEID
+        LEFT JOIN ssarun.domaindict d ON d.STRNAME = c.STRDEVMANU
         <where>
-            <if test="model.orgId != null">
-                and subbranch.org_code = #{model.orgId}
-            </if>
+            type='1'
             <if test="model.vendor != null">
-                and work_order.deviceManu like concat('%',#{model.vendor},'%')
+                and  c.STRDEVMANU  like concat('%',#{model.vendor},'%')
             </if>
             <if test="model.terminalCode != null">
-                and work_order.strTermNum = #{model.terminalCode}
+                and   strTermNum = #{terminalCode}
+            </if>
+            <if test="model.orgId != null">
+                and  b.ORGANIZATION = #{model.orgId}
             </if>
         </where>
     </select>
