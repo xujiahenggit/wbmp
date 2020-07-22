@@ -113,21 +113,24 @@ public class CardSuppleServiceImpl extends ServiceImpl<CardSuppleDao, CardSupple
             //补卡申请通过
             CardSuppleDO cardSuppleDO = getCardUpdateModel(cardSupplePassRejectVo, tokenUserInfo, NewProcessStatusFile.CHECK_TYPE_PASS);
             this.updateById(cardSuppleDO);
+
+            CardSuppleDO cardSuppleInfo=getById(cardSupplePassRejectVo.getCardSuppleId());
+
             //补卡申请通过后 需添加到 打卡签到中
             UsherSignDO usherSignDO=new UsherSignDO();
 
             //引导员ID
-            usherSignDO.setUsherId(Integer.parseInt(cardSuppleDO.getUsherId()));
+            usherSignDO.setUsherId(Integer.parseInt(cardSuppleInfo.getUsherId()));
             //签到日期
-            usherSignDO.setSignDate(DateUtils.localDate2Date(cardSuppleDO.getCardSuppleDate()));
+            usherSignDO.setSignDate(DateUtils.localDate2Date(cardSuppleInfo.getCardSuppleDate()));
             //签到状态
             usherSignDO.setSignStatus("0");
             //上班时间
-            usherSignDO.setOnDutyTime(DateUtils.localDateTime2Date(cardSuppleDO.getCardSuppleStartWorkTime()));
+            usherSignDO.setOnDutyTime(DateUtils.localDateTime2Date(cardSuppleInfo.getCardSuppleStartWorkTime()));
             //下班时间
-            usherSignDO.setOffDutyTime(DateUtils.localDateTime2Date(cardSuppleDO.getCardSuppleEndWorkTime()));
+            usherSignDO.setOffDutyTime(DateUtils.localDateTime2Date(cardSuppleInfo.getCardSuppleEndWorkTime()));
             //工时
-            BigDecimal workingHours = new BigDecimal(DateUtils.localDateTime2Date(cardSuppleDO.getCardSuppleStartWorkTime()).getTime() - DateUtils.localDateTime2Date(cardSuppleDO.getCardSuppleEndWorkTime()).getTime())
+            BigDecimal workingHours = new BigDecimal(DateUtils.localDateTime2Date(cardSuppleInfo.getCardSuppleStartWorkTime()).getTime() - DateUtils.localDateTime2Date(cardSuppleInfo.getCardSuppleEndWorkTime()).getTime())
                     .divide(new BigDecimal(DateUnit.HOUR.getMillis()), 2, BigDecimal.ROUND_HALF_UP);
             usherSignDO.setWorkingHours(workingHours);
             usherSignService.save(usherSignDO);
