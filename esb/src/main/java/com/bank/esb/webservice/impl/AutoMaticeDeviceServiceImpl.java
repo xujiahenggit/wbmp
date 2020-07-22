@@ -68,7 +68,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         String reference = header.get("ExternalReference").toString();
         log.info("请求流水号码：" + reference);
         //记录流水
-        esbLogService.save(new EsbLogDO(reference, requestXml));
+//        esbLogService.save(new EsbLogDO(reference, requestXml));
         Map<String, Object> request = (Map<String, Object>) requestMap.get("Body");
         Object requestArags = request.get("Request");
         Map<String, Object> body=null;
