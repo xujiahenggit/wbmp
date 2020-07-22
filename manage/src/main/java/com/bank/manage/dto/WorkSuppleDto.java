@@ -92,7 +92,6 @@ public class WorkSuppleDto implements Serializable {
      * 图片
      */
     @ApiModelProperty(value = "图片", notes = "新增是必传", required = true)
-    @NotBlank(message = "证明文件不能为空")
     private String workSuppleImg;
 
     /**
