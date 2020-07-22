@@ -50,6 +50,8 @@ public class WorkOrderDto {
     private String contactPhone;
     @ApiModelProperty(value = "厂商Id")
     private String vendorId;
+    @ApiModelProperty(value = "厂商名称")
+    private String vendorName;
     @ApiModelProperty(value = "设备型号")
     private String deviceModel;
 
