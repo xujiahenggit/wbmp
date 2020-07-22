@@ -57,4 +57,6 @@ public interface RepairDao extends BaseMapper<ManageWorkOrderDO> {
     List<VendorVo> getVendorList();
 
     String getBuffetLine(@Param("orgId")  String orgId);
+
+    IPage<WorkOrderVO> getWorkOrderByMeApp(Page<WorkOrderVO> page, @Param("model")WorkOrdersDto workOrdersDto);
 }
