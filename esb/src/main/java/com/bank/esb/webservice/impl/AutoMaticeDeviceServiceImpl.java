@@ -242,7 +242,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         ServiceInformationDto dto = new ServiceInformationDto();
         if (orderDO != null) {
             String engineerId = orderDO.getEngineer();
-            dto.setServiceProvider(orderDO.getVendorName());
+            dto.setProvider(orderDO.getVendorName());
             dto.setEngineerId(engineerId);
             dto.setEngineerName(orderDO.getEngineerName());
             dto.setEngineerPhone(engineerId);
@@ -546,7 +546,6 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         workWaterService.save(
                 WorkWaterDO.builder()
                         .wordOrderId(orderId)
-//                        .dealWithType("2")
                         .dealWithTime(LocalDateTime.now())
                         .dealWithPeopleId(engineerId)
                         .dealWithPeopleName(name)

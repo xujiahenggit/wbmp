@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class ServiceInformationDto {
     @ApiModelProperty(value = "服务商")
-    private String serviceProvider;
+    private String provider;
 
     @ApiModelProperty(value = "服务主管ID")
     private String serverId;
