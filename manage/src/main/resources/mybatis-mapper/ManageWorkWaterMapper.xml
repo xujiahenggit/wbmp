@@ -76,10 +76,9 @@
             SELECT a.deal_with_people_id uid,
             a.operation_type operatorStatus,
             date_format(a.create_time,'%Y-%m-%d %H:%i:%s') time,
-            u.USER_NAME name,u.USER_PHONE phone,
+            a.deal_with_people_name name,a.phone phone,
             w.work_order_status status
             FROM t_work_water a
-            LEFT JOIN t_user u on a.deal_with_people_id=u.USER_ID
             LEFT JOIN t_work_order w ON a.word_order_id = w.work_order_code
             WHERE a.word_order_id = #{id}
             ORDER BY a.create_time DESC
