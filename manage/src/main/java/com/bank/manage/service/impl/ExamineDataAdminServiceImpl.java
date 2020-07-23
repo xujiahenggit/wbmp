@@ -1,6 +1,13 @@
 package com.bank.manage.service.impl;
 
-import cn.hutool.core.collection.CollectionUtil;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.bank.core.entity.BizException;
 import com.bank.core.entity.PageQueryModel;
 import com.bank.manage.dao.ExamineDataAdminDao;
@@ -18,14 +25,9 @@ import com.bank.manage.vo.ExamineDeduVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import cn.hutool.core.collection.CollectionUtil;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
@@ -49,10 +51,10 @@ public class ExamineDataAdminServiceImpl implements ExamineDataAdminService {
             for (Map.Entry<String, Object> entry : mapData.entrySet()) {
                 //log.info("分行：key= " + entry.getKey() + " and value= " + entry.getValue());
                 Map<String, Object> branchValue = (Map<String, Object>) entry.getValue();
-                ExamineDataAdminDO examineDataAdminFH =  (ExamineDataAdminDO) branchValue.get("FH_DATA");
+                ExamineDataAdminDO examineDataAdminFH = (ExamineDataAdminDO) branchValue.get("FH_DATA");
                 examineDataAdminDao.insert(examineDataAdminFH);
                 for (Map.Entry<String, Object> entry1 : branchValue.entrySet()) {
-                    if("FH_DATA".equals(entry1.getKey())){
+                    if ("FH_DATA".equals(entry1.getKey())) {
                         continue;
                     }
                     //log.info("网点：key= " + entry1.getKey() + " and value= " + entry1.getValue());
@@ -62,14 +64,15 @@ public class ExamineDataAdminServiceImpl implements ExamineDataAdminService {
                     examineDataAdminDao.insert(examineDataAdminWD);
 
                     List<ExamineDataTempAdminDO> examineDataTempAdminWDList = (List<ExamineDataTempAdminDO>) outOrgValue.get("WDTEMP_DATA");
-                    for (ExamineDataTempAdminDO e:examineDataTempAdminWDList) {
+                    for (ExamineDataTempAdminDO e : examineDataTempAdminWDList) {
                         e.setExamineId(examineDataAdminWD.getId());
                         examineDataTempAdminDao.insert(e);
                     }
                 }
             }
-        } catch (Exception e) {
-            log.error("季度考核数据保存失败！{}",e.getMessage());
+        }
+        catch (Exception e) {
+            log.error("季度考核数据保存失败！{}", e.getMessage());
             throw new BizException("季度考核数据保存失败！");
         }
     }
@@ -79,12 +82,12 @@ public class ExamineDataAdminServiceImpl implements ExamineDataAdminService {
         try {
             //查询季度考核数据（管理员表）
             QueryWrapper<ExamineDataAdminDO> queryExamineDataAdmin = new QueryWrapper<>();
-            queryExamineDataAdmin.eq("EXCEL_ID",id);
+            queryExamineDataAdmin.eq("EXCEL_ID", id);
             List<ExamineDataAdminDO> examineDataAdminDOS = examineDataAdminDao.selectList(queryExamineDataAdmin);
             List<Integer> examineDataAdminList = new ArrayList<>();
-            if(CollectionUtil.isNotEmpty(examineDataAdminDOS)){
-                for (ExamineDataAdminDO examineDataAdminDO:examineDataAdminDOS) {
-                    if(StringUtils.isNotBlank(String.valueOf(examineDataAdminDO.getExamineId()))){
+            if (CollectionUtil.isNotEmpty(examineDataAdminDOS)) {
+                for (ExamineDataAdminDO examineDataAdminDO : examineDataAdminDOS) {
+                    if (StringUtils.isNotBlank(String.valueOf(examineDataAdminDO.getExamineId()))) {
                         examineDataAdminList.add(examineDataAdminDO.getId());
                     }
                 }
@@ -94,20 +97,21 @@ public class ExamineDataAdminServiceImpl implements ExamineDataAdminService {
 
             //查询季度考核数据（全行）
             QueryWrapper<ExamineDataBranchDO> queryExamineDataBranch = new QueryWrapper<>();
-            queryExamineDataAdmin.eq("EXCEL_ID",id);
+            queryExamineDataBranch.eq("EXCEL_ID", id);
             List<ExamineDataBranchDO> examineDataBranchDOS = examineDataBranchDao.selectList(queryExamineDataBranch);
             List<Integer> examineDataBranchList = new ArrayList<>();
-            if(CollectionUtil.isNotEmpty(examineDataBranchDOS)){
-                for (ExamineDataBranchDO examineDataBranchDO:examineDataBranchDOS) {
-                    if(StringUtils.isNotBlank(String.valueOf(examineDataBranchDO.getExamineId()))){
+            if (CollectionUtil.isNotEmpty(examineDataBranchDOS)) {
+                for (ExamineDataBranchDO examineDataBranchDO : examineDataBranchDOS) {
+                    if (StringUtils.isNotBlank(String.valueOf(examineDataBranchDO.getExamineId()))) {
                         examineDataBranchList.add(examineDataBranchDO.getId());
                     }
                 }
                 examineDataBranchDao.delExamineDataBranchByExcelId(id);
                 examineDataTempBranchDao.delExamineDataBranchByList(examineDataBranchList);
             }
-        } catch (Exception e) {
-            log.error("考核数据删除失败！{}",e.getMessage());
+        }
+        catch (Exception e) {
+            log.error("考核数据删除失败！{}", e.getMessage());
             throw new BizException("考核数据删除失败！");
         }
     }
@@ -117,9 +121,10 @@ public class ExamineDataAdminServiceImpl implements ExamineDataAdminService {
         Page<ExamineDataRankVo> page = new Page<>(pageQueryModel.getPageIndex(), pageQueryModel.getPageSize());
 
         if (StringUtils.isNotBlank(pageQueryModel.getSort())) {
-            if (StringUtils.equalsIgnoreCase("DESC" , pageQueryModel.getOrder())) {
+            if (StringUtils.equalsIgnoreCase("DESC", pageQueryModel.getOrder())) {
                 page.setDesc(pageQueryModel.getSort());
-            } else {
+            }
+            else {
                 page.setAsc(pageQueryModel.getSort());
             }
         }
@@ -132,26 +137,28 @@ public class ExamineDataAdminServiceImpl implements ExamineDataAdminService {
         IPage<ExamineDataRankVo> examineDataRankVoPage = null;
         Integer pageIndex = pageQueryModel.getPageIndex();
         Integer pageSize = pageQueryModel.getPageSize();
-        if("0".equals(excelType)){//分行
-            examineDataRankVoPage = examineDataAdminDao.queryExamineDataRankByFH(page,startYear,startQuarter,endYear,endQuarter);
-            if(CollectionUtil.isNotEmpty(examineDataRankVoPage.getRecords())){
+        if ("0".equals(excelType)) {//分行
+            examineDataRankVoPage = examineDataAdminDao.queryExamineDataRankByFH(page, startYear, startQuarter, endYear, endQuarter);
+            if (CollectionUtil.isNotEmpty(examineDataRankVoPage.getRecords())) {
                 for (int i = 0; i < examineDataRankVoPage.getRecords().size(); i++) {
-                    if(pageIndex==1){
-                        examineDataRankVoPage.getRecords().get(i).setSort(i+1);
-                    }else{
-                        examineDataRankVoPage.getRecords().get(i).setSort(((pageIndex-1)*pageSize)+i+1);
+                    if (pageIndex == 1) {
+                        examineDataRankVoPage.getRecords().get(i).setSort(i + 1);
+                    }
+                    else {
+                        examineDataRankVoPage.getRecords().get(i).setSort(((pageIndex - 1) * pageSize) + i + 1);
                     }
                 }
             }
         }
-        if("1".equals(excelType)){
-            examineDataRankVoPage = examineDataAdminDao.queryExamineDataRankByWD(page,startYear,startQuarter,endYear,endQuarter);
-            if(CollectionUtil.isNotEmpty(examineDataRankVoPage.getRecords())){
+        if ("1".equals(excelType)) {
+            examineDataRankVoPage = examineDataAdminDao.queryExamineDataRankByWD(page, startYear, startQuarter, endYear, endQuarter);
+            if (CollectionUtil.isNotEmpty(examineDataRankVoPage.getRecords())) {
                 for (int i = 0; i < examineDataRankVoPage.getRecords().size(); i++) {
-                    if(pageIndex==1){
-                        examineDataRankVoPage.getRecords().get(i).setSort(i+1);
-                    }else{
-                        examineDataRankVoPage.getRecords().get(i).setSort(((pageIndex-1)*pageSize)+i+1);
+                    if (pageIndex == 1) {
+                        examineDataRankVoPage.getRecords().get(i).setSort(i + 1);
+                    }
+                    else {
+                        examineDataRankVoPage.getRecords().get(i).setSort(((pageIndex - 1) * pageSize) + i + 1);
                     }
 
                 }
@@ -165,9 +172,10 @@ public class ExamineDataAdminServiceImpl implements ExamineDataAdminService {
         Page<ExamineDeduVo> page = new Page<>(pageQueryModel.getPageIndex(), pageQueryModel.getPageSize());
 
         if (StringUtils.isNotBlank(pageQueryModel.getSort())) {
-            if (StringUtils.equalsIgnoreCase("DESC" , pageQueryModel.getOrder())) {
+            if (StringUtils.equalsIgnoreCase("DESC", pageQueryModel.getOrder())) {
                 page.setDesc(pageQueryModel.getSort());
-            } else {
+            }
+            else {
                 page.setAsc(pageQueryModel.getSort());
             }
         }
@@ -178,15 +186,15 @@ public class ExamineDataAdminServiceImpl implements ExamineDataAdminService {
         String endQuarter = (String) queryParam.get("endQuarter");//统计结束季度
         String branchOrgId = (String) queryParam.get("branchOrgId");//分支行机构号
         String outOrgId = (String) queryParam.get("outOrgId");//网点机构号
-        return examineDataAdminDao.queryExamineDataDeduByAdmin(page,startYear,startQuarter,endYear,endQuarter,branchOrgId,outOrgId);
+        return examineDataAdminDao.queryExamineDataDeduByAdmin(page, startYear, startQuarter, endYear, endQuarter, branchOrgId, outOrgId);
     }
 
     @Override
     public List<ExamineAnalyzeVo> queryExamineDataAnalyzeByAdmin(ExamineAnalyzeParmVo vo) {
-        if(StringUtils.isBlank(vo.getStartYear()) || StringUtils.isBlank(vo.getEndYear())){
+        if (StringUtils.isBlank(vo.getStartYear()) || StringUtils.isBlank(vo.getEndYear())) {
             throw new BizException("请选择开始年份和结束年份！");
         }
-        if(StringUtils.isBlank(vo.getStartQuarter()) || StringUtils.isBlank(vo.getEndQuarter())){
+        if (StringUtils.isBlank(vo.getStartQuarter()) || StringUtils.isBlank(vo.getEndQuarter())) {
             throw new BizException("请选择开始季度和结束季度！");
         }
         return examineDataAdminDao.queryExamineDataAnalyzeByAdmin(vo);
