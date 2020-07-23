@@ -74,7 +74,7 @@
     </select>
     <select id="getwater" resultType="java.util.Map">
             SELECT a.deal_with_people_id uid,
-            a.deal_with_type operatorStatus,
+            a.operation_type operatorStatus,
             date_format(a.create_time,'%Y-%m-%d %H:%i:%s') time,
             u.USER_NAME name,u.USER_PHONE phone,
             w.work_order_status status
