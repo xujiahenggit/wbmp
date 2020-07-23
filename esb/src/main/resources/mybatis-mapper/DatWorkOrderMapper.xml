@@ -256,6 +256,9 @@
             <if test="m.orderNo !=null and m.orderNo != ''">
                 and work_order_code=#{m.orderNo}
             </if>
+            <if test="m.startTime!=null and m.startTime!='' and m.endTime!=null and m.endTime!=''">
+                and create_time between #{m.startTime} and #{m.endTime}
+            </if>
         </where>
 
     </select>
