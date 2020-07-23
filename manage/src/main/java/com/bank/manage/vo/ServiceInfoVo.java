@@ -16,7 +16,6 @@ public class ServiceInfoVo {
     @ApiModelProperty(value = "厂商id")
     private String vendorId;
 
-
     @ApiModelProperty(value = "厂商名称")
     private String vendorName;
 
