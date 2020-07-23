@@ -222,6 +222,21 @@ public class RepairController {
             .set(ManageWorkOrderDO::getRatingNote,commentVo.getRatingNote());
             flag = repairService.update(lambdaUpdateWrapper);
         }
+        //插入工单流水
+        WorkWaterDO  workWater = new WorkWaterDO();
+        workWater.setSerialNumber(Tools.getFreeOrderNo());
+        workWater.setWordOrderId(workOrderCode);
+        workWater.setDealWithType("1");
+        workWater.setDealWithTime(LocalDateTime.now());
+        workWater.setOrgId(commentVo.getOrgId());
+        workWater.setDealWithPeopleId(commentVo.getDealWithPeopleId());
+        workWater.setDealWithPeopleName(commentVo.getDealWithPeopleName());
+        workWater.setDealWithPeopleRole(Integer.parseInt(commentVo.getDealWithPeopleRole()));
+        workWater.setDealWithNote(commentVo.getRatingNote());
+        workWater.setCreateTime(LocalDateTime.now());
+        workWater.setPhone(commentVo.getPhone());
+        workWater.setOperationType("10");
+        flag =  manageWorkWaterService.save(workWater);
         return flag ;
     }
 
