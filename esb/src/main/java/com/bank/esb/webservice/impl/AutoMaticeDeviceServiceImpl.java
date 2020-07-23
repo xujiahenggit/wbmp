@@ -357,10 +357,17 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
             }
 
             //插入流水，待处理
-            workWaterService.save(new WorkWaterDO(null, null, orderNo,
-                    processMode, LocalDateTime.now()
-                    , engineerId, serviceDescribe, null, null, name, phone
-            ));
+            workWaterService.save(
+                    WorkWaterDO.builder()
+                            .wordOrderId(orderNo)
+                            .dealWithType(processMode)
+                            .dealWithTime(LocalDateTime.now())
+                            .dealWithPeopleId(engineerId)
+                            .dealWithNote(serviceDescribe)
+                            .dealWithPeopleName(name)
+                            .phone(phone)
+                            .build()
+                   );
 
             //附件保存
             saveAttachment(orderNo,orderDealWithVo.getList());
@@ -509,10 +516,17 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
             phone = engineerInfo.get("TELEPHONE");
         }
         //插入流水
-        workWaterService.save(new WorkWaterDO(null, null, orderId,
-                "2", LocalDateTime.now()
-                , engineerId, "工单分派", null, null, name, phone
-        ));
+        workWaterService.save(
+                WorkWaterDO.builder()
+                        .wordOrderId(orderId)
+                        .dealWithType("2")
+                        .dealWithTime(LocalDateTime.now())
+                        .dealWithPeopleId(engineerId)
+                        .dealWithNote("工单分派")
+                        .dealWithPeopleName(name)
+                        .phone(phone)
+                        .build()
+          );
         return responseEngineerDto;
     }
 
@@ -530,10 +544,16 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
             phone = engineerInfo.get("TELEPHONE");
         }
         //更改状态
-        workWaterService.save(new WorkWaterDO(null, null, orderId,
-                "3", LocalDateTime.now()
-                , engineerId, "工程师到达现场处理状态变更", null, null, name,phone
-        ));
+        workWaterService.save(
+                WorkWaterDO.builder()
+                        .wordOrderId(orderId)
+                        .dealWithType("3")
+                        .dealWithTime(LocalDateTime.now())
+                        .dealWithNote("工程师到达现场处理状态变更")
+                        .dealWithPeopleName(name)
+                        .phone(phone)
+                        .build()
+        );
         return stateChangesDto;
     }
 
