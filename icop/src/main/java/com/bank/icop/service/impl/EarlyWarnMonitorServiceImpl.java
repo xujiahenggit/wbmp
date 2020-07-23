@@ -377,16 +377,8 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         parmMap.put("dealflag",replyDataDo.getDealflag());
 //        parmMap.put("fcettypecode",replyDataDo.getFcettypecode());
 //        parmMap.put("cjstatus",replyDataDo.getCjstatus());
-        Map report = null;
-        try {
-            report = SoapUtil.sendReport("FXYJ10024","812",parmMap);
-        } catch (Exception e) {
-            throw new BizException("未回复协查数据列表报错！"+e.getMessage());
-        }
-        if(!"0".equals((String)report.get("status"))){
-            throw new BizException("执行失败,状态码:"+(String)report.get("status"));
-        }
-        return report;
+        return getIcopTagList(parmMap, "FXYJ10024", "未回复协查数据列表报错", "0", "执行失败");
+
     }
 
     @Override
@@ -477,16 +469,8 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
     public Object returnRoleLists(String userNo) {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("userNo",userNo);
-        Map report = null;
-        try {
-            report = SoapUtil.sendReport("FXYJ11032","812",parmMap);
-        } catch (Exception e) {
-            throw new BizException("查看用户角色报错！"+e.getMessage());
-        }
-        if(!"1".equals((String)report.get("status"))){
-            throw new BizException("执行失败,状态码:"+(String)report.get("status"));
-        }
-        return report;
+        return getIcopTagList(parmMap, "FXYJ11032", "查看用户角色报错", "0", "执行失败");
+
     }
 
     @Override
