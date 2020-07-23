@@ -65,7 +65,7 @@
                 device.STRDEVMANU deviceVendor,          -- 设备厂商id
                  domaindict.STRVALUE deviceVendorName,    -- 设备厂商名称
                 device.STRDEVMODEL deviceModel,       -- 设备型号
-                term.ORGANIZATION orgId,        --  所属机构号
+                 concat(concat(concat(concat( term.ORGANIZATION,'/'),s.org_code),'/'),bra.org_code) orgId,       --  所属机构号
                 term.STRTERMADDR address,         --  终端地址
                 device.firstinstalldate installationTime,  -- 首次安装日期
                 term.STRTERMNUM terminalCode,          -- 终端编号
@@ -92,7 +92,7 @@
                          when device.ISTATUS = '5' then
                                   '已报废设备'
                      end deviceStatus,
-                     s.STRSUBBRANCHNAME orgName
+                     concat(concat( concat( concat(concat(concat(bank.STRBANKNAME,'/'),s.STRSUBBRANCHNAME),'/'),bra.STRBRANCHNAME ),'/'),se.STRSSBNAME)  orgName
 
             from  ssarun.device device
             left join ssarun.term term
@@ -101,6 +101,12 @@
                 on domaindict.STRNAME =  device.STRDEVMANU
             left join ssamgt.subbranch s
                on s.org_code =  term.ORGANIZATION
+            left join ssamgt.bank bank
+            on bank.STRBANKNUM = s.STRBANKNUM
+            left join ssamgt.branch bra
+            on bra.STRBANKNUM = bank.STRBANKNUM
+            left join ssamgt.selfsvcbank se
+             on se.STRBANKNUM = bank.STRBANKNUM
             where  term.STRTERMNUM = #{id}
     </select>
 
