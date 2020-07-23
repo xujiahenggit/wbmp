@@ -62,5 +62,19 @@ public interface RepairDao extends BaseMapper<ManageWorkOrderDO> {
 
     List<ServiceInfoVo> getServiceInfoList(@Param("repairCode") String repairCode);
 
+    /**
+     * 工单流转历史
+     * @param repairCode
+     * @return
+     */
+    List<repairHistoryListVo> getRepairHistoryList(@Param("repairCode") String repairCode);
+
+    /**
+     * 根据工单id获取附件地址
+     * @param repairCode
+     * @return
+     */
+    List<String> getOrderAttachList(@Param("repairCode") String repairCode);
+
     List<BuffetLineVo> getBuffetLineList(@Param("model")BuffetLineDto buffetLineDto);
 }
