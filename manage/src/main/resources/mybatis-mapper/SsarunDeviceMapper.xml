@@ -91,13 +91,16 @@
                                   '上线设备'
                          when device.ISTATUS = '5' then
                                   '已报废设备'
-                     end deviceStatus
+                     end deviceStatus,
+                     s.STRSUBBRANCHNAME orgName
 
             from  ssarun.device device
             left join ssarun.term term
                 on term.DEVICEID = device.id
             left join ssarun.domaindict domaindict
                 on domaindict.STRNAME =  device.STRDEVMANU
+            left join ssamgt.subbranch s
+               on s.org_code =  term.ORGANIZATION
             where  term.STRTERMNUM = #{id}
     </select>
 

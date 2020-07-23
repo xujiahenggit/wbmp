@@ -141,7 +141,8 @@
         branch,
         sub_branch,
         buffet_line,
-        vendor
+        vendor,
+        org_name
         )
         values(
          #{terminalCode},
@@ -169,7 +170,8 @@
          #{branch},
          #{subBranch},
          #{buffetLine},
-         #{vendor}
+         #{vendor},
+         #{orgName}
         )
     </insert>
 
@@ -398,7 +400,8 @@
                 t.device_model deviceModel,
                 t.vendor_name vendorName,
                 t.vendor vendorId,
-                t.work_order_status status
+                t.work_order_status status,
+                t.org_name orgName
 
         from t_work_order t
                 <where>
@@ -454,11 +457,9 @@
                 t.vendor vendorId,
                 t.work_order_status status,
                 t.work_order_type workOrderType,
-                a.NFRT_ORG_NAME orgName,
-                t.create_time
+                t.create_time createTime,
+                t.org_name orgName
         from t_work_order t
-        left join t_nfrt_org a
-           on a.NFRT_ORG_ID  = t.org_id
         <where>
             <if test="model.workOrderType != null and model.workOrderType !=''">
                 and t.work_order_type = #{model.workOrderType}
@@ -510,11 +511,10 @@
                 t.vendor vendorId,
                 t.work_order_status status,
                 t.work_order_type workOrderType,
-                a.NFRT_ORG_NAME orgName,
-                t.create_time
+                t.create_time createTime,
+               t.org_name orgName
         from t_work_order t
-        left join t_nfrt_org a
-        on a.NFRT_ORG_ID  = t.org_id
+
         <where>
             <if test="model.workOrderType != null and model.workOrderType!=''">
                 and t.work_order_type = #{model.workOrderType}
@@ -569,11 +569,10 @@
                 t.vendor vendorId,
                 t.work_order_status status,
                 t.work_order_type workOrderType,
-                a.NFRT_ORG_NAME orgName,
-                t.create_time
+                t.create_time createTime,
+                t.org_name orgName
         from t_work_order t
-        left join t_nfrt_org a
-        on a.NFRT_ORG_ID  = t.org_id
+
         <where>
             <if test="model.workOrderType != null and model.workOrderType !=''">
                 and t.work_order_type = #{model.workOrderType}
@@ -631,12 +630,15 @@
         END deviceType,
         c.STRDEVMODEL deviceModel,
         d.STRVALUE vendorName,
-        b.ORGANIZATION orgId
+        b.ORGANIZATION orgId,
+        s.STRSUBBRANCHNAME orgName
         FROM
         ssamgt.work_order work_order
         LEFT JOIN ssarun.term b ON b.STRTERMNUM = work_order.strTermNum
         LEFT JOIN ssarun.device c ON c.id = b.DEVICEID
         LEFT JOIN ssarun.domaindict d ON d.STRNAME = c.STRDEVMANU
+        left join ssamgt.subbranch s
+         on s.org_code =  b.ORGANIZATION
         <where>
             type='1'
             <if test="model.vendor != null">

@@ -34,6 +34,8 @@ public class WorkOrderDto {
     private String workOrderCode;
     @ApiModelProperty(value = "机构id")
     private String orgId;
+    @ApiModelProperty(value = "机构名称")
+    private String orgName;
     @ApiModelProperty(value = "工单状态 工单状态  0 :待处理；1：待评价；2：办接；3：待分行确认；4：待总行确认；4：待厂商回复；6：总行知悉；7：分行知悉；8：退回；9：已关闭")
     private String workOrderStatus;
     @ApiModelProperty(value = "创建时间")
