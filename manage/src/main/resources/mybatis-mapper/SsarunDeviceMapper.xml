@@ -65,7 +65,7 @@
                 device.STRDEVMANU deviceVendor,          -- 设备厂商id
                  domaindict.STRVALUE deviceVendorName,    -- 设备厂商名称
                 device.STRDEVMODEL deviceModel,       -- 设备型号
-                 concat(concat(concat(concat( term.ORGANIZATION,'/'),s.org_code),'/'),bra.org_code) orgId,       --  所属机构号
+                  concat(concat(concat(concat( ifnull(term.ORGANIZATION,'无'),'/'),ifnull(s.org_code,'无')),'/'),ifnull(bra.org_code,'无'))  orgId,       --  所属机构号
                 term.STRTERMADDR address,         --  终端地址
                 device.firstinstalldate installationTime,  -- 首次安装日期
                 term.STRTERMNUM terminalCode,          -- 终端编号
@@ -94,7 +94,7 @@
                      end deviceStatus,
                      concat(concat( concat( concat(concat(concat(bank.STRBANKNAME,'/'),s.STRSUBBRANCHNAME),'/'),bra.STRBRANCHNAME ),'/'),se.STRSSBNAME)  orgName
 
-            from  ssarun.device device
+           from  ssarun.device device
             left join ssarun.term term
                 on term.DEVICEID = device.id
             left join ssarun.domaindict domaindict
@@ -102,11 +102,11 @@
             left join ssamgt.subbranch s
                on s.org_code =  term.ORGANIZATION
             left join ssamgt.bank bank
-            on bank.STRBANKNUM = s.STRBANKNUM
-            left join ssamgt.branch bra
-            on bra.STRBANKNUM = bank.STRBANKNUM
-            left join ssamgt.selfsvcbank se
-             on se.STRBANKNUM = bank.STRBANKNUM
+             on bank.STRBANKNUM = s.STRBANKNUM
+             left join ssamgt.branch bra
+             on bra.STRBRANCHNUM = s.STRBRANCHNUM
+             left join ssamgt.selfsvcbank se
+              on se.STRBRANCHNUM = bra.STRBRANCHNUM
             where  term.STRTERMNUM = #{id}
     </select>
 
