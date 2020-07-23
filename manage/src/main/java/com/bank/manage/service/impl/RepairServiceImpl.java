@@ -135,14 +135,6 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
     @Override
     public IPage<WorkOrderVO> getWorkOrder(WorkOrdersDto workOrdersDto) {
         Page<WorkOrderVO> page = new Page<>(workOrdersDto.getPageIndex(), workOrdersDto.getPageSize());
-        if (StringUtils.isNotBlank(workOrdersDto.getSort())) {
-            if (StringUtils.equalsIgnoreCase("DESC", workOrdersDto.getOrder())) {
-                page.setDesc(workOrdersDto.getSort());
-            }
-            else {
-                page.setAsc(workOrdersDto.getSort());
-            }
-        }
         //判断来源类型  1 我发起的，2 我审批的、3 我办结的、4 系统自建；5 所有
         if("5".equals(workOrdersDto.getSourceType())){
             //查询所有

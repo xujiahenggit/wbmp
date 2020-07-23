@@ -413,7 +413,8 @@
                 t.vendor_name vendorName,
                 t.vendor vendorId,
                 t.work_order_status status,
-                t.org_name orgName
+                t.org_name orgName,
+                t.create_time createTime
 
         from t_work_order t
                 <where>
@@ -421,7 +422,7 @@
                         and t.work_order_type = #{model.workOrderType}
                     </if>
                     <if test="model.orgId != null and model.orgId !=''">
-                        and t.org_id = #{model.orgId}
+                        and t.org_id  like concat('%',#{model.orgId},'%')
                     </if>
                     <if test="model.vendor != null and model.vendor !=''">
                         and t.vendor_name like concat('%',#{model.vendor},'%')
