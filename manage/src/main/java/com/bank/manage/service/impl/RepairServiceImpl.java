@@ -24,6 +24,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -254,6 +255,20 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
     @DataSource(DynamicDataSourceSwitcher.esb_mgt)
     public  List<BuffetLineVo> getBuffetLineList(BuffetLineDto buffetLineDto) {
         return repairDao.getBuffetLineList(buffetLineDto);
+    }
+
+    @Override
+    public List<repairHistoryListVo> getRepairHistoryList(String repairCode) {
+        List<repairHistoryListVo> list  = repairDao.getRepairHistoryList(repairCode);
+        if(list.size() >0 ){
+            for (repairHistoryListVo item:list){
+                List<String> attachList = repairDao.getOrderAttachList(item.getWordOrderId());
+                if(attachList.size()>0){
+                    item.setThumbs(attachList);
+                }
+            }
+        }
+        return list ;
     }
 
     public void getTime(InspectionEquipmentDto inspectionEquipmentDto){

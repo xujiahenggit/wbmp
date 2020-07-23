@@ -8,6 +8,7 @@ import com.bank.manage.dto.*;
 import com.bank.manage.vo.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -49,4 +50,12 @@ public interface RepairService extends IService<ManageWorkOrderDO> {
     String getBuffetLine(String orgId);
 
     List<BuffetLineVo> getBuffetLineList(BuffetLineDto buffetLineDto);
+
+
+    /**
+     * 工单流转历史
+     * @param repairCode
+     * @return
+     */
+    List<repairHistoryListVo> getRepairHistoryList(@Param("repairCode") String repairCode);
 }

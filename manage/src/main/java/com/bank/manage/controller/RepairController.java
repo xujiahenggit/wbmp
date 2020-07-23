@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -227,22 +228,13 @@ public class RepairController {
     @ApiOperation(value ="工单流转历史")
     @GetMapping("/repairHistory/{repairCode}")
     @ApiImplicitParam(name = "repairCode",value = "工单编号",required = true,paramType = "path")
-    public Object repairHistory(@PathVariable String repairCode){
-        Map<String,Object> map = new HashMap<>();
+    public List<repairHistoryListVo> repairHistory(@PathVariable String repairCode){
+        List<repairHistoryListVo> list = new ArrayList<>();
         if("".equals(repairCode) || null == repairCode ){
             throw new BizException("工单编号不能为空");
         }
-        RepairVo repairVo = repairService.getRepairById(repairCode);
-        if(repairVo != null) {
-            ManageWorkOrderDO workOrderDO = repairService.getById(repairVo.getId());
-            //截图URL的list
-            QueryWrapper<ManageWorkOrderAttachmentDO> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("repair_id",repairCode);
-            List<ManageWorkOrderAttachmentDO>  list = manageWorkOrderAttachmentService.list(queryWrapper);
-            map.put("repairHistory",workOrderDO);
-            map.put("imageList",list);
-        }
-        return  map;
+        list = repairService.getRepairHistoryList(repairCode);
+        return  list;
     }
 
     @ApiOperation(value ="自助设备列表查询")
