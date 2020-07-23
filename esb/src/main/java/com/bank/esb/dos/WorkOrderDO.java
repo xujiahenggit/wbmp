@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
  * 工单表实体类
  *
  * @author 代码自动生成
- * @since 2020-07-22
+ * @since 2020-07-23
  */
 @Data
 @Builder
@@ -273,6 +273,11 @@ public class WorkOrderDO implements Serializable {
    */
   @ApiModelProperty(value = "安装地址")
   private String installAddr;
+  /**
+   * 机构名称
+   */
+  @ApiModelProperty(value = "机构名称")
+  private String orgName;
 
 
 }
