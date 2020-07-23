@@ -362,6 +362,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                 orderDO.setEngineerName(name);
             }
             orderDO.setDealType(processMode);
+            orderDO.setWorkOrderStatus(orderDealWithVo.getOrderStatus());
             orderDO.setDealNote(serviceDescribe);
             workOrderService.saveOrUpdate(orderDO);
 
@@ -530,19 +531,20 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         responseEngineerDto.setRepcode("1");
         String engineerId = engineerDto.getEngineerId();
         String orderId = engineerDto.getOrderId();
-        //工单分派
-        WorkOrderDO orderDO = workOrderService.getOne(new LambdaQueryWrapper<WorkOrderDO>().eq(WorkOrderDO::getWorkOrderCode, orderId));
-        if (orderDO != null) {
-            orderDO.setEngineer(engineerId);
-            workOrderService.saveOrUpdate(orderDO);
-
-        }
         Map<String, String> engineerInfo = getEngineerInfo(engineerId);
         String name = "";
         String phone = "";
         if (engineerInfo != null) {
             name = engineerInfo.get("NAME");
             phone = engineerInfo.get("TELEPHONE");
+        }
+        //工单分派
+        WorkOrderDO orderDO = workOrderService.getOne(new LambdaQueryWrapper<WorkOrderDO>().eq(WorkOrderDO::getWorkOrderCode, orderId));
+        if (orderDO != null) {
+            orderDO.setEngineer(engineerId);
+            orderDO.setEngineerName(name);
+            orderDO.setWorkOrderStatus("11");
+            workOrderService.saveOrUpdate(orderDO);
         }
         //插入流水
         workWaterService.save(
