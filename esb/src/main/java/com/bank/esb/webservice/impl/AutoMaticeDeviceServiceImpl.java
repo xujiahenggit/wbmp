@@ -258,12 +258,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
             } else {
                 dto.setProcessMode(orderDO.getDealType());
             }
-            List<WorkWaterDO> workWaterDOS = workWaterService.list(new LambdaQueryWrapper<WorkWaterDO>().eq(WorkWaterDO::getWordOrderId, orderId).eq(WorkWaterDO::getOperationType, "2"));
-            if (workWaterDOS.size() == 1) {
-                dto.setFinishTime(workWaterDOS.get(0).getDealWithTime());
-            } else {
-                dto.setFinishTime(null);
-            }
+            dto.setFinishTime(DateUtil.formatLocalDateTime(orderDO.getWorkOrderCompleteTime()));
             responseDto.setRepcode("0");
         } else {
             responseDto.setRepcode("-1");

@@ -3,8 +3,6 @@ package com.bank.esb.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.time.LocalDateTime;
-
 /**
  * cq
  */
@@ -35,5 +33,5 @@ public class ServiceInformationDto {
     private String processMode;
 
     @ApiModelProperty(value = "完成时间")
-    private LocalDateTime finishTime;
+    private String finishTime;
 }
