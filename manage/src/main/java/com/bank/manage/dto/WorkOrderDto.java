@@ -56,6 +56,7 @@ public class WorkOrderDto {
     private String vendorName;
     @ApiModelProperty(value = "设备型号")
     private String deviceModel;
-
+    @ApiModelProperty(value = "设备类型")
+    private String deviceType;
 
 }

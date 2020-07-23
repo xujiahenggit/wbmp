@@ -23,7 +23,8 @@
               vendor,
               device_model,
               org_id,
-              vendor_name
+              vendor_name,
+              device_type
            )
             values(
              #{terminalCode},
@@ -45,7 +46,8 @@
             #{vendorId},
             #{deviceModel},
             #{orgId},
-             #{vendorName}
+             #{vendorName},
+             #{deviceType}
             )
 
     </insert>
