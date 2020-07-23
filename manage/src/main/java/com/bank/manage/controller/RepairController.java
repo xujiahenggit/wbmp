@@ -231,7 +231,7 @@ public class RepairController {
         workWater.setDealWithNote(commentVo.getRatingNote());
         workWater.setCreateTime(LocalDateTime.now());
         workWater.setPhone(commentVo.getPhone());
-        workWater.setOperationType("10");
+        workWater.setOperationType("1");
         flag =  manageWorkWaterService.save(workWater);
         return flag ;
     }
