@@ -97,7 +97,7 @@
                     WS.WORK_SUPPLE_ID AS ID,
                     '引导员加班时长申请' AS NAME,
                     CONCAT(
-                        WORK_SUPPLE_DATE,
+                        WS.WORK_SUPPLE_DATE,
                         U.USHER_NAME,
                         '的加班时长申请'
                     ) AS CONTENT,
@@ -172,7 +172,7 @@
     <select id="getAeadyList" resultMap="Facilitator">
         SELECT
             NEW_TABLE.ID,
-            NEW_TABLE. NAME,
+            NEW_TABLE.NAME,
             NEW_TABLE.CONTENT,
             NEW_TABLE.TYPE,
             NEW_TABLE.DATE,

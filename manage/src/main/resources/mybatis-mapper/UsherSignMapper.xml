@@ -29,7 +29,7 @@
         WHERE
 	        W.USHER_ID = #{usherId}
 	        AND DATE_FORMAT( W.WORK_SUPPLE_DATE, '%Y-%m' ) = #{month}
-	        AND W.WORK_SUPPLE_STATE = '10'
+	        AND W.WORK_SUPPLE_STATE = '20'
 	        /*AND W.WORK_SUPPLE_DELETE_FLAG = '0'*/
     </select>
 

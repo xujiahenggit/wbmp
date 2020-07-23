@@ -130,7 +130,7 @@ public class CardSuppleServiceImpl extends ServiceImpl<CardSuppleDao, CardSupple
             //下班时间
             usherSignDO.setOffDutyTime(DateUtils.localDateTime2Date(cardSuppleInfo.getCardSuppleEndWorkTime()));
             //工时
-            BigDecimal workingHours = new BigDecimal(DateUtils.localDateTime2Date(cardSuppleInfo.getCardSuppleStartWorkTime()).getTime() - DateUtils.localDateTime2Date(cardSuppleInfo.getCardSuppleEndWorkTime()).getTime())
+            BigDecimal workingHours = new BigDecimal(DateUtils.localDateTime2Date(cardSuppleInfo.getCardSuppleEndWorkTime()).getTime() - DateUtils.localDateTime2Date(cardSuppleInfo.getCardSuppleStartWorkTime()).getTime())
                     .divide(new BigDecimal(DateUnit.HOUR.getMillis()), 2, BigDecimal.ROUND_HALF_UP);
             usherSignDO.setWorkingHours(workingHours);
             usherSignService.save(usherSignDO);
