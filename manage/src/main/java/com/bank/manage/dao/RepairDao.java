@@ -61,4 +61,6 @@ public interface RepairDao extends BaseMapper<ManageWorkOrderDO> {
     IPage<WorkOrderVO> getWorkOrderByMeApp(Page<WorkOrderVO> page, @Param("model")WorkOrdersDto workOrdersDto);
 
     List<ServiceInfoVo> getServiceInfoList(@Param("repairCode") String repairCode);
+
+    List<BuffetLineVo> getBuffetLineList(@Param("model")BuffetLineDto buffetLineDto);
 }
