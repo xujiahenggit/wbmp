@@ -70,15 +70,15 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         String reference = header.get("ExternalReference").toString();
         log.info("请求流水号码：" + reference);
         //记录流水
-        esbLogService.save(new EsbLogDO(null,reference, requestXml));
+        esbLogService.save(new EsbLogDO(null, reference, requestXml));
         Map<String, Object> request = (Map<String, Object>) requestMap.get("Body");
         Object requestArags = request.get("Request");
-        Map<String, Object> body=null;
+        Map<String, Object> body = null;
 
         try {
             body = (Map<String, Object>) requestArags;
         } catch (Exception e) {
-          log.info("报文参数为空");
+            log.info("报文参数为空");
         }
         if (header == null) {
             throw new BizException("获取ESB请求报文头失败");
@@ -170,7 +170,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         responseHeader.put("Response", JSON.parseObject(JSON.toJSONString(res), Map.class));
 
         Map<String, Object> responseBody = new HashMap<String, Object>();
-        if (returnVO.containsKey("list")){
+        if (returnVO.containsKey("list")) {
             returnVO.put("List", returnVO.get("list"));
             returnVO.remove("list");
         }
@@ -197,7 +197,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
             workOrderService.saveOrUpdate(workOrderDO);
 
             //附件列表
-            saveAttachment(orderNo,orderSubmissionVo.getList());
+            saveAttachment(orderNo, orderSubmissionVo.getList());
             map.put("repcode", "0");
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -206,7 +206,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         return map;
     }
 
-    private void saveAttachment(String orderNo,List<String> pictureUrl) {
+    private void saveAttachment(String orderNo, List<String> pictureUrl) {
         Map picMap = null;
         try {
             if (pictureUrl != null && pictureUrl.size() == 1) {
@@ -301,7 +301,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         Integer pageSize = orderNumVo.getPageSize();
         pageIndex = pageIndex == 0 ? 1 : pageIndex;
         pageSize = pageSize == 0 ? 10 : pageSize;
-        Integer total=0;
+        Integer total = 0;
 
         responseDto.setPageIndex(pageIndex);
         responseDto.setPageSize(pageSize);
@@ -309,7 +309,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         orderNumVo.setPageSize(pageSize);
         List<OrderDto> orderDtoList = datWorkOrderDao.queryOrders(orderNumVo);
         String orderType = orderNumVo.getOrderType();
-        List<OrderDto> esblist=new ArrayList<>();
+        List<OrderDto> esblist = new ArrayList<>();
         if (orderType != null && orderNumVo.getUserId() != null
                 && orderNumVo.getRelated() != null
                 && orderNumVo.getOrderType().equals("01")) {
@@ -317,8 +317,8 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
 
         }
         orderDtoList.addAll(esblist);
-        total=orderDtoList.size();
-        List list =PageUtils.startPage(orderDtoList,pageIndex,pageSize);
+        total = orderDtoList.size();
+        List list = PageUtils.startPage(orderDtoList, pageIndex, pageSize);
         responseDto.setTotal(total);
         responseDto.setList(list);
         return responseDto;
@@ -343,34 +343,44 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
             String engineerId = orderDealWithVo.getEngineerId();
             String processMode = orderDealWithVo.getProcessMode();
             String serviceDescribe = orderDealWithVo.getServiceDescribe();
-            orderDO.setEngineer(engineerId);
+            //查询信息
+            Map<String, String> engineerInfo = getEngineerInfo(engineerId);
+            String name = "";
+            String phone = "";
+            String role = "";
+            if (engineerInfo != null) {
+                name = engineerInfo.get("NAME");
+                phone = engineerInfo.get("TELEPHONE");
+                role = engineerInfo.get("MANUEMPNATURE");
+            }
+
+            if (role.equals("1")) {
+                orderDO.setDirector(engineerId);
+                orderDO.setDirectorName(name);
+            } else {
+                orderDO.setEngineer(engineerId);
+                orderDO.setEngineerName(name);
+            }
             orderDO.setDealType(processMode);
             orderDO.setDealNote(serviceDescribe);
             workOrderService.saveOrUpdate(orderDO);
 
-            Map<String, String> engineerInfo = getEngineerInfo(engineerId);
-            String name = "";
-            String phone = "";
-            if (engineerInfo != null) {
-                name = engineerInfo.get("NAME");
-                phone = engineerInfo.get("TELEPHONE");
-            }
 
             //插入流水，待处理
             workWaterService.save(
                     WorkWaterDO.builder()
                             .wordOrderId(orderNo)
-                            .dealWithType(processMode)
+                            .dealWithType(orderDealWithVo.getOrderStatus())
                             .dealWithTime(LocalDateTime.now())
                             .dealWithPeopleId(engineerId)
                             .dealWithNote(serviceDescribe)
                             .dealWithPeopleName(name)
                             .phone(phone)
                             .build()
-                   );
+            );
 
             //附件保存
-            saveAttachment(orderNo,orderDealWithVo.getList());
+            saveAttachment(orderNo, orderDealWithVo.getList());
         } else {
             orderDealWithDto.setRepcode("-1");
         }
@@ -404,7 +414,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
 
                 }
             }
-        }else{
+        } else {
             //默认查询支行信息
             List<DatSubbranchDO> subBranchs = esbService.getSubBranch();
             for (DatSubbranchDO subbranchDO : subBranchs) {
@@ -453,10 +463,11 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         Object firstinstalldate = xjdInfo.get("firstinstalldate");
         Object strtermaddr = xjdInfo.get("STRTERMADDR");
         Object strdevsn = xjdInfo.get("STRDEVSN");
+        String orderId = "03" + DateUtils.now();
         WorkOrderDO workOrderDO = WorkOrderDO.builder()
                 .terminalCode(deviceNo)
                 .workOrderType("03")
-                .workOrderCode("03" + DateUtils.now())
+                .workOrderCode(orderId)
                 .deviceType(Integer.parseInt(xjdInfo.get("IDEVTYPE").toString()))
                 .deviceClass(xjdInfo.get("IDEVCLASS").toString())
                 .serialNum(strdevsn == null ? "" : strdevsn.toString())
@@ -477,8 +488,24 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                 .escortsCompleteTime(DateUtil.parseLocalDateTime(inspectionSheetsVo.getEndTime()))
                 .escortsHandling(inspectionSheetsVo.getProcessMode())
                 .workOrderDescribe(inspectionSheetsVo.getOrderDescribe())
+                .contactName(inspectionSheetsVo.getSceneUserName())
+                .contactPhone(inspectionSheetsVo.getSceneUserPhone())
                 .build();
         workOrderService.save(workOrderDO);
+
+        //添加一条流水,创建巡检单
+        workWaterService.save(
+                WorkWaterDO.builder()
+                        .wordOrderId(orderId)
+                        .dealWithType("2")
+                        .dealWithTime(LocalDateTime.now())
+                        .dealWithPeopleId(inspectionSheetsVo.getCreateUserId())
+                        .dealWithNote("小程序:巡检单创建")
+                        .dealWithPeopleName(inspectionSheetsVo.getCreateUserName())
+                        .phone(inspectionSheetsVo.getCreateUserPhone())
+                        .operationType("0")
+                        .build()
+        );
         return inspectionSheetsDto;
     }
 
@@ -525,8 +552,9 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                         .dealWithNote("工单分派")
                         .dealWithPeopleName(name)
                         .phone(phone)
+                        .operationType("11")
                         .build()
-          );
+        );
         return responseEngineerDto;
     }
 
@@ -552,6 +580,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                         .dealWithNote("工程师到达现场处理状态变更")
                         .dealWithPeopleName(name)
                         .phone(phone)
+                        .operationType("12")
                         .build()
         );
         return stateChangesDto;
