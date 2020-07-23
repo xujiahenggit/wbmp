@@ -6,7 +6,6 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import cn.hutool.core.util.StrUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,12 +32,13 @@ import com.bank.manage.vo.CardSupplePassRejectVo;
 import com.bank.manage.vo.CardSuppleQueryVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
+import cn.hutool.core.util.StrUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("/cardSupple")
-@Api(tags = "网点引导员——外包人员接口")
+@Api(tags = "网点引导员-外包人员接口")
 public class CardSuppleController extends BaseController {
 
     @Autowired
@@ -81,8 +81,8 @@ public class CardSuppleController extends BaseController {
     @ApiOperation(value = "新增外包人员补卡申请")
     public Boolean saveCardSupple(@RequestBody CardSuppleDO cardSuppleDO) {
         String path = "";
-        if(StrUtil.isNotBlank(cardSuppleDO.getCardSuppleImg())){
-            path=StringSplitUtil.splitMaterialPath(cardSuppleDO.getCardSuppleImg(), netUtil.getUrlSuffix(""));
+        if (StrUtil.isNotBlank(cardSuppleDO.getCardSuppleImg())) {
+            path = StringSplitUtil.splitMaterialPath(cardSuppleDO.getCardSuppleImg(), netUtil.getUrlSuffix(""));
         }
         cardSuppleDO.setCardSuppleState("10");
         cardSuppleDO.setCardSuppleCreatetime(LocalDateTime.now());
