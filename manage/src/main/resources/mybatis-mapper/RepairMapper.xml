@@ -194,12 +194,24 @@
              select
                     t.vendor vendorId,
                     t.vendor_name vendorName,
-                    t.director director,
-                    t.director_name directorName,
-                    t.engineer engineer,
-                    t.engineer_name engineerName,
                     t.deal_type dealType,
                     t.work_order_complete_time workOrderCompleteTime
+                from t_work_order t
+                where work_order_code = #{repairCode}
+    </select>
+
+    <select id="getEngineerList" resultType="com.bank.manage.vo.EngineerListVo">
+              select
+                    t.engineer engineer,
+                    t.engineer_name engineerName
+                from t_work_order t
+                where work_order_code = #{repairCode}
+    </select>
+
+    <select id="getDirectorList" resultType="com.bank.manage.vo.DirectorVo">
+              select
+                    t.director director,
+                    t.director_name directorName
                 from t_work_order t
                 where work_order_code = #{repairCode}
     </select>

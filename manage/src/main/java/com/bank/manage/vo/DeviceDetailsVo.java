@@ -39,5 +39,6 @@ public class DeviceDetailsVo {
     private String deviceStatus;
     @ApiModelProperty(value = "终端详情")
     private TerminalDetailsVo terminalDetailsVo;
-
+    @ApiModelProperty(value = "服务主管信息")
+    private List<DeviceVendorVo> deviceVendorVos;
 }

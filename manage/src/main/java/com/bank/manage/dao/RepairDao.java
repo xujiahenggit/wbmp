@@ -60,7 +60,7 @@ public interface RepairDao extends BaseMapper<ManageWorkOrderDO> {
 
     IPage<WorkOrderVO> getWorkOrderByMeApp(Page<WorkOrderVO> page, @Param("model")WorkOrdersDto workOrdersDto);
 
-    List<ServiceInfoVo> getServiceInfoList(@Param("repairCode") String repairCode);
+    ServiceInfoVo getServiceInfoList(@Param("repairCode") String repairCode);
 
     /**
      * 工单流转历史
@@ -81,4 +81,8 @@ public interface RepairDao extends BaseMapper<ManageWorkOrderDO> {
     List<BuffetLineVo> getBranchVoList();
 
     List<BuffetLineVo> getSubbranchList(@Param("code") String code);
+
+    List<EngineerListVo> getEngineerList(String repairCode);
+
+    List<DirectorVo> getDirectorList(String repairCode);
 }

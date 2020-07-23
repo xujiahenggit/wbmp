@@ -61,10 +61,24 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
     public RepairVo getRepairById(String repairCode) {
         RepairVo repairVo=  repairDao.getRepairById(repairCode);
         //服务信息
-        List<ServiceInfoVo> list = repairDao.getServiceInfoList(repairCode);
-        if(CollectionUtils.isNotEmpty(list)){
-            repairVo.setServiceInfoVo(list);
+        ServiceInfoVo serviceInfoVo = repairDao.getServiceInfoList(repairCode);
+        //服务工程师
+        List<EngineerListVo> engineerListVoList =repairDao.getEngineerList(repairCode);
+        if(CollectionUtils.isNotEmpty(engineerListVoList)){
+            serviceInfoVo.setEngineerListVoList(engineerListVoList);
+
         }
+        //服务主管
+        List<DirectorVo> directorVoList=repairDao.getDirectorList(repairCode);
+        if(CollectionUtils.isNotEmpty(directorVoList)){
+            serviceInfoVo.setDirectorVoList(directorVoList);
+
+        }
+
+        if(serviceInfoVo != null){
+            repairVo.setServiceInfoVo(serviceInfoVo);
+        }
+
 
         return repairVo;
     }
