@@ -125,15 +125,15 @@ public class RepairController {
       public IPage<WorkOrderVO> getWorkOrder(@RequestBody WorkOrdersDto workOrdersDto){
         if("4".equals(workOrdersDto.getSourceType())){
             IPage<WorkOrderVO> workOrderList = repairService.getWorkOrderBySystem(workOrdersDto);
-            List<WorkOrderVO> list = workOrderList.getRecords();
-            //获取机构名称
-            for(int i=0;i<list.size();i++){
-                String name=   repairService.getBuffetLine(list.get(i).getOrgId());
-                if(!"".equals(name) || null != name){
-                    list.get(i).setOrgName(name);
-                }
-
-            }
+//            List<WorkOrderVO> list = workOrderList.getRecords();
+//            //获取机构名称
+//            for(int i=0;i<list.size();i++){
+//                String name=   repairService.getBuffetLine(list.get(i).getOrgId());
+//                if(!"".equals(name) || null != name){
+//                    list.get(i).setOrgName(name);
+//                }
+//
+//            }
            return workOrderList;
         }
         return repairService.getWorkOrder(workOrdersDto);
