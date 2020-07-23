@@ -20,9 +20,11 @@ public class PageUtils {
 
         int fromIndex=0;
         int toIndex=0;
-        if(pageNum!=pageCount){
-            fromIndex=(pageNum-1)*pageSize;
-            toIndex=fromIndex+pageSize;
+        //
+
+        if(pageNum>pageCount){
+            fromIndex=(pageCount-1)*pageSize;
+            toIndex=count;
         }else{
             fromIndex=(pageNum-1)*pageSize;
             toIndex=count;
