@@ -40,7 +40,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @RestController
 @RequestMapping("/onSiteInspection")
-@Api(tags = "现场检查接口")
+@Api(tags = "ICOP-现场检查接口")
 public class OnSiteInspectionController extends BaseIcopController {
 
     @Resource

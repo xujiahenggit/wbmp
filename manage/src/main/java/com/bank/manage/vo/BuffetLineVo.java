@@ -10,10 +10,10 @@ import lombok.Data;
  * @email
  */
 @Data
-@ApiModel("自助行信息")
+@ApiModel("自助行,分行，支行信息")
 public class BuffetLineVo {
-    @ApiModelProperty(value = "自助行编码")
-    private String buffetLineCode;
-    @ApiModelProperty(value = "自助行名称")
-    private String buffetLineName;
+    @ApiModelProperty(value = "编码")
+    private String code;
+    @ApiModelProperty(value = "名称")
+    private String name;
 }

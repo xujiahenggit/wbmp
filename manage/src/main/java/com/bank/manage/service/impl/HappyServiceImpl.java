@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import com.bank.core.entity.BizException;
 import com.bank.manage.dao.HappyDao;
-import com.bank.manage.dos.ExamineDataAdminDO;
 import com.bank.manage.dos.ExamineDataTempAdminDO;
 import com.bank.manage.dto.DeductDTO;
 import com.bank.manage.dto.StatisticsDTO;
@@ -94,8 +93,8 @@ public class HappyServiceImpl implements HappyService {
         Map<String, List<Map<String, Object>>> groupData = dataList.stream().collect(Collectors.groupingBy(e -> e.get("star").toString()));
         List<Map<String, Object>> oneTwo = new ArrayList<>();
         //一星级和二星级整合为无星
-        oneTwo.addAll(groupData.get("一星级"));
-        oneTwo.addAll(groupData.get("二星级"));
+        oneTwo.addAll(groupData.containsKey("一星级") ? groupData.get("一星级") : new ArrayList<>());
+        oneTwo.addAll(groupData.containsKey("二星级") ? groupData.get("二星级") : new ArrayList<>());
         groupData.remove("一星级");
         groupData.remove("二星级");
         groupData.put("无星", oneTwo);
@@ -238,7 +237,7 @@ public class HappyServiceImpl implements HappyService {
         String yearAndQuarter = getLastYearQuarter(param.getYear(), quarter);
         Integer paramYear = param.getYear();
         int queryYear = paramYear;
-        List<ExamineDataAdminDO> list = happyDao.checkStatusDetails(param);
+        List<Map<String, Object>> list = happyDao.checkStatusDetails(param);
         map.put("detail", list);
 
         Integer count = list.size();

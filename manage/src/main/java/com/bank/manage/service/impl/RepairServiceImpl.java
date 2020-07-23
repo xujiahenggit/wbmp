@@ -24,7 +24,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -258,10 +257,10 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
     }
 
     @Override
-    public List<repairHistoryListVo> getRepairHistoryList(String repairCode) {
-        List<repairHistoryListVo> list  = repairDao.getRepairHistoryList(repairCode);
+    public List<RepairHistoryListVo> getRepairHistoryList(String repairCode) {
+        List<RepairHistoryListVo> list  = repairDao.getRepairHistoryList(repairCode);
         if(list.size() >0 ){
-            for (repairHistoryListVo item:list){
+            for (RepairHistoryListVo item:list){
                 List<String> attachList = repairDao.getOrderAttachList(item.getWordOrderId());
                 if(attachList.size()>0){
                     item.setThumbs(attachList);
@@ -269,6 +268,18 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
             }
         }
         return list ;
+    }
+
+    @Override
+    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
+    public List<BuffetLineVo> getBranchVoList() {
+        return repairDao.getBranchVoList();
+    }
+
+    @Override
+    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
+    public List<BuffetLineVo> getSubbranchList(String code) {
+        return repairDao.getSubbranchList(code);
     }
 
     public void getTime(InspectionEquipmentDto inspectionEquipmentDto){

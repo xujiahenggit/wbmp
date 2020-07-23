@@ -822,23 +822,24 @@
     </select>
 
     <select id="getBuffetLineList" resultType="com.bank.manage.vo.BuffetLineVo">
-        select s.STRSSBNUM buffetLineCode,
-               s.STRSSBNAME buffetLineName
+        select s.STRSSBNUM code,
+        s.STRSSBNAME name
 
-      from ssamgt.selfsvcbank s
+        from ssamgt.selfsvcbank s
+
         <where>
             <if test="model.branchCode != null and model.branchCode !='' ">
-                and  s.STRBRANCHNUM = #{model.branchCode}
+                and  STRBRANCHNUM = #{model.branchCode}
             </if>
             <if test="model.subbranchCode != null and model.subbranchCode !='' ">
-                and s.STRSUBBRANCHNUM = #{model.subbranchCode}
+                and  STRSUBBRANCHNUM = #{model.subbranchCode}
             </if>
         </where>
 
     </select>
 
     <!--工单流转历史-->
-    <select id="getRepairHistoryList" resultType="com.bank.manage.vo.repairHistoryListVo">
+    <select id="getRepairHistoryList" resultType="com.bank.manage.vo.RepairHistoryListVo">
                 SELECT
                     w.id ,w.word_order_id AS wordOrderId ,w.operation_type AS operationType ,
                 case w.operation_type
@@ -878,4 +879,21 @@
            where repair_id = #{repairCode}
     </select>
 
+    <select id="getBranchVoList" resultType="com.bank.manage.vo.BuffetLineVo">
+             select STRBRANCHNUM code,
+                    STRBRANCHNAME name
+      from ssamgt.branch
+    </select>
+
+    <select id="getSubbranchList" resultType="com.bank.manage.vo.BuffetLineVo">
+        select
+        STRSUBBRANCHNUM code,
+        STRSUBBRANCHNAME name
+        from ssamgt.subbranch
+        <where>
+            <if test="code!=null and code != '' ">
+                and STRBRANCHNUM = #{code}
+            </if>
+        </where>
+    </select>
 </mapper>

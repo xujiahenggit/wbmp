@@ -32,7 +32,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @RestController
 @RequestMapping("/workSupple")
-@Api(tags = "网点引导员——加班申请接口")
+@Api(tags = "网点引导员-加班申请接口")
 public class WorkSuppleController extends BaseController {
 
     @Autowired

@@ -129,11 +129,11 @@ public class SsarunDeviceController extends BaseController {
 
             deviceDetailsVo.setTerminalDetailsVo(terminalDetailsVo);
             //服务厂商
-            List<DeviceVendorVo> deviceVendorVo = ssarunDeviceService.getDeviceVendorByCode(deviceDetailsVo.getDeviceVendor());
-
-            if(CollectionUtils.isNotEmpty(deviceVendorVo)){
-                deviceDetailsVo.setDeviceVendorVo(deviceVendorVo);
-            }
+        //    List<DeviceVendorVo> deviceVendorVo = ssarunDeviceService.getDeviceVendorByCode(deviceDetailsVo.getDeviceVendor());
+          //  System.out.println(deviceDetailsVo.getDeviceVendor());
+           // if(CollectionUtils.isNotEmpty(deviceVendorVo)){
+         //       deviceDetailsVo.setDeviceVendorVo(deviceVendorVo);
+          //  }
 
 
         }

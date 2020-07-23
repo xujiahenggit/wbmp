@@ -7,7 +7,6 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import com.bank.manage.dos.CountModuleTempDO;
-import com.bank.manage.dos.ExamineDataAdminDO;
 import com.bank.manage.dos.ExamineDataTempAdminDO;
 import com.bank.manage.dto.StatisticsDTO;
 import com.bank.manage.vo.HappyParam;
@@ -17,7 +16,7 @@ public interface HappyDao {
 
     List<Map<String, Object>> HeadStatus(HappyParam param);
 
-    List<ExamineDataAdminDO> checkStatusDetails(HappyParam param);
+    List<Map<String, Object>> checkStatusDetails(HappyParam param);
 
     /**
      * 按年统计考核分数
