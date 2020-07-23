@@ -15,6 +15,7 @@ import com.bank.user.dto.OrgDetailDto;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -61,7 +62,10 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
         RepairVo repairVo=  repairDao.getRepairById(repairCode);
         //服务信息
         List<ServiceInfoVo> list = repairDao.getServiceInfoList(repairCode);
-        repairVo.setServiceInfoVo(list);
+        if(CollectionUtils.isNotEmpty(list)){
+            repairVo.setServiceInfoVo(list);
+        }
+
         return repairVo;
     }
 
