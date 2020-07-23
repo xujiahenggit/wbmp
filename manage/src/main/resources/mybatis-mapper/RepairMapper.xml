@@ -822,20 +822,17 @@
     </select>
 
     <select id="getBuffetLineList" resultType="com.bank.manage.vo.BuffetLineVo">
-        select s.STRSSBNUM buffetLineCode,
-               s.STRSSBNAME buffetLineName
+        select s.STRSSBNUM code,
+        s.STRSSBNAME name
 
         from ssamgt.selfsvcbank s
-        left join ssamgt.branch bra
-        on bra.STRBRANCHNUM = s.STRBRANCHNUM
-        left join ssamgt.subbranch sub
-        on sub.STRSUBBRANCHNUM = s.STRSUBBRANCHNUM
+
         <where>
             <if test="model.branchCode != null and model.branchCode !='' ">
-                and  bra.org_code  = #{model.branchCode}
+                and  STRBRANCHNUM = #{model.branchCode}
             </if>
             <if test="model.subbranchCode != null and model.subbranchCode !='' ">
-                and  and sub.org_code = #{model.subbranchCode}
+                and  STRSUBBRANCHNUM = #{model.subbranchCode}
             </if>
         </where>
 
@@ -882,4 +879,21 @@
            where repair_id = #{repairCode}
     </select>
 
+    <select id="getBranchVoList" resultType="com.bank.manage.vo.BuffetLineVo">
+             select STRBRANCHNUM code,
+                    STRBRANCHNAME name
+      from ssamgt.branch
+    </select>
+
+    <select id="getSubbranchList" resultType="com.bank.manage.vo.BuffetLineVo">
+        select
+        STRSUBBRANCHNUM code,
+        STRSUBBRANCHNAME name
+        from ssamgt.subbranch
+        <where>
+            <if test="code!=null and code != '' ">
+                and STRBRANCHNUM = #{code}
+            </if>
+        </where>
+    </select>
 </mapper>

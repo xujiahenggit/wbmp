@@ -58,4 +58,8 @@ public interface RepairService extends IService<ManageWorkOrderDO> {
      * @return
      */
     List<RepairHistoryListVo> getRepairHistoryList(@Param("repairCode") String repairCode);
+
+    List<BuffetLineVo> getBranchVoList();
+
+    List<BuffetLineVo> getSubbranchList(String code);
 }

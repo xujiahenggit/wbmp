@@ -16,4 +16,5 @@ public class BuffetLineDto {
     private String branchCode;
     @ApiModelProperty(value = "支行编码")
     private String subbranchCode;
+
 }

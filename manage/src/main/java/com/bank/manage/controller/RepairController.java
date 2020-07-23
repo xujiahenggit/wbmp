@@ -265,9 +265,23 @@ public class RepairController {
     }
 
     @ApiOperation(value ="查询所有的自助行")
-    @PostMapping("/BuffetLine")
+    @PostMapping("/getBuffetLineList")
     public List<BuffetLineVo> getBuffetLineList(@RequestBody BuffetLineDto buffetLineDto){
         return repairService.getBuffetLineList(buffetLineDto);
+
+    }
+
+    @ApiOperation(value ="查询所有的分行")
+    @GetMapping("/getBranchVoList")
+    public List<BuffetLineVo> getBranchVoList(){
+        return repairService.getBranchVoList();
+
+    }
+
+    @ApiOperation(value ="查询所有的支行")
+    @GetMapping("/getSubbranchList/{code}")
+    public List<BuffetLineVo> getSubbranchList(@PathVariable String code){
+        return repairService.getSubbranchList(code);
 
     }
 }

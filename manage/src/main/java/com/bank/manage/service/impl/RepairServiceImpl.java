@@ -270,6 +270,18 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
         return list ;
     }
 
+    @Override
+    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
+    public List<BuffetLineVo> getBranchVoList() {
+        return repairDao.getBranchVoList();
+    }
+
+    @Override
+    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
+    public List<BuffetLineVo> getSubbranchList(String code) {
+        return repairDao.getSubbranchList(code);
+    }
+
     public void getTime(InspectionEquipmentDto inspectionEquipmentDto){
         //获取当前系统的月份
         Calendar calendar =Calendar.getInstance();

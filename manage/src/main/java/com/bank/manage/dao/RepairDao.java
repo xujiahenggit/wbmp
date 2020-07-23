@@ -77,4 +77,8 @@ public interface RepairDao extends BaseMapper<ManageWorkOrderDO> {
     List<String> getOrderAttachList(@Param("repairCode") String repairCode);
 
     List<BuffetLineVo> getBuffetLineList(@Param("model")BuffetLineDto buffetLineDto);
+
+    List<BuffetLineVo> getBranchVoList();
+
+    List<BuffetLineVo> getSubbranchList(@Param("code") String code);
 }
