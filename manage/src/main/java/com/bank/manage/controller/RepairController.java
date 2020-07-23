@@ -3,7 +3,6 @@ package com.bank.manage.controller;
 import com.bank.core.entity.BizException;
 import com.bank.manage.dao.InspectionEquipmentDto;
 import com.bank.manage.dao.LargerScreenDto;
-import com.bank.manage.dos.ManageWorkOrderAttachmentDO;
 import com.bank.manage.dos.ManageWorkOrderDO;
 import com.bank.manage.dos.WorkWaterDO;
 import com.bank.manage.dto.*;
@@ -12,7 +11,6 @@ import com.bank.manage.service.ManageWorkWaterService;
 import com.bank.manage.service.RepairService;
 import com.bank.manage.util.Tools;
 import com.bank.manage.vo.*;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
@@ -23,9 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 /***
@@ -228,8 +224,8 @@ public class RepairController {
     @ApiOperation(value ="工单流转历史")
     @GetMapping("/repairHistory/{repairCode}")
     @ApiImplicitParam(name = "repairCode",value = "工单编号",required = true,paramType = "path")
-    public List<repairHistoryListVo> repairHistory(@PathVariable String repairCode){
-        List<repairHistoryListVo> list = new ArrayList<>();
+    public List<RepairHistoryListVo> repairHistory(@PathVariable String repairCode){
+        List<RepairHistoryListVo> list = new ArrayList<>();
         if("".equals(repairCode) || null == repairCode ){
             throw new BizException("工单编号不能为空");
         }

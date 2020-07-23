@@ -838,7 +838,7 @@
     </select>
 
     <!--工单流转历史-->
-    <select id="getRepairHistoryList" resultType="com.bank.manage.vo.repairHistoryListVo">
+    <select id="getRepairHistoryList" resultType="com.bank.manage.vo.RepairHistoryListVo">
                 SELECT
                     w.id ,w.word_order_id AS wordOrderId ,w.operation_type AS operationType ,
                 case w.operation_type
