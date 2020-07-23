@@ -189,11 +189,14 @@ public class RepairController {
             workWater.setWordOrderId(workOrderCode);
             workWater.setDealWithType("1");
             workWater.setDealWithTime(LocalDateTime.now());
+            workWater.setOrgId(repairRebackVo.getOrgId());
             workWater.setDealWithPeopleId(repairRebackVo.getDealWithPeopleId());
             workWater.setDealWithPeopleName(repairRebackVo.getDealWithPeopleName());
-            workWater.setOrgId(repairRebackVo.getOrgId());
-            workWater.setCreateTime(LocalDateTime.now());
+            workWater.setDealWithPeopleRole(repairRebackVo.getDealWithPeopleRole());
             workWater.setDealWithNote(repairRebackVo.getDealWithNote());
+            workWater.setCreateTime(LocalDateTime.now());
+            workWater.setPhone(repairRebackVo.getPhone());
+            workWater.setOperationType("8");
             flag =  manageWorkWaterService.save(workWater);
         }
 
