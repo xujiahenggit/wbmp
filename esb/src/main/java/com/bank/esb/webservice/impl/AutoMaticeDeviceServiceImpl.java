@@ -376,6 +376,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                             .dealWithNote(serviceDescribe)
                             .dealWithPeopleName(name)
                             .phone(phone)
+                            .operationType(orderDealWithVo.getOrderStatus())
                             .build()
             );
 
