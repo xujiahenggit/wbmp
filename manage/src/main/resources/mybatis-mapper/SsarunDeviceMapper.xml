@@ -78,7 +78,7 @@
                      when device.IDEVTYPE = '4' then
                           '自动查询机'
                      end deviceType,
-
+                device.IDEVTYPE deviceTypeCode,
                 case when device.ISTATUS = '0' then       -- '设备状态：待签收设备 0，库存设备 1，停用未回库设备 2，拒收设备 3，上线设备 4，已报废设备 5',
                           '待签收设备'
                      when device.ISTATUS = '1' then

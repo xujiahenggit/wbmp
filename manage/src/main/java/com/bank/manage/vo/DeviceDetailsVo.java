@@ -25,6 +25,7 @@ public class DeviceDetailsVo {
     private String deviceModel;
     @ApiModelProperty(value = "设备类型：自动取款机 1，自动存款机 2，自动存取款机 3，自动查询机 4")
     private String deviceType;
+    private String deviceTypeCode;
     @ApiModelProperty(value = "机构id")
     private String orgId;
     @ApiModelProperty(value = "机构名称")
