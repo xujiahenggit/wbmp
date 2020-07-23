@@ -192,7 +192,7 @@ public class RepairController {
             workWater.setOrgId(repairRebackVo.getOrgId());
             workWater.setDealWithPeopleId(repairRebackVo.getDealWithPeopleId());
             workWater.setDealWithPeopleName(repairRebackVo.getDealWithPeopleName());
-            workWater.setDealWithPeopleRole(repairRebackVo.getDealWithPeopleRole());
+            workWater.setDealWithPeopleRole(Integer.parseInt(repairRebackVo.getDealWithPeopleRole()));
             workWater.setDealWithNote(repairRebackVo.getDealWithNote());
             workWater.setCreateTime(LocalDateTime.now());
             workWater.setPhone(repairRebackVo.getPhone());
