@@ -94,8 +94,8 @@ public class HappyServiceImpl implements HappyService {
         Map<String, List<Map<String, Object>>> groupData = dataList.stream().collect(Collectors.groupingBy(e -> e.get("star").toString()));
         List<Map<String, Object>> oneTwo = new ArrayList<>();
         //一星级和二星级整合为无星
-        oneTwo.addAll(groupData.get("一星级"));
-        oneTwo.addAll(groupData.get("二星级"));
+        oneTwo.addAll(groupData.containsKey("一星级") ? groupData.get("一星级") : new ArrayList<>());
+        oneTwo.addAll(groupData.containsKey("二星级") ? groupData.get("二星级") : new ArrayList<>());
         groupData.remove("一星级");
         groupData.remove("二星级");
         groupData.put("无星", oneTwo);

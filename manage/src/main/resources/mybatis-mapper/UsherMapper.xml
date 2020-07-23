@@ -30,6 +30,9 @@
 			AND TUWD.WORK_YEAR_MONTH = #{queryParam.workYearMonth, jdbcType=VARCHAR}
 		<trim prefix="WHERE" prefixOverrides="and|or">
 			TU.USHER_DELFLAG = '0'
+			<if test="queryParam.orgId != null and queryParam.orgId != ''">
+				AND TU.ORG_ID LIKE CONCAT(#{queryParam.orgId, jdbcType=VARCHAR}, '%')
+			</if>
 			<if test="queryParam.usherName != null and queryParam.usherName != ''">
 				AND TU.USHER_NAME LIKE CONCAT('%', #{queryParam.usherName, jdbcType=VARCHAR}, '%')
 			</if>
