@@ -258,11 +258,11 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
             } else {
                 dto.setProcessMode(orderDO.getDealType());
             }
-            List<WorkWaterDO> workWaterDOS = workWaterService.list(new LambdaQueryWrapper<WorkWaterDO>().eq(WorkWaterDO::getWordOrderId, orderId).eq(WorkWaterDO::getDealWithType, "4"));
+            List<WorkWaterDO> workWaterDOS = workWaterService.list(new LambdaQueryWrapper<WorkWaterDO>().eq(WorkWaterDO::getWordOrderId, orderId).eq(WorkWaterDO::getOperationType, "2"));
             if (workWaterDOS.size() == 1) {
-                dto.setFinishTime(workWaterDOS.get(0).getDealWithTime().toString());
+                dto.setFinishTime(workWaterDOS.get(0).getDealWithTime());
             } else {
-                dto.setFinishTime("");
+                dto.setFinishTime(null);
             }
             responseDto.setRepcode("0");
         } else {
@@ -371,7 +371,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
             workWaterService.save(
                     WorkWaterDO.builder()
                             .wordOrderId(orderNo)
-                            .dealWithType(orderDealWithVo.getOrderStatus())
+//                            .dealWithType(orderDealWithVo.getOrderStatus())
                             .dealWithTime(LocalDateTime.now())
                             .dealWithPeopleId(engineerId)
                             .dealWithPeopleRole(Integer.parseInt(role))
@@ -471,6 +471,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                 .terminalCode(deviceNo)
                 .workOrderType("03")
                 .workOrderCode(orderId)
+                .escortsFlag("0")
                 .deviceType(Integer.parseInt(xjdInfo.get("IDEVTYPE").toString()))
                 .deviceClass(xjdInfo.get("IDEVCLASS").toString())
                 .serialNum(strdevsn == null ? "" : strdevsn.toString())
@@ -500,7 +501,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         workWaterService.save(
                 WorkWaterDO.builder()
                         .wordOrderId(orderId)
-                        .dealWithType("2")
+//                        .dealWithType("2")
                         .dealWithTime(LocalDateTime.now())
                         .dealWithPeopleId(inspectionSheetsVo.getCreateUserId())
                         .dealWithNote("小程序:巡检单创建")
@@ -550,7 +551,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         workWaterService.save(
                 WorkWaterDO.builder()
                         .wordOrderId(orderId)
-                        .dealWithType("2")
+//                        .dealWithType("2")
                         .dealWithTime(LocalDateTime.now())
                         .dealWithPeopleId(engineerId)
                         .dealWithPeopleName(name)
@@ -580,7 +581,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         workWaterService.save(
                 WorkWaterDO.builder()
                         .wordOrderId(orderId)
-                        .dealWithType("3")
+//                        .dealWithType("3")
                         .dealWithTime(LocalDateTime.now())
                         .dealWithPeopleName(name)
                         .dealWithPeopleRole(2)
