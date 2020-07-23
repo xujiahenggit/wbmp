@@ -47,4 +47,6 @@ public interface RepairService extends IService<ManageWorkOrderDO> {
     IPage<WorkOrderVO> getWorkOrderBySystem(WorkOrdersDto workOrdersDto);
 
     String getBuffetLine(String orgId);
+
+    List<BuffetLineVo> getBuffetLineList(BuffetLineDto buffetLineDto);
 }

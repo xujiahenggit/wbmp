@@ -260,4 +260,11 @@ public class RepairController {
         return repairService.getKioskById(id);
 
     }
+
+    @ApiOperation(value ="查询所有的自助行")
+    @PostMapping("/BuffetLine")
+    public List<BuffetLineVo> getBuffetLineList(@RequestBody BuffetLineDto buffetLineDto){
+        return repairService.getBuffetLineList(buffetLineDto);
+
+    }
 }

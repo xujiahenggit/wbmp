@@ -820,4 +820,20 @@
         where a.STRTYPE ='DevManu'
 
     </select>
+
+    <select id="getBuffetLineList" resultType="com.bank.manage.vo.BuffetLineVo">
+        select s.STRSSBNUM buffetLineCode,
+               s.STRSSBNAME buffetLineName
+
+      from ssamgt.selfsvcbank s
+        <where>
+            <if test="model.branchCode != null and model.branchCode !='' ">
+                and  s.STRBRANCHNUM = #{model.branchCode}
+            </if>
+            <if test="model.subbranchCode != null and model.subbranchCode !='' ">
+                and s.STRSUBBRANCHNUM = #{model.subbranchCode}
+            </if>
+        </where>
+
+    </select>
 </mapper>
