@@ -825,20 +825,24 @@
         select s.STRSSBNUM buffetLineCode,
                s.STRSSBNAME buffetLineName
 
-      from ssamgt.selfsvcbank s
+        from ssamgt.selfsvcbank s
+        left join ssamgt.branch bra
+        on bra.STRBRANCHNUM = s.STRBRANCHNUM
+        left join ssamgt.subbranch sub
+        on sub.STRSUBBRANCHNUM = s.STRSUBBRANCHNUM
         <where>
             <if test="model.branchCode != null and model.branchCode !='' ">
-                and  s.STRBRANCHNUM = #{model.branchCode}
+                and  bra.org_code  = #{model.branchCode}
             </if>
             <if test="model.subbranchCode != null and model.subbranchCode !='' ">
-                and s.STRSUBBRANCHNUM = #{model.subbranchCode}
+                and  and sub.org_code = #{model.subbranchCode}
             </if>
         </where>
 
     </select>
 
     <!--工单流转历史-->
-    <select id="getRepairHistoryList" resultType="com.bank.manage.vo.repairHistoryListVo">
+    <select id="getRepairHistoryList" resultType="com.bank.manage.vo.RepairHistoryListVo">
                 SELECT
                     w.id ,w.word_order_id AS wordOrderId ,w.operation_type AS operationType ,
                 case w.operation_type

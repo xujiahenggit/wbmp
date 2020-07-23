@@ -11,7 +11,7 @@ import java.util.List;
  */
 @Data
 @ApiModel
-public class repairHistoryListVo {
+public class RepairHistoryListVo {
 
 
     @ApiModelProperty(value = "流水id")
