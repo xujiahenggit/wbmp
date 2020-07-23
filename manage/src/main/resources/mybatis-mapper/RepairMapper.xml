@@ -95,7 +95,11 @@
               work_order_describe,
               create_time,
               create_id,
-              create_name
+              create_name,
+              branch_name,
+              sub_branch_name,
+              buffet_line_name,
+              vendor_name
 
            )
             values(
@@ -109,7 +113,11 @@
              #{workOrderDescribe},
              #{createTime},
              #{createId},
-             #{createName}
+             #{createName},
+             #{branchName},
+             #{subBranchName},
+             #{buffetLineName},
+             #{vendorName}
             )
 
     </insert>
@@ -176,6 +184,23 @@
          #{orgName}
         )
     </insert>
+
+    <select id="getComplaintsRepairById" resultType="com.bank.manage.vo.RepairVo">
+           select
+                    t.work_order_code workOrderCode,
+                    t.work_order_status repairStatus,
+                    a.USER_NAME createName,
+                    t.create_time createTime,
+                    a.USER_PHONE createPhone,
+                    concat(concat(concat(concat(t.branch_name,'/'),t.sub_branch_name),'/'),t.buffet_line_name) orgName,
+                    t.work_order_type repairType,
+                    t.vendor_name vendorName,
+                    t.vendor vendor
+            from t_work_order t
+            left join t_user a
+          on a.user_id = t.create_id
+          where t.work_order_code = #{repairCode}
+    </select>
 
     <select id="getRepairById" resultType="com.bank.manage.vo.RepairVo">
                 select
@@ -416,7 +441,8 @@
                 t.vendor vendorId,
                 t.work_order_status status,
                 t.org_name orgName,
-                t.create_time createTime
+                t.create_time createTime,
+                t.work_order_type workOrderType
 
         from t_work_order t
                 <where>
@@ -473,7 +499,8 @@
                 t.work_order_status status,
                 t.work_order_type workOrderType,
                 t.create_time createTime,
-                t.org_name orgName
+                t.org_name orgName,
+                t.work_order_type workOrderType
         from t_work_order t
         <where>
             <if test="model.workOrderType != null and model.workOrderType !=''">

@@ -65,5 +65,10 @@ public class RepairVo implements Serializable {
     private String workOrderCode;
     @ApiModelProperty(value = "服务信息")
     private ServiceInfoVo serviceInfoVo;
-
+    @ApiModelProperty(value = "机构名称")
+    private String orgName;
+    @ApiModelProperty(value = "厂商名称")
+    private String vendorName;
+    @ApiModelProperty(value = "厂商id")
+    private String vendor;
 }

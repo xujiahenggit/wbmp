@@ -288,6 +288,11 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
         return repairDao.getSubbranchList(code);
     }
 
+    @Override
+    public RepairVo getComplaintsRepairById(String repairCode) {
+        return repairDao.getComplaintsRepairById(repairCode);
+    }
+
     public void getTime(InspectionEquipmentDto inspectionEquipmentDto){
         //获取当前系统的月份
         Calendar calendar =Calendar.getInstance();
