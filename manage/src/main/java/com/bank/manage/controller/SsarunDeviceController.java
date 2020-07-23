@@ -68,12 +68,12 @@ public class SsarunDeviceController extends BaseController {
         }
         //获取设备信息
         DeviceDetailsVo deviceDetailsVo = ssarunDeviceService.getDeviceDetailsById(code);
-        //获取机构名称
-        if(!"".equals(deviceDetailsVo.getOrgId()) || null != deviceDetailsVo.getOrgId()){
-
-            String name =ssarunDeviceService.getOrgNameByOrgId(deviceDetailsVo.getOrgId());
-            deviceDetailsVo.setOrgName(name);
-        }
+//        //获取机构名称
+//        if(!"".equals(deviceDetailsVo.getOrgId()) || null != deviceDetailsVo.getOrgId()){
+//
+//            String name =ssarunDeviceService.getOrgNameByOrgId(deviceDetailsVo.getOrgId());
+//            deviceDetailsVo.setOrgName(name);
+//        }
 
         //获取终端状态
         if(deviceDetailsVo != null){
