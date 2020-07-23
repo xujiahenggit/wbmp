@@ -825,13 +825,17 @@
         select s.STRSSBNUM buffetLineCode,
                s.STRSSBNAME buffetLineName
 
-      from ssamgt.selfsvcbank s
+        from ssamgt.selfsvcbank s
+        left join ssamgt.branch bra
+        on bra.STRBRANCHNUM = s.STRBRANCHNUM
+        left join ssamgt.subbranch sub
+        on sub.STRSUBBRANCHNUM = s.STRSUBBRANCHNUM
         <where>
             <if test="model.branchCode != null and model.branchCode !='' ">
-                and  s.STRBRANCHNUM = #{model.branchCode}
+                and  bra.org_code  = #{model.branchCode}
             </if>
             <if test="model.subbranchCode != null and model.subbranchCode !='' ">
-                and s.STRSUBBRANCHNUM = #{model.subbranchCode}
+                and  and sub.org_code = #{model.subbranchCode}
             </if>
         </where>
 
