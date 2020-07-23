@@ -469,7 +469,7 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
     public Object returnRoleLists(String userNo) {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("userNo",userNo);
-        return getIcopTagList(parmMap, "FXYJ11032", "查看用户角色报错", "0", "执行失败");
+        return getIcopTagList(parmMap, "FXYJ11032", "查看用户角色报错", "1", "执行失败");
 
     }
 
