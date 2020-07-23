@@ -47,7 +47,7 @@
             #{deviceModel},
             #{orgId},
              #{vendorName},
-             #{deviceType}
+             #{deviceTypeCode}
             )
 
     </insert>

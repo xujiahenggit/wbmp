@@ -58,5 +58,6 @@ public class WorkOrderDto {
     private String deviceModel;
     @ApiModelProperty(value = "设备类型")
     private String deviceType;
-
+    @ApiModelProperty(value = "设备类型编码")
+    private String deviceTypeCode;
 }
