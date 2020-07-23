@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import com.bank.core.entity.BizException;
 import com.bank.manage.dao.HappyDao;
-import com.bank.manage.dos.ExamineDataAdminDO;
 import com.bank.manage.dos.ExamineDataTempAdminDO;
 import com.bank.manage.dto.DeductDTO;
 import com.bank.manage.dto.StatisticsDTO;
@@ -238,7 +237,7 @@ public class HappyServiceImpl implements HappyService {
         String yearAndQuarter = getLastYearQuarter(param.getYear(), quarter);
         Integer paramYear = param.getYear();
         int queryYear = paramYear;
-        List<ExamineDataAdminDO> list = happyDao.checkStatusDetails(param);
+        List<Map<String, Object>> list = happyDao.checkStatusDetails(param);
         map.put("detail", list);
 
         Integer count = list.size();

@@ -15,39 +15,65 @@
         WHERE START_YEAR = #{year} AND FAILURE_YEAR >= START_YEAR
     </select>
 
-    <select id="checkStatusDetails" resultType="com.bank.manage.dos.ExamineDataAdminDO">
-        SELECT ORG_ID,ORG_NAME,SUM(EXAMINE_SCORE) EXAMINE_SCORE FROM
-        <choose>
-            <when test="hasAdmin">
-                T_EXAMINE_DATA_ADMIN
-            </when>
-            <otherwise>
-                T_EXAMINE_DATA_BRANCH
-            </otherwise>
-        </choose>
-        WHERE EXCEL_QUARTER = #{quarter} AND EXCEL_DATE = #{year}
-        <choose>
-            <when test="orgids==''">
-                AND EXAMINE_ID IS NULL
-            </when>
-            <otherwise>
-                AND EXAMINE_ID IS NOT NULL
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="networks!=''">
-                AND ORG_ID = #{networks}
-            </when>
-            <otherwise>
-                <if test="orgs!=null">
-                    AND ORG_ID IN
-                    <foreach item="orgid" collection="orgs" index="index" open="(" separator="," close=")">
-                        #{orgid}
-                    </foreach>
-                </if>
-            </otherwise>
-        </choose>
-        GROUP BY ORG_ID,ORG_NAME ORDER BY EXAMINE_SCORE DESC
+    <select id="checkStatusDetails" resultType="java.util.Map">
+		SELECT D.ORG_ID orgId, D.ORG_NAME orgName, D.EXAMINE_SCORE examineScore, C.rankNum FROM (
+			<!-- 整体排名信息 -->
+			SELECT A.*, (@rowNum := @rowNum + 1) rankNum FROM(
+				SELECT ORG_ID, ORG_NAME, SUM(EXAMINE_SCORE) EXAMINE_SCORE FROM 
+				<choose>
+		            <when test="hasAdmin">
+		                T_EXAMINE_DATA_ADMIN
+		            </when>
+		            <otherwise>
+		                T_EXAMINE_DATA_BRANCH
+		            </otherwise>
+		        </choose>
+				WHERE EXCEL_QUARTER = #{quarter} AND EXCEL_DATE = #{year}
+		        <choose>
+		            <when test="orgids==''">
+		                AND EXAMINE_ID IS NULL
+		            </when>
+		            <otherwise>
+		                AND EXAMINE_ID IS NOT NULL
+		            </otherwise>
+		        </choose>
+		        GROUP BY ORG_ID,ORG_NAME ORDER BY EXAMINE_SCORE DESC
+			)A, (SELECT @rowNum := 0) B
+		)C
+		INNER JOIN (
+	        SELECT ORG_ID, ORG_NAME, SUM(EXAMINE_SCORE) EXAMINE_SCORE FROM
+	        <choose>
+	            <when test="hasAdmin">
+	                T_EXAMINE_DATA_ADMIN
+	            </when>
+	            <otherwise>
+	                T_EXAMINE_DATA_BRANCH
+	            </otherwise>
+	        </choose>
+	        WHERE EXCEL_QUARTER = #{quarter} AND EXCEL_DATE = #{year}
+	        <choose>
+	            <when test="orgids==''">
+	                AND EXAMINE_ID IS NULL
+	            </when>
+	            <otherwise>
+	                AND EXAMINE_ID IS NOT NULL
+	            </otherwise>
+	        </choose>
+	        <choose>
+	            <when test="networks!=''">
+	                AND ORG_ID = #{networks}
+	            </when>
+	            <otherwise>
+	                <if test="orgs!=null">
+	                    AND ORG_ID IN
+	                    <foreach item="orgid" collection="orgs" index="index" open="(" separator="," close=")">
+	                        #{orgid}
+	                    </foreach>
+	                </if>
+	            </otherwise>
+	        </choose>
+	        GROUP BY ORG_ID,ORG_NAME ORDER BY EXAMINE_SCORE DESC
+        )D ON C.ORG_ID = D.ORG_ID
     </select>
 
     <select id="checkStatusStatisticsYear"  resultType="com.bank.manage.dto.StatisticsDTO">
