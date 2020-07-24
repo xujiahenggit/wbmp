@@ -1,6 +1,8 @@
 package com.bank.manage.controller;
 
+import com.bank.auth.base.BaseController;
 import com.bank.core.entity.BizException;
+import com.bank.core.entity.TokenUserInfo;
 import com.bank.manage.dao.InspectionEquipmentDto;
 import com.bank.manage.dao.LargerScreenDto;
 import com.bank.manage.dos.ManageWorkOrderDO;
@@ -16,9 +18,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +37,7 @@ import java.util.Map;
 @Api(tags = "监控平台-工单信息接口")
 @RestController
 @RequestMapping("/repair")
-public class RepairController {
+public class RepairController extends BaseController {
     @Autowired
     private RepairService repairService;
     @Autowired
@@ -70,35 +74,106 @@ public class RepairController {
     @ApiOperation(value ="（故障）工单详情查询")
     @GetMapping("/getRepairById/{repairCode}")
     @ApiImplicitParam(name = "repairCode",value = "工单编号",required = true,paramType = "path")
-    public RepairVo getRepairById(@RequestBody ConditionsDto conditionsDto){
+    public RepairVo getRepairById(@RequestBody ConditionsDto conditionsDto, HttpServletRequest request){
+        TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
+
           if("1".equals(conditionsDto.getFlog())){
               //系统自建
-              return repairService.getWOrkSystemByCode(conditionsDto.getRepairCode());
+              RepairVo repairVo =new  RepairVo();
+              repairVo= repairService.getWOrkSystemByCode(conditionsDto.getRepairCode());
+              repairVo.setCreateName("admin");
+              return repairVo;
           }else{
               //人工创建
-              return repairService.getRepairById(conditionsDto.getRepairCode());
+              RepairVo repairVo =new  RepairVo();
+              repairVo =  repairService.getRepairById(conditionsDto.getRepairCode());
+              String orgType = "";
+              //总行
+              if (StringUtils.startsWith(tokenUserInfo.getOrgId(), "100")) {
+                  orgType = "1";
+              }
+              //分支行
+              else if (StringUtils.startsWith(tokenUserInfo.getOrgId(), "102")) {
+                  orgType = "2";
+              }
+              if(!"".equals(orgType)){
+                  repairVo.setUserType(orgType);
+              }
+              //判断是否为创建人
+              String isCreateUser = repairService.getUserByCode(tokenUserInfo.getUserId());
+              if(isCreateUser !=null ||!"".equals(isCreateUser)){
+                  repairVo.setIsCreateUser("0");
+              }else{
+                  repairVo.setIsCreateUser("1");
+              }
+
+              return repairVo;
           }
     }
 
     @ApiOperation(value ="（投诉）工单详情查询")
     @GetMapping("/getComplaintsRepairById/{repairCode}")
     @ApiImplicitParam(name = "repairCode",value = "工单编号",required = true,paramType = "path")
-    public RepairVo getComplaintsRepairById(@PathVariable String repairCode){
+    public RepairVo getComplaintsRepairById(@PathVariable String repairCode, HttpServletRequest request){
         if("".equals(repairCode)){
             throw new BizException("工单编号不能为空");
         }
-        return repairService.getComplaintsRepairById(repairCode);
+        TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
+        RepairVo repairVo =new RepairVo();
+        repairVo= repairService.getComplaintsRepairById(repairCode);
+        String orgType = "";
+        //总行
+        if (StringUtils.startsWith(tokenUserInfo.getOrgId(), "100")) {
+            orgType = "1";
+        }
+        //分支行
+        else if (StringUtils.startsWith(tokenUserInfo.getOrgId(), "102")) {
+            orgType = "2";
+        }
+        if(!"".equals(orgType)){
+            repairVo.setUserType(orgType);
+        }
+        //判断是否为创建人
+        String isCreateUser = repairService.getUserByCode(tokenUserInfo.getUserId());
+        if(isCreateUser !=null ||!"".equals(isCreateUser)){
+            repairVo.setIsCreateUser("0");
+        }else{
+            repairVo.setIsCreateUser("1");
+        }
+        return repairVo;
     }
 
 
     @ApiOperation(value ="（巡检）工单详情查询")
     @GetMapping("/getInspevtionRepairById/{repairCode}")
     @ApiImplicitParam(name = "repairCode",value = "工单编号",required = true,paramType = "path")
-    public InspectionRepairVo getInspectionRepairById(@PathVariable String repairCode){
+    public InspectionRepairVo getInspectionRepairById(@PathVariable String repairCode , HttpServletRequest request){
         if("".equals(repairCode)){
             throw new BizException("工单编号不能为空");
         }
-        return repairService.getInspectionRepairById(repairCode);
+        TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
+        InspectionRepairVo inspectionRepairVo =new InspectionRepairVo();
+        inspectionRepairVo= repairService.getInspectionRepairById(repairCode);
+        String orgType = "";
+        //总行
+        if (StringUtils.startsWith(tokenUserInfo.getOrgId(), "100")) {
+            orgType = "1";
+        }
+        //分支行
+        else if (StringUtils.startsWith(tokenUserInfo.getOrgId(), "102")) {
+            orgType = "2";
+        }
+        if(!"".equals(orgType)){
+            inspectionRepairVo.setUserType(orgType);
+        }
+        //判断是否为创建人
+        String isCreateUser = repairService.getUserByCode(tokenUserInfo.getUserId());
+        if(isCreateUser !=null ||!"".equals(isCreateUser)){
+            inspectionRepairVo.setIsCreateUser("0");
+        }else{
+            inspectionRepairVo.setIsCreateUser("1");
+        }
+        return inspectionRepairVo;
     }
 
 
