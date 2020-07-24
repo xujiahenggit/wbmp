@@ -185,6 +185,29 @@
         )
     </insert>
 
+    <select id="getInspectionRepairById" resultType="com.bank.manage.vo.InspectionRepairVo">
+                    select     t.id id,
+                               t.work_order_code repairCode,
+                               t.work_order_status status,
+                               t.work_order_type repairType,
+                               a.user_name createName,
+                               a.USER_PHONE createPhone,
+                               b.user_name escortsPatrolName,
+                               b.USER_PHONE escortsPatrolPhone,
+                               t.work_order_describe workOrderDescribe,
+                               t.vendor_name vendorName,
+                             t.escorts_start_time escortsStartTime,
+                             t.escorts_complete_time escortsCompletTime,
+                             t.escorts_handling escortsHandling
+                    from t_work_order t
+                        left join t_user a
+                    on a.user_id = t.create_id
+                        left join t_user b
+                    on b.user_id = t.escorts_patrol
+    </select>
+
+
+
     <select id="getComplaintsRepairById" resultType="com.bank.manage.vo.RepairVo">
            select
                     t.work_order_code workOrderCode,
@@ -195,7 +218,8 @@
                     concat(concat(concat(concat(t.branch_name,'/'),t.sub_branch_name),'/'),t.buffet_line_name) orgName,
                     t.work_order_type repairType,
                     t.vendor_name vendorName,
-                    t.vendor vendor
+                    t.vendor vendor,
+                    t.work_order_describe workOrderDescribe
             from t_work_order t
             left join t_user a
           on a.user_id = t.create_id

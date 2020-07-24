@@ -293,6 +293,17 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
         return repairDao.getComplaintsRepairById(repairCode);
     }
 
+    @Override
+    public InspectionRepairVo getInspectionRepairById(String repairCode) {
+        InspectionRepairVo inspectionRepairVo= repairDao.getInspectionRepairById(repairCode);
+        //获取服务工程师
+        List<EngineerListVo> engineerListVoList =repairDao.getEngineerList(repairCode);
+        if(CollectionUtils.isNotEmpty(engineerListVoList)){
+            inspectionRepairVo.setEngineerListVoList(engineerListVoList);
+        }
+        return inspectionRepairVo;
+    }
+
     public void getTime(InspectionEquipmentDto inspectionEquipmentDto){
         //获取当前系统的月份
         Calendar calendar =Calendar.getInstance();

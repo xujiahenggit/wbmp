@@ -85,6 +85,20 @@ public class RepairController {
         return repairService.getComplaintsRepairById(repairCode);
     }
 
+
+    @ApiOperation(value ="（巡检）工单详情查询")
+    @GetMapping("/getInspevtionRepairById/{repairCode}")
+    @ApiImplicitParam(name = "repairCode",value = "工单编号",required = true,paramType = "path")
+    public InspectionRepairVo getInspectionRepairById(@PathVariable String repairCode){
+        if("".equals(repairCode)){
+            throw new BizException("工单编号不能为空");
+        }
+        return repairService.getInspectionRepairById(repairCode);
+    }
+
+
+
+
     @ApiOperation(value ="巡检工单新增--设备信息查询")
     @PostMapping("/getInspectionEquipmentByCode")
     public List<InspectionEquipmentVo> getInspectionEquipmentByCode(@RequestBody InspectionEquipmentDto inspectionEquipmentDto ){
