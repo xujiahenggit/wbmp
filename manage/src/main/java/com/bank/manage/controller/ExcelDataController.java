@@ -188,8 +188,9 @@ public class ExcelDataController extends BaseController {
 
     @GetMapping("/downloadExamineTemp")
     @ApiOperation("考核数据Excel模板下载")
-    public void down(HttpServletResponse response) {
-        List<Map<String, Object>> countModuleList = countModuleService.queryCountModule();
+    @ApiImplicitParam(name = "moduleYear", value = "考核模块设置年份", required = false, defaultValue = "", dataType = "String")
+    public void down(@RequestParam(value = "moduleYear", required = false, defaultValue = "") String moduleYear, HttpServletResponse response) {
+        List<Map<String, Object>> countModuleList = countModuleService.queryCountModule(moduleYear);
         List<String> oneModuleList = new ArrayList<>();
         countModuleList.forEach(s -> {
             String key = s.entrySet().iterator().next().getKey();
