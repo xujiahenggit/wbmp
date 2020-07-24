@@ -296,6 +296,12 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
         return inspectionRepairVo;
     }
 
+    @Override
+    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
+    public RepairVo getWOrkSystemByCode(String repairCode) {
+        return repairDao.getWOrkSystemByCode(repairCode);
+    }
+
     public void getTime(InspectionEquipmentDto inspectionEquipmentDto){
         //获取当前系统的月份
         Calendar calendar =Calendar.getInstance();

@@ -56,7 +56,10 @@ public class RepairVo implements Serializable {
 
     @ApiModelProperty(value = "创建时间")
     private Date createTime;
-
+    @ApiModelProperty(value = "现场联系人")
+    private String contactName;
+    @ApiModelProperty(value = "现场联系人号码")
+    private String contactPhone;
     @ApiModelProperty(value = "描述类型")
     private String describeType;
     @ApiModelProperty(value = "描述描述")

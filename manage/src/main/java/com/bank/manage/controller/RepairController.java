@@ -21,7 +21,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /***
@@ -68,11 +70,14 @@ public class RepairController {
     @ApiOperation(value ="（故障）工单详情查询")
     @GetMapping("/getRepairById/{repairCode}")
     @ApiImplicitParam(name = "repairCode",value = "工单编号",required = true,paramType = "path")
-    public RepairVo getRepairById(@PathVariable String repairCode){
-        if("".equals(repairCode)){
-            throw new BizException("工单编号不能为空");
-        }
-        return repairService.getRepairById(repairCode);
+    public RepairVo getRepairById(@RequestBody ConditionsDto conditionsDto){
+          if("1".equals(conditionsDto.getFlog())){
+              //系统自建
+              return repairService.getWOrkSystemByCode(conditionsDto.getRepairCode());
+          }else{
+              //人工创建
+              return repairService.getRepairById(conditionsDto.getRepairCode());
+          }
     }
 
     @ApiOperation(value ="（投诉）工单详情查询")
@@ -151,12 +156,15 @@ public class RepairController {
             //所有
             IPage<WorkOrderVO> list= repairService.getWorkOrder(workOrdersDto);
             //加上系统自建的
-
+            IPage<WorkOrderVO> workOrderList = repairService.getWorkOrderBySystem(workOrdersDto);
+            if(list.getRecords().size()!=0){
+                list.getRecords().get(1).setWorkOrderVO(workOrderList.getRecords());
+                return list;
+            }else{
+                return workOrderList;
+            }
 
         }
-
-
-
 
         return repairService.getWorkOrder(workOrdersDto);
       }

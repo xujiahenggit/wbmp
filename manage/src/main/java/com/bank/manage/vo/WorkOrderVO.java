@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -46,4 +47,8 @@ public class WorkOrderVO {
     private String workOrderType;
     @ApiModelProperty(value = "是否系统创建 1:是  2:否")
     private String type;
+    @ApiModelProperty(value = "工单描述")
+    private String workOrderDescribe;
+    @ApiModelProperty(value = "系统自建的")
+    private List<WorkOrderVO> workOrderVO;
 }
