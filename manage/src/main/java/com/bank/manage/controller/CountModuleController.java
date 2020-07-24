@@ -77,7 +77,7 @@ public class CountModuleController extends BaseController {
     @GetMapping("/queryCountModule")
     @ApiOperation(value = "考核数据分析图统计模块接口")
     public List<Map<String, Object>> queryCountModule() {
-        return countModuleService.queryCountModule();
+        return countModuleService.queryCountModule("");
     }
 
 }
