@@ -106,6 +106,12 @@ logging:
 ICOP:
   PATH: http://icop.prod.bcs:43294/icop/services/JTService?wsdl
   TIMEOUT: 15000 #毫秒
+#影像平台
+IMAGE_PLATFORM:
+  IP: 162.16.12.80
+  PORT: 8021
+  USER_NAME: Wdzhgl
+  PASS_WORD: 'Wdzhgl*abcd1234'
 #自定义属性
 #日志版本
 LOG:

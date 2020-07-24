@@ -110,8 +110,8 @@ ICOP:
 IMAGE_PLATFORM:
   IP: 162.16.12.80
   PORT: 8021
-  USER_NAME: fxyj
-  PASS_WORD: fxyj1234
+  USER_NAME: Wdzhgl
+  PASS_WORD: 'Wdzhgl*abcd1234'
 #自定义属性
 #日志版本
 LOG:
