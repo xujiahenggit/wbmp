@@ -22,9 +22,14 @@
               contact_phone,
               vendor,
               device_model,
-              org_id,
               vendor_name,
-              device_type
+              device_type,
+              branch,
+            sub_branch,
+            buffet_line,
+            branch_name,
+            sub_branch_name,
+            buffet_line_name
            )
             values(
              #{terminalCode},
@@ -45,9 +50,14 @@
             #{contactPhone},
             #{vendorId},
             #{deviceModel},
-            #{orgId},
              #{vendorName},
-             #{deviceTypeCode}
+             #{deviceTypeCode},
+              #{branchCode},
+         #{subBranchCode},
+         #{buffetLineCode},
+         #{branchName},
+         #{subBranchName},
+         #{buffetLineName}
             )
 
     </insert>
@@ -152,12 +162,7 @@
         sub_branch,
         buffet_line,
         vendor,
-        branch,
-        sub_branch,
-        buffet_line,
-        branch_name,
-        sub_branch_name,
-        buffet_line_name
+
         )
         values(
          #{terminalCode},
@@ -452,7 +457,6 @@
                 t.id id,
                 t.work_order_code workOrderCode,
                 t.terminal_code terminalCode,
-                t.org_id orgId,
                 case when  t.device_type ='1' then
                 '自动取款机'
                 when  t.device_type ='2' then
@@ -474,17 +478,16 @@
                 t.vendor_name vendorName,
                 t.vendor vendorId,
                 t.work_order_status status,
-                t.org_name orgName,
+                concat(concat(concat(concat(t.branch_name,'/'),t.sub_branch_name),'/'),t.buffet_line_name) orgName,
                 t.create_time createTime,
                 t.work_order_type workOrderType
-
-        from t_work_order t
+               from t_work_order t
                 <where>
                     <if test="model.workOrderType != null and model.workOrderType !=''">
                         and t.work_order_type = #{model.workOrderType}
                     </if>
                     <if test="model.orgId != null and model.orgId !=''">
-                        and t.org_id  like concat('%',#{model.orgId},'%')
+                        and t.branch = #{model.orgId} or t.sub_branch = #{model.orgId} or t.buffet_line = #{model.orgId}
                     </if>
                     <if test="model.vendor != null and model.vendor !=''">
                         and t.vendor_name like concat('%',#{model.vendor},'%')
