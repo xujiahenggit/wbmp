@@ -100,7 +100,7 @@
         where DATE_FORMAT(data_dt,'%Y-%m-%d') &lt; DATE_FORMAT(#{date},'%Y-%m-%d')
     </insert>
 
-    <!--删除wbmp_operate_cust  date-上一月的日期【客群指标表 T+1】2 -->
+    <!--删除wbmp_operate_cust  date-的日期【客群指标表 T+1】2 -->
     <delete id="deleteWbmpOperateCust">
         DELETE FROM wbmp_operate_cust where DATE_FORMAT(data_dt,'%Y-%m-%d') &lt; DATE_FORMAT(#{date},'%Y-%m-%d')
     </delete>

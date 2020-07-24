@@ -98,15 +98,9 @@ public class OperateHistoryDataSaveJob implements Job {
             //删除一个月前的数据 date-一月前的日期 【网点历史离线余额】
             wbmpDataClearService.deleteWbmpOrgBatchBalance(sixMonth);
 
+            //删除wbmp_operate_cust  date-三年前的日期【客群指标表 T+1】
+            wbmpDataClearService.deleteWbmpOperateCust(threeYear);
 
-            //备份wbmp_operate_cust  date-上一月的日期【客群指标表 T+1】1
-            wbmpDataClearService.bakWbmpOperateCust(oneMonth);
-
-            //删除wbmp_operate_cust  date-上一月的日期【客群指标表 T+1】2
-            wbmpDataClearService.deleteWbmpOperateCust(oneMonth);
-
-            //删除wbmp_operate_cust_h  date-三年前的日期【客群指标表 T+1】3
-            wbmpDataClearService.deleteWbmpOperateCustH(threeYear);
             log.info("******************日期"+now+"结束清理数据*********************");
 
             //记录日志 运行成功

@@ -100,14 +100,10 @@ public class WbmpDataClearController {
 		wbmpDataClearService.deleteWbmpOrgBatchBalance(sixMonth);
 
 
-		//备份wbmp_operate_cust  date-上一月的日期【客群指标表 T+1】1
-		wbmpDataClearService.bakWbmpOperateCust(oneMonth);
+		//删除wbmp_operate_cust  date-三年前的日期【客群指标表 T+1】
+		wbmpDataClearService.deleteWbmpOperateCust(threeYear);
 
-		//删除wbmp_operate_cust  date-上一月的日期【客群指标表 T+1】2
-		wbmpDataClearService.deleteWbmpOperateCust(oneMonth);
 
-		//删除wbmp_operate_cust_h  date-三年前的日期【客群指标表 T+1】3
-		wbmpDataClearService.deleteWbmpOperateCustH(threeYear);
 		log.info("******************日期"+now+"结束清理数据*********************");
 		flag = true;
 		return flag;
