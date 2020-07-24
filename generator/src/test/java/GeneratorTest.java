@@ -7,7 +7,8 @@ public class GeneratorTest {
 //    @Test
     public void generVUE() {
         GeneratorCode generator = new GeneratorCode();
-        generator.setPackageDir("E:\\IDEA\\wbmp-server\\esb");
+        generator.setPackageDir("E:\\tem");
+//        generator.setPackageDir("E:\\IDEA\\wbmp-server\\esb");
         generator.setPackageName("com.bank.esb");
         //        generator.setServiceName("沙龙活动");
         //        generator.setPackageWebDir("C:\\Users\\ZHAO\\Desktop\\view");
@@ -17,8 +18,7 @@ public class GeneratorTest {
 //               "dat_device",
 //               "dat_selfsvcbank",
 //               "dat_subbranch",
-//               "t_work_order",
-//               "t_work_water",
+               "t_work_water",
                "t_work_order"
         });
         //        generator.setIncludeTables(new String[]{"T_ACTIVITIE_SALON",
@@ -38,5 +38,6 @@ public class GeneratorTest {
         generator.run();
         System.out.println("代码生成完成,生成路径：" + generator.getPackageDir());
     }
+
 
 }

@@ -456,7 +456,11 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         //巡检单创建
         String deviceNo = inspectionSheetsVo.getDeviceNo();
         Map<String, Object> xjdInfo = esbService.getXjdInfo(deviceNo);
-
+        if (StrUtil.isBlankIfStr(deviceNo)) {
+            log.info("设备号不能为空");
+            inspectionSheetsDto.setRepcode("-1");
+            return inspectionSheetsDto;
+        }
         Object freeduedate = xjdInfo.get("freeduedate");
         Object firstinstalldate = xjdInfo.get("firstinstalldate");
         Object strtermaddr = xjdInfo.get("STRTERMADDR");
