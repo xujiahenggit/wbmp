@@ -849,7 +849,7 @@
 
     <select id="getWOrkSystemByCode" resultType="com.bank.manage.vo.RepairVo">
           select
-           '系统自建', workOrderCode
+           '系统自建' workOrderCode,
             CASE
                 WHEN work_order.`status` = '1' THEN
                 '故障中'

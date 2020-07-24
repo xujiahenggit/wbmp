@@ -72,8 +72,7 @@ public class RepairController extends BaseController {
     }
 
     @ApiOperation(value ="（故障）工单详情查询")
-    @GetMapping("/getRepairById/{repairCode}")
-    @ApiImplicitParam(name = "repairCode",value = "工单编号",required = true,paramType = "path")
+    @PostMapping("/getRepairById")
     public RepairVo getRepairById(@RequestBody ConditionsDto conditionsDto, HttpServletRequest request){
         TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
 
