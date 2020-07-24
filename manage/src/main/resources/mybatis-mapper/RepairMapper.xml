@@ -258,6 +258,11 @@
                 where work_order_code = #{repairCode}
     </select>
 
+    <select id="getUserByCode" resultType="java.lang.String">
+        select  create_id from t_work_order
+        where create_id  =#{userId}
+    </select>
+
     <select id="getServiceInfoList" resultType="com.bank.manage.vo.ServiceInfoVo">
              select
                     t.vendor vendorId,
@@ -843,7 +848,26 @@
     </select>
 
     <select id="getWOrkSystemByCode" resultType="com.bank.manage.vo.RepairVo">
+          select
+           '系统自建', workOrderCode
+            CASE
+                WHEN work_order.`status` = '1' THEN
+                '故障中'
+                WHEN work_order.`status` = '2' THEN
+                '警告中'
+                WHEN work_order.`status` = '3' THEN
+                '处理中'
+                WHEN work_order.`status` = '4' THEN
+                '完成'
+                ELSE
+                work_order.`status` end repairStatus,
+                'admin' createName,
+                beginDate createTime,
+                bankReceiveMobile contactPhone,
+                bankReceiveName contactName
 
+        from ssamgt.work_order
+        where id =#{repairCode}
 
     </select>
 

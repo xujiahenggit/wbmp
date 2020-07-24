@@ -68,4 +68,6 @@ public interface RepairService extends IService<ManageWorkOrderDO> {
     InspectionRepairVo getInspectionRepairById(String repairCode);
 
     RepairVo getWOrkSystemByCode(String repairCode);
+
+    String getUserByCode(String userId);
 }

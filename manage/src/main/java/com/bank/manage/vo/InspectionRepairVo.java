@@ -46,4 +46,8 @@ public class InspectionRepairVo {
     private Date escortsCompletTime;
     @ApiModelProperty(value = "巡检处理方式 1：处理方式 1 ；2：处理方式2；3:处理方式3；4：处理方式4；5：处理方式5；6：处理方式6")
     private String  escortsHandling;
+    @ApiModelProperty(value = "用户类型 2:分行；1:总行")
+    private String userType;
+    @ApiModelProperty(value = " 0:发起人,1:否")
+    private String isCreateUser;
 }

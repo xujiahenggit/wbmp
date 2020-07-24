@@ -24,6 +24,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -299,7 +300,36 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
     @Override
     @DataSource(DynamicDataSourceSwitcher.esb_mgt)
     public RepairVo getWOrkSystemByCode(String repairCode) {
-        return repairDao.getWOrkSystemByCode(repairCode);
+        RepairVo repairVo = repairDao.getWOrkSystemByCode(repairCode);
+        List<ContactVo> list =new ArrayList<>();
+        String temp[];
+        String phone[];
+        if(repairVo.getContactName()!=null ||!"".equals(repairVo.getContactName())){
+            //现场联系人存在
+             temp =repairVo.getContactName().split("|");
+             for(String name :temp){
+                ContactVo contactVo =new ContactVo();
+                contactVo.setContactName(name);
+                list.add(contactVo);
+            }
+        }
+
+        //现场联系电话
+        if(repairVo.getContactPhone()!=null ||!"".equals(repairVo.getContactPhone())){
+            phone =repairVo.getContactPhone().split("|");
+         for(int i=0; i<list.size();i++){
+             list.get(i).setContactPhone(phone[i]);
+         }
+        }
+        if(CollectionUtils.isNotEmpty(list)){
+            repairVo.setContactVoList(list);
+        }
+        return repairVo;
+    }
+
+    @Override
+    public String getUserByCode(String userId) {
+        return repairDao.getUserByCode(userId);
     }
 
     public void getTime(InspectionEquipmentDto inspectionEquipmentDto){

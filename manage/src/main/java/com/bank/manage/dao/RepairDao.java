@@ -91,4 +91,6 @@ public interface RepairDao extends BaseMapper<ManageWorkOrderDO> {
     InspectionRepairVo getInspectionRepairById(String repairCode);
 
     RepairVo getWOrkSystemByCode(String repairCode);
+
+    String getUserByCode(String userId);
 }

@@ -1,5 +1,5 @@
 application:
-  ip: 162.16.14.78
+  ip: 162.16.14.78 #uat-wbmp.mis.bcs
   port: 9080 #tomcat启动端口
   contextPath: /wbmp-server
 server:
