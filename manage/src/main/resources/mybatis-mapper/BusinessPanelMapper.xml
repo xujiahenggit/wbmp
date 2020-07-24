@@ -108,6 +108,7 @@
     </select>
 
 
+    <!--查询当日的自助交易流水TOP5-->
     <select id="devicetransCnfTop5" resultType="com.bank.manage.vo.TransCntInfo">
         SELECT
             CASE
@@ -143,6 +144,7 @@
     </select>
 
 
+    <!--机构柜面交易top5，当日的交易-->
     <select id="tradeVolumeTop5" resultType="com.bank.manage.vo.TransCntInfo">
         SELECT tran_name AS trans_name,SUM(trade_volume) sum FROM wbmp_abs_transinfo
         WHERE flag='2' AND DATA_DT=CURDATE() AND ORG_ID =#{orgId}
@@ -529,22 +531,19 @@
                             SELECT
                                 c.trans_cnt
                             FROM
-                                 wbmp_atmp_tran_info c
+                             (select data_dt,trans_cnt from  wbmp_atmp_tran_info
+                                UNION ALL
+                             select data_dt,trans_cnt from  wbmp_atmp_tran_info_h) c
                             LIMIT 30
                         ) AS c_init
                 ) t2
-            LEFT JOIN wbmp_atmp_tran_info AS i ON (
-                CONCAT(
-                    DATE_FORMAT(i.data_dt, '%Y'),
-                    '-',
-                    DATE_FORMAT(i.data_dt, '%m'),
-                            '-',
-                    DATE_FORMAT(i.data_dt, '%d')
-                ) = t2.day_str
+            LEFT JOIN
+            (select * from  wbmp_atmp_tran_info  UNION ALL  select * from  wbmp_atmp_tran_info_h) AS i
+            ON (
+                DATE_FORMAT(i.data_dt, '%Y-%m-%d') = t2.day_str
                and i.term_no = #{termNo} and i.org_id = #{orgId}
             )
-            GROUP BY
-                t2.day_str
+            GROUP BY  t2.day_str
     </select>
 
 
@@ -567,20 +566,17 @@
                             SELECT
                                 c.trans_cnt
                             FROM
-                                 wbmp_atmp_tran_info c
+                             (select data_dt,trans_cnt from  wbmp_atmp_tran_info
+                                UNION ALL
+                             select data_dt,trans_cnt from  wbmp_atmp_tran_info_h) c
                             LIMIT 12
                         ) AS c_init
                 ) t2
-            LEFT JOIN wbmp_atmp_tran_info AS i ON (
-                CONCAT(
-                    DATE_FORMAT(i.data_dt, '%Y'),
-                    '-',
-                    DATE_FORMAT(i.data_dt, '%m')
-                ) = t2.day_str
-               and i.term_no = #{termNo}  and i.org_id = #{orgId}
+            LEFT JOIN (select * from  wbmp_atmp_tran_info  UNION ALL  select * from  wbmp_atmp_tran_info_h) AS i ON (
+                DATE_FORMAT(i.data_dt, '%Y-%m')  = t2.day_str
+                and i.term_no = #{termNo}  and i.org_id = #{orgId}
             )
-            GROUP BY
-                t2.day_str
+            GROUP BY  t2.day_str
     </select>
 
     <!--网点自助设备近一年交易趋势-->
@@ -602,20 +598,16 @@
                             SELECT
                                 c.trans_cnt
                             FROM
-                                 wbmp_atmp_tran_info c
+                                 (select data_dt,trans_cnt from  wbmp_atmp_tran_info
+                                UNION ALL
+                             select data_dt,trans_cnt from  wbmp_atmp_tran_info_h) c
                             LIMIT 12
                         ) AS c_init
                 ) t2
-            LEFT JOIN wbmp_atmp_tran_info AS i ON (
-                CONCAT(
-                    DATE_FORMAT(i.data_dt, '%Y'),
-                    '-',
-                    DATE_FORMAT(i.data_dt, '%m')
-                ) = t2.day_str
-             and  i.org_id = #{orgId}
+            LEFT JOIN (select * from  wbmp_atmp_tran_info  UNION ALL  select * from  wbmp_atmp_tran_info_h) AS i ON (
+                DATE_FORMAT(i.data_dt, '%Y-%m')  = t2.day_str and  i.org_id = #{orgId}
             )
-            GROUP BY
-                t2.day_str
+            GROUP BY t2.day_str
     </select>
 
     <!--网点自助设备按近一月查询交易趋势-->
@@ -637,22 +629,16 @@
                             SELECT
                                 c.trans_cnt
                             FROM
-                                 wbmp_atmp_tran_info c
+                                 (select data_dt,trans_cnt from  wbmp_atmp_tran_info
+                                UNION ALL
+                             select data_dt,trans_cnt from  wbmp_atmp_tran_info_h) c
                             LIMIT 30
                         ) AS c_init
                 ) t2
-            LEFT JOIN wbmp_atmp_tran_info AS i ON (
-                CONCAT(
-                    DATE_FORMAT(i.data_dt, '%Y'),
-                    '-',
-                    DATE_FORMAT(i.data_dt, '%m'),
-                            '-',
-                    DATE_FORMAT(i.data_dt, '%d')
-                ) = t2.day_str
-             and  i.org_id = #{orgId}
+            LEFT JOIN (select * from  wbmp_atmp_tran_info  UNION ALL  select * from  wbmp_atmp_tran_info_h) AS i ON (
+             DATE_FORMAT(i.data_dt, '%Y-%m-%d')  = t2.day_str and  i.org_id = #{orgId}
             )
-            GROUP BY
-                t2.day_str
+            GROUP BY  t2.day_str
     </select>
 
 </mapper>

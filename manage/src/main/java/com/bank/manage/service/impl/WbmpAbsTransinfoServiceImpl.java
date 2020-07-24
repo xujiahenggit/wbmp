@@ -28,7 +28,7 @@ public class WbmpAbsTransinfoServiceImpl extends ServiceImpl<WbmpAbsTransinfoDao
     private WbmpAtmpTranInfoDao wbmpAtmpTranInfoDao;
 
     /**
-     * 查询柜面自助交易占比
+     * 查询柜面自助交易占比【当日的数据】
      * @param orgId 机构编号
      * @return
      */

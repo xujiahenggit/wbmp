@@ -16,7 +16,7 @@
         org_id, term_no, trans_name, trans_cnt, data_dt
     </sql>
 
-    <!--    查询柜面交易量-->
+    <!--    查询柜面交易量 【查询当日的数据】-->
     <select id="getTranNumByOrgId" resultType="java.lang.Integer">
         SELECT coalesce(SUM(trans_cnt),0) FROM wbmp_atmp_tran_info WHERE DATE_FORMAT(data_dt,'%Y-%m-%d')=#{date} AND org_id=#{orgId}
     </select>

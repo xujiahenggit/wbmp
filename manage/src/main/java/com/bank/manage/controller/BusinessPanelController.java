@@ -45,7 +45,7 @@ public class BusinessPanelController {
     }
 
     @GetMapping("/transCnfTop5/{orgId}")
-    @ApiOperation(value = "自助设备交易量Top5")
+    @ApiOperation(value = "自助设备交易量Top5【当日的数据】")
     @ApiImplicitParam(name = "orgId", value = "机构号", required = true, paramType = "path")
     public Object transCnfTop5(@PathVariable String orgId) {
         List<TransCntInfo> list = this.businessPanelService.devicetransCnfTop5(orgId);
