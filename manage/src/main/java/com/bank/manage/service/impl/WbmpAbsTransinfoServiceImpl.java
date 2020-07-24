@@ -67,7 +67,7 @@ public class WbmpAbsTransinfoServiceImpl extends ServiceImpl<WbmpAbsTransinfoDao
     }
 
     /**
-     * 查询 当月 柜面交易量
+     * 查询柜面交易量
      * @param orgId 机构号
      * @param date 日期 yyyy-MM
      * @return
@@ -75,6 +75,12 @@ public class WbmpAbsTransinfoServiceImpl extends ServiceImpl<WbmpAbsTransinfoDao
     @Override
     public int getCurrentMonthTrandNum(String orgId, String date) {
         int tranNum=wbmpAbsTransinfoDao.getTranNumByOrgId(orgId,date);
+        return tranNum;
+    }
+
+    @Override
+    public int getAllAbsTranNumByOrgId(String orgId, String date) {
+        int tranNum=wbmpAbsTransinfoDao.getAllAbsTranNumByOrgId(orgId,date);
         return tranNum;
     }
 }

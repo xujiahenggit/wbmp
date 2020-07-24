@@ -63,8 +63,8 @@ public class WbmpDataClearController {
 		wbmpDataClearService.bakWbmpAbsTransinfo(oneDate);
 		//删除上一日的数据 date-上一日的日期 【柜面交易明细表2】
 		wbmpDataClearService.deleteWbmpAbsTransinfo(oneDate);
-		//删除历史表小于3天前的数据 date-上一日的日期 【柜面交易明细表3】
-		wbmpDataClearService.deleteWbmpAbsTransinfoH(threeDate);
+		//删除历史表小于一个月前的数据 date-上一日的日期 【柜面交易明细表3】
+		wbmpDataClearService.deleteWbmpAbsTransinfoH(oneMonth);
 
 		//删除wbmp_abs_teller_online_time 3天前的数据【柜员在线时长信息表】
 		wbmpDataClearService.deleteWbmpAbsTellerOnlineTime(threeDate);

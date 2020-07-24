@@ -19,7 +19,7 @@ public class WbmpAtmpTranInfoServiceImpl extends ServiceImpl<WbmpAtmpTranInfoDao
     private WbmpAtmpTranInfoDao wbmpAtmpTranInfoDao;
 
     /**
-     * 查询 当月 自助交易量
+     * 查询自助交易量
      * @param orgId 机构号
      * @param date 日期
      * @return
@@ -40,4 +40,11 @@ public class WbmpAtmpTranInfoServiceImpl extends ServiceImpl<WbmpAtmpTranInfoDao
     public int getFlowNum(String orgId, String date) {
         return 0;
     }
+
+    @Override
+    public int getAllTranNumByOrgId(String orgId, String date) {
+        return wbmpAtmpTranInfoDao.getAllTranNumByOrgId(orgId,date);
+    }
+
+
 }
