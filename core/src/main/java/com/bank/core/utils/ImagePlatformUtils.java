@@ -172,7 +172,9 @@ public class ImagePlatformUtils {
             String fileName = file.getName();
             fileBean.setFileFormat(fileName.substring(fileName.lastIndexOf(".") + 1));
             fileBean.addOtherAtt("BUSI_FILE_PAGENUM", (i + 1) + "");
-            fileBean.addOtherAtt("BUSI_FILE_TYPE", busiFileType);
+            if (StringUtils.isNotBlank(busiFileType)) {
+                fileBean.addOtherAtt("BUSI_FILE_TYPE", busiFileType);
+            }
             clientBatchFileBean.addFile(fileBean);
         }
 
@@ -236,7 +238,9 @@ public class ImagePlatformUtils {
             String fileName = file.getName();
             fileBean.setFileFormat(fileName.substring(fileName.lastIndexOf(".") + 1));
             fileBean.addOtherAtt("BUSI_FILE_PAGENUM", (maxPageNum + i + 1) + "");
-            fileBean.addOtherAtt("BUSI_FILE_TYPE", busiFileType);
+            if (StringUtils.isNotBlank(busiFileType)) {
+                fileBean.addOtherAtt("BUSI_FILE_TYPE", busiFileType);
+            }
             clientBatchFileBean.addFile(fileBean);
         }
         clientBatchBean.addDocument_Object(clientBatchFileBean);

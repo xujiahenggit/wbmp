@@ -21,6 +21,18 @@
         SELECT coalesce(SUM(trans_cnt),0) FROM wbmp_atmp_tran_info WHERE DATE_FORMAT(data_dt,'%Y-%m-%d')=#{date} AND org_id=#{orgId}
     </select>
 
+    <!--查询柜面交易量[历史和当前表]-->
+    <select id="getAllTranNumByOrgId" resultType="java.lang.Integer">
+        SELECT coalesce(SUM(t.trans_cnt),0)
+        FROM
+        (
+        select * FROM wbmp_atmp_tran_info
+        UNION ALL
+        SELECT * FROM wbmp_atmp_tran_info_h
+        )t
+        WHERE DATE_FORMAT(t.data_dt,'%Y-%m-%d')=#{date} AND t.org_id=#{orgId}
+    </select>
+
     <!--    查询当月 自助交易量-->
     <select id="getCurrentMonthAtmTranNum" resultType="java.lang.Integer">
         SELECT coalesce(SUM(trans_cnt),0) FROM wbmp_atmp_tran_info WHERE DATE_FORMAT(data_dt,'%Y-%m')=#{date} AND org_id=#{orgId}

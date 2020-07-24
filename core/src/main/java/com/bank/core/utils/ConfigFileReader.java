@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @Author: Andy
@@ -13,6 +14,7 @@ import lombok.Data;
 //@PropertySource("classpath:config.properties")
 @Data
 @Component
+@Slf4j
 public class ConfigFileReader {
 
     /**
@@ -48,7 +50,9 @@ public class ConfigFileReader {
     //行里进行密码加密改造
     public String getFTP_PASSWORD() {
         //解密
-        return ThreeDes.dePassword(this.FTP_PASSWORD);
+        String password = ThreeDes.dePassword(this.FTP_PASSWORD);
+        log.info("长行密码解密===密码明文：password_{}", password);
+        return password;
     }
     
     /**

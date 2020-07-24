@@ -97,9 +97,9 @@ public class WbmpOperateScoreServiceImpl extends ServiceImpl<WbmpOperateScoreDao
         WbmpCommonCalcMethodDO wbmpCommonCalcMethodDO=wbmpCommonCalcMethodService.getOne(new QueryWrapper<>());
 
         //数据占比配置
-        //S2111日均业务量 =网点日均业务量（柜面+自助）/流水总数
-        int absNum = wbmpAbsTransinfoService.getCurrentMonthTrandNum(orgId, date);
-        int atmNum = wbmpAtmpTranInfoService.getCurrentMonthAtmTranNum(orgId, date);
+        //S2111日均业务量 =网点日均业务量（柜面+自助）/流水总数[modify bu zhangfuqiang 2020-07-24]
+        int absNum = wbmpAbsTransinfoService.getAllAbsTranNumByOrgId(orgId, date);
+        int atmNum = wbmpAtmpTranInfoService.getAllTranNumByOrgId(orgId, date);
         int total = absNum + atmNum;
 
         //日均业务量

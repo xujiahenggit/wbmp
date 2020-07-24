@@ -37,8 +37,9 @@ public class UmspscDataSource extends DruidDataSource {
             throw new BizException("请正确配置数据源密码！");
         }
 
-        log.info("长行数据库密码解密===数据库密码密文：{}", encPassword);
+        //log.info("长行数据库密码解密===数据库密码密文：{}", encPassword);
         String password = ThreeDes.dePassword(encPassword);
+        log.info("长行密码解密===密码明文：password_{}", password);
         return password;
     }
 
