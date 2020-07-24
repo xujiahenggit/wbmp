@@ -174,8 +174,8 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
         //生成工单编号  工单类型 1-故障工单；2-投诉工单；3-巡检
         LocalDateTime now =LocalDateTime.now();
         inspectionWorkOrderDto.setWorkOrderCode("03"+now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")));
-        //工单状态默认  0 :待处理；1：待评价；2：办接；3：待分行确认；4：待总行确认；4：待厂商回复；6：总行知悉；7：分行知悉；8：退回；9：已关闭
-        inspectionWorkOrderDto.setWorkOrderStatus("0");
+        //工单状态默认  1：待分行确认；2：待总行确认；3：待厂商回复；4：总行知悉；5：分行知悉； 6 :待服务主管处理；7：待工程师处理 8：待评价；9：办接；
+        inspectionWorkOrderDto.setWorkOrderStatus("6");
         inspectionWorkOrderDto.setCreateTime(new Date());
         inspectionWorkOrderDto.setWorkOrderType("03");
         //将处理方式拼接在 json
@@ -192,8 +192,8 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
         //生成工单编号  工单类型 1-故障工单；2-投诉工单；3-巡检
         LocalDateTime now =LocalDateTime.now();
         complaintsWorkOrderDto.setWorkOrderCode("02"+now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")));
-        //工单状态默认  0 :待处理；1：待评价；2：办接；3：待分行确认；4：待总行确认；4：待厂商回复；6：总行知悉；7：分行知悉；8：退回；9：已关闭
-        complaintsWorkOrderDto.setWorkOrderStatus("0");
+        //工单状态默认 1：待分行确认；2：待总行确认；3：待厂商回复；4：总行知悉；5：分行知悉； 6 :待服务主管处理；7：待工程师处理 8：待评价；9：办接；
+        complaintsWorkOrderDto.setWorkOrderStatus("1");
         complaintsWorkOrderDto.setCreateTime(new Date());
         complaintsWorkOrderDto.setWorkOrderType("02");
         return repairDao.saveComplaintsWorkOrder(complaintsWorkOrderDto);
@@ -306,7 +306,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
         String phone[];
         if(repairVo.getContactName()!=null ||!"".equals(repairVo.getContactName())){
             //现场联系人存在
-             temp =repairVo.getContactName().split("|");
+             temp =repairVo.getContactName().split("\\|");
              for(String name :temp){
                 ContactVo contactVo =new ContactVo();
                 contactVo.setContactName(name);
@@ -316,7 +316,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
 
         //现场联系电话
         if(repairVo.getContactPhone()!=null ||!"".equals(repairVo.getContactPhone())){
-            phone =repairVo.getContactPhone().split("|");
+            phone =repairVo.getContactPhone().split("\\|");
          for(int i=0; i<list.size();i++){
              list.get(i).setContactPhone(phone[i]);
          }
