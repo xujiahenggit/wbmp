@@ -147,15 +147,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
             IPage<WorkOrderVO>  workOrderList= repairDao.getWorkOrderByMe(page,workOrdersDto);
 
             return  workOrderList;
-        }
-//        else if("4".equals(workOrdersDto.getSourceType())){
-//            //系统自建
-//          //  IPage<WorkOrderVO>  workOrderList=  getWorkOrderBySystem(page,workOrdersDto);
-//            //获取机构名称
-//            getBuffetLine(workOrderList);
-//            return  workOrderList;
-//        }
-         else if("2".equals(workOrdersDto.getSourceType())){
+        }else if("2".equals(workOrdersDto.getSourceType())){
             //我审批的
             IPage<WorkOrderVO>  workOrderList= repairDao.getWorkOrderByMeApp(page,workOrdersDto);
 

@@ -152,7 +152,12 @@
         sub_branch,
         buffet_line,
         vendor,
-        org_name
+        branch,
+        sub_branch,
+        buffet_line,
+        branch_name,
+        sub_branch_name,
+        buffet_line_name
         )
         values(
          #{terminalCode},
@@ -181,7 +186,12 @@
          #{subBranch},
          #{buffetLine},
          #{vendor},
-         #{orgName}
+         #{branchCode},
+         #{subBranchCode},
+         #{buffetLineCode},
+         #{branchName},
+         #{subBranchName},
+         #{buffetLineName}
         )
     </insert>
 
@@ -697,14 +707,20 @@
         c.STRDEVMODEL deviceModel,
         d.STRVALUE vendorName,
         b.ORGANIZATION orgId,
-        s.STRSUBBRANCHNAME orgName
+        concat(concat(concat(concat(bank.STRBANKNAME,'/'),branch.STRBRANCHNAME),'/'),subbranch.STRSUBBRANCHNAME)   orgName,
+        "1" type
         FROM
         ssamgt.work_order work_order
         LEFT JOIN ssarun.term b ON b.STRTERMNUM = work_order.strTermNum
         LEFT JOIN ssarun.device c ON c.id = b.DEVICEID
         LEFT JOIN ssarun.domaindict d ON d.STRNAME = c.STRDEVMANU
-        left join ssamgt.subbranch s
-         on s.org_code =  b.ORGANIZATION
+
+        left join ssamgt.subbranch subbranch
+        on subbranch.STRSUBBRANCHNUM = work_order.STRSUBBRANCHNUM
+        left join ssamgt.branch branch
+        on branch.STRBRANCHNUM = work_order.STRBRANCHNUM
+        left join ssamgt.bank bank
+        on bank.STRBANKNUM = work_order.strBankNum
         <where>
             type='1'
             <if test="model.vendor != null">

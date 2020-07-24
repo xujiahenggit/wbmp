@@ -44,4 +44,6 @@ public class WorkOrderVO {
     private String engineer;
     @ApiModelProperty(value = "工单类型")
     private String workOrderType;
+    @ApiModelProperty(value = "是否系统创建 1:是  2:否")
+    private String type;
 }

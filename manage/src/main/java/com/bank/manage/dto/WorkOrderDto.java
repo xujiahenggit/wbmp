@@ -60,4 +60,16 @@ public class WorkOrderDto {
     private String deviceType;
     @ApiModelProperty(value = "设备类型编码")
     private String deviceTypeCode;
+    @ApiModelProperty(value = "分行编码")
+    private String branchCode;
+    @ApiModelProperty(value = "支行编码")
+    private String subBranchCode;
+    @ApiModelProperty(value = "自助行编码")
+    private String buffetLineCode;
+    @ApiModelProperty(value = "分行名称")
+    private String branchName;
+    @ApiModelProperty(value = "支行名称")
+    private String subBranchName;
+    @ApiModelProperty(value = "自助行名称")
+    private String buffetLineName;
 }
