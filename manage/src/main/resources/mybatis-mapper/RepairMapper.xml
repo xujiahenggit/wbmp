@@ -219,6 +219,7 @@
                     on a.user_id = t.create_id
                         left join t_user b
                     on b.user_id = t.escorts_patrol
+                    where t.work_order_code=#{repairCode}
     </select>
 
 
