@@ -97,4 +97,8 @@ public interface RepairDao extends BaseMapper<ManageWorkOrderDO> {
     List<WorkOrderVO> getWorkOrderBySystemList(@Param("model") WorkOrdersDto workOrdersDto);
 
     List<WorkOrderVO> getWorkOrderList(@Param("model")WorkOrdersDto workOrdersDto);
+
+    String getUserNameById(String createId);
+
+    void saveWorkOrderWater(@Param("model") WordOrderWaterDto wordOrderWaterDto);
 }

@@ -132,6 +132,24 @@
 
     </insert>
 
+    <insert id="saveWorkOrderWater" parameterType="com.bank.manage.dto.WordOrderWaterDto">
+         insert into t_work_order(
+          word_order_id,
+          deal_with_people_id,
+          deal_with_people_name,
+          deal_with_people_role,
+          create_time,
+          operation_type
+         )
+         values(
+          wordOrderCode,
+          dealWithPeopleId,
+          dealWithPeopleName,
+          dealWithPeopleRole,
+          createTime,
+          operationType
+         )
+    </insert>
 
     <insert id="saveRepair" parameterType="com.bank.manage.dos.RepairDo">
         insert into t_work_order
@@ -272,6 +290,10 @@
                     t.work_order_complete_time workOrderCompleteTime
                 from t_work_order t
                 where work_order_code = #{repairCode}
+    </select>
+
+    <select id="getUserNameById" resultType="java.lang.String">
+        select USER_NAME from t_user  where user_id =#{createId}
     </select>
 
     <select id="getEngineerList" resultType="com.bank.manage.vo.EngineerListVo">

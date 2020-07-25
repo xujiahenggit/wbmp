@@ -16,8 +16,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.text.ParseException;
@@ -34,6 +34,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
     private OrgDetailinfoDao orgDetailinfoDao;
 
     @Override
+    @Transactional
     public int saveRepair(WorkOrderDto workOrderDto) {
         //生成工单编号  工单类型 01-故障工单；02-投诉工单；03-巡检
         LocalDateTime now =LocalDateTime.now();
@@ -50,9 +51,21 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
             workOrderDto.setContactName(orgDetailDto.getOrgContactMan());
             workOrderDto.setContactPhone(orgDetailDto.getOrgPhone());
         }
+        int i=repairDao.saveWorkOrder(workOrderDto);
+        //添加到流水表
+        String name =repairDao.getUserNameById(workOrderDto.getCreateId());
+        WordOrderWaterDto wordOrderWaterDto =new WordOrderWaterDto();
+        wordOrderWaterDto.setCreateTime(new Date());
+        wordOrderWaterDto.setDealWithPeopleId(workOrderDto.getCreateId());
+        wordOrderWaterDto.setDealWithPeopleRole("6");
+        wordOrderWaterDto.setWordOrderCode(workOrderDto.getWorkOrderCode());
+        wordOrderWaterDto.setOperationType("0");
+        if(name!=null || !"".equals(name)){
+            wordOrderWaterDto.setDealWithPeopleName(name);
+        }
+        repairDao.saveWorkOrderWater(wordOrderWaterDto);
 
-
-        return  repairDao.saveWorkOrder(workOrderDto);
+        return i;
     }
 
     @Override
@@ -200,6 +213,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
     }
 
     @Override
+    @Transactional
     public int saveComplaintsWorkOrder(ComplaintsWorkOrderDto complaintsWorkOrderDto) {
         //生成工单编号  工单类型 1-故障工单；2-投诉工单；3-巡检
         LocalDateTime now =LocalDateTime.now();
@@ -208,7 +222,20 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
         complaintsWorkOrderDto.setWorkOrderStatus("1");
         complaintsWorkOrderDto.setCreateTime(new Date());
         complaintsWorkOrderDto.setWorkOrderType("02");
-        return repairDao.saveComplaintsWorkOrder(complaintsWorkOrderDto);
+        int i=repairDao.saveComplaintsWorkOrder(complaintsWorkOrderDto);
+        //添加到流水表
+        String name =repairDao.getUserNameById(complaintsWorkOrderDto.getCreateId());
+        WordOrderWaterDto wordOrderWaterDto =new WordOrderWaterDto();
+        wordOrderWaterDto.setCreateTime(new Date());
+        wordOrderWaterDto.setDealWithPeopleId(complaintsWorkOrderDto.getCreateId());
+        wordOrderWaterDto.setDealWithPeopleRole("6");
+        wordOrderWaterDto.setWordOrderCode(complaintsWorkOrderDto.getWorkOrderCode());
+        wordOrderWaterDto.setOperationType("0");
+        if(name!=null || !"".equals(name)){
+            wordOrderWaterDto.setDealWithPeopleName(name);
+        }
+        repairDao.saveWorkOrderWater(wordOrderWaterDto);
+        return i;
     }
 
     @Override
