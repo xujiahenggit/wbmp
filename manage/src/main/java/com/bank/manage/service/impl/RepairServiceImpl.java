@@ -24,10 +24,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO> implements RepairService {
@@ -134,30 +131,45 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
     }
 
     @Override
-    public IPage<WorkOrderVO> getWorkOrder(WorkOrdersDto workOrdersDto) {
+    public Map<String, Object>  getWorkOrder(WorkOrdersDto workOrdersDto) {
         Page<WorkOrderVO> page = new Page<>(workOrdersDto.getPageIndex(), workOrdersDto.getPageSize());
         //判断来源类型  1 我发起的，2 我审批的、3 我办结的、4 系统自建；5 所有
+        Map<String, Object> resultMap = new HashMap<>();
         if("5".equals(workOrdersDto.getSourceType())){
             //查询所有
             IPage<WorkOrderVO>  workOrderList=  repairDao.getWorkOrder(page,workOrdersDto);
-            return workOrderList;
+            resultMap.put("records", workOrderList.getRecords());
+            resultMap.put("current", workOrderList.getCurrent());
+            resultMap.put("size", workOrderList.getSize());
+            resultMap.put("total", workOrderList.getTotal());
+            return resultMap;
 
 
         }else if("1".equals(workOrdersDto.getSourceType())){
             //我发起的
             IPage<WorkOrderVO>  workOrderList= repairDao.getWorkOrderByMe(page,workOrdersDto);
-
-            return  workOrderList;
+            resultMap.put("records", workOrderList.getRecords());
+            resultMap.put("current", workOrderList.getCurrent());
+            resultMap.put("size", workOrderList.getSize());
+            resultMap.put("total", workOrderList.getTotal());
+            return  resultMap;
         }else if("2".equals(workOrdersDto.getSourceType())){
             //我审批的
             IPage<WorkOrderVO>  workOrderList= repairDao.getWorkOrderByMeApp(page,workOrdersDto);
-
-            return  workOrderList;
+            resultMap.put("records", workOrderList.getRecords());
+            resultMap.put("current", workOrderList.getCurrent());
+            resultMap.put("size", workOrderList.getSize());
+            resultMap.put("total", workOrderList.getTotal());
+            return  resultMap;
 
         }else{
             //我办结的
             IPage<WorkOrderVO>  workOrderList= repairDao.getWorkOrderByOther(page,workOrdersDto);
-            return  workOrderList;
+            resultMap.put("records", workOrderList.getRecords());
+            resultMap.put("current", workOrderList.getCurrent());
+            resultMap.put("size", workOrderList.getSize());
+            resultMap.put("total", workOrderList.getTotal());
+            return  resultMap;
         }
 
     }
@@ -330,6 +342,17 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
     @Override
     public String getUserByCode(String userId) {
         return repairDao.getUserByCode(userId);
+    }
+
+    @Override
+    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
+    public List<WorkOrderVO> getWorkOrderBySystemList(WorkOrdersDto workOrdersDto) {
+        return repairDao.getWorkOrderBySystemList(workOrdersDto);
+    }
+
+    @Override
+    public List<WorkOrderVO> getWorkOrderList(WorkOrdersDto workOrdersDto) {
+        return repairDao.getWorkOrderList(workOrdersDto);
     }
 
     public void getTime(InspectionEquipmentDto inspectionEquipmentDto){

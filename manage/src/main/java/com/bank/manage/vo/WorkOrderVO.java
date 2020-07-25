@@ -49,6 +49,5 @@ public class WorkOrderVO {
     private String type;
     @ApiModelProperty(value = "工单描述")
     private String workOrderDescribe;
-    @ApiModelProperty(value = "系统自建的")
-    private List<WorkOrderVO> workOrderVO;
+
 }

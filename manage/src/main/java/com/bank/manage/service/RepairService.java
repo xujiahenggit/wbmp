@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface RepairService extends IService<ManageWorkOrderDO> {
     int saveRepair(WorkOrderDto repairDto);
@@ -27,7 +28,7 @@ public interface RepairService extends IService<ManageWorkOrderDO> {
 
     PrinterVo getPrinterByCode(String terminalCode);
 
-    IPage<WorkOrderVO> getWorkOrder(WorkOrdersDto workOrdersDto);
+    Map<String, Object> getWorkOrder(WorkOrdersDto workOrdersDto);
 
     int saveInspectionWorkOrder(InspectionWorkOrderDto inspectionWorkOrderDto);
 
@@ -70,4 +71,8 @@ public interface RepairService extends IService<ManageWorkOrderDO> {
     RepairVo getWOrkSystemByCode(String repairCode);
 
     String getUserByCode(String userId);
+
+    List<WorkOrderVO> getWorkOrderBySystemList(WorkOrdersDto workOrdersDto);
+
+    List<WorkOrderVO> getWorkOrderList(WorkOrdersDto workOrdersDto);
 }

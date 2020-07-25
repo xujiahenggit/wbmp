@@ -18,6 +18,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -221,21 +222,45 @@ public class RepairController extends BaseController {
 
       @PostMapping("/getWorkOrder")
       @ApiOperation(value ="工单列表查询")
-      public IPage<WorkOrderVO> getWorkOrder(@RequestBody WorkOrdersDto workOrdersDto){
+      public Map<String, Object> getWorkOrder(@RequestBody WorkOrdersDto workOrdersDto){
+          Map<String, Object> resultMap = new HashMap<>();
         if("4".equals(workOrdersDto.getSourceType())){
             //系统自建
             IPage<WorkOrderVO> workOrderList = repairService.getWorkOrderBySystem(workOrdersDto);
-            return workOrderList;
+
+            resultMap.put("records", workOrderList.getRecords());
+            resultMap.put("current", workOrderList.getCurrent());
+            resultMap.put("size", workOrderList.getSize());
+            resultMap.put("total", workOrderList.getTotal());
+
+            return resultMap;
         }else if("5".equals(workOrdersDto.getSourceType())){
-            //所有
-            IPage<WorkOrderVO> list= repairService.getWorkOrder(workOrdersDto);
+            List<WorkOrderVO> list = repairService.getWorkOrderList(workOrdersDto);
             //加上系统自建的
-            IPage<WorkOrderVO> workOrderList = repairService.getWorkOrderBySystem(workOrdersDto);
-            if(list.getRecords().size()!=0){
-                list.getRecords().get(1).setWorkOrderVO(workOrderList.getRecords());
-                return list;
-            }else{
-                return workOrderList;
+            List<WorkOrderVO> workOrderList = repairService.getWorkOrderBySystemList(workOrdersDto);
+            if(CollectionUtils.isNotEmpty(list)){
+                list.addAll(workOrderList);
+                //分页
+                resultMap.put("total", list.size());
+                resultMap.put("current", workOrdersDto.getPageIndex());
+                resultMap.put("size", workOrdersDto.getPageSize());
+
+                if(CollectionUtils.isNotEmpty(list)){
+                    int totalCount = list.size();
+                    int page =workOrdersDto.getPageSize()-1;
+                    int pageIndex =workOrdersDto.getPageIndex();
+                    int tem =page * pageIndex;
+                    if(tem>=totalCount){
+                       tem =totalCount;
+                    }
+                    int toIndex =(pageIndex+1)*workOrdersDto.getPageSize();
+                    if(toIndex > totalCount){
+                        toIndex =totalCount;
+                    }
+
+                    resultMap.put("records", list.subList(tem,toIndex));
+                }
+                return resultMap;
             }
 
         }
