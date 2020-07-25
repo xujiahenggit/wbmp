@@ -328,11 +328,26 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
     @Override
     public InspectionRepairVo getInspectionRepairById(String repairCode) {
         InspectionRepairVo inspectionRepairVo= repairDao.getInspectionRepairById(repairCode);
-        //获取服务工程师
+        //服务信息
+
+        ServiceInfoVo serviceInfoVo = repairDao.getServiceInfoList(repairCode);
+        //服务工程师
         List<EngineerListVo> engineerListVoList =repairDao.getEngineerList(repairCode);
         if(CollectionUtils.isNotEmpty(engineerListVoList)){
-            inspectionRepairVo.setEngineerListVoList(engineerListVoList);
+            serviceInfoVo.setEngineerListVoList(engineerListVoList);
+
         }
+        //服务主管
+        List<DirectorVo> directorVoList=repairDao.getDirectorList(repairCode);
+        if(CollectionUtils.isNotEmpty(directorVoList)){
+            serviceInfoVo.setDirectorVoList(directorVoList);
+
+        }
+
+        if(serviceInfoVo != null){
+            inspectionRepairVo.setServiceInfoVo(serviceInfoVo);
+        }
+
         return inspectionRepairVo;
     }
 
@@ -363,6 +378,26 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
         if(CollectionUtils.isNotEmpty(list)){
             repairVo.setContactVoList(list);
         }
+        //服务信息
+        if(repairVo.getVendor()!=null ||!"".equals(repairVo.getVendor())){
+            ServiceInfoVo serviceInfoVo =  repairDao.getServiceInfoListBySys(repairCode,repairVo.getVendor());
+            //
+            //服务工程师
+            List<EngineerListVo> engineerListVoList =repairDao.getEngineerListBySyS(repairVo.getVendor());
+            if(CollectionUtils.isNotEmpty(engineerListVoList)){
+                serviceInfoVo.setEngineerListVoList(engineerListVoList);
+
+            }
+            //服务主管
+            List<DirectorVo> directorVoList=repairDao.getDirectorListBySyS(repairVo.getVendor());
+            if(CollectionUtils.isNotEmpty(directorVoList)){
+                serviceInfoVo.setDirectorVoList(directorVoList);
+
+            }
+            repairVo.setServiceInfoVo(serviceInfoVo);
+
+        }
+
         return repairVo;
     }
 

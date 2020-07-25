@@ -38,8 +38,6 @@ public class InspectionRepairVo {
     private String workOrderDescribe;
     @ApiModelProperty(value = "厂商名称")
     private String vendorName;
-    @ApiModelProperty(value = "服务工程师")
-    private List<EngineerListVo> engineerListVoList;
     @ApiModelProperty(value = "巡检开始时间")
     private Date escortsStartTime;
     @ApiModelProperty(value = "巡检结束时间")
@@ -50,4 +48,6 @@ public class InspectionRepairVo {
     private String userType;
     @ApiModelProperty(value = " 0:发起人,1:否")
     private String isCreateUser;
+    @ApiModelProperty(value = "服务信息")
+    private ServiceInfoVo serviceInfoVo;
 }

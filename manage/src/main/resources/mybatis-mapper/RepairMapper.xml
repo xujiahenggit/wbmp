@@ -282,6 +282,19 @@
         where create_id  =#{userId}
     </select>
 
+    <select id="getServiceInfoListBySys" resultType="com.bank.manage.vo.ServiceInfoVo">
+            select b.STRNAME vendorId,
+                 b.STRVALUE vendorName,
+                 a.endDate workOrderCompleteTime
+                from ssarun.domaindict b
+				left join ssamgt.work_order a
+				 on a.deviceManu =b.STRNAME
+                where  STRNAME =#{vendor}
+                and STRTYPE='DevManu'
+                and a.id =#{repairCode}
+    </select>
+
+
     <select id="getServiceInfoList" resultType="com.bank.manage.vo.ServiceInfoVo">
              select
                     t.vendor vendorId,
@@ -1021,8 +1034,8 @@
                 'admin' createName,
                 beginDate createTime,
                 bankReceiveMobile contactPhone,
-                bankReceiveName contactName
-
+                bankReceiveName contactName,
+                deviceManu vendor
         from ssamgt.work_order
         where id =#{repairCode}
 
@@ -1127,6 +1140,23 @@
         where a.STRTYPE ='DevManu'
 
     </select>
+
+    <select id="getEngineerListBySyS" resultType="com.bank.manage.vo.EngineerListVo">
+         select
+                        vendorpersonnel.NAME AS engineerName,
+                        vendorpersonnel.TELEPHONE engineer
+                from   ssamgt.vendorpersonnel vendorpersonnel
+                where  vendorpersonnel.DEVICEMANU = #{vendor} and vendorpersonnel.MANUEMPNATURE='1'
+    </select>
+
+    <select id="getDirectorListBySyS" resultType="com.bank.manage.vo.EngineerListVo">
+         select
+                        vendorpersonnel.NAME AS engineerName,
+                        vendorpersonnel.TELEPHONE engineer
+                from   ssamgt.vendorpersonnel vendorpersonnel
+                where  vendorpersonnel.DEVICEMANU = #{vendor} and vendorpersonnel.MANUEMPNATURE='2'
+    </select>
+
 
     <select id="getBuffetLineList" resultType="com.bank.manage.vo.BuffetLineVo">
         select s.STRSSBNUM code,
