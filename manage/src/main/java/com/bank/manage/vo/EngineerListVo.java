@@ -13,7 +13,7 @@ import lombok.Data;
 public class EngineerListVo {
 
     @ApiModelProperty(value = "服务工程师名称")
-    private String engineerName;
+    private String name;
     @ApiModelProperty(value = "服务工程师手机号")
-    private String engineer;
+    private String phone;
 }

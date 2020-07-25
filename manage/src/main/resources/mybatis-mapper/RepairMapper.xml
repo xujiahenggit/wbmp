@@ -311,16 +311,16 @@
 
     <select id="getEngineerList" resultType="com.bank.manage.vo.EngineerListVo">
               select
-                    t.engineer engineer,
-                    t.engineer_name engineerName
+                    t.engineer phone,
+                    t.engineer_name name
                 from t_work_order t
                 where work_order_code = #{repairCode}
     </select>
 
     <select id="getDirectorList" resultType="com.bank.manage.vo.DirectorVo">
               select
-                    t.director director,
-                    t.director_name directorName
+                    t.director phone,
+                    t.director_name name
                 from t_work_order t
                 where work_order_code = #{repairCode}
     </select>
@@ -525,7 +525,8 @@
         concat(concat(concat(concat(t.branch_name,'/'),t.sub_branch_name),'/'),t.buffet_line_name) orgName,
         t.create_time createTime,
         t.work_order_type workOrderType,
-        t.work_order_describe workOrderDescribe
+        t.work_order_describe workOrderDescribe,
+        '2' type
         from t_work_order t
         <where>
             <if test="model.workOrderType != null and model.workOrderType !=''">
@@ -1143,16 +1144,16 @@
 
     <select id="getEngineerListBySyS" resultType="com.bank.manage.vo.EngineerListVo">
          select
-                        vendorpersonnel.NAME AS engineerName,
-                        vendorpersonnel.TELEPHONE engineer
+                        vendorpersonnel.NAME AS name,
+                        vendorpersonnel.TELEPHONE phone
                 from   ssamgt.vendorpersonnel vendorpersonnel
                 where  vendorpersonnel.DEVICEMANU = #{vendor} and vendorpersonnel.MANUEMPNATURE='1'
     </select>
 
     <select id="getDirectorListBySyS" resultType="com.bank.manage.vo.EngineerListVo">
          select
-                        vendorpersonnel.NAME AS engineerName,
-                        vendorpersonnel.TELEPHONE engineer
+                        vendorpersonnel.NAME AS name,
+                        vendorpersonnel.TELEPHONE phone
                 from   ssamgt.vendorpersonnel vendorpersonnel
                 where  vendorpersonnel.DEVICEMANU = #{vendor} and vendorpersonnel.MANUEMPNATURE='2'
     </select>

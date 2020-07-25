@@ -12,7 +12,7 @@ import lombok.Data;
 @ApiModel
 public class DirectorVo {
     @ApiModelProperty(value = "服务主管名称")
-    private String directorName;
+    private String name;
     @ApiModelProperty(value = "服务主管手机号")
-    private String director;
+    private String phone;
 }
