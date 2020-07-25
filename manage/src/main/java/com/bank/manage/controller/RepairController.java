@@ -238,6 +238,9 @@ public class RepairController extends BaseController {
             List<WorkOrderVO> list = repairService.getWorkOrderList(workOrdersDto);
             //加上系统自建的
             List<WorkOrderVO> workOrderList = repairService.getWorkOrderBySystemList(workOrdersDto);
+            if(!CollectionUtils.isNotEmpty(workOrderList)){
+                workOrderList =new ArrayList<>();
+            }
             if(CollectionUtils.isNotEmpty(list)){
                 list.addAll(workOrderList);
                 //分页
@@ -247,18 +250,18 @@ public class RepairController extends BaseController {
 
                 if(CollectionUtils.isNotEmpty(list)){
                     int totalCount = list.size();
-                    int page =workOrdersDto.getPageSize()-1;
+                    int page =workOrdersDto.getPageSize();
                     int pageIndex =workOrdersDto.getPageIndex();
                     int tem =page * pageIndex;
                     if(tem>=totalCount){
                        tem =totalCount;
                     }
-                    int toIndex =(pageIndex+1)*workOrdersDto.getPageSize();
+                    int toIndex =(pageIndex-1)*workOrdersDto.getPageSize();
                     if(toIndex > totalCount){
                         toIndex =totalCount;
                     }
 
-                    resultMap.put("records", list.subList(tem,toIndex));
+                    resultMap.put("records", list.subList(toIndex,tem));
                 }
                 return resultMap;
             }

@@ -799,6 +799,7 @@
         d.STRVALUE vendorName,
         concat(concat(concat(concat(branch.STRBRANCHNAME,'/'),subbranch.STRSUBBRANCHNAME),'/'),selfsvcbank.STRSSBNAME) orgName,
         "1" type,
+        "01" workOrderType,
         work_order.remark workOrderDescribe
         FROM
         ssamgt.work_order work_order
@@ -870,6 +871,7 @@
         d.STRVALUE vendorName,
         concat(concat(concat(concat(branch.STRBRANCHNAME,'/'),subbranch.STRSUBBRANCHNAME),'/'),selfsvcbank.STRSSBNAME) orgName,
         "1" type,
+        "01" workOrderType,
         work_order.remark workOrderDescribe
         FROM
         ssamgt.work_order work_order
