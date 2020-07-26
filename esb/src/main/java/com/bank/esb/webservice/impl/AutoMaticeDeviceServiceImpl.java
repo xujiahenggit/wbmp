@@ -1,5 +1,6 @@
 package com.bank.esb.webservice.impl;
 
+import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.map.MapUtil;
@@ -430,19 +431,84 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         int pageIndex = inspectionSheetVo.getPageIndex();
         int pageSize = inspectionSheetVo.getPageSize();
         inspectionSheetVo.setPageIndex((pageIndex - 1) * pageSize);
-        List<WorkOrderDO> list = datWorkOrderDao.getXjd(inspectionSheetVo);
+        String orderStatus = inspectionSheetVo.getOrderStatus();
+        List<Map<String, String>> data = esbService.getXjd(inspectionSheetVo);
+        //巡检状态获取
+        if (orderStatus == null) {
+            responseInspectionSheetDto.setRepcode("-1");
+            return responseInspectionSheetDto;
+        } else if (orderStatus.equals("1")) {
+            String statisticalTime = inspectionSheetVo.getStatisticalTime();//1-上季度；2-本季度；3-上个半年；4-本半年
+            if (statisticalTime == null) {
+                responseInspectionSheetDto.setRepcode("-1");
+                return responseInspectionSheetDto;
+            }
+            Date date = new Date();
+            DateTime startTime = DateUtil.date();
+            DateTime endTime = DateUtil.date();
+            DateTime june = DateUtil.parseDate(DateUtil.year(date) + "-06-30");
+            switch (statisticalTime) {
+                case "1":
+                    DateTime lastQuarter = DateUtil.offsetMonth(date, -3);
+                    startTime = DateUtil.beginOfQuarter(lastQuarter);
+                    endTime = DateUtil.endOfQuarter(lastQuarter);
+                    break;
+                case "2":
+                    startTime = DateUtil.beginOfQuarter(date);
+                    endTime = DateUtil.endOfQuarter(date);
+                    break;
+                case "3":
+                    startTime = DateUtil.beginOfYear(date);
+                    endTime = june;
+                    break;
+                case "4":
+                    int quarter = DateUtil.quarter(date);
+                    if (quarter < 3) {
+                        startTime = DateUtil.beginOfYear(date);
+                        endTime = june;
+                    } else {
+                        startTime = june;
+                        endTime = DateUtil.endOfYear(date);
+                    }
+                    break;
+                default:
+                    break;
+            }
+            inspectionSheetVo.setStartTime(startTime);
+            inspectionSheetVo.setEndTime(endTime);
+            List<String> xjd = datWorkOrderDao.getXjd(inspectionSheetVo);
+            if (xjd.size() > 0) {
+                Map<String, Boolean> terms = new HashMap<>();
+                for (String s : xjd) {
+                    terms.put(s, true);
+                }
+                Iterator<Map<String, String>> iterator = data.iterator();
+                while (iterator.hasNext()) {
+                    Map<String, String> next = iterator.next();
+                    String term = next.get("STRTERMNUM");
+                    if (!terms.containsKey(term)) {
+                        iterator.remove();
+                    }
+                }
+                if (data.size() > 0) {
+                    data = PageUtils.startPage(data, pageIndex, pageSize);
+                } else {
+                    data = new ArrayList<>();
+                }
+            } else {
+                data = new ArrayList<>();
+            }
+        }
         ArrayList<InspectionSheetDto> inspectionSheetDtos = new ArrayList<>();
-        for (WorkOrderDO workOrderDO : list) {
-            Integer deviceType = workOrderDO.getDeviceType();
+        for (Map<String, String> map : data) {
             inspectionSheetDtos.add(InspectionSheetDto.builder()
-                    .serialNum(workOrderDO.getSerialNum())
-                    .inprocessNo(workOrderDO.getTerminalCode())
-                    .orderNo(workOrderDO.getWorkOrderCode())
-                    .inprocessStatus(workOrderDO.getEscortsFlag())
-                    .deviceProperty(deviceType == null ? "" : deviceType.toString())
-                    .orgId(workOrderDO.getBuffetLine())
-                    .orgAddress(workOrderDO.getBuffetLineName())
-                    .warrantyTime(workOrderDO.getFreeduedate())
+                    .serialNum(map.get("STRDEVSN"))
+                    .inprocessNo(map.get("STRTERMNUM"))
+                    .inprocessStatus(orderStatus)
+                    .deviceProperty(String.valueOf(map.get("IDEVTYPE")))
+                    .orgId(map.get("STRORGNO"))
+                    .orgAddress(map.get("STRSSBNAME"))
+                    .warrantyTime(map.get("freeduedate"))
                     .build()
             );
         }
@@ -470,7 +536,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                 .terminalCode(deviceNo)
                 .workOrderType("03")
                 .workOrderCode(orderId)
-                .escortsFlag("0")
+                .escortsFlag("1")
                 .deviceType(Integer.parseInt(xjdInfo.get("IDEVTYPE").toString()))
                 .deviceClass(xjdInfo.get("IDEVCLASS").toString())
                 .serialNum(strdevsn == null ? "" : strdevsn.toString())
@@ -494,16 +560,15 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                 .contactName(inspectionSheetsVo.getSceneUserName())
                 .contactPhone(inspectionSheetsVo.getSceneUserPhone())
                 .build();
-        workOrderService.save(workOrderDO);
+        workOrderService.saveOrUpdate(workOrderDO);
 
         //添加一条流水,创建巡检单
         workWaterService.save(
                 WorkWaterDO.builder()
                         .wordOrderId(orderId)
-//                        .dealWithType("2")
                         .dealWithTime(LocalDateTime.now())
                         .dealWithPeopleId(inspectionSheetsVo.getCreateUserId())
-                        .dealWithNote("小程序:巡检单创建")
+                        .dealWithNote("小程序:巡检单创建或更新")
                         .dealWithPeopleName(inspectionSheetsVo.getCreateUserName())
                         .phone(inspectionSheetsVo.getCreateUserPhone())
                         .operationType("0")

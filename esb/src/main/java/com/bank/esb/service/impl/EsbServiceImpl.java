@@ -12,6 +12,7 @@ import com.bank.esb.dto.ManagerDto;
 import com.bank.esb.dto.OrderDto;
 import com.bank.esb.service.EsbService;
 import com.bank.esb.vo.EngineerVo;
+import com.bank.esb.vo.InspectionSheetVo;
 import com.bank.esb.vo.OrderNumVo;
 import org.springframework.stereotype.Service;
 
@@ -90,6 +91,12 @@ public class EsbServiceImpl implements EsbService {
     @DataSource(DynamicDataSourceSwitcher.esb_mgt)
     public Map<String, Object> getXjdInfo(String deviceNo) {
         return esbDao.getXjdInfo(deviceNo);
+    }
+
+    @Override
+    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
+    public List<Map<String, String>> getXjd(InspectionSheetVo inspectionSheetVo) {
+        return esbDao.getXjd(inspectionSheetVo);
     }
 
 }

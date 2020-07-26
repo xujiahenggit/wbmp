@@ -263,38 +263,14 @@
 
     </select>
 
-    <select id="getXjd" resultType="com.bank.esb.dos.WorkOrderDO">
-        select * from t_work_order
+    <select id="getXjd" resultType="java.lang.String">
+        select terminal_code from t_work_order
         <where>
-            work_order_type= '03'
-            <if test="m.deviceClassify != null and m.deviceClassify != ''">
-                and device_class= #{m.deviceClassify}
-            </if>
-            <if test="m.deviceType != null and m.deviceType != ''">
-                and device_type= #{m.deviceType}
-            </if>
-            <if test="m.deviceNo != null and m.deviceNo != ''">
-                and terminal_code= #{m.deviceNo}
-            </if>
-            <if test="m.serialNum != null and m.serialNum != ''">
-                and serial_num= #{m.serialNum}
-            </if>
-            <if test="m.orgId != null and m.orgId != ''">
-                and branch= #{m.orgId}
-            </if>
-            <if test="m.serviceProvider != null and m.serviceProvider != ''">
-                and vendor= #{m.serviceProvider}
-            </if>
-            <if test="m.orderStatus != null and m.orderStatus != ''">
-                and escorts_flag= #{m.orderStatus}
-            </if>
+            work_order_type= '03' and escorts_flag='1'
             <if test="m.statisticalTime != null and m.statisticalTime != ''">
                 and create_time between #{m.startTime} and #{m.endTime}
             </if>
         </where>
-        <if test='m.pageSize != "0"'>
-            LIMIT #{m.pageIndex},#{m.pageSize}
-        </if>
     </select>
 
 

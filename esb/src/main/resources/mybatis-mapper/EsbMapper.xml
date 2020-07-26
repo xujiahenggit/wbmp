@@ -11,7 +11,7 @@
                 NAME LIKE concat('%',#{m.seachTxt},'%') or TELEPHONE LIKE CONCAT('%',#{m.seachTxt},'%')
             </if>
         </where>
-      LIMIT #{m.pageIndex},#{m.pageSize}
+        LIMIT #{m.pageIndex},#{m.pageSize}
     </select>
 
     <select id="getCSMaster" resultType="com.bank.esb.dto.ManagerDto">
@@ -87,8 +87,6 @@
     </select>
 
 
-
-
     <select id="getCSInfo" resultType="com.bank.esb.dto.CSInfoDto">
        SELECT STRNAME vendorId,STRVALUE vendorName from ssarun.domaindict where STRTYPE = 'DevManu'
     </select>
@@ -127,5 +125,40 @@
 
     <select id="getAllSubBranch" resultType="com.bank.esb.dos.DatSubbranchDO">
         select * from  subbranch
+    </select>
+    <select id="getXjd" resultType="java.util.Map">
+        SELECT a.STRTERMNUM,b.STRDEVSN,b.IDEVTYPE,a.STRORGNO,a.STRTERMADDR,
+        date_format(b.freeduedate,'%Y-%m-%d %H:%i:%s') freeduedate,f.STRSSBNAME
+        FROM ssarun.term a
+        LEFT JOIN ssarun.device b on a.DEVICEID=b.ID
+        LEFT JOIN selfsvcbank f ON a.STRSSBNUM=f.STRSSBNUM
+        <where>
+            <if test="m.resourceCode != null and m.resourceCode != ''">
+                and b.assetnum = #{m.resourceCode}
+            </if>
+            <if test="m.deviceClassify != null and m.deviceClassify != ''">
+                and b.IDEVCLASS = #{m.deviceClassify}
+            </if>
+            <if test="m.deviceType != null and m.deviceType != ''">
+                and b.IDEVTYPE = #{m.deviceType}
+            </if>
+            <if test="m.deviceNo != null and m.deviceNo != ''">
+                and a.STRTERMNUM = #{m.deviceNo}
+            </if>
+            <if test="m.serialNum != null and m.serialNum != ''">
+                and b.STRDEVSN = #{m.serialNum}
+            </if>
+            <if test="m.orgId != null and m.orgId != ''">
+                and a.STRORGNO = #{m.orgId}
+            </if>
+            <if test="m.provider != null and m.provider != ''">
+                and b.STRDEVMANU = #{m.serviceProvider}
+            </if>
+        </where>
+        <if test='m.orderStatus != null and m.orderStatus != "" and m.orderStatus == "2"'>
+            <if test='m.pageSize != "0"'>
+                LIMIT #{m.pageIndex},#{m.pageSize}
+            </if>
+        </if>
     </select>
 </mapper>

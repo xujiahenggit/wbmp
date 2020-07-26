@@ -8,6 +8,7 @@ import com.bank.esb.dto.EngineerDto;
 import com.bank.esb.dto.ManagerDto;
 import com.bank.esb.dto.OrderDto;
 import com.bank.esb.vo.EngineerVo;
+import com.bank.esb.vo.InspectionSheetVo;
 import com.bank.esb.vo.OrderNumVo;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -39,4 +40,6 @@ public interface EsbDao {
     List<DatSelfsvcbankDO> getSelfBranch(@Param("orgid")String orgId);
 
     Map<String, Object> getXjdInfo(@Param("deviceId") String deviceNo);
+
+    List<Map<String, String>> getXjd(@Param("m") InspectionSheetVo inspectionSheetVo);
 }

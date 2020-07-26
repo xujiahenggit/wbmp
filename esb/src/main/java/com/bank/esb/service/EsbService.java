@@ -8,6 +8,7 @@ import com.bank.esb.dto.EngineerDto;
 import com.bank.esb.dto.ManagerDto;
 import com.bank.esb.dto.OrderDto;
 import com.bank.esb.vo.EngineerVo;
+import com.bank.esb.vo.InspectionSheetVo;
 import com.bank.esb.vo.OrderNumVo;
 
 import java.util.List;
@@ -36,4 +37,6 @@ public interface EsbService {
     List<DatSelfsvcbankDO> getSelfBranch(String orgId);
 
     Map<String, Object> getXjdInfo(String deviceNo);
+
+    List<Map<String, String>> getXjd(InspectionSheetVo inspectionSheetVo);
 }
