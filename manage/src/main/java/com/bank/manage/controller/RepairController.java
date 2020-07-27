@@ -337,7 +337,7 @@ public class RepairController extends BaseController {
             workWater.setDealWithPeopleName(repairRebackVo.getDealWithPeopleName());
             workWater.setDealWithPeopleRole(Integer.parseInt(repairRebackVo.getDealWithPeopleRole()));
             workWater.setDealWithNote(repairRebackVo.getDealWithNote());
-            workWater.setCreateTime(LocalDateTime.now());
+            workWater.setCreateTime(new Date());
             workWater.setPhone(repairRebackVo.getPhone());
             workWater.setOperationType("8");
             flag =  manageWorkWaterService.save(workWater);

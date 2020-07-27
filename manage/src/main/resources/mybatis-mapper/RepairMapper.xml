@@ -1212,24 +1212,9 @@
 
     <!--工单流转历史-->
     <select id="getRepairHistoryList" resultType="com.bank.manage.vo.RepairHistoryListVo">
-                SELECT
+                 SELECT
                     w.id ,w.word_order_id AS wordOrderId ,w.operation_type AS operationType ,
-                case w.operation_type
-                WHEN '0' THEN '新建'
-                WHEN '1' THEN '评价'
-                WHEN '2' THEN '办接'
-                WHEN '3' THEN '分行确认'
-                WHEN '4' THEN '总行确认'
-                WHEN '5' THEN '厂商回复'
-                WHEN '6' THEN '总行知悉'
-                WHEN '7' THEN '分行知悉'
-                WHEN '8' THEN '退回'
-                WHEN '9' THEN '已关闭'
-                WHEN '10' THEN '已评价'
-                WHEN '11' THEN '分派'
-                WHEN '12' THEN '处理'
-                WHEN '13' THEN '办结'
-                END AS operationTypeName,
+                 w.operation_type operationTypeName,
                 o.rating AS evaluationLevel,
                 o.rating_note AS evaluationComment,
                 w.deal_with_note AS dealWithNote,
