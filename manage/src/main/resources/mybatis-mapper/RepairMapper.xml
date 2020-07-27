@@ -501,7 +501,7 @@
         on subbranch.STRSUBBRANCHNUM =term.STRSUBBRANCHNUM
         <where>
             <if test="orgId != null">
-                term.ORGANIZATION #{orgId}
+                term.ORGANIZATION = #{orgId}
             </if>
         </where>
 
@@ -1249,7 +1249,16 @@
                 when  w.operation_type ='14' then
                                              '总行取消'
                 end   operationTypeName,
-                o.rating AS evaluationLevel,
+                case when o.rating='1' then
+                      '优'
+				when o.rating='2' then
+					  '良'
+				when o.rating='3' then
+					  '一般'
+				when o.rating='4' then
+					  '差'
+				else o.rating
+				end  evaluationLevel,
                 o.rating_note AS evaluationComment,
                 w.deal_with_note AS dealWithNote,
                 w.deal_with_people_id AS userId,
