@@ -17,7 +17,7 @@ public class ScheduleTask {
     @Scheduled(cron = "0 0/3 6-20 * * ?")
     private void getTellerOnLineTime(){
 //        wbmpAbsTellerOnlineTimeService.fillDataBeat();
-        wbmpAbsTellerOnlineTimeService.fillDataBeatTest();
+//        wbmpAbsTellerOnlineTimeService.fillDataBeatTest();
     }
 
 }

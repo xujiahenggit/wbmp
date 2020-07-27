@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
  * 工单表实体类
  *
  * @author 代码自动生成
- * @since 2020-07-23
+ * @since 2020-07-27
  */
 @Data
 @Builder
@@ -92,9 +92,9 @@ public class WorkOrderDO implements Serializable {
   @ApiModelProperty(value = "回复意见")
   private String suggestion;
   /**
-   * 工单状态  0 :待处理；1：待评价；2：办接；3：分行确认；4：总行确认；5：厂商回复；6：总行知悉；7：分行知悉；8：退回；9：已关闭 10：已评价
+   * 工单状态 1：待分行确认；2：待总行确认；3：待厂商回复；4：待总行知悉；5：待分行知悉； 6 :待服务主管处理；7：待工程师处理 8：待评价；9：办结；10:已取消；
    */
-  @ApiModelProperty(value = "工单状态  0 :待处理；1：待评价；2：办接；3：分行确认；4：总行确认；5：厂商回复；6：总行知悉；7：分行知悉；8：退回；9：已关闭 10：已评价")
+  @ApiModelProperty(value = "工单状态 1：待分行确认；2：待总行确认；3：待厂商回复；4：待总行知悉；5：待分行知悉； 6 :待服务主管处理；7：待工程师处理 8：待评价；9：办结；10:已取消；")
   private String workOrderStatus;
   /**
    * 工单描述
@@ -157,6 +157,11 @@ public class WorkOrderDO implements Serializable {
   @ApiModelProperty(value = "巡检陪同人员姓名")
   private String escortsPatrolName;
   /**
+   * 巡检陪同人员手机号
+   */
+  @ApiModelProperty(value = "巡检陪同人员手机号")
+  private String escortsPatrolPhone;
+  /**
    * 巡检开始时间
    */
   @ApiModelProperty(value = "巡检开始时间")
@@ -172,9 +177,9 @@ public class WorkOrderDO implements Serializable {
   @ApiModelProperty(value = "巡检处理方式（1：处理方式 1 ；2：处理方式2；3:处理方式3；4：处理方式4；5：处理方式5；6：处理方式6）")
   private String escortsHandling;
   /**
-   * 巡检标识 1:已巡检   0：未巡检
+   * 巡检标识 1:已巡检   2：未巡检
    */
-  @ApiModelProperty(value = "巡检标识 1:已巡检   0：未巡检")
+  @ApiModelProperty(value = "巡检标识 1:已巡检   2：未巡检")
   private String escortsFlag;
   /**
    * 保修截止时间

@@ -514,20 +514,34 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         inspectionSheetsDto.setRepcode("0");
         //巡检单创建
         String deviceNo = inspectionSheetsVo.getDeviceNo();
-        Map<String, Object> xjdInfo = esbService.getXjdInfo(deviceNo);
-        if (StrUtil.isBlankIfStr(deviceNo)) {
-            log.info("设备号不能为空");
+        String accompany = inspectionSheetsVo.getAccompany();
+        if (StrUtil.isBlankIfStr(deviceNo)||StrUtil.isBlankIfStr(accompany)) {
+            log.error("设备号,巡检陪同人员id号不能为空");
             inspectionSheetsDto.setRepcode("-1");
             return inspectionSheetsDto;
         }
-        String createUserId = inspectionSheetsVo.getCreateUserId();
-        String createUserName = inspectionSheetsVo.getCreateUserName();
-        String createUserPhone = inspectionSheetsVo.getCreateUserPhone();
+        Map<String, Object> xjdInfo = esbService.getXjdInfo(deviceNo);
+        if (xjdInfo==null){
+            log.error("设备号错误，没有查到设备信息");
+            inspectionSheetsDto.setRepcode("-1");
+            return inspectionSheetsDto;
+        }
         Object freeduedate = xjdInfo.get("freeduedate");
         Object firstinstalldate = xjdInfo.get("firstinstalldate");
         Object strtermaddr = xjdInfo.get("STRTERMADDR");
         Object strdevsn = xjdInfo.get("STRDEVSN");
         String orderId = "03" + DateUtils.now();
+        //获取巡检陪同人员信息
+        Map<String,String> userInfo=datWorkOrderDao.getuserInfo(accompany);
+        if (userInfo==null){
+            log.error("巡检陪同人员id错误，没有任何信息");
+            inspectionSheetsDto.setRepcode("-1");
+            return inspectionSheetsDto;
+        }
+
+        String createUserId = inspectionSheetsVo.getCreateUserId();
+        String createUserName = inspectionSheetsVo.getCreateUserName();
+        String createUserPhone = inspectionSheetsVo.getCreateUserPhone();
         WorkOrderDO workOrderDO = WorkOrderDO.builder()
                 .terminalCode(deviceNo)
                 .workOrderType("03")
@@ -548,7 +562,9 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                 .installDate(firstinstalldate == null ? "" : firstinstalldate.toString())
                 .installAddr(strtermaddr == null ? "" : strtermaddr.toString())
                 .workOrderStatus("8")
-                .escortsPatrol(inspectionSheetsVo.getAccompany())
+                .escortsPatrol(accompany)//巡检陪同人员
+                .escortsPatrolName(userInfo.get("name"))
+                .escortsPatrolPhone(userInfo.get("phone"))
                 .createId(createUserId)
                 .createName(createUserName)
                 .createUserPhone(createUserPhone)
