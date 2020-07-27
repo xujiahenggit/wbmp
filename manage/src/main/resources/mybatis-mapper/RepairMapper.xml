@@ -1216,8 +1216,39 @@
     <!--工单流转历史-->
     <select id="getRepairHistoryList" resultType="com.bank.manage.vo.RepairHistoryListVo">
                  SELECT
-                    w.id ,w.word_order_id AS wordOrderId ,w.operation_type AS operationType ,
-                 w.operation_type operationTypeName,
+                    w.id ,w.word_order_id AS wordOrderId ,
+                    w.operation_type AS operationType ,
+                 case when  w.operation_type ='0' then
+                             '新建'
+                 when  w.operation_type ='1' then
+                                             '评价'
+                 when  w.operation_type ='2' then
+                                             '办结'
+                 when  w.operation_type ='3' then
+                                             '分行确认'
+                 when  w.operation_type ='4' then
+                                             '总行确认'
+                 when  w.operation_type ='5' then
+                                             '厂商回复'
+                 when  w.operation_type ='6' then
+                                             '总行知悉'
+                 when  w.operation_type ='7' then
+                                             '分行知悉'
+                 when  w.operation_type ='8' then
+                                             '退回'
+                when  w.operation_type ='9' then
+                                             '关闭投诉'
+                when  w.operation_type ='10' then
+                                             '不关闭投诉'
+                when  w.operation_type ='11' then
+                                             '分派'
+                when  w.operation_type ='12' then
+                                             '处理'
+                when  w.operation_type ='13' then
+                                             '分行取消'
+                when  w.operation_type ='14' then
+                                             '总行取消'
+                end   operationTypeName,
                 o.rating AS evaluationLevel,
                 o.rating_note AS evaluationComment,
                 w.deal_with_note AS dealWithNote,

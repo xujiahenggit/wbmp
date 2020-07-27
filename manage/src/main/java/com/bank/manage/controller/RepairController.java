@@ -213,7 +213,7 @@ public class RepairController extends BaseController {
     @ApiOperation(value ="设备管理首页-设备状态")
     public DevicesNumberVo getDevicesNumber(@PathVariable String orgId){
 
-        return  repairService. getDevicesNumber(orgId);
+        return  repairService.getDevicesNumber(orgId);
     }
 
     @PostMapping("/getLargerScreen")
