@@ -633,7 +633,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                         throw new BizException("只有创建人才可以评价");
                     }
                     //评价
-                    repairDao.updateWordStatusByCode(commentVo.getWorkOrderCode(),"9");
+                    repairDao.updateWordStatusByCodeRating(commentVo.getWorkOrderCode(),"9",commentVo.getRating(),commentVo.getRatingNote());
                     //插入到流水表
                     workWater.setDealWithTime(new Date());
                     workWater.setDealWithPeopleRole(6);

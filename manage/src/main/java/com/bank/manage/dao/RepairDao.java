@@ -114,4 +114,6 @@ public interface RepairDao extends BaseMapper<ManageWorkOrderDO> {
     int getUserRoleById(@Param("userId")String userId,@Param("code") String code);
 
     void saveWater(WorkWaterDO workWater);
+
+    void updateWordStatusByCodeRating(@Param("workOrderCode") String workOrderCode, @Param("code") String code,@Param("rating") String rating,@Param("ratingNote") String ratingNote);
 }

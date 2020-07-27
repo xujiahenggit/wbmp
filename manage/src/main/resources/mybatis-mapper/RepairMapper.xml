@@ -353,6 +353,11 @@
          where work_order_code = #{workOrderCode}
     </update>
 
+    <update id="updateWordStatusByCodeRating">
+         update t_work_order set work_order_status =#{code},rating=#{rating},rating_note=#{ratingNote}
+         where work_order_code = #{workOrderCode}
+    </update>
+
     <select id="getUserRoleById" resultType="java.lang.Integer">
            select count(*) from s_user_role where ROLE_ID =#{code} and USER_ID=#{userId}
     </select>
