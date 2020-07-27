@@ -3,10 +3,12 @@ package com.bank.manage.service.impl;
 import com.bank.core.config.DataSource;
 import com.bank.core.config.DynamicDataSourceSwitcher;
 import com.bank.core.entity.BizException;
+import com.bank.core.entity.TokenUserInfo;
 import com.bank.manage.dao.InspectionEquipmentDto;
 import com.bank.manage.dao.LargerScreenDto;
 import com.bank.manage.dao.RepairDao;
 import com.bank.manage.dos.ManageWorkOrderDO;
+import com.bank.manage.dos.WorkWaterDO;
 import com.bank.manage.dto.*;
 import com.bank.manage.service.RepairService;
 import com.bank.manage.vo.*;
@@ -16,6 +18,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -402,8 +405,8 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
     }
 
     @Override
-    public String getUserByCode(String userId) {
-        return repairDao.getUserByCode(userId);
+    public String getUserByCode(String userId,String repairCode) {
+        return repairDao.getUserByCode(userId,repairCode);
     }
 
     @Override
@@ -415,6 +418,255 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
     @Override
     public List<WorkOrderVO> getWorkOrderList(WorkOrdersDto workOrdersDto) {
         return repairDao.getWorkOrderList(workOrdersDto);
+    }
+
+    @Override
+    @Transactional
+    public boolean wordOperation(TokenUserInfo tokenUserInfo,RepairCommentVo commentVo) {
+        String orgType = "";
+        //总行
+        if (StringUtils.startsWith(tokenUserInfo.getOrgId(), "100")) {
+            orgType = "1";
+        }
+        //分支行
+        else if (StringUtils.startsWith(tokenUserInfo.getOrgId(), "102")) {
+            orgType = "2";
+        }
+        boolean temp =false;
+        WorkWaterDO workWater = new WorkWaterDO();
+        // 1:确认；2：取消;3：知悉；4：退回；5：评价；6：厂商回复
+        //工单状态 1：待分行确认；2：待总行确认；3：待厂商回复；4：总行知悉；5：分行知悉； 6 :待服务主管处理；7：待工程师处理 8：待评价；9：办接10:已取消；
+        //处理人角色：1服务主管，2服务工程师，3分行管理员，4总行管理员，5设备厂商，6创建人
+        //操作类型0 :新建；1：评价；2：办结；3：分行确认；4：总行确认；5：厂商回复；6：总行知悉；7：分行知悉；8：退回；9：关闭投诉 10不关闭投诉  11分派，12处理 ，13分行取消，14总行取消
+        switch (commentVo.getType()){
+            case "1":
+                if("1".equals(orgType)){
+                     //判断该角色是否有权限(总行)
+                   int i= repairDao.getUserRoleById(tokenUserInfo.getUserId(),"19");
+                    if(i<=0){
+                        throw new BizException("用户权限不足");
+                    }
+                    //判断是否为创建人
+                    String isCreateUser = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
+                    if(isCreateUser !=null ||!"".equals(isCreateUser)){
+                        throw new BizException("自己创建的工单自己不能处理");
+                    }
+                    //总行确认 -> 待厂商回复
+                    repairDao.updateWordStatusByCode(commentVo.getWorkOrderCode(),"3");
+                    //插入到流水表
+                    workWater.setDealWithTime(new Date());
+                    workWater.setDealWithPeopleRole(4);
+                    workWater.setDealWithPeopleId(tokenUserInfo.getUserId());
+                    workWater.setDealWithPeopleName(tokenUserInfo.getUserName());
+                    workWater.setOrgId(tokenUserInfo.getOrgId());
+                    workWater.setWordOrderId(commentVo.getWorkOrderCode());
+                    workWater.setDealWithNote(commentVo.getRatingNote());
+                    workWater.setOperationType("4");
+                    repairDao.saveWater(workWater);
+                    temp=true;
+
+                }else{
+                    //判断该角色是否有权限(分行)
+                    int i= repairDao.getUserRoleById(tokenUserInfo.getUserId(),"18");
+                    if(i<=0){
+                        throw new BizException("用户权限不足");
+                    }
+                    //判断是否为创建人
+                    String isCreateUser = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
+                    if(isCreateUser !=null ||!"".equals(isCreateUser)){
+                        throw new BizException("自己创建的工单自己不能处理");
+                    }
+                    //分行确认 -> 待总行确认
+                    repairDao.updateWordStatusByCode(commentVo.getWorkOrderCode(),"2");
+                    //插入到流水表
+                    workWater.setDealWithTime(new Date());
+                    workWater.setDealWithPeopleRole(3);
+                    workWater.setDealWithPeopleId(tokenUserInfo.getUserId());
+                    workWater.setDealWithPeopleName(tokenUserInfo.getUserName());
+                    workWater.setOrgId(tokenUserInfo.getOrgId());
+                    workWater.setWordOrderId(commentVo.getWorkOrderCode());
+                    workWater.setDealWithNote(commentVo.getRatingNote());
+                    workWater.setOperationType("3");
+                    repairDao.saveWater(workWater);
+                    temp=true;
+                }
+                break;
+            case "2":
+                if("1".equals(orgType)){
+                    //判断该角色是否有权限(总行)
+                    int i= repairDao.getUserRoleById(tokenUserInfo.getUserId(),"19");
+                    if(i<=0){
+                        throw new BizException("用户权限不足");
+                    }
+                    //判断是否为创建人
+                    String isCreateUser = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
+                    if(isCreateUser !=null ||!"".equals(isCreateUser)){
+                        throw new BizException("自己创建的工单自己不能处理");
+                    }
+                    //总行取消
+                    repairDao.updateWordStatusByCode(commentVo.getWorkOrderCode(),"10");
+                    //插入到流水表
+                    workWater.setDealWithTime(new Date());
+                    workWater.setDealWithPeopleRole(4);
+                    workWater.setDealWithPeopleId(tokenUserInfo.getUserId());
+                    workWater.setDealWithPeopleName(tokenUserInfo.getUserName());
+                    workWater.setOrgId(tokenUserInfo.getOrgId());
+                    workWater.setWordOrderId(commentVo.getWorkOrderCode());
+                    workWater.setDealWithNote(commentVo.getRatingNote());
+                    workWater.setOperationType("14");
+                    repairDao.saveWater(workWater);
+                    temp=true;
+
+                }else{
+                    //判断该角色是否有权限(分行)
+                    int i= repairDao.getUserRoleById(tokenUserInfo.getUserId(),"18");
+                    if(i<=0){
+                        throw new BizException("用户权限不足");
+                    }
+                    //判断是否为创建人
+                    String isCreateUser = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
+                    if(isCreateUser !=null ||!"".equals(isCreateUser)){
+                        throw new BizException("自己创建的工单自己不能处理");
+                    }
+                    //分行取消
+                    repairDao.updateWordStatusByCode(commentVo.getWorkOrderCode(),"10");
+                    //插入到流水表
+                    workWater.setDealWithTime(new Date());
+                    workWater.setDealWithPeopleRole(3);
+                    workWater.setDealWithPeopleId(tokenUserInfo.getUserId());
+                    workWater.setDealWithPeopleName(tokenUserInfo.getUserName());
+                    workWater.setOrgId(tokenUserInfo.getOrgId());
+                    workWater.setWordOrderId(commentVo.getWorkOrderCode());
+                    workWater.setDealWithNote(commentVo.getRatingNote());
+                    workWater.setOperationType("13");
+                    repairDao.saveWater(workWater);
+                    temp=true;
+                }
+                break;
+            case "3":
+                if("1".equals(orgType)){
+                    //判断该角色是否有权限(总行)
+                    int i= repairDao.getUserRoleById(tokenUserInfo.getUserId(),"19");
+                    if(i<=0){
+                        throw new BizException("用户权限不足");
+                    }
+                    //判断是否为创建人
+                    String isCreateUser = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
+                    if(isCreateUser !=null ||!"".equals(isCreateUser)){
+                        throw new BizException("自己创建的工单自己不能处理");
+                    }
+                    //总行知悉->分行知悉
+                    repairDao.updateWordStatusByCode(commentVo.getWorkOrderCode(),"5");
+                    //插入到流水表
+                    workWater.setDealWithTime(new Date());
+                    workWater.setDealWithPeopleRole(4);
+                    workWater.setDealWithPeopleId(tokenUserInfo.getUserId());
+                    workWater.setDealWithPeopleName(tokenUserInfo.getUserName());
+                    workWater.setOrgId(tokenUserInfo.getOrgId());
+                    workWater.setWordOrderId(commentVo.getWorkOrderCode());
+                    workWater.setDealWithNote(commentVo.getRatingNote());
+                    workWater.setOperationType("6");
+                    repairDao.saveWater(workWater);
+                    temp=true;
+
+                }else{
+                    //判断该角色是否有权限(分行)
+                    int i= repairDao.getUserRoleById(tokenUserInfo.getUserId(),"18");
+                    if(i<=0){
+                        throw new BizException("用户权限不足");
+                    }
+                    //判断是否为创建人
+                    String isCreateUser = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
+                    if(isCreateUser !=null ||!"".equals(isCreateUser)){
+                        throw new BizException("自己创建的工单自己不能处理");
+                    }
+                    //分行取消
+                    repairDao.updateWordStatusByCode(commentVo.getWorkOrderCode(),"8");
+                    //插入到流水表
+                    workWater.setDealWithTime(new Date());
+                    workWater.setDealWithPeopleRole(3);
+                    workWater.setDealWithPeopleId(tokenUserInfo.getUserId());
+                    workWater.setDealWithPeopleName(tokenUserInfo.getUserName());
+                    workWater.setOrgId(tokenUserInfo.getOrgId());
+                    workWater.setWordOrderId(commentVo.getWorkOrderCode());
+                    workWater.setDealWithNote(commentVo.getRatingNote());
+                    workWater.setOperationType("7");
+                    repairDao.saveWater(workWater);
+                    temp=true;
+                }
+
+                break;
+
+            case "4":
+                    //退回
+                String isCreateUser = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
+                if(isCreateUser ==null ||"".equals(isCreateUser)){
+                    throw new BizException("自己创建的工单只能自己退回");
+                }
+                    //用户退回
+                if("1".equals(orgType)) {
+                       //总行退回
+                        repairDao.updateWordStatusByCode(commentVo.getWorkOrderCode(),"2");
+                }else{
+                    //分行退回
+                    repairDao.updateWordStatusByCode(commentVo.getWorkOrderCode(),"1");
+                }
+
+                    //插入到流水表
+                    workWater.setDealWithTime(new Date());
+                    workWater.setDealWithPeopleRole(6);
+                    workWater.setDealWithPeopleId(tokenUserInfo.getUserId());
+                    workWater.setDealWithPeopleName(tokenUserInfo.getUserName());
+                    workWater.setOrgId(tokenUserInfo.getOrgId());
+                    workWater.setWordOrderId(commentVo.getWorkOrderCode());
+                    workWater.setDealWithNote(commentVo.getRatingNote());
+                    workWater.setOperationType("8");
+                    repairDao.saveWater(workWater);
+                    temp=true;
+
+                break;
+
+            case "5":
+                    //判断是否为创建人
+                    String user = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
+                    if(user ==null ||"".equals(user)){
+                        throw new BizException("只有创建人才可以评价");
+                    }
+                    //评价
+                    repairDao.updateWordStatusByCode(commentVo.getWorkOrderCode(),"9");
+                    //插入到流水表
+                    workWater.setDealWithTime(new Date());
+                    workWater.setDealWithPeopleRole(6);
+                    workWater.setDealWithPeopleId(tokenUserInfo.getUserId());
+                    workWater.setDealWithPeopleName(tokenUserInfo.getUserName());
+                    workWater.setOrgId(tokenUserInfo.getOrgId());
+                    workWater.setWordOrderId(commentVo.getWorkOrderCode());
+                    workWater.setDealWithNote(commentVo.getRatingNote());
+                    workWater.setOperationType("1");
+                    repairDao.saveWater(workWater);
+                    temp=true;
+                break;
+
+            case "6":
+                    //厂商回复
+                    repairDao.updateWordStatusByCode(commentVo.getWorkOrderCode(),"4");
+                    //插入到流水表
+                    workWater.setDealWithTime(new Date());
+                    workWater.setDealWithPeopleRole(5);
+                    workWater.setDealWithPeopleId(tokenUserInfo.getUserId());
+                    workWater.setDealWithPeopleName(tokenUserInfo.getUserName());
+                    workWater.setOrgId(tokenUserInfo.getOrgId());
+                    workWater.setWordOrderId(commentVo.getWorkOrderCode());
+                    workWater.setDealWithNote(commentVo.getRatingNote());
+                    workWater.setOperationType("5");
+                    repairDao.saveWater(workWater);
+                    temp=true;
+
+                break;
+
+        }
+
+        return temp;
     }
 
     public void getTime(InspectionEquipmentDto inspectionEquipmentDto){

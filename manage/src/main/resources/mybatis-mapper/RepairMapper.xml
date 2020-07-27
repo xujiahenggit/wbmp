@@ -62,6 +62,29 @@
 
     </insert>
 
+    <insert id="saveWater" parameterType="com.bank.manage.dos.WorkWaterDO">
+          insert into t_work_water(
+                 word_order_id,
+                 deal_with_time,
+                 org_id,
+                 deal_with_people_id,
+                 deal_with_people_name,
+                 deal_with_people_role,
+                 deal_with_note,
+                 operation_type
+          )values(
+                 #{wordOrderId},
+                 #{dealWithTime},
+                 #{orgId},
+                 #{dealWithPeopleId},
+                 #{dealWithPeopleName},
+                 #{dealWithPeopleRole},
+                 #{dealWithNote},
+                 #{operationType}
+
+          )
+    </insert>
+
     <insert id="saveInspectionWorkOrder" parameterType="com.bank.manage.dto.InspectionWorkOrderDto">
            insert into t_work_order(
               terminal_code,
@@ -279,7 +302,7 @@
 
     <select id="getUserByCode" resultType="java.lang.String">
         select  create_id from t_work_order
-        where create_id  =#{userId}
+        where create_id  =#{userId} and work_order_code =#{repairCode}
     </select>
 
     <select id="getServiceInfoListBySys" resultType="com.bank.manage.vo.ServiceInfoVo">
@@ -323,6 +346,15 @@
                     t.director_name name
                 from t_work_order t
                 where work_order_code = #{repairCode}
+    </select>
+
+    <update id="updateWordStatusByCode">
+         update t_work_order set work_order_status =#{code}
+         where work_order_code = #{workOrderCode}
+    </update>
+
+    <select id="getUserRoleById" resultType="java.lang.Integer">
+           select count(*) from s_user_role where ROLE_ID =#{code} and USER_ID=#{userId}
     </select>
 
     <select id="getEquipmentByCode" resultType="com.bank.manage.vo.EquipmentVo">

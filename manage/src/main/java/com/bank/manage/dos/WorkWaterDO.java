@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * 工单流水表实体类
@@ -54,7 +55,7 @@ public class WorkWaterDO implements Serializable {
    * 处理时间
    */
   @ApiModelProperty(value = "处理时间")
-  private LocalDateTime dealWithTime;
+  private Date dealWithTime;
   /**
    * 机构id
    */
@@ -95,7 +96,7 @@ public class WorkWaterDO implements Serializable {
   /**
    *  操作类型0 :待处理；1：待评价；2：办接；3：分行确认；4：总行确认；5：厂商回复；6：总行知悉；7：分行知悉；8：退回；9：已关闭 10：已评价
    */
-  @ApiModelProperty(value = " 操作类型0 :待处理；1：待评价；2：办接；3：分行确认；4：总行确认；5：厂商回复；6：总行知悉；7：分行知悉；8：退回；9：已关闭 10：已评价")
+  @ApiModelProperty(value = " 操作类型0 :新建；1：评价；2：办结；3：分行确认；4：总行确认；5：厂商回复；6：总行知悉；7：分行知悉；8：退回；9：关闭投诉 10不关闭投诉  11分派，12处理 ，13分行取消，14总行取消")
   private String operationType;
 
 

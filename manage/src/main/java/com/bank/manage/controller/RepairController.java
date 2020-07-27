@@ -25,10 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /***
@@ -100,7 +97,7 @@ public class RepairController extends BaseController {
                   repairVo.setUserType(orgType);
               }
               //判断是否为创建人
-              String isCreateUser = repairService.getUserByCode(tokenUserInfo.getUserId());
+              String isCreateUser = repairService.getUserByCode(tokenUserInfo.getUserId(),conditionsDto.getRepairCode());
               if(isCreateUser !=null ||!"".equals(isCreateUser)){
                   repairVo.setIsCreateUser("0");
               }else{
@@ -134,7 +131,7 @@ public class RepairController extends BaseController {
             repairVo.setUserType(orgType);
         }
         //判断是否为创建人
-        String isCreateUser = repairService.getUserByCode(tokenUserInfo.getUserId());
+        String isCreateUser = repairService.getUserByCode(tokenUserInfo.getUserId(),repairCode);
         if(isCreateUser !=null ||!"".equals(isCreateUser)){
             repairVo.setIsCreateUser("0");
         }else{
@@ -167,7 +164,7 @@ public class RepairController extends BaseController {
             inspectionRepairVo.setUserType(orgType);
         }
         //判断是否为创建人
-        String isCreateUser = repairService.getUserByCode(tokenUserInfo.getUserId());
+        String isCreateUser = repairService.getUserByCode(tokenUserInfo.getUserId(),repairCode);
         if(isCreateUser !=null ||!"".equals(isCreateUser)){
             inspectionRepairVo.setIsCreateUser("0");
         }else{
@@ -320,7 +317,7 @@ public class RepairController extends BaseController {
             workWater.setSerialNumber(Tools.getFreeOrderNo());
             workWater.setWordOrderId(workOrderCode);
             workWater.setDealWithType("1");
-            workWater.setDealWithTime(LocalDateTime.now());
+            workWater.setDealWithTime(new Date());
             workWater.setOrgId(repairRebackVo.getOrgId());
             workWater.setDealWithPeopleId(repairRebackVo.getDealWithPeopleId());
             workWater.setDealWithPeopleName(repairRebackVo.getDealWithPeopleName());
@@ -336,38 +333,40 @@ public class RepairController extends BaseController {
     }
 
 
-    @ApiOperation(value ="工单评论")
+    @ApiOperation(value ="工单(操作)")
     @PostMapping("/repairComment")
-    public Boolean repairComment(@RequestBody RepairCommentVo commentVo){
-        Boolean flag = false;
+    public Boolean repairComment(@RequestBody RepairCommentVo commentVo, HttpServletRequest request){
         if(null == commentVo.getWorkOrderCode()  || "".equals(commentVo.getWorkOrderCode())){
             throw new BizException("工单编号不能为空");
         }
-        String workOrderCode = commentVo.getWorkOrderCode() ;
-        RepairVo repairVo = repairService.getRepairById(workOrderCode);
-        if(repairVo != null) {
-            //更新工单状态为已评论
-            LambdaUpdateWrapper<ManageWorkOrderDO> lambdaUpdateWrapper = new LambdaUpdateWrapper<>();
-            lambdaUpdateWrapper.eq(ManageWorkOrderDO::getWorkOrderCode,workOrderCode).set(ManageWorkOrderDO::getWorkOrderStatus,"10")
-            .set(ManageWorkOrderDO::getRating,commentVo.getRating())
-            .set(ManageWorkOrderDO::getRatingNote,commentVo.getRatingNote());
-            flag = repairService.update(lambdaUpdateWrapper);
-        }
-        //插入工单流水
-        WorkWaterDO  workWater = new WorkWaterDO();
-        workWater.setSerialNumber(Tools.getFreeOrderNo());
-        workWater.setWordOrderId(workOrderCode);
-        workWater.setDealWithType("1");
-        workWater.setDealWithTime(LocalDateTime.now());
-        workWater.setOrgId(commentVo.getOrgId());
-        workWater.setDealWithPeopleId(commentVo.getDealWithPeopleId());
-        workWater.setDealWithPeopleName(commentVo.getDealWithPeopleName());
-        workWater.setDealWithPeopleRole(Integer.parseInt(commentVo.getDealWithPeopleRole()));
-        workWater.setDealWithNote(commentVo.getRatingNote());
-        workWater.setCreateTime(LocalDateTime.now());
-        workWater.setPhone(commentVo.getPhone());
-        workWater.setOperationType("1");
-        flag =  manageWorkWaterService.save(workWater);
+        TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
+        Boolean flag =  repairService.wordOperation(tokenUserInfo,commentVo);
+
+//        String workOrderCode = commentVo.getWorkOrderCode() ;
+//        RepairVo repairVo = repairService.getRepairById(workOrderCode);
+//        if(repairVo != null) {
+//            //更新工单状态为已评论
+//            LambdaUpdateWrapper<ManageWorkOrderDO> lambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+//            lambdaUpdateWrapper.eq(ManageWorkOrderDO::getWorkOrderCode,workOrderCode).set(ManageWorkOrderDO::getWorkOrderStatus,"10")
+//            .set(ManageWorkOrderDO::getRating,commentVo.getRating())
+//            .set(ManageWorkOrderDO::getRatingNote,commentVo.getRatingNote());
+//            flag = repairService.update(lambdaUpdateWrapper);
+//        }
+//        //插入工单流水
+//        WorkWaterDO  workWater = new WorkWaterDO();
+//        workWater.setSerialNumber(Tools.getFreeOrderNo());
+//        workWater.setWordOrderId(workOrderCode);
+//        workWater.setDealWithType("1");
+//        workWater.setDealWithTime(LocalDateTime.now());
+//        workWater.setOrgId(commentVo.getOrgId());
+//        workWater.setDealWithPeopleId(commentVo.getDealWithPeopleId());
+//        workWater.setDealWithPeopleName(commentVo.getDealWithPeopleName());
+//        workWater.setDealWithPeopleRole(Integer.parseInt(commentVo.getDealWithPeopleRole()));
+//        workWater.setDealWithNote(commentVo.getRatingNote());
+//        workWater.setCreateTime(LocalDateTime.now());
+//        workWater.setPhone(commentVo.getPhone());
+//        workWater.setOperationType("1");
+//        flag =  manageWorkWaterService.save(workWater);
         return flag ;
     }
 

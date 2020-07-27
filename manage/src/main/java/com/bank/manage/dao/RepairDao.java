@@ -1,6 +1,7 @@
 package com.bank.manage.dao;
 
 import com.bank.manage.dos.ManageWorkOrderDO;
+import com.bank.manage.dos.WorkWaterDO;
 import com.bank.manage.dto.*;
 import com.bank.manage.vo.*;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -92,7 +93,7 @@ public interface RepairDao extends BaseMapper<ManageWorkOrderDO> {
 
     RepairVo getWOrkSystemByCode(String repairCode);
 
-    String getUserByCode(String userId);
+    String getUserByCode(@Param("userId") String userId,@Param("repairCode") String repairCode);
 
     List<WorkOrderVO> getWorkOrderBySystemList(@Param("model") WorkOrdersDto workOrdersDto);
 
@@ -107,4 +108,10 @@ public interface RepairDao extends BaseMapper<ManageWorkOrderDO> {
     List<EngineerListVo> getEngineerListBySyS(String vendor);
 
     List<DirectorVo> getDirectorListBySyS(String vendor);
+
+    void updateWordStatusByCode(@Param("workOrderCode") String workOrderCode,@Param("code") String code);
+
+    int getUserRoleById(@Param("userId")String userId,@Param("code") String code);
+
+    void saveWater(WorkWaterDO workWater);
 }

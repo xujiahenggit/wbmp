@@ -1,5 +1,6 @@
 package com.bank.manage.service;
 
+import com.bank.core.entity.TokenUserInfo;
 import com.bank.manage.dao.InspectionEquipmentDto;
 
 import com.bank.manage.dao.LargerScreenDto;
@@ -70,9 +71,11 @@ public interface RepairService extends IService<ManageWorkOrderDO> {
 
     RepairVo getWOrkSystemByCode(String repairCode);
 
-    String getUserByCode(String userId);
+    String getUserByCode(String userId,String repairCode);
 
     List<WorkOrderVO> getWorkOrderBySystemList(WorkOrdersDto workOrdersDto);
 
     List<WorkOrderVO> getWorkOrderList(WorkOrdersDto workOrdersDto);
+
+    boolean wordOperation(TokenUserInfo tokenUserInfo,RepairCommentVo repairCommentVo);
 }
