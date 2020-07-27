@@ -121,7 +121,7 @@ public class RepairController extends BaseController {
 
         RepairVo repairVo= repairService.getComplaintsRepairById(repairCode);
         if(repairVo == null){
-            repairVo =new RepairVo();
+            throw new BizException("未找到对应的投诉单信息");
         }
 //        String orgType = "";
 //        //总行
@@ -152,7 +152,7 @@ public class RepairController extends BaseController {
 
         //判断是否为创建人
         String isCreateUser = repairService.getUserByCode(tokenUserInfo.getUserId(),repairCode);
-        if(isCreateUser !=null ||!"".equals(isCreateUser)){
+        if(isCreateUser !=null ){
             repairVo.setIsCreateUser("0");
         }else{
             repairVo.setIsCreateUser("1");
