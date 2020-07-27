@@ -6,3 +6,9 @@
 **/*.iml
 .idea/**
 log/**
+/generator/.settings/*.prefs
+/icop/.settings
+/manage-public/.classpath
+/manage-public/.settings/*.prefs
+/manage-public/.project
+/manage-public/.gitignore
