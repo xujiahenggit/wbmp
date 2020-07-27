@@ -83,6 +83,12 @@
             <if test="o.deviceType!=null and o.deviceType!=''">
                 and a.deviceType = #{o.deviceType}
             </if>
+            <if test="o.related!=null and o.related!='1'">
+                and a.status=3
+            </if>
+            <if test="o.related!=null and and o.related!='' and o.related==''">
+                and a.status=4
+            </if>
         </where>
     </select>
 

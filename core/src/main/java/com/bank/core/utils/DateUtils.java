@@ -215,7 +215,7 @@ public class DateUtils {
         calendar.set(Calendar.DAY_OF_MONTH, 1);// 设置为当月第一天
         int daySize = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);// 当月最大天数
         for (int i = 0; i < daySize; i++) {
-            calendar.add(Calendar.DATE, 1);//在第一天的基础上加1
+            //calendar.add(Calendar.DATE, 1);//在第一天的基础上加1
             int week = calendar.get(Calendar.DAY_OF_WEEK);
             if (calendar.get(Calendar.DAY_OF_MONTH) <= day) {
                 if (!(week == Calendar.SATURDAY || week == Calendar.SUNDAY)) {// 1代表周日，7代表周六 判断这是一个星期的第几天从而判断是否是周末
