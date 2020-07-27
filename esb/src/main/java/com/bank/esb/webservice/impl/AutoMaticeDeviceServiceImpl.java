@@ -520,6 +520,9 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
             inspectionSheetsDto.setRepcode("-1");
             return inspectionSheetsDto;
         }
+        String createUserId = inspectionSheetsVo.getCreateUserId();
+        String createUserName = inspectionSheetsVo.getCreateUserName();
+        String createUserPhone = inspectionSheetsVo.getCreateUserPhone();
         Object freeduedate = xjdInfo.get("freeduedate");
         Object firstinstalldate = xjdInfo.get("firstinstalldate");
         Object strtermaddr = xjdInfo.get("STRTERMADDR");
@@ -544,8 +547,11 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                 .freeduedate(freeduedate == null ? "" : freeduedate.toString())
                 .installDate(firstinstalldate == null ? "" : firstinstalldate.toString())
                 .installAddr(strtermaddr == null ? "" : strtermaddr.toString())
-                .workOrderStatus("0")
+                .workOrderStatus("8")
                 .escortsPatrol(inspectionSheetsVo.getAccompany())
+                .createId(createUserId)
+                .createName(createUserName)
+                .createUserPhone(createUserPhone)
                 .escortsStartTime(DateUtil.parseLocalDateTime(inspectionSheetsVo.getStartTime()))
                 .escortsCompleteTime(DateUtil.parseLocalDateTime(inspectionSheetsVo.getEndTime()))
                 .escortsHandling(inspectionSheetsVo.getProcessMode())
@@ -560,10 +566,10 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                 WorkWaterDO.builder()
                         .wordOrderId(orderId)
                         .dealWithTime(new Date())
-                        .dealWithPeopleId(inspectionSheetsVo.getCreateUserId())
+                        .dealWithPeopleId(createUserId)
                         .dealWithNote("小程序:巡检单创建或更新")
-                        .dealWithPeopleName(inspectionSheetsVo.getCreateUserName())
-                        .phone(inspectionSheetsVo.getCreateUserPhone())
+                        .dealWithPeopleName(createUserName)
+                        .phone(createUserPhone)
                         .operationType("0")
                         .build()
         );
