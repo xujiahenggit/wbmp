@@ -1263,12 +1263,14 @@
                 w.deal_with_note AS dealWithNote,
                 w.deal_with_people_id AS userId,
                 w.deal_with_people_name AS userName,
-                w.phone AS userPhone,
+                a.USER_PHONE AS userPhone,
                 w.create_time AS operateTime
                 FROM
                 t_work_water w
                 LEFT JOIN t_work_order o
                 ON w.word_order_id = o.work_order_code
+                left join t_user a
+                on a.USER_ID = w.deal_with_people_id
                 WHERE w.word_order_id = #{repairCode}
     </select>
 
