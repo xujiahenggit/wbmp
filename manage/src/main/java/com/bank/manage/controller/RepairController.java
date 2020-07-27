@@ -55,7 +55,7 @@ public class RepairController extends BaseController {
     @GetMapping("/getequipmentByCode/{terminalCode}")
     @ApiImplicitParam(name = "terminalCode",value = "终端编号",required = true,paramType = "path")
     public List<EquipmentVo> getEquipmentByCode(@PathVariable String terminalCode){
-        if("".equals(terminalCode)){
+        if(StringUtils.isEmpty(terminalCode)){
             throw new BizException("终端编号不能为空");
         }
        return  repairService.getEquipmentByCode(terminalCode);
@@ -76,16 +76,17 @@ public class RepairController extends BaseController {
 
           if("1".equals(conditionsDto.getFlog())){
               //系统自建
-              RepairVo repairVo =new  RepairVo();
-              repairVo= repairService.getWOrkSystemByCode(conditionsDto.getRepairCode());
+              RepairVo repairVo= repairService.getWOrkSystemByCode(conditionsDto.getRepairCode());
+              if(repairVo == null){
+                  throw new BizException("未找到对应的故障单信息");
+              }
               repairVo.setCreateName("admin");
               return repairVo;
           }else{
               //人工创建
-              RepairVo repairVo =new  RepairVo();
-              repairVo =  repairService.getRepairById(conditionsDto.getRepairCode());
+              RepairVo repairVo =  repairService.getRepairById(conditionsDto.getRepairCode());
               if(repairVo == null){
-                  throw new BizException("未找到对应的投诉单信息");
+                  throw new BizException("未找到对应的故障单信息");
               }
               int i=repairService.getUserRoleById(tokenUserInfo.getUserId(),"19");
               if(i==0){
@@ -158,8 +159,7 @@ public class RepairController extends BaseController {
             throw new BizException("工单编号不能为空");
         }
         TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
-        InspectionRepairVo inspectionRepairVo =new InspectionRepairVo();
-        inspectionRepairVo= repairService.getInspectionRepairById(repairCode);
+        InspectionRepairVo inspectionRepairVo= repairService.getInspectionRepairById(repairCode);
         if(inspectionRepairVo == null){
             throw new BizException("未找到对应的投诉单信息");
         }

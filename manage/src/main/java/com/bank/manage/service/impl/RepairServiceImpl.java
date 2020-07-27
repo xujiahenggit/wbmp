@@ -78,13 +78,14 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
         ServiceInfoVo serviceInfoVo = repairDao.getServiceInfoList(repairCode);
         //服务工程师
         List<EngineerListVo> engineerListVoList =repairDao.getEngineerList(repairCode);
-        if(CollectionUtils.isNotEmpty(engineerListVoList)){
+
+        if(!engineerListVoList.toString().equals("[null]")){
             serviceInfoVo.setEngineerListVoList(engineerListVoList);
 
         }
         //服务主管
         List<DirectorVo> directorVoList=repairDao.getDirectorList(repairCode);
-        if(CollectionUtils.isNotEmpty(directorVoList)){
+        if(!directorVoList.toArray().equals("[null]")){
             serviceInfoVo.setDirectorVoList(directorVoList);
 
         }
@@ -336,13 +337,13 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
         ServiceInfoVo serviceInfoVo = repairDao.getServiceInfoList(repairCode);
         //服务工程师
         List<EngineerListVo> engineerListVoList =repairDao.getEngineerList(repairCode);
-        if(CollectionUtils.isNotEmpty(engineerListVoList)){
+        if(!engineerListVoList.toString().equals("[null]")){
             serviceInfoVo.setEngineerListVoList(engineerListVoList);
 
         }
         //服务主管
         List<DirectorVo> directorVoList=repairDao.getDirectorList(repairCode);
-        if(CollectionUtils.isNotEmpty(directorVoList)){
+        if(!directorVoList.toString().equals("[null]")){
             serviceInfoVo.setDirectorVoList(directorVoList);
 
         }
@@ -387,13 +388,13 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
             //
             //服务工程师
             List<EngineerListVo> engineerListVoList =repairDao.getEngineerListBySyS(repairVo.getVendor());
-            if(CollectionUtils.isNotEmpty(engineerListVoList)){
+            if(!engineerListVoList.toString().equals("[null]")){
                 serviceInfoVo.setEngineerListVoList(engineerListVoList);
 
             }
             //服务主管
             List<DirectorVo> directorVoList=repairDao.getDirectorListBySyS(repairVo.getVendor());
-            if(CollectionUtils.isNotEmpty(directorVoList)){
+            if(!directorVoList.toString().equals("[null]")){
                 serviceInfoVo.setDirectorVoList(directorVoList);
 
             }
