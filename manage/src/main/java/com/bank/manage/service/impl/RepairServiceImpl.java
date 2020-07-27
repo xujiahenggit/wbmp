@@ -79,13 +79,13 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
         //服务工程师
         List<EngineerListVo> engineerListVoList =repairDao.getEngineerList(repairCode);
 
-        if(!engineerListVoList.toString().equals("[null]")){
+        if(engineerListVoList.size()!=0){
             serviceInfoVo.setEngineerListVoList(engineerListVoList);
 
         }
         //服务主管
         List<DirectorVo> directorVoList=repairDao.getDirectorList(repairCode);
-        if(!directorVoList.toArray().equals("[null]")){
+        if(directorVoList.size()!=0){
             serviceInfoVo.setDirectorVoList(directorVoList);
 
         }
@@ -339,13 +339,13 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
         ServiceInfoVo serviceInfoVo = repairDao.getServiceInfoList(repairCode);
         //服务工程师
         List<EngineerListVo> engineerListVoList =repairDao.getEngineerList(repairCode);
-        if(!engineerListVoList.toString().equals("[null]")){
+        if(engineerListVoList.size()!=0){
             serviceInfoVo.setEngineerListVoList(engineerListVoList);
 
         }
         //服务主管
         List<DirectorVo> directorVoList=repairDao.getDirectorList(repairCode);
-        if(!directorVoList.toString().equals("[null]")){
+        if(directorVoList.size()!=0){
             serviceInfoVo.setDirectorVoList(directorVoList);
 
         }
@@ -390,13 +390,13 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
             //
             //服务工程师
             List<EngineerListVo> engineerListVoList =repairDao.getEngineerListBySyS(repairVo.getVendor());
-            if(!engineerListVoList.toString().equals("[null]")){
+            if(engineerListVoList.size()!=0){
                 serviceInfoVo.setEngineerListVoList(engineerListVoList);
 
             }
             //服务主管
             List<DirectorVo> directorVoList=repairDao.getDirectorListBySyS(repairVo.getVendor());
-            if(!directorVoList.toString().equals("[null]")){
+            if(directorVoList.size()!=0){
                 serviceInfoVo.setDirectorVoList(directorVoList);
 
             }
