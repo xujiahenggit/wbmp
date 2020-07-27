@@ -65,7 +65,7 @@
     <insert id="saveWater" parameterType="com.bank.manage.dos.WorkWaterDO">
           insert into t_work_water(
                  word_order_id,
-                 deal_with_time,
+                 create_time,
                  org_id,
                  deal_with_people_id,
                  deal_with_people_name,
@@ -74,7 +74,7 @@
                  operation_type
           )values(
                  #{wordOrderId},
-                 #{dealWithTime},
+                 #{createTime},
                  #{orgId},
                  #{dealWithPeopleId},
                  #{dealWithPeopleName},

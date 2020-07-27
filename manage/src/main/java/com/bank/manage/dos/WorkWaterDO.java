@@ -87,7 +87,7 @@ public class WorkWaterDO implements Serializable {
   @ApiModelProperty(value = "创建时间")
   @TableField(fill = FieldFill.INSERT)
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
-  private LocalDateTime createTime;
+  private Date createTime;
   /**
    * 处理人电话
    */

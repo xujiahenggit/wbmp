@@ -455,7 +455,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                     //总行确认 -> 待厂商回复
                     repairDao.updateWordStatusByCode(commentVo.getWorkOrderCode(),"3");
                     //插入到流水表
-                    workWater.setDealWithTime(new Date());
+                    workWater.setCreateTime(new Date());
                     workWater.setDealWithPeopleRole(4);
                     workWater.setDealWithPeopleId(tokenUserInfo.getUserId());
                     workWater.setDealWithPeopleName(tokenUserInfo.getUserName());
@@ -480,7 +480,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                     //分行确认 -> 待总行确认
                     repairDao.updateWordStatusByCode(commentVo.getWorkOrderCode(),"2");
                     //插入到流水表
-                    workWater.setDealWithTime(new Date());
+                    workWater.setCreateTime(new Date());
                     workWater.setDealWithPeopleRole(3);
                     workWater.setDealWithPeopleId(tokenUserInfo.getUserId());
                     workWater.setDealWithPeopleName(tokenUserInfo.getUserName());
@@ -507,7 +507,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                     //总行取消
                     repairDao.updateWordStatusByCode(commentVo.getWorkOrderCode(),"10");
                     //插入到流水表
-                    workWater.setDealWithTime(new Date());
+                    workWater.setCreateTime(new Date());
                     workWater.setDealWithPeopleRole(4);
                     workWater.setDealWithPeopleId(tokenUserInfo.getUserId());
                     workWater.setDealWithPeopleName(tokenUserInfo.getUserName());
@@ -532,7 +532,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                     //分行取消
                     repairDao.updateWordStatusByCode(commentVo.getWorkOrderCode(),"10");
                     //插入到流水表
-                    workWater.setDealWithTime(new Date());
+                    workWater.setCreateTime(new Date());
                     workWater.setDealWithPeopleRole(3);
                     workWater.setDealWithPeopleId(tokenUserInfo.getUserId());
                     workWater.setDealWithPeopleName(tokenUserInfo.getUserName());
@@ -559,7 +559,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                     //总行知悉->分行知悉
                     repairDao.updateWordStatusByCode(commentVo.getWorkOrderCode(),"5");
                     //插入到流水表
-                    workWater.setDealWithTime(new Date());
+                    workWater.setCreateTime(new Date());
                     workWater.setDealWithPeopleRole(4);
                     workWater.setDealWithPeopleId(tokenUserInfo.getUserId());
                     workWater.setDealWithPeopleName(tokenUserInfo.getUserName());
@@ -584,7 +584,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                     //分行取消
                     repairDao.updateWordStatusByCode(commentVo.getWorkOrderCode(),"8");
                     //插入到流水表
-                    workWater.setDealWithTime(new Date());
+                    workWater.setCreateTime(new Date());
                     workWater.setDealWithPeopleRole(3);
                     workWater.setDealWithPeopleId(tokenUserInfo.getUserId());
                     workWater.setDealWithPeopleName(tokenUserInfo.getUserName());
@@ -614,7 +614,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                 }
 
                     //插入到流水表
-                    workWater.setDealWithTime(new Date());
+                    workWater.setCreateTime(new Date());
                     workWater.setDealWithPeopleRole(6);
                     workWater.setDealWithPeopleId(tokenUserInfo.getUserId());
                     workWater.setDealWithPeopleName(tokenUserInfo.getUserName());
@@ -636,7 +636,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                     //评价
                     repairDao.updateWordStatusByCodeRating(commentVo.getWorkOrderCode(),"9",commentVo.getRating(),commentVo.getRatingNote());
                     //插入到流水表
-                    workWater.setDealWithTime(new Date());
+                    workWater.setCreateTime(new Date());
                     workWater.setDealWithPeopleRole(6);
                     workWater.setDealWithPeopleId(tokenUserInfo.getUserId());
                     workWater.setDealWithPeopleName(tokenUserInfo.getUserName());
@@ -652,7 +652,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                     //厂商回复
                     repairDao.updateWordStatusByCode(commentVo.getWorkOrderCode(),"4");
                     //插入到流水表
-                    workWater.setDealWithTime(new Date());
+                    workWater.setCreateTime(new Date());
                     workWater.setDealWithPeopleRole(5);
                     workWater.setDealWithPeopleId(tokenUserInfo.getUserId());
                     workWater.setDealWithPeopleName(tokenUserInfo.getUserName());

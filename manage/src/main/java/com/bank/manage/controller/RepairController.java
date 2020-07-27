@@ -355,32 +355,6 @@ public class RepairController extends BaseController {
         }
         TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
         Boolean flag =  repairService.wordOperation(tokenUserInfo,commentVo);
-
-//        String workOrderCode = commentVo.getWorkOrderCode() ;
-//        RepairVo repairVo = repairService.getRepairById(workOrderCode);
-//        if(repairVo != null) {
-//            //更新工单状态为已评论
-//            LambdaUpdateWrapper<ManageWorkOrderDO> lambdaUpdateWrapper = new LambdaUpdateWrapper<>();
-//            lambdaUpdateWrapper.eq(ManageWorkOrderDO::getWorkOrderCode,workOrderCode).set(ManageWorkOrderDO::getWorkOrderStatus,"10")
-//            .set(ManageWorkOrderDO::getRating,commentVo.getRating())
-//            .set(ManageWorkOrderDO::getRatingNote,commentVo.getRatingNote());
-//            flag = repairService.update(lambdaUpdateWrapper);
-//        }
-//        //插入工单流水
-//        WorkWaterDO  workWater = new WorkWaterDO();
-//        workWater.setSerialNumber(Tools.getFreeOrderNo());
-//        workWater.setWordOrderId(workOrderCode);
-//        workWater.setDealWithType("1");
-//        workWater.setDealWithTime(LocalDateTime.now());
-//        workWater.setOrgId(commentVo.getOrgId());
-//        workWater.setDealWithPeopleId(commentVo.getDealWithPeopleId());
-//        workWater.setDealWithPeopleName(commentVo.getDealWithPeopleName());
-//        workWater.setDealWithPeopleRole(Integer.parseInt(commentVo.getDealWithPeopleRole()));
-//        workWater.setDealWithNote(commentVo.getRatingNote());
-//        workWater.setCreateTime(LocalDateTime.now());
-//        workWater.setPhone(commentVo.getPhone());
-//        workWater.setOperationType("1");
-//        flag =  manageWorkWaterService.save(workWater);
         return flag ;
     }
 
