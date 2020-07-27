@@ -78,13 +78,18 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
         ServiceInfoVo serviceInfoVo = repairDao.getServiceInfoList(repairCode);
         //服务工程师
         List<EngineerListVo> engineerListVoList =repairDao.getEngineerList(repairCode);
-
+        Collection collection =new Vector();
+        collection.add(null);
+        engineerListVoList.removeAll(collection);
         if(engineerListVoList.size()!=0){
             serviceInfoVo.setEngineerListVoList(engineerListVoList);
 
         }
         //服务主管
         List<DirectorVo> directorVoList=repairDao.getDirectorList(repairCode);
+        Collection colle =new Vector();
+        colle.add(null);
+        directorVoList.removeAll(colle);
         if(directorVoList.size()!=0){
             serviceInfoVo.setDirectorVoList(directorVoList);
 
@@ -339,12 +344,18 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
         ServiceInfoVo serviceInfoVo = repairDao.getServiceInfoList(repairCode);
         //服务工程师
         List<EngineerListVo> engineerListVoList =repairDao.getEngineerList(repairCode);
+        Collection collection =new Vector();
+        collection.add(null);
+        engineerListVoList.removeAll(collection);
         if(engineerListVoList.size()!=0){
             serviceInfoVo.setEngineerListVoList(engineerListVoList);
 
         }
         //服务主管
         List<DirectorVo> directorVoList=repairDao.getDirectorList(repairCode);
+        Collection collec =new Vector();
+        collec.add(null);
+        engineerListVoList.removeAll(collec);
         if(directorVoList.size()!=0){
             serviceInfoVo.setDirectorVoList(directorVoList);
 
@@ -390,12 +401,18 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
             //
             //服务工程师
             List<EngineerListVo> engineerListVoList =repairDao.getEngineerListBySyS(repairVo.getVendor());
+            Collection collec =new Vector();
+            collec.add(null);
+            engineerListVoList.removeAll(collec);
             if(engineerListVoList.size()!=0){
                 serviceInfoVo.setEngineerListVoList(engineerListVoList);
 
             }
             //服务主管
             List<DirectorVo> directorVoList=repairDao.getDirectorListBySyS(repairVo.getVendor());
+            Collection collection =new Vector();
+            collection.add(null);
+            directorVoList.removeAll(collection);
             if(directorVoList.size()!=0){
                 serviceInfoVo.setDirectorVoList(directorVoList);
 

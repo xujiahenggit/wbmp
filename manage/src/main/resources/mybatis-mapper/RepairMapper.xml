@@ -254,7 +254,22 @@
                                t.vendor_name vendorName,
                              t.escorts_start_time escortsStartTime,
                              t.escorts_complete_time escortsCompletTime,
-                             t.escorts_handling escortsHandling
+                             t.escorts_handling escortsHandling,
+                              t.create_time createTime,
+                               case when  t.escorts_handling ='1' then
+                                            '处理方式1'
+								when  t.escorts_handling ='2' then
+		                                    '处理方式2'
+								when  t.escorts_handling ='3' then
+											'处理方式3'
+								when  t.escorts_handling ='4' then
+											'处理方式4'
+								when  t.escorts_handling ='5' then
+											'处理方式5'
+								when  t.escorts_handling ='6' then
+											'处理方式6'
+								end
+
                     from t_work_order t
                         left join t_user a
                     on a.user_id = t.create_id
