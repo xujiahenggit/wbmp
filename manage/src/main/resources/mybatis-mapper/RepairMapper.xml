@@ -1259,7 +1259,7 @@
                 FROM
                 t_work_water w
                 LEFT JOIN t_work_order o
-                ON w.word_order_id = o.id
+                ON w.word_order_id = o.work_order_code
                 WHERE w.word_order_id = #{repairCode}
     </select>
 
