@@ -1244,7 +1244,7 @@
                                              '分派'
                 when  w.operation_type ='12' then
                                              '处理'
-                when  w.operation_type ='11' then
+                when  w.operation_type ='13' then
                                              '分行取消'
                 when  w.operation_type ='14' then
                                              '总行取消'
