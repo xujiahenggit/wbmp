@@ -1274,6 +1274,15 @@
                 WHERE w.word_order_id = #{repairCode}
     </select>
 
+
+
+    <select id="getPictureByCode" resultType="com.bank.manage.vo.PictureVo">
+           select path id,
+           name startTime
+           from t_work_order_attachment
+           where repair_id = #{repairCode}
+    </select>
+
     <!--根据工单ID查询处理附件表-->
     <select id="getOrderAttachList" resultType="java.lang.String">
            select path

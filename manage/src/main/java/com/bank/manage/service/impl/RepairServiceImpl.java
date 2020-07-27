@@ -678,6 +678,11 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
         return i;
     }
 
+    @Override
+    public List<PictureVo> getPictureByCode(String repairCode) {
+        return repairDao.getPictureByCode(repairCode);
+    }
+
     public void getTime(InspectionEquipmentDto inspectionEquipmentDto){
         //获取当前系统的月份
         Calendar calendar =Calendar.getInstance();

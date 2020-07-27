@@ -2,7 +2,10 @@ package com.bank.manage.controller;
 
 import com.bank.auth.base.BaseController;
 import com.bank.core.entity.BizException;
+import com.bank.core.entity.ImagePlatformFile;
+import com.bank.core.entity.ImagePlatformResponse;
 import com.bank.core.entity.TokenUserInfo;
+import com.bank.core.utils.ImagePlatformUtils;
 import com.bank.manage.dao.InspectionEquipmentDto;
 import com.bank.manage.dao.LargerScreenDto;
 import com.bank.manage.dos.ManageWorkOrderDO;
@@ -367,6 +370,27 @@ public class RepairController extends BaseController {
             throw new BizException("工单编号不能为空");
         }
         list = repairService.getRepairHistoryList(repairCode);
+        //获取图片id
+        List<PictureVo> pictureVos =repairService.getPictureByCode(repairCode);
+        if(pictureVos.size()!=0){
+             List<String> li =new ArrayList<>();
+            //获取图片路径
+            ImagePlatformUtils imagePlatformUtils = new ImagePlatformUtils("zzsbgl");
+            for(PictureVo pictureVo : pictureVos){
+                ImagePlatformResponse response = imagePlatformUtils.query(pictureVo.getId(), pictureVo.getStartTime());
+                List<ImagePlatformFile> imagePlatformFiles= response.getImagePlatformFileList();
+                for(ImagePlatformFile imagePlatformFile : imagePlatformFiles){
+                    li.add(imagePlatformFile.getHttpFilePath());
+                }
+            }
+
+            //保存路径
+            for( RepairHistoryListVo repairHistoryListVos :list){
+                repairHistoryListVos.setThumbs(li);
+            }
+        }
+
+
         return  list;
     }
 
