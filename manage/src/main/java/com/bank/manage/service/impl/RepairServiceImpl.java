@@ -129,8 +129,10 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
 
     @Override
     @DataSource(DynamicDataSourceSwitcher.esb_mgt)
-    public DevicesNumberVo getDevicesNumber(String orgId) {
-        return repairDao.getDevicesNumber(orgId);
+    public DevicesNumberVo getDevicesNumber(String orgId ) {
+            //总行
+            return repairDao.getDevicesNumber(orgId);
+
     }
 
     @Override
