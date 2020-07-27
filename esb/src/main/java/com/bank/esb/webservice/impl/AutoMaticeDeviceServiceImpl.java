@@ -24,7 +24,6 @@ import com.bank.esb.webservice.entity.ESBResponseHeader;
 import com.bank.manage.dos.WorkWaterDO;
 import com.bank.manage.service.ManageWorkWaterService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
@@ -36,7 +35,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.jws.WebService;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -206,24 +204,17 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         return map;
     }
 
-    private void saveAttachment(String orderNo, List<String> pictureUrl) {
-        Map picMap = null;
-        try {
-            if (pictureUrl != null && pictureUrl.size() == 1) {
-                ObjectMapper objectMapper = new ObjectMapper();
-                picMap = objectMapper.readValue(pictureUrl.get(0), Map.class);
-                List<String> pic = (List<String>) picMap.get("pictureUrl");
-                List list = new ArrayList<WorkOrderAttachmentDO>();
-                if (pic != null && pic.size() > 0) {
-                    for (String url : pic) {
-                        list.add(new WorkOrderAttachmentDO(null, orderNo, url,
-                                url, null));
-                    }
-                    workOrderAttachmentService.saveBatch(list);
-                }
+    private void saveAttachment(String orderNo, List<Attachment> pictureUrl) {
+        if (pictureUrl != null && pictureUrl.size() > 0) {
+            List list = new ArrayList<WorkOrderAttachmentDO>();
+            for (Attachment attachment : pictureUrl) {
+                list.add(WorkOrderAttachmentDO.builder()
+                        .repairId(orderNo)
+                        .path(attachment.getPictureUrl())
+                        .name(attachment.getPictureUploadDate())
+                        .build());
             }
-        } catch (IOException e) {
-            log.error("转map失败，或许没有传附件");
+            workOrderAttachmentService.saveBatch(list);
         }
     }
 
@@ -347,6 +338,10 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                 name = engineerInfo.get("NAME");
                 phone = engineerInfo.get("TELEPHONE");
                 role = engineerInfo.get("MANUEMPNATURE");
+            } else {
+                orderDealWithDto.setRepcode("-1");
+                log.error("获取处理人信息为空，engineerId为必传字，段请检查");
+                return orderDealWithDto;
             }
 
             if (role.equals("1")) {
@@ -366,7 +361,6 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
             workWaterService.save(
                     WorkWaterDO.builder()
                             .wordOrderId(orderNo)
-//                            .dealWithType(orderDealWithVo.getOrderStatus())
                             .dealWithTime(new Date())
                             .dealWithPeopleId(engineerId)
                             .dealWithPeopleRole(Integer.parseInt(role))
@@ -667,7 +661,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         if (orderDO != null) {
             orderDO.setEngineer(engineerId);
             orderDO.setSuggestion(repairOrderBVo.getOrderDescribe());//记录厂商回复意见
-            orderDO.setWorkOrderStatus("5");
+            orderDO.setWorkOrderStatus("4");
             workOrderService.saveOrUpdate(orderDO);
             repairOrderBDto.setRepcode("0");
         } else {

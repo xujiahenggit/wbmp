@@ -30,7 +30,7 @@ spring:
       # 如果存在多个数据源，监控的时候可以通过名字来区分开来
       name: master
       # 连接数据库的url
-      url: jdbc:mysql://192.168.4.183:3308/wbmp?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true&failOverReadOnly=false&serverTimezone=GMT%2B8
+      url: jdbc:mysql://wbmp-db-rw.mis.bcs:3308/wbmp?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true&failOverReadOnly=false&serverTimezone=GMT%2B8
       # 连接数据库的账号
       username: wbmp
       #  连接数据库的密码
