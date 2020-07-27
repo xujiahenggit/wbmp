@@ -84,28 +84,30 @@ public class RepairController extends BaseController {
               //人工创建
               RepairVo repairVo =new  RepairVo();
               repairVo =  repairService.getRepairById(conditionsDto.getRepairCode());
+              if(repairVo == null){
+                  throw new BizException("未找到对应的投诉单信息");
+              }
               int i=repairService.getUserRoleById(tokenUserInfo.getUserId(),"19");
               if(i==0){
                   //判断是否是分行管理员
                   int b = repairService.getUserRoleById(tokenUserInfo.getUserId(),"18");
                   if(b==0){
-                      repairVo.setUserType(0+"");
+                      repairVo.setUserType("0");
                   }else{
-                      repairVo.setUserType(2+"");
+                      repairVo.setUserType("2");
                   }
 
               }else{
-                  repairVo.setUserType(1+"");
+                  repairVo.setUserType("1");
               }
 
               //判断是否为创建人
               String isCreateUser = repairService.getUserByCode(tokenUserInfo.getUserId(),conditionsDto.getRepairCode());
-              if(isCreateUser !=null ||!"".equals(isCreateUser)){
+              if(isCreateUser !=null ){
                   repairVo.setIsCreateUser("0");
               }else{
                   repairVo.setIsCreateUser("1");
               }
-
               return repairVo;
           }
     }
@@ -123,19 +125,6 @@ public class RepairController extends BaseController {
         if(repairVo == null){
             throw new BizException("未找到对应的投诉单信息");
         }
-//        String orgType = "";
-//        //总行
-//        if (StringUtils.startsWith(tokenUserInfo.getOrgId(), "100")) {
-//            orgType = "1";
-//        }
-//        //分支行
-//        else if (StringUtils.startsWith(tokenUserInfo.getOrgId(), "102")) {
-//            orgType = "2";
-//        }
-//        if(!"".equals(orgType)){
-//            repairVo.setUserType(orgType);
-//        }
-        // 2:分行管理员；1:总行管理员
         int i=repairService.getUserRoleById(tokenUserInfo.getUserId(),"19");
         if(i==0){
             //判断是否是分行管理员
@@ -171,23 +160,26 @@ public class RepairController extends BaseController {
         TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
         InspectionRepairVo inspectionRepairVo =new InspectionRepairVo();
         inspectionRepairVo= repairService.getInspectionRepairById(repairCode);
+        if(inspectionRepairVo == null){
+            throw new BizException("未找到对应的投诉单信息");
+        }
         int i=repairService.getUserRoleById(tokenUserInfo.getUserId(),"19");
         if(i==0){
             //判断是否是分行管理员
             int b = repairService.getUserRoleById(tokenUserInfo.getUserId(),"18");
             if(b==0){
-                inspectionRepairVo.setUserType(0+"");
+                inspectionRepairVo.setUserType("0");
             }else{
-                inspectionRepairVo.setUserType(2+"");
+                inspectionRepairVo.setUserType("2");
             }
 
         }else{
-            inspectionRepairVo.setUserType(1+"");
+            inspectionRepairVo.setUserType("1");
         }
 
         //判断是否为创建人
         String isCreateUser = repairService.getUserByCode(tokenUserInfo.getUserId(),repairCode);
-        if(isCreateUser !=null ||!"".equals(isCreateUser)){
+        if(isCreateUser !=null ){
             inspectionRepairVo.setIsCreateUser("0");
         }else{
             inspectionRepairVo.setIsCreateUser("1");
