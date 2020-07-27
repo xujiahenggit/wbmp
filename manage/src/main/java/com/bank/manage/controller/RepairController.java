@@ -84,18 +84,8 @@ public class RepairController extends BaseController {
               //人工创建
               RepairVo repairVo =new  RepairVo();
               repairVo =  repairService.getRepairById(conditionsDto.getRepairCode());
-              String orgType = "";
-              //总行
-              if (StringUtils.startsWith(tokenUserInfo.getOrgId(), "100")) {
-                  orgType = "1";
-              }
-              //分支行
-              else if (StringUtils.startsWith(tokenUserInfo.getOrgId(), "102")) {
-                  orgType = "2";
-              }
-              if(!"".equals(orgType)){
-                  repairVo.setUserType(orgType);
-              }
+              int i= repairService.getUserRoleById(tokenUserInfo.getUserId(),"19");
+              repairVo.setUserType(i+"");
               //判断是否为创建人
               String isCreateUser = repairService.getUserByCode(tokenUserInfo.getUserId(),conditionsDto.getRepairCode());
               if(isCreateUser !=null ||!"".equals(isCreateUser)){
@@ -118,18 +108,20 @@ public class RepairController extends BaseController {
         TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
         RepairVo repairVo =new RepairVo();
         repairVo= repairService.getComplaintsRepairById(repairCode);
-        String orgType = "";
-        //总行
-        if (StringUtils.startsWith(tokenUserInfo.getOrgId(), "100")) {
-            orgType = "1";
-        }
-        //分支行
-        else if (StringUtils.startsWith(tokenUserInfo.getOrgId(), "102")) {
-            orgType = "2";
-        }
-        if(!"".equals(orgType)){
-            repairVo.setUserType(orgType);
-        }
+//        String orgType = "";
+//        //总行
+//        if (StringUtils.startsWith(tokenUserInfo.getOrgId(), "100")) {
+//            orgType = "1";
+//        }
+//        //分支行
+//        else if (StringUtils.startsWith(tokenUserInfo.getOrgId(), "102")) {
+//            orgType = "2";
+//        }
+//        if(!"".equals(orgType)){
+//            repairVo.setUserType(orgType);
+//        }
+        int i= repairService.getUserRoleById(tokenUserInfo.getUserId(),"19");
+        repairVo.setUserType(i+"");
         //判断是否为创建人
         String isCreateUser = repairService.getUserByCode(tokenUserInfo.getUserId(),repairCode);
         if(isCreateUser !=null ||!"".equals(isCreateUser)){
@@ -151,18 +143,8 @@ public class RepairController extends BaseController {
         TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
         InspectionRepairVo inspectionRepairVo =new InspectionRepairVo();
         inspectionRepairVo= repairService.getInspectionRepairById(repairCode);
-        String orgType = "";
-        //总行
-        if (StringUtils.startsWith(tokenUserInfo.getOrgId(), "100")) {
-            orgType = "1";
-        }
-        //分支行
-        else if (StringUtils.startsWith(tokenUserInfo.getOrgId(), "102")) {
-            orgType = "2";
-        }
-        if(!"".equals(orgType)){
-            inspectionRepairVo.setUserType(orgType);
-        }
+        int i= repairService.getUserRoleById(tokenUserInfo.getUserId(),"19");
+        inspectionRepairVo.setUserType(i+"");
         //判断是否为创建人
         String isCreateUser = repairService.getUserByCode(tokenUserInfo.getUserId(),repairCode);
         if(isCreateUser !=null ||!"".equals(isCreateUser)){

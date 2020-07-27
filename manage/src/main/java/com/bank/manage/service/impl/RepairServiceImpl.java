@@ -669,6 +669,12 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
         return temp;
     }
 
+    @Override
+    public int getUserRoleById(String userId, String code) {
+        int i= repairDao.getUserRoleById(userId,code);
+        return i;
+    }
+
     public void getTime(InspectionEquipmentDto inspectionEquipmentDto){
         //获取当前系统的月份
         Calendar calendar =Calendar.getInstance();

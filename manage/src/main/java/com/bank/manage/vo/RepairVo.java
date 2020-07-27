@@ -74,7 +74,7 @@ public class RepairVo implements Serializable {
     private String vendorName;
     @ApiModelProperty(value = "厂商id")
     private String vendor;
-    @ApiModelProperty(value = "用户类型 2:分行；1:总行")
+    @ApiModelProperty(value = "用户类型 2:分行管理员；1:总行管理员")
     private String userType;
     @ApiModelProperty(value = " 0:发起人,1:否")
     private String isCreateUser;

@@ -156,7 +156,7 @@
     </insert>
 
     <insert id="saveWorkOrderWater" parameterType="com.bank.manage.dto.WordOrderWaterDto">
-         insert into t_work_order(
+         insert into t_work_water(
           word_order_id,
           deal_with_people_id,
           deal_with_people_name,

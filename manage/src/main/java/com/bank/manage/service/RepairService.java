@@ -78,4 +78,6 @@ public interface RepairService extends IService<ManageWorkOrderDO> {
     List<WorkOrderVO> getWorkOrderList(WorkOrdersDto workOrdersDto);
 
     boolean wordOperation(TokenUserInfo tokenUserInfo,RepairCommentVo repairCommentVo);
+
+    int getUserRoleById(String userId, String s);
 }
