@@ -448,7 +448,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                     }
                     //判断是否为创建人
                     String isCreateUser = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
-                    if(isCreateUser !=null ||!"".equals(isCreateUser)){
+                    if(isCreateUser !=null ){
                         throw new BizException("自己创建的工单自己不能处理");
                     }
                     //总行确认 -> 待厂商回复
@@ -473,7 +473,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                     }
                     //判断是否为创建人
                     String isCreateUser = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
-                    if(isCreateUser !=null ||!"".equals(isCreateUser)){
+                    if(isCreateUser !=null ){
                         throw new BizException("自己创建的工单自己不能处理");
                     }
                     //分行确认 -> 待总行确认
@@ -500,7 +500,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                     }
                     //判断是否为创建人
                     String isCreateUser = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
-                    if(isCreateUser !=null ||!"".equals(isCreateUser)){
+                    if(isCreateUser !=null ){
                         throw new BizException("自己创建的工单自己不能处理");
                     }
                     //总行取消
@@ -525,7 +525,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                     }
                     //判断是否为创建人
                     String isCreateUser = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
-                    if(isCreateUser !=null ||!"".equals(isCreateUser)){
+                    if(isCreateUser !=null ){
                         throw new BizException("自己创建的工单自己不能处理");
                     }
                     //分行取消
@@ -552,7 +552,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                     }
                     //判断是否为创建人
                     String isCreateUser = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
-                    if(isCreateUser !=null ||!"".equals(isCreateUser)){
+                    if(isCreateUser !=null ){
                         throw new BizException("自己创建的工单自己不能处理");
                     }
                     //总行知悉->分行知悉
@@ -577,7 +577,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                     }
                     //判断是否为创建人
                     String isCreateUser = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
-                    if(isCreateUser !=null ||!"".equals(isCreateUser)){
+                    if(isCreateUser !=null ){
                         throw new BizException("自己创建的工单自己不能处理");
                     }
                     //分行取消
@@ -600,7 +600,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
             case "4":
                     //退回
                 String isCreateUser = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
-                if(isCreateUser ==null ||"".equals(isCreateUser)){
+                if(isCreateUser ==null ){
                     throw new BizException("自己创建的工单只能自己退回");
                 }
                     //用户退回
@@ -629,7 +629,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
             case "5":
                     //判断是否为创建人
                     String user = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
-                    if(user ==null ||"".equals(user)){
+                    if(user ==null ){
                         throw new BizException("只有创建人才可以评价");
                     }
                     //评价
