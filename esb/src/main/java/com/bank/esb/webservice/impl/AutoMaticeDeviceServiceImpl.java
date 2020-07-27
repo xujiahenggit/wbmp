@@ -38,7 +38,6 @@ import javax.jws.WebService;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
@@ -368,7 +367,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                     WorkWaterDO.builder()
                             .wordOrderId(orderNo)
 //                            .dealWithType(orderDealWithVo.getOrderStatus())
-                            .dealWithTime(LocalDateTime.now())
+                            .dealWithTime(new Date())
                             .dealWithPeopleId(engineerId)
                             .dealWithPeopleRole(Integer.parseInt(role))
                             .dealWithNote(serviceDescribe)
@@ -566,7 +565,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         workWaterService.save(
                 WorkWaterDO.builder()
                         .wordOrderId(orderId)
-                        .dealWithTime(LocalDateTime.now())
+                        .dealWithTime(new Date())
                         .dealWithPeopleId(inspectionSheetsVo.getCreateUserId())
                         .dealWithNote("小程序:巡检单创建或更新")
                         .dealWithPeopleName(inspectionSheetsVo.getCreateUserName())
@@ -615,7 +614,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         workWaterService.save(
                 WorkWaterDO.builder()
                         .wordOrderId(orderId)
-                        .dealWithTime(LocalDateTime.now())
+                        .dealWithTime(new Date())
                         .dealWithPeopleId(engineerId)
                         .dealWithPeopleName(name)
                         .dealWithPeopleRole(1)
@@ -644,8 +643,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         workWaterService.save(
                 WorkWaterDO.builder()
                         .wordOrderId(orderId)
-//                        .dealWithType("3")
-                        .dealWithTime(LocalDateTime.now())
+                        .dealWithTime(new Date())
                         .dealWithPeopleName(name)
                         .dealWithPeopleRole(2)
                         .dealWithNote("工程师到达现场处理状态变更")
