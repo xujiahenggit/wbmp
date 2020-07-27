@@ -3,12 +3,14 @@
 <mapper namespace="com.bank.manage.dao.WbmpOperateHomeDao">
 
 	<select id="queyDepositDay" resultType="map">
-		SELECT org_no, private_bal, public_bal, generality_bal FROM dws_ass_ogsj_gen_acct
-		WHERE org_no = #{orgId} AND update_date = DATE_FORMAT( CURRENT_DATE, '%Y%m%d' )
+		SELECT org_no, private_bal, public_bal, generality_bal,DATE_FORMAT( update_date, '%Y%m%d' ) date_str FROM dws_ass_ogsj_gen_acct
+		WHERE
+		  concat(substr(org_no,1,6),'01') =  concat(substr(#{orgId},1,6),'01')
+		AND update_date = DATE_FORMAT( CURRENT_DATE, '%Y%m%d' )
 	</select>
 
 	<select id="queyDepositDay30" resultType="map">
-		SELECT org_no, curr_cd, private_bal, public_bal, generality_bal, DATE_FORMAT( update_date, '%m月%d日' ) date_str FROM (
+		SELECT org_no, curr_cd, private_bal, public_bal, generality_bal, DATE_FORMAT( update_date, '%Y%m%d' ) date_str FROM (
 			SELECT t1.ORG_NO AS org_no, 'CN' AS curr_cd,
 			SUM(CASE WHEN t1.curr_cd = 'CNY' THEN t1.private_bal ELSE t1.private_bal * t2.zhebhuil END) AS private_bal,
 			SUM(CASE WHEN t1.curr_cd = 'CNY' THEN t1.PUBLIC_BAL ELSE t1.PUBLIC_BAL * t2.zhebhuil END) AS PUBLIC_BAL,
@@ -19,7 +21,7 @@
 			AND t2.update_date = ( SELECT MAX(update_date) AS update_date FROM wbmp_org_currency WHERE t1.update_date >= update_date )
 			WHERE t1.update_date BETWEEN DATE_FORMAT(DATE_SUB(CURRENT_DATE, INTERVAL 31 DAY),'%Y%m%d') 
 			AND DATE_FORMAT(DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY),'%Y%m%d')
-			AND t1.org_no = #{orgId}
+			AND concat(substr(t1.org_no,1,6),'01') =  concat(substr(#{orgId},1,6),'01')
 			AND EXISTS (
 				SELECT 1 FROM wbmp_org_batch_balance
 				WHERE update_date = REPLACE(DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY),'-','')
@@ -27,7 +29,7 @@
 			GROUP BY t1.update_date,t1.org_no
 		) a
 		UNION ALL
-		SELECT org_no, curr_cd, private_bal, public_bal, generality_bal, DATE_FORMAT( update_date, '%m月%d日' ) date_str FROM (
+		SELECT org_no, curr_cd, private_bal, public_bal, generality_bal, DATE_FORMAT( update_date, '%Y%m%d' ) date_str FROM (
 			SELECT t1.org_no AS org_no, 'CN' AS curr_cd,
 			SUM(CASE WHEN t1.curr_cd = 'CNY' THEN t1.private_bal ELSE t1.private_bal * t2.zhebhuil END) AS private_bal,
 			SUM(CASE WHEN t1.curr_cd = 'CNY' THEN t1.PUBLIC_BAL ELSE t1.PUBLIC_BAL * t2.zhebhuil END) AS PUBLIC_BAL,
@@ -37,7 +39,7 @@
 			LEFT JOIN wbmp_org_currency t2 ON t1.curr_cd = t2.huobfhao
 			AND t2.update_date = ( SELECT MAX(update_date) AS update_date FROM wbmp_org_currency WHERE t1.update_date >= update_date )
 			WHERE t1.update_date = REPLACE(DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY),'-','')
-		    AND t1.org_no = #{orgId}
+		    AND  concat(substr(t1.org_no,1,6),'01') =  concat(substr(#{orgId},1,6),'01')
 			AND NOT EXISTS (
 				SELECT 1 FROM wbmp_org_batch_balance
 				WHERE update_date = REPLACE(DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY),'-','')
@@ -49,7 +51,7 @@
 			GROUP BY t1.update_date,t1.org_no
 		) b
 		UNION ALL
-		SELECT org_no, curr_cd, private_bal, public_bal, generality_bal, DATE_FORMAT( update_date, '%m月%d日' ) date_str FROM (
+		SELECT org_no, curr_cd, private_bal, public_bal, generality_bal, DATE_FORMAT( update_date, '%Y%m%d' ) date_str FROM (
 			SELECT t1.org_no AS org_no, 'CN' AS curr_cd,
 			SUM(CASE WHEN t1.curr_cd = 'CNY' THEN t1.private_bal ELSE t1.private_bal * t2.zhebhuil END) AS private_bal,
 			SUM(CASE WHEN t1.curr_cd = 'CNY' THEN t1.PUBLIC_BAL ELSE t1.PUBLIC_BAL * t2.zhebhuil END) AS PUBLIC_BAL,
@@ -60,7 +62,7 @@
 			AND t2.update_date = ( SELECT MAX(update_date) AS update_date FROM wbmp_org_currency WHERE t1.update_date >= update_date )
 			WHERE t1.update_date BETWEEN DATE_FORMAT(DATE_SUB(CURRENT_DATE, INTERVAL 31 DAY),'%Y%m%d') 
 			AND DATE_FORMAT(DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY),'%Y%m%d')
-		    AND t1.org_no = #{orgId}
+		    AND concat(substr(t1.org_no,1,6),'01') =  concat(substr(#{orgId},1,6),'01')
 			AND NOT EXISTS (
 				SELECT 1 FROM wbmp_org_batch_balance
 				WHERE update_date = REPLACE(DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY),'-','')

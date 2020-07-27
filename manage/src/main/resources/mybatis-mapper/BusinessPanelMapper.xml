@@ -4,13 +4,16 @@
 
 
     <select id="queryOperation" resultType="map">
-SELECT
-(select count(b.queue_seq) from wbmp_bqms_queue b WHERE b.queue_status = '0' and concat(substr(b.branch,1,6),'01') = #{branch} and DATE_FORMAT(b.data_dt,'%Y%m%d') = #{nowStr}) as queue_cnt,
-(select count(b.queue_seq) from wbmp_bqms_queue b WHERE b.queue_status = '1' and concat(substr(b.branch,1,6),'01') = #{branch} and DATE_FORMAT(b.data_dt,'%Y%m%d') = #{nowStr}) as progress_handle_cnt,
-(select count(b.queue_seq) from wbmp_bqms_queue b WHERE b.queue_status = '2' and concat(substr(b.branch,1,6),'01') = #{branch} and DATE_FORMAT(b.data_dt,'%Y%m%d') = #{nowStr}) as already_handle_cnt,
-(select count(b.queue_seq) from wbmp_bqms_queue b WHERE b.queue_status = '3' and concat(substr(b.branch,1,6),'01') = #{branch} and DATE_FORMAT(b.data_dt,'%Y%m%d') = #{nowStr}) as abandoned_cnt,
-(SELECT COUNT( DISTINCT wbn.win_num ) FROM wbmp_bqms_win wbn WHERE concat(substr(wbn.branch,1,6),'01') = #{branch} AND wbn.status1 = '1') as num,
-q.ABANDONED_LV as abandoned_lv,q.INDEX_CNT as index_cnt from wbmp_operate_bqms_queue_avg q where q.ORG_ID = #{branch} and DATE_FORMAT(q.DATA_DT,'%Y%m%d') = #{nowStr}
+        SELECT
+        (select count(b.queue_seq) from wbmp_bqms_queue b WHERE b.queue_status = '0' and b.branch  = #{branch} and DATE_FORMAT(b.data_dt,'%Y%m%d') = #{nowStr}) as queue_cnt,
+        (select count(b.queue_seq) from wbmp_bqms_queue b WHERE b.queue_status = '1' and b.branch  = #{branch} and DATE_FORMAT(b.data_dt,'%Y%m%d') = #{nowStr}) as progress_handle_cnt,
+        (select count(b.queue_seq) from wbmp_bqms_queue b WHERE b.queue_status = '2' and b.branch  = #{branch} and DATE_FORMAT(b.data_dt,'%Y%m%d') = #{nowStr}) as already_handle_cnt,
+        (select count(b.queue_seq) from wbmp_bqms_queue b WHERE b.queue_status = '3' and b.branch  = #{branch} and DATE_FORMAT(b.data_dt,'%Y%m%d') = #{nowStr}) as abandoned_cnt,
+        (SELECT COUNT( DISTINCT wbn.win_num ) FROM wbmp_bqms_win wbn WHERE wbn.branch = #{branch} AND wbn.status1 = '1') as num,
+        (select count(b.queue_seq) from wbmp_bqms_queue b WHERE b.queue_status = '3' and b.branch = #{branch} and DATE_FORMAT(b.data_dt,'%Y%m%d') = #{nowStr}) as queue_status_3,
+        (select count(b.queue_seq) from wbmp_bqms_queue b WHERE b.branch = #{branch} and DATE_FORMAT(b.data_dt,'%Y%m%d') = #{nowStr}) as queue_seq_count,
+        (select q.INDEX_CNT  from wbmp_operate_bqms_queue_avg q where concat(substr(q.ORG_ID,1,6),'01') = concat(substr(#{branch},1,6),'01') order by q.DATA_DT desc limit 1) as index_cnt,
+        (select q.AVG_ABANDONED_LV  from wbmp_operate_bqms_queue_avg q where concat(substr(q.ORG_ID,1,6),'01') = concat(substr(#{branch},1,6),'01') order by q.DATA_DT desc limit 1) as avg_abandoned_lv
     </select>
 
 
@@ -32,7 +35,7 @@ q.ABANDONED_LV as abandoned_lv,q.INDEX_CNT as index_cnt from wbmp_operate_bqms_q
         SELECT
         A.teller_id,
         A.recordtime,
-        TIMESTAMPDIFF( SECOND, A.recordtime, B.recordtime ) sub_seconds
+        IFNULL(TIMESTAMPDIFF(SECOND,A.recordtime,B.recordtime),TIMESTAMPDIFF(SECOND,A.recordtime,NOW())) sub_seconds
         FROM
         (
         SELECT
@@ -45,7 +48,7 @@ q.ABANDONED_LV as abandoned_lv,q.INDEX_CNT as index_cnt from wbmp_operate_bqms_q
         @i := 1
         ) d
         WHERE
-        a.RTNCODE = '00000000'
+        a.RTNMSG='交易成功'
         AND a.DATA_DT = CURDATE()
         ORDER BY
         teller_id,
@@ -62,7 +65,7 @@ q.ABANDONED_LV as abandoned_lv,q.INDEX_CNT as index_cnt from wbmp_operate_bqms_q
         @j := 0
         ) c
         WHERE
-        RTNCODE = '00000000'
+        RTNMSG='交易成功'
         AND DATA_DT = CURDATE()
         ORDER BY
         teller_id,
@@ -134,39 +137,37 @@ q.ABANDONED_LV as abandoned_lv,q.INDEX_CNT as index_cnt from wbmp_operate_bqms_q
 
 
     <select id="devicetransCnfSum" resultType="java.lang.Integer">
-
-    select IFNULL((
-    SELECT SUM(trans_cnt) sum FROM wbmp_atmp_tran_info
-    WHERE ORG_ID=#{orgId} AND DATA_DT=CURDATE() GROUP BY ORG_ID),0)
-
+        select IFNULL((
+        SELECT SUM(trans_cnt) sum FROM wbmp_atmp_tran_info
+        WHERE ORG_ID=#{orgId} AND DATA_DT=CURDATE() GROUP BY ORG_ID),0)
     </select>
 
 
     <select id="tradeVolumeTop5" resultType="com.bank.manage.vo.TransCntInfo">
         SELECT tran_name trans_name,SUM(trade_volume) sum FROM wbmp_abs_transinfo
-        WHERE flag='2' AND DATA_DT=CURDATE() AND concat(substr(ORG_ID,1,6),'01')=#{orgId}
+        WHERE flag='2' AND DATA_DT=CURDATE() AND ORG_ID =#{orgId}
         GROUP BY tran_name
         ORDER BY sum DESC
         LIMIT 5
     </select>
 
 
+
     <select id="tradeVolumeSum" resultType="java.lang.Integer">
         select IFNULL((
         SELECT SUM(trade_volume) sum FROM wbmp_abs_transinfo
-        WHERE flag='2' AND DATA_DT=CURDATE() AND concat(substr(ORG_ID,1,6),'01')=#{orgId}
-        GROUP BY ORG_ID
+        WHERE flag='2' AND DATA_DT=CURDATE() AND ORG_ID =#{orgId}
         ),0)
     </select>
-
+    <!-- tradeVolumeSum去除了 GROUP BY ORG_ID-->
 
     <select id="tellertPageList" resultType="com.bank.manage.vo.AbsTellerInfo">
        SELECT
-            a.*,
-            b.callNum,
-            c.trade_volume,
-            d.trade_volume trade_volume_sum,
-            e.onLineTime
+             a.*,
+            IFNULL(b.callNum,0) callNum,
+            IFNULL(c.trade_volume,0) trade_volume,
+            IFNULL(d.trade_volume,0) trade_volume_sum,
+            IFNULL(e.onLineTime,0) onLineTime
         FROM
             wbmp_abs_teller_info a
             LEFT JOIN (
@@ -175,7 +176,7 @@ q.ABANDONED_LV as abandoned_lv,q.INDEX_CNT as index_cnt from wbmp_operate_bqms_q
             LEFT JOIN wbmp_abs_transinfo c ON a.TELLER_ID = c.TELLER_ID
             AND c.flag = '3'
             AND c.DATA_DT = CURDATE()
-            LEFT JOIN wbmp_abs_transinfo d ON a.ORG_ID = concat(substr(d.ORG_ID,1,6),'01')
+            LEFT JOIN wbmp_abs_transinfo d ON CONCAT(a.ORG_ID,a.GROUP_NO)= d.ORG_ID
             AND d.flag = '1'
             AND d.DATA_DT = CURDATE()
             LEFT JOIN (
@@ -189,7 +190,7 @@ q.ABANDONED_LV as abandoned_lv,q.INDEX_CNT as index_cnt from wbmp_operate_bqms_q
                     A.ORG_ID,
                     A.INTERFACECODE,
                     A.recordtime,
-                    TIMESTAMPDIFF( SECOND, A.recordtime, B.recordtime ) sub_seconds
+                    IFNULL(TIMESTAMPDIFF(SECOND,A.recordtime,B.recordtime),TIMESTAMPDIFF(SECOND,A.recordtime,NOW())) sub_seconds
                 FROM
                     (
                     SELECT
@@ -202,7 +203,7 @@ q.ABANDONED_LV as abandoned_lv,q.INDEX_CNT as index_cnt from wbmp_operate_bqms_q
                             @i := 1
                         ) d
                     WHERE
-                        a.RTNCODE = '00000000'
+                        a.RTNMSG='交易成功'
                         AND a.DATA_DT = CURDATE()
                     ORDER BY
                         teller_id,
@@ -219,7 +220,7 @@ q.ABANDONED_LV as abandoned_lv,q.INDEX_CNT as index_cnt from wbmp_operate_bqms_q
 					@j := 0
 				) c
 			WHERE
-				RTNCODE = '00000000'
+				RTNMSG='交易成功'
 				AND DATA_DT = CURDATE()
 			ORDER BY
 				teller_id,
@@ -233,15 +234,17 @@ q.ABANDONED_LV as abandoned_lv,q.INDEX_CNT as index_cnt from wbmp_operate_bqms_q
 	GROUP BY
 		teller_id
 	) e ON a.TELLER_ID = e.TELLER_ID
-        WHERE a.ORG_ID=#{orgId}
+        WHERE
+        concat(a.ORG_ID,a.GROUP_NO)=#{orgId}
+        ORDER BY TELLER_IND desc,onLineTime DESC,trade_volume DESC,callNum DESC
     </select>
-
+<!--a.ORG_ID=#{orgId}-->
 
     <select id="onlineSum" resultType="java.lang.Integer">
         select IFNULL((
             SELECT COUNT(TELLER_ID) FROM wbmp_abs_teller_info WHERE teller_ind = '1'
             <if test="orgId!=null">
-                and ORG_ID=#{orgId}
+                and CONCAT(ORG_ID,GROUP_NO)=#{orgId}
             </if>
         ),0)
     </select>
@@ -252,23 +255,18 @@ q.ABANDONED_LV as abandoned_lv,q.INDEX_CNT as index_cnt from wbmp_operate_bqms_q
             WHERE DATA_DT=CURDATE()
             AND flag=1
             <if test="orgId!=null">
-                and concat(substr(ORG_ID,1,6),'01')=#{orgId}
+                and ORG_ID = #{orgId}
             </if>
         ),0)
     </select>
-    <select id="tradeNumRank" resultType="java.lang.Integer">
-        select IFNULL((
-            SELECT rank FROM (
-            SELECT a.*,(@i := @i + 1) as rank FROM wbmp_abs_transinfo a,(select @i := 0) b
+    <select id="tradeNumRank" resultType="java.util.Map">
+            SELECT a.TELLER_ID id,(@i := @i + 1) as rank FROM wbmp_abs_transinfo a,(select @i := 0) b
             WHERE a.DATA_DT=CURDATE() AND a.flag=3
             <if test="orgId!=null">
-                and concat(substr(ORG_ID,1,6),'01')=#{orgId}
+                and ORG_ID = #{orgId}
             </if>
-            ORDER BY a.trade_volume DESC) c
-            WHERE c.TELLER_ID = #{tellerId}
-        ),0)
+            ORDER BY a.trade_volume DESC
     </select>
-
 
 
     <select id="onlineTimeSum" resultType="java.lang.Float">
@@ -281,7 +279,7 @@ q.ABANDONED_LV as abandoned_lv,q.INDEX_CNT as index_cnt from wbmp_operate_bqms_q
                     A.INTERFACECODE,
                     A.ORG_ID,
                     A.recordtime,
-                    TIMESTAMPDIFF( SECOND, A.recordtime, B.recordtime ) sub_seconds
+                    IFNULL(TIMESTAMPDIFF(SECOND,A.recordtime,B.recordtime),TIMESTAMPDIFF(SECOND,A.recordtime,NOW())) sub_seconds
                 FROM
                     (
                     SELECT
@@ -294,7 +292,7 @@ q.ABANDONED_LV as abandoned_lv,q.INDEX_CNT as index_cnt from wbmp_operate_bqms_q
                             @i := 1
                         ) d
                     WHERE
-                        a.RTNCODE = '00000000'
+                        a.RTNMSG='交易成功'
                         AND a.DATA_DT = CURDATE()
                     ORDER BY
                         teller_id,
@@ -311,7 +309,7 @@ q.ABANDONED_LV as abandoned_lv,q.INDEX_CNT as index_cnt from wbmp_operate_bqms_q
                             @j := 0
                         ) c
                     WHERE
-                        RTNCODE = '00000000'
+                        RTNMSG='交易成功'
                         AND DATA_DT = CURDATE()
                     ORDER BY
                         teller_id,
@@ -332,7 +330,7 @@ q.ABANDONED_LV as abandoned_lv,q.INDEX_CNT as index_cnt from wbmp_operate_bqms_q
 
     <select id="onlineTimeRank" resultType="java.lang.Integer">
             SELECT
-                g.*
+                g.score
             FROM
                 (
                 SELECT
@@ -351,7 +349,7 @@ q.ABANDONED_LV as abandoned_lv,q.INDEX_CNT as index_cnt from wbmp_operate_bqms_q
                             A.ORG_ID,
                             A.INTERFACECODE,
                             A.recordtime,
-                            TIMESTAMPDIFF( SECOND, A.recordtime, B.recordtime ) sub_seconds
+                            IFNULL(TIMESTAMPDIFF(SECOND,A.recordtime,B.recordtime),TIMESTAMPDIFF(SECOND,A.recordtime,NOW())) sub_seconds
                         FROM
                             (
                             SELECT
@@ -364,7 +362,7 @@ q.ABANDONED_LV as abandoned_lv,q.INDEX_CNT as index_cnt from wbmp_operate_bqms_q
                                     @i := 1
                                 ) d
                             WHERE
-                                a.RTNCODE = '00000000'
+                                a.RTNMSG='交易成功'
                                 AND a.DATA_DT = CURDATE()
                             ORDER BY
                                 teller_id,
@@ -381,7 +379,7 @@ q.ABANDONED_LV as abandoned_lv,q.INDEX_CNT as index_cnt from wbmp_operate_bqms_q
                                     @j := 0
                                 ) c
                             WHERE
-                                RTNCODE = '00000000'
+                                RTNMSG='交易成功'
                                 AND DATA_DT = CURDATE()
                             ORDER BY
                                 teller_id,
@@ -425,7 +423,9 @@ q.ABANDONED_LV as abandoned_lv,q.INDEX_CNT as index_cnt from wbmp_operate_bqms_q
                 WHEN 6 THEN
                 '回单打印机'
                 WHEN 7 THEN
-                 '智能现金柜'
+                '智能现金柜'
+                ELSE
+                '未知设备'
                 END AS deviceName,
                  term_no AS termNo,
                CASE device_run_status
@@ -464,31 +464,32 @@ q.ABANDONED_LV as abandoned_lv,q.INDEX_CNT as index_cnt from wbmp_operate_bqms_q
     <!--根据设备id，查询设备详情-->
     <select id="findByDeviceId" resultType="com.bank.manage.dos.WbmpAtmpBasicInfoDO">
         select
-             CASE device_run_status
-               WHEN 10
-                THEN
+            CASE device_run_status
+               WHEN 10 THEN
                 '在线'
                 WHEN 11 THEN
                 '离线'
                 WHEN -1 THEN
-                 '空闲'
+                 '无效'
                 WHEN 0 THEN
-                 '交易中'
+                 '空闲'
                WHEN 1 THEN
-                  '故障'
-                WHEN 2 THEN
-                '暂停服务'
-                WHEN 3 THEN
-                 '维护中'
-                 WHEN 4 THEN
-                 '通信中断'
-                WHEN 5 THEN
-                '耗材尽'
-                WHEN 6 THEN
-                 '已关机'
-                 WHEN 7 THEN
-                 '重启中'
-                END AS deviceRunStatus,
+                  '交易中'
+               WHEN 2 THEN
+                '故障'
+               WHEN 3 THEN
+                 '暂停服务'
+               WHEN 4 THEN
+               '维护中'
+               WHEN 5 THEN
+               '通信中断'
+               WHEN 6 THEN
+               '耗材尽'
+               WHEN 7 THEN
+               '已关机'
+               WHEN 8 THEN
+               '重启中'
+             END AS deviceRunStatus,
             device_vendor  as  deviceVendor,
             device_model as deviceModel,
            card_reader as cardReader,
@@ -580,5 +581,76 @@ q.ABANDONED_LV as abandoned_lv,q.INDEX_CNT as index_cnt from wbmp_operate_bqms_q
                 t2.day_str
     </select>
 
+    <!--网点自助设备近一年交易趋势-->
+    <select id="orgDeviceYearTradeList" resultType="com.bank.manage.vo.DeviceTradeTrendVo">
+              SELECT
+                    CONVERT (t2.day_str, CHAR) `date`,
+                IFNULL(sum(i.trans_cnt), 0) AS tradeCount
+            FROM
+                (
+                    SELECT
+                        @rownum :=@rownum + 1 AS num,
+                        date_format(
+                            DATE_SUB(NOW(), INTERVAL @rownum MONTH),
+                            '%Y-%m'
+                        ) AS day_str
+                    FROM
+                        (SELECT @rownum := - 1) AS r_init,
+                        (
+                            SELECT
+                                c.trans_cnt
+                            FROM
+                                 wbmp_atmp_tran_info c
+                            LIMIT 12
+                        ) AS c_init
+                ) t2
+            LEFT JOIN wbmp_atmp_tran_info AS i ON (
+                CONCAT(
+                    DATE_FORMAT(i.data_dt, '%Y'),
+                    '-',
+                    DATE_FORMAT(i.data_dt, '%m')
+                ) = t2.day_str
+             and  i.org_id = #{orgId}
+            )
+            GROUP BY
+                t2.day_str
+    </select>
+
+    <!--网点自助设备按近一月查询交易趋势-->
+    <select id="orgDeviceMonthTradeList" resultType="com.bank.manage.vo.DeviceTradeTrendVo">
+          SELECT
+                    CONVERT (t2.day_str, CHAR) `date`,
+                    IFNULL(sum(i.trans_cnt), 0) AS tradeCount
+            FROM
+                (
+                    SELECT
+                        @rownum :=@rownum + 1 AS num,
+                        date_format(
+                            DATE_SUB(NOW(), INTERVAL @rownum DAY),
+                            '%Y-%m-%d'
+                        ) AS day_str
+                    FROM
+                        (SELECT @rownum := - 1) AS r_init,
+                        (
+                            SELECT
+                                c.trans_cnt
+                            FROM
+                                 wbmp_atmp_tran_info c
+                            LIMIT 30
+                        ) AS c_init
+                ) t2
+            LEFT JOIN wbmp_atmp_tran_info AS i ON (
+                CONCAT(
+                    DATE_FORMAT(i.data_dt, '%Y'),
+                    '-',
+                    DATE_FORMAT(i.data_dt, '%m'),
+                            '-',
+                    DATE_FORMAT(i.data_dt, '%d')
+                ) = t2.day_str
+             and  i.org_id = #{orgId}
+            )
+            GROUP BY
+                t2.day_str
+    </select>
 
 </mapper>

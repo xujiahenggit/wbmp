@@ -1,8 +1,11 @@
 package com.bank.manage.dao;
 
 import com.bank.manage.dos.WbmpOperateCustDO;
+import com.bank.manage.vo.WbmpOperateCustVo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * @Author: Andy
@@ -39,5 +42,31 @@ public interface WbmpOperateCustDao extends BaseMapper<WbmpOperateCustDO> {
     /**
      *获取机构和客户类型查询客户量
      */
-    String getOrgCustTypeNum(@Param(value = "orgId") String orgId,@Param(value = "customerTypeCode") String customerTypeCode,@Param(value = "date") String date);
+    Float getOrgCustTypeNum(@Param(value = "orgId") String orgId,@Param(value = "customerTypeCode") String customerTypeCode,@Param(value = "date") String date);
+
+
+    /**
+     * 获取当前日期前15天的客群指标表
+     * @param orgId
+     * @param customerTypeCode
+     * @return
+     */
+    List<WbmpOperateCustVo> findDaysCust(@Param(value = "orgId") String orgId,@Param(value = "customerTypeCode") String customerTypeCode);
+
+    /**
+     * 获取最近12个月的客群指标数据
+     * @param orgId
+     * @param customerTypeCode
+     * @return
+     */
+    List<WbmpOperateCustVo> findMouthCust(@Param(value = "orgId") String orgId,@Param(value = "customerTypeCode") String customerTypeCode);
+
+    /**
+     * 获取最近3年的客群指标数据
+     * @param orgId
+     * @param customerTypeCode
+     * @return
+     */
+    List<WbmpOperateCustVo> findYearCust(@Param(value = "orgId") String orgId,@Param(value = "customerTypeCode") String customerTypeCode);
+
 }

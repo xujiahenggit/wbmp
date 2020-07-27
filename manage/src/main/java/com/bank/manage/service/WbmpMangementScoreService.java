@@ -27,6 +27,6 @@ public interface WbmpMangementScoreService extends IService<WbmpMangementScoreDO
     /**
      * 查询运营分数
      */
-    List<Float> calcManageScore(String orgId,List<String>times,String queryType);
+    List<String> calcManageScore(String orgId,List<String>times,String queryType);
 
 }

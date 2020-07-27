@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.esb.dao.DatBranchDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="datBranchResultMap" type="com.bank.esb.dos.DatBranchDO">
+        <id column="ID" property="id"/>
+        <result column="STRBRANCHNUM" property="strbranchnum"/>
+        <result column="STRBRANCHNAME" property="strbranchname"/>
+        <result column="STRBANKNUM" property="strbanknum"/>
+        <result column="org_code" property="orgCode"/>
+    </resultMap>
+
+
+    <select id="listPage" resultMap="datBranchResultMap">
+        select * from dat_branch
+        <where>
+                <if test="model!=null">
+                    <if test="model.id != null and model.id !=''">
+                        ID = #{model.id}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strbranchnum != null and model.strbranchnum !=''">
+ AND                         STRBRANCHNUM = #{model.strbranchnum}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strbranchname != null and model.strbranchname !=''">
+ AND                         STRBRANCHNAME = #{model.strbranchname}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strbanknum != null and model.strbanknum !=''">
+ AND                         STRBANKNUM = #{model.strbanknum}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.orgCode != null and model.orgCode !=''">
+ AND                         org_code = #{model.orgCode}
+                    </if>
+                </if>
+        </where>
+    </select>
+
+
+</mapper>

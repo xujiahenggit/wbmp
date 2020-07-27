@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.esb.dao.DatSelfsvcbankDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="datSelfsvcbankResultMap" type="com.bank.esb.dos.DatSelfsvcbankDO">
+        <id column="ID" property="id"/>
+        <result column="STRSSBNUM" property="strssbnum"/>
+        <result column="STRSSBNAME" property="strssbname"/>
+        <result column="ISSBTYPE" property="issbtype"/>
+        <result column="Level" property="Level"/>
+        <result column="STRBANKNUM" property="strbanknum"/>
+        <result column="STRBRANCHNUM" property="strbranchnum"/>
+        <result column="STRSUBBRANCHNUM" property="strsubbranchnum"/>
+        <result column="ISTATUS" property="istatus"/>
+        <result column="STRMEMO" property="strmemo"/>
+        <result column="DTSTART" property="dtstart"/>
+        <result column="DTEND" property="dtend"/>
+        <result column="STRDESC" property="strdesc"/>
+        <result column="ATMCOUNT" property="atmcount"/>
+        <result column="CDTCOUNT" property="cdtcount"/>
+        <result column="CRSCOUNT" property="crscount"/>
+        <result column="INQUIRYCOUNT" property="inquirycount"/>
+        <result column="OTHERCOUNT" property="othercount"/>
+        <result column="STRADDRESS" property="straddress"/>
+    </resultMap>
+
+
+    <select id="listPage" resultMap="datSelfsvcbankResultMap">
+        select * from dat_selfsvcbank
+        <where>
+                <if test="model!=null">
+                    <if test="model.id != null and model.id !=''">
+                        ID = #{model.id}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strssbnum != null and model.strssbnum !=''">
+ AND                         STRSSBNUM = #{model.strssbnum}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strssbname != null and model.strssbname !=''">
+ AND                         STRSSBNAME = #{model.strssbname}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.issbtype != null and model.issbtype !=''">
+ AND                         ISSBTYPE = #{model.issbtype}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.Level != null and model.Level !=''">
+ AND                         Level = #{model.Level}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strbanknum != null and model.strbanknum !=''">
+ AND                         STRBANKNUM = #{model.strbanknum}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strbranchnum != null and model.strbranchnum !=''">
+ AND                         STRBRANCHNUM = #{model.strbranchnum}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strsubbranchnum != null and model.strsubbranchnum !=''">
+ AND                         STRSUBBRANCHNUM = #{model.strsubbranchnum}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.istatus != null and model.istatus !=''">
+ AND                         ISTATUS = #{model.istatus}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strmemo != null and model.strmemo !=''">
+ AND                         STRMEMO = #{model.strmemo}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.dtstart != null and model.dtstart !=''">
+ AND                         DTSTART = #{model.dtstart}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.dtend != null and model.dtend !=''">
+ AND                         DTEND = #{model.dtend}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.strdesc != null and model.strdesc !=''">
+ AND                         STRDESC = #{model.strdesc}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.atmcount != null and model.atmcount !=''">
+ AND                         ATMCOUNT = #{model.atmcount}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.cdtcount != null and model.cdtcount !=''">
+ AND                         CDTCOUNT = #{model.cdtcount}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.crscount != null and model.crscount !=''">
+ AND                         CRSCOUNT = #{model.crscount}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.inquirycount != null and model.inquirycount !=''">
+ AND                         INQUIRYCOUNT = #{model.inquirycount}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.othercount != null and model.othercount !=''">
+ AND                         OTHERCOUNT = #{model.othercount}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.straddress != null and model.straddress !=''">
+ AND                         STRADDRESS = #{model.straddress}
+                    </if>
+                </if>
+        </where>
+    </select>
+
+
+</mapper>

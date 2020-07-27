@@ -56,8 +56,8 @@
         FROM
             wbmp_operate_index_aum
         WHERE
-            ORG_ID = #{orgId}
-        AND DATE_FORMAT(DATA_DT,'%Y-%m-%d') = DATE_FORMAT(#{date},'%Y-%m-%d')
+        concat(substr(ORG_ID,1,6),'01') =  concat(substr(#{orgId},1,6),'01')
+        AND DATE_FORMAT(DATA_DT,'%Y-%m-%d') = #{date}
     </select>
 
 

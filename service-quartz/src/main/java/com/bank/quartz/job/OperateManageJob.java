@@ -47,8 +47,12 @@ public class OperateManageJob implements Job {
         try{
             //定时 时间 为当前时间-1天
             String date= LocalDate.now().minusDays(1).toString();
+
+            //String date="2020-07-07";
+
             //获取所有的网点列表
-            List<OrgNftDto> listOrg=nfrtOrgService.getAllOutletsList();
+            //List<OrgNftDto> listOrg=nfrtOrgService.getAllOutletsList();
+            List<OrgNftDto> listOrg=nfrtOrgService.getAllOrgUseOperate();
             /**
              * 经营列表
              */
@@ -57,11 +61,12 @@ public class OperateManageJob implements Job {
              * 运营列表
              */
             List<WbmpOperateScoreDO> listOperate=new ArrayList<>();
+
             //每个网点 获取
             for (OrgNftDto item:listOrg){
-                // 根据时间和机构号 来查询 经营分数
-                float manageScore=operateCurveService.calcOrgMonthScore(item.getOrgId(),date);
-                //经营得分模型
+                // 根据时间和机构号 来查询 运营分数
+                float manageScore=wbmpOperateScoreService.calOperScore(item.getOrgId(),date);
+                //运营得分模型
                 WbmpMangementScoreDO wbmpMangementScoreDO=new WbmpMangementScoreDO();
                 //设置日期
                 wbmpMangementScoreDO.setManagementDate(LocalDate.parse(date));
@@ -74,9 +79,9 @@ public class OperateManageJob implements Job {
 
                 listManagement.add(wbmpMangementScoreDO);
 
-                //根据时间和机构号 查询运营分数
-                float operateScore=wbmpOperateScoreService.calOperScore(item.getOrgId(),date);
-                //运营得分模型
+                //根据时间和机构号 查询经营分数
+                float operateScore=operateCurveService.calcOrgMonthScore(item.getOrgId(),date);
+                //经营得分模型
                 WbmpOperateScoreDO wbmpOperateScoreDO=new WbmpOperateScoreDO();
                 //设置时间
                 wbmpOperateScoreDO.setOperateDate(LocalDate.parse(date));
@@ -90,7 +95,7 @@ public class OperateManageJob implements Job {
                 listOperate.add(wbmpOperateScoreDO);
 
             }
-            wbmpOperateScoreService.saveScore(listManagement,listOperate);
+            wbmpOperateScoreService.saveScore(listManagement,listOperate,date);
             //记录日志 运行成功
             //14.保存日志
             TaskLogDO taskLogDO = GetTaskLogModel.getModel(jobExecutionContext, "1" , localDateTime, System.currentTimeMillis() - start, null);

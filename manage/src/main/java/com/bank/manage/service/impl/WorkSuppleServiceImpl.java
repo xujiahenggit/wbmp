@@ -231,7 +231,14 @@ public class WorkSuppleServiceImpl extends ServiceImpl<WorkSuppleDao, WorkSupple
      */
     @Override
     public IPage<FacilitatorDto> getAllAredyList(FacilitatorVo facilitatorVo, TokenUserInfo tokenUserInfo) {
-        return getAllList(facilitatorVo, NewProcessStatusFile.PROCESS_PASS, tokenUserInfo.getOrgId(), tokenUserInfo);
+
+        Page<FacilitatorDto> page=new Page<>(facilitatorVo.getPageIndex(),facilitatorVo.getPageSize());
+        boolean flag = false;
+        List<RoleDO> listRole = roleService.getHeadOfficeUserRole(tokenUserInfo.getUserId(), RolePermissionCode.ROLE_USHER);
+        if (listRole.size() > 0) {
+            flag = true;
+        }
+        return workSuppleDao.getAeadyList(page,tokenUserInfo.getOrgId(),flag);
     }
 
     /**

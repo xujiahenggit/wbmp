@@ -5,6 +5,8 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import com.bank.user.dos.OrganizationDO;
+import com.bank.user.service.OrganizationService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -76,6 +78,10 @@ public class TokenController {
     @Resource
     TokenUtil tokenUtil;
 
+
+    @Autowired
+    private OrganizationService organizationService;
+
     @ApiOperation(value = "单点登陆")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "username", value = "用户名", required = true)
@@ -86,7 +92,7 @@ public class TokenController {
         if (userDO == null) {
             throw new BizException("该用户不存在");
         }
-
+        OrganizationDO organizationDO = organizationService.getById(userDO.getOrgId());
         String token = this.tokenUtil.getToken(username);
         Set<RoleDO> roles = this.roleService.listByUserId(userDO.getUserId());
         Set<String> roleCodes = new HashSet<>();
@@ -97,6 +103,7 @@ public class TokenController {
         obj.put("token", token);
         obj.put("userInfo", userDO);
         obj.put("roleInfo", roleCodes);
+        obj.put("orgCode", organizationDO.getOrgCode());
         this.redisUtil.set(token, "");
         return obj;
     }

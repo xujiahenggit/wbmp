@@ -16,6 +16,19 @@
         <result column="DATA_DT" property="dataDt"/>
     </resultMap>
 
+    <!-- 通用查询映射结果 -->
+    <resultMap id="custResultMap" type="com.bank.manage.vo.WbmpOperateCustVo">
+        <result column="ORG_ID" property="orgId"/>
+        <result column="INDEX_NO" property="indexNo"/>
+        <result column="INDEX_VAL" property="indexVal"/>
+        <result column="COMP_LASTD" property="compLastd"/>
+        <result column="COMP_LASTM" property="compLastm"/>
+        <result column="COMP_LASTQ" property="compLastq"/>
+        <result column="COMP_LASTY" property="compLasty"/>
+        <result column="DATA_DT" property="dataDt"/>
+    </resultMap>
+
+
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         ETL_TIME, ORG_ID, INDEX_NO, INDEX_NAME, INDEX_VAL, COMP_LASTD, COMP_LASTM, COMP_LASTQ, COMP_LASTY, DATA_DT
@@ -28,7 +41,7 @@
         FROM
         wbmp_operate_cust
         WHERE
-        ORG_ID =#{orgId}
+        concat(substr(ORG_ID,1,6),'01') =  concat(substr(#{orgId},1,6),'01')
         AND DATA_DT=#{day}
         AND INDEX_NO = #{customerType}),0)
     </select>
@@ -41,7 +54,7 @@
         FROM
             wbmp_operate_cust
         WHERE
-            ORG_ID = #{orgId}
+             concat(substr(ORG_ID,1,6),'01') =  concat(substr(#{orgId},1,6),'01')
         AND DATE_FORMAT(DATA_DT,'%Y-%m')=#{month}
         AND INDEX_NO =#{customerType}),0)
     </select>
@@ -53,22 +66,74 @@
         FROM
             wbmp_operate_cust
         WHERE
-           ORG_ID = #{orgId}
+            concat(substr(ORG_ID,1,6),'01') =  concat(substr(#{orgId},1,6),'01')
         AND DATE_FORMAT(DATA_DT,'%Y')=#{year}
         AND INDEX_NO =#{customerType}),0)
     </select>
 
 
     <!-- 按条件统计机构某天的客群量-->
-    <select id="getOrgCustTypeNum" resultType="java.lang.Integer">
-        SELECT
+    <select id="getOrgCustTypeNum" resultType="java.lang.Float">
+        SELECT IFNULL((SELECT
             INDEX_VAL
         FROM
             wbmp_operate_cust
         WHERE
-        ORG_ID = #{orgId}
+        concat(substr(ORG_ID,1,6),'01') =  concat(substr(#{orgId},1,6),'01')
         AND INDEX_NO = #{customerTypeCode}
-        AND DATE_FORMAT(DATA_DT,'%Y-%m-%d') = DATE_FORMAT(#{date},'%Y-%m-%d')
+        AND DATE_FORMAT(DATA_DT,'%Y-%m-%d') = DATE_FORMAT(#{date},'%Y-%m-%d')),0)
     </select>
+
+
+    <!--查询最近15日的客户数-->
+    <select id="findDaysCust" resultMap="custResultMap">
+                SELECT
+                ORG_ID,INDEX_NO,INDEX_VAL,COMP_LASTD,COMP_LASTM,COMP_LASTQ,COMP_LASTY, DATE_FORMAT(DATA_DT,'%Y%m%d') AS DATA_DT
+                FROM
+                wbmp_operate_cust
+                WHERE
+                concat(substr(ORG_ID,1,6),'01') =  concat(substr(#{orgId},1,6),'01')
+                AND INDEX_NO = #{customerTypeCode}
+                ORDER BY DATA_DT desc
+                LIMIT 15
+    </select>
+
+    <!--查询最近12个月的客户数-->
+    <select id="findMouthCust" resultMap="custResultMap">
+                 SELECT
+                c.ORG_ID,c.INDEX_NO,c.INDEX_VAL,c.COMP_LASTD,c.COMP_LASTM,c.COMP_LASTQ,c.COMP_LASTY, DATE_FORMAT(c.DATA_DT,'%Y-%m') AS DATA_DT
+                FROM
+                wbmp_operate_cust c
+                    INNER JOIN
+                    (SELECT max(DATA_DT) as DATA_DT FROM  wbmp_operate_cust  where concat(substr(ORG_ID,1,6),'01') =  concat(substr(#{orgId},1,6),'01')  GROUP BY DATE_FORMAT(DATA_DT,'%Y-%m') ORDER BY DATA_DT DESC LIMIT 10000  ) d
+                    ON  c.DATA_DT = d.DATA_DT
+             WHERE
+                 concat(substr(c.ORG_ID,1,6),'01') =  concat(substr(#{orgId},1,6),'01')
+                AND c.INDEX_NO = #{customerTypeCode}
+                ORDER BY DATA_DT desc
+                LIMIT 12
+    </select>
+
+    <!--查询最近3年的客户数-->
+    <select id="findYearCust" resultMap="custResultMap">
+             SELECT
+                c.ORG_ID,c.INDEX_NO,c.INDEX_VAL,c.COMP_LASTD,c.COMP_LASTM,c.COMP_LASTQ,c.COMP_LASTY, DATE_FORMAT(c.DATA_DT,'%Y') AS DATA_DT
+                FROM
+                wbmp_operate_cust c
+                    INNER JOIN
+                    (
+                        SELECT MAX(DATA_DT) as DATA_DT,ORG_ID,INDEX_NO FROM  wbmp_operate_cust
+                        where ORG_ID = #{orgId} and INDEX_NO = #{customerTypeCode}
+                        GROUP BY DATE_FORMAT(DATA_DT,'%Y'),ORG_ID,INDEX_NO
+                        ORDER BY DATA_DT DESC LIMIT 10000
+                    ) d
+                    ON  c.DATA_DT = d.DATA_DT
+             WHERE
+                concat(substr(c.ORG_ID,1,6),'01') =  concat(substr(#{orgId},1,6),'01')
+                AND c.INDEX_NO = #{customerTypeCode}
+                ORDER BY DATA_DT desc
+                LIMIT 3
+    </select>
+
 
 </mapper>

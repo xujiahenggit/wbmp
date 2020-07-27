@@ -64,7 +64,7 @@
         <result property="satisfactAssessmentTrueScore" column="SATISFACT_ASSESSMENT_FIRST_CORE"/>
         <result property="satisfactAssessmentContent" column="SATISFACT_ASSESSMENT_CONTENT"/>
         <result property="satisfactAssessmentStandart" column="SATISFACT_ASSESSMENT_STANDART"/>
-        <collection property="secondAssessmentList" column="{satisfactSessmentId=SATISFACT_ASSESSMENT_ID}"
+        <collection property="secondAssessmentList" column="{satisfactSessmentId=SATISFACT_ASSESSMENT_ID,statisAttendId=SATISFACT_ATTEND_ID}"
                     select="SelectSecondSatisfactAssessment"/>
     </resultMap>
 
@@ -82,6 +82,7 @@
     <!--    查询满意度月度考核-->
     <select id="SelectSatisfactInfo" resultMap="SatisfactAssessmentActDto">
         SELECT
+            DISTINCT
             SA.SATISFACT_ATTEND_ID,
             U.USHER_ID,
             U.USHER_NAME,
@@ -117,6 +118,7 @@
     <!--    查询满意度 二级指标-->
     <select id="SelectSecondSatisfactAssessment" resultMap="SatisfactSecondAssessmentDto">
         SELECT
+            DISTINCT
             SA.SATISFACT_ASSESSMENT_ID,
             SA.SATISFACT_ASSESSMENT_DISC,
             SA.SATISFACT_ASSESSMENT_SCORE,
@@ -128,7 +130,7 @@
             T_SATISFACT_ATTEND_ITEM SAI
         JOIN T_SATISFACT_ASSESSMENT SA ON SAI.SATISFACT_ASSESSMENT_SECOND_ID = SA.SATISFACT_ASSESSMENT_ID
         WHERE
-            SA.SATISFACT_ASSESSMENT_TOPID = #{satisfactSessmentId}
+            SA.SATISFACT_ASSESSMENT_TOPID = #{satisfactSessmentId} AND SAI.SATISFACT_ATTEND_ID=#{statisAttendId}
     </select>
 
     <!--    查询基本信息-->

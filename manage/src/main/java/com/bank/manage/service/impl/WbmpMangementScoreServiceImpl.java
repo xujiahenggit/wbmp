@@ -5,6 +5,7 @@ import com.bank.manage.dao.WbmpMangementScoreDao;
 import com.bank.manage.dos.WbmpMangementScoreDO;
 import com.bank.manage.service.WbmpMangementScoreService;
 import com.bank.manage.vo.OperateRankVO;
+import com.bank.manage.vo.OrgScoreVo;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,7 @@ import javax.annotation.Resource;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: Andy
@@ -45,16 +47,32 @@ public class WbmpMangementScoreServiceImpl extends ServiceImpl<WbmpMangementScor
     }
 
     @Override
-    public List<Float> calcManageScore(String orgId, List<String> times, String queryType) {
-        List<Float> scores = new ArrayList<Float>();
+    public List<String> calcManageScore(String orgId, List<String> times, String queryType) {
+        List<String> scores = new ArrayList<String>();
+
+        List<OrgScoreVo> queryResult = new ArrayList<OrgScoreVo>();
+        if(WbmpConstFile.DATE_TYPE_YEAR.equals(queryType)){
+
+            queryResult = wbmpMangementScoreDao.queryManageByYear(orgId);
+
+        }else if(WbmpConstFile.DATE_TYPE_JIDU.equals(queryType)){
+
+            queryResult = wbmpMangementScoreDao.queryManageByQuart(orgId);
+
+        }else if(WbmpConstFile.DATE_TYPE_MONTH.equals(queryType)){
+
+            queryResult =wbmpMangementScoreDao.queryManageByMonth(orgId);
+        }
+
+        //更加x轴的查询条件筛选记录，如果未找到记录，则记录赋值为0
         for (String str:times){
-            if(WbmpConstFile.DATE_TYPE_YEAR.equals(queryType)){
-                Float score = wbmpMangementScoreDao.findYearOrgScore(orgId,str);
-                scores.add(score);
-            }else{
-                Float score = wbmpMangementScoreDao.findOrgMouthScore(orgId,str);
-                scores.add(score);
-            }
+            String scoreStr = "0";
+           for(OrgScoreVo scoreVo:queryResult){
+                if(str.equals(scoreVo.getDateDt())){
+                    scoreStr = scoreVo.getScore();
+                }
+           }
+            scores.add(scoreStr);
         }
         return scores;
     }

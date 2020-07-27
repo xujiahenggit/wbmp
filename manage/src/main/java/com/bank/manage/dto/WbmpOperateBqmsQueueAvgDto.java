@@ -18,19 +18,19 @@ public class WbmpOperateBqmsQueueAvgDto implements Serializable {
      * 平均等待时长-秒
      */
     @ApiModelProperty(value = "平均等待时长-秒")
-    private BigDecimal indexCnt;
+    private String indexCnt;
 
     /**
      * 平均弃号率
      */
     @ApiModelProperty(value = "平均弃号率")
-    private BigDecimal avgAbandonedLv;
+    private String avgAbandonedLv;
 
     /**
      * 弃号率
      */
     @ApiModelProperty(value = "弃号率")
-    private BigDecimal abandonedLv;
+    private String abandonedLv;
 
     /**
      * 客户满意度

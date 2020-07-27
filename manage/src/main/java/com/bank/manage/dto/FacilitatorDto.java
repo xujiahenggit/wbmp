@@ -30,4 +30,7 @@ public class FacilitatorDto implements Serializable {
     @ApiModelProperty(value = "日期")
     private String date;
 
+    @ApiModelProperty(value = "状态值")
+    private String state;
+
 }

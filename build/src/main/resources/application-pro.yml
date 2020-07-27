@@ -69,7 +69,7 @@ spring:
     host: 192.168.6.42
     port: 6379
     password: redisAdmin888
-    expireTime: 10 #设置token过期时间（分钟)
+    expireTime: 1440 #设置token过期时间（分钟)
     lettuce:
       pool:
         max-active: 256 #活动连接数
@@ -90,7 +90,10 @@ mybatis-plus:
     cache-enabled: true
 logging:
   config: classpath:log4j2.yml
-
+#icop地址
+ICOP:
+  PATH: http://icop.prod.bcs:43294/icop/services/JTService?wsdl
+  TIMEOUT: 15000 #毫秒
 #自定义属性
 #日志版本
 LOG:

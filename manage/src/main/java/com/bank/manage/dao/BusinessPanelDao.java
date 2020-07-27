@@ -54,7 +54,7 @@ public interface BusinessPanelDao {
      * @param tellerId
      * @return 该柜员是第几名
      */
-    Integer tradeNumRank(@Param("orgId") String orgId, @Param("tellerId") String tellerId);
+    List<Map<String,Object>> tradeNumRank(@Param("orgId") String orgId);
 
     Float onlineTimeSum(@Param("orgId") String orgId);
 
@@ -87,5 +87,17 @@ public interface BusinessPanelDao {
      * @return
      */
    List<DeviceTradeTrendVo>deviceYearTradeList(@Param("orgId")String orgId,@Param("termNo")String termNo);
+
+    /**
+     * 网点自助设备按近一月查询交易趋势
+     * @return
+     */
+    List<DeviceTradeTrendVo>orgDeviceMonthTradeList(@Param("orgId")String orgId);
+
+    /**
+     * 网点自助设备查询近一年交易趋势
+     * @return
+     */
+    List<DeviceTradeTrendVo>orgDeviceYearTradeList(@Param("orgId")String orgId);
 
 }

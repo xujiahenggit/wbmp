@@ -24,11 +24,12 @@
     <!--    查询交易量-->
     <select id="getTranNumByOrgId" resultType="java.lang.Integer">
         SELECT
-            IFNULL((SELECT TRADE_VOLUME
+            IFNULL((SELECT
+            sum(TRADE_VOLUME)	TRADE_VOLUME
         FROM
             wbmp_abs_transinfo
         WHERE
-            concat(substr(ORG_ID,1,6),'01') = #{orgId}
+            ORG_ID = #{orgId}
         AND FLAG = 1
         AND DATE_FORMAT(DATA_DT, '%Y-%m-%d') = #{date}),0)
     </select>
@@ -46,7 +47,7 @@
                     WHERE
                         FLAG = 1
                     AND DATE_FORMAT(DATA_DT, '%Y-%m') = #{date}
-                    AND concat(substr(ORG_ID,1,6),'01') = #{orgId}
+                    AND ORG_ID = #{orgId}
                 ),
                 0
             )

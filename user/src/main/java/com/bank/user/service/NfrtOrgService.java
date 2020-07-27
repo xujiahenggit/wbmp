@@ -66,4 +66,10 @@ public interface NfrtOrgService extends IService<NfrtOrgDO> {
      * @return
      */
     List<OrgNftDto> getOutlegetOutSitListByUsertsList(String orgId, String type, TokenUserInfo tokenUserInfo);
+
+    /**
+     * 获取所有机构 计算综合分数用
+     * @return
+     */
+    List<OrgNftDto> getAllOrgUseOperate();
 }

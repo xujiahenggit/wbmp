@@ -51,7 +51,7 @@
 
     <!--获取机构历史某一天的余额-->
     <select id="getOrgHistoryBal" resultType="java.lang.String">
-            SELECT (private_bal+PUBLIC_BAL+GENERALITY_BAL) AS balance FROM (
+            SELECT GENERALITY_BAL AS balance FROM (
 			SELECT t1.ORG_NO AS org_no, 'CN' AS curr_cd,
 			SUM(CASE WHEN t1.curr_cd = 'CNY' THEN t1.private_bal ELSE t1.private_bal * t2.zhebhuil END) AS private_bal,
 			SUM(CASE WHEN t1.curr_cd = 'CNY' THEN t1.PUBLIC_BAL ELSE t1.PUBLIC_BAL * t2.zhebhuil END) AS PUBLIC_BAL,
@@ -61,7 +61,7 @@
 			LEFT JOIN wbmp_org_currency t2 ON t1.curr_cd = t2.huobfhao
 			AND t2.update_date = ( SELECT MAX(update_date) AS update_date FROM wbmp_org_currency WHERE t1.update_date >= update_date )
 			WHERE t1.update_date = DATE_FORMAT(#{date},'%Y%m%d')
-			AND t1.org_no = #{orgId}
+			AND concat(substr(t1.org_no,1,6),'01') =  concat(substr(#{orgId},1,6),'01')
 			AND EXISTS (
 				SELECT 1 FROM wbmp_org_batch_balance
 				WHERE update_date = REPLACE(DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY),'-','')
@@ -79,7 +79,7 @@
 			LEFT JOIN wbmp_org_currency t2 ON t1.curr_cd = t2.huobfhao
 			AND t2.update_date = ( SELECT MAX(update_date) AS update_date FROM wbmp_org_currency WHERE t1.update_date >= update_date )
 			WHERE t1.update_date = REPLACE(DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY),'-','')
-		    AND t1.org_no = #{orgId}
+		    AND concat(substr(t1.org_no,1,6),'01') =  concat(substr(#{orgId},1,6),'01')
       AND t1.update_date = DATE_FORMAT(#{date},'%Y%m%d')
 			AND NOT EXISTS (
 				SELECT 1 FROM wbmp_org_batch_balance
@@ -103,7 +103,7 @@
 			AND t2.update_date = ( SELECT MAX(update_date) AS update_date FROM wbmp_org_currency WHERE t1.update_date >= update_date )
 			WHERE t1.update_date BETWEEN DATE_FORMAT(DATE_SUB(CURRENT_DATE, INTERVAL 31 DAY),'%Y%m%d')
 			AND DATE_FORMAT(DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY),'%Y%m%d')
-		    AND t1.org_no = #{orgId}
+		    AND concat(substr(t1.org_no,1,6),'01') =  concat(substr(#{orgId},1,6),'01')
        AND t1.update_date = DATE_FORMAT(#{date},'%Y%m%d')
 			AND NOT EXISTS (
 				SELECT 1 FROM wbmp_org_batch_balance

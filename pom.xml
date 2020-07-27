@@ -23,7 +23,8 @@
         <module>generator</module>
         <module>PAD</module>
         <module>icop</module>
-        <module>manage-public</module>
+        <module>esb</module>
+	<module>manage-public</module>
     </modules>
 
     <properties>

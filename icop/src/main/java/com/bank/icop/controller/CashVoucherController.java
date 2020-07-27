@@ -7,10 +7,8 @@ import com.bank.icop.dos.VoucherStockDo;
 import com.bank.icop.service.CashVoucherService;
 import com.bank.icop.vo.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +16,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/cashVoucher")
 @Api(tags = "凭证管理接口")
@@ -36,7 +35,7 @@ public class CashVoucherController extends BaseIcopController{
     @PostMapping("/queryVoucherNumber")
     @ApiOperation(value = "凭证管理--号段查看")
     @ApiImplicitParam(name = "voucherNumberDo", value = "号段信息查询", required = true, paramType = "body", dataType = "VoucherNumberDo")
-    public List queryVoucherNumber(@RequestBody VoucherNumberDo voucherNumberDo) {
+    public List<VoucherNumberVo> queryVoucherNumber(@RequestBody VoucherNumberDo voucherNumberDo) {
         return this.cashVoucherService.queryVoucherNumber(voucherNumberDo);
     }
 
@@ -135,8 +134,24 @@ public class CashVoucherController extends BaseIcopController{
 
     @PostMapping("/queryDetailList")
     @ApiOperation("查询订单明细列表")
-    public List<OrderDetailDo> queryDetailList(@RequestBody OrderQueryDetailVo orderQueryDetailVo){
+    public IPage<OrderDetailDo> queryDetailList(@RequestBody OrderQueryDetailVo orderQueryDetailVo){
         return cashVoucherService.queryDetailList(orderQueryDetailVo);
     }
+
+
+    @PostMapping("/waitlist")
+    @ApiOperation("凭证待办列表")
+    public List<VoucherWaitListVo> getWaitList(@RequestBody WaitListQueryVo waitListQueryVo){
+        return cashVoucherService.getWaitList(waitListQueryVo);
+    }
+
+
+    @PostMapping("/ordervoucherinfo")
+    @ApiOperation(value = "订单凭证详情接口")
+    public OrderVoucherDetailResponseVo getOrderVoucherDetailInfo(@RequestBody OrderVoucherDetailVo orderVoucherDetailVo){
+        log.info("Controller 接受的参数："+orderVoucherDetailVo.toString());
+        return cashVoucherService.getOrderVoucherDetailInfo(orderVoucherDetailVo);
+    }
+
 
 }

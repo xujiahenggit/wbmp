@@ -21,8 +21,8 @@ public class NetUtil {
             ip = configFileReader.getApplicationIp();
         }
         //生产环境与sit环境使用域名
-        else if (StringUtils.indexOf("pro", configFileReader.getSpringProfile()) > 0) {
-            return "http://" + configFileReader.getApplicationIp() + "/" + contextPath;
+        else if (StringUtils.indexOf("sit,pro", configFileReader.getSpringProfile()) > -1) {
+            return "http://" + configFileReader.getApplicationIp() + contextPath;
         }
         else {
             ip = cn.hutool.core.net.NetUtil.getLocalhostStr();
@@ -36,8 +36,8 @@ public class NetUtil {
             ip = configFileReader.getApplicationIp();
         }
         //生产环境与sit环境使用域名
-        else if (StringUtils.indexOf("pro", configFileReader.getSpringProfile()) > 0) {
-            return "http://" + configFileReader.getApplicationIp() + "/" + configFileReader.getApplicationContextPath();
+        else if (StringUtils.indexOf("sit,pro", configFileReader.getSpringProfile()) > -1) {
+            return "http://" + configFileReader.getApplicationIp() + configFileReader.getApplicationContextPath();
         }
         else {
             ip = cn.hutool.core.net.NetUtil.getLocalhostStr();

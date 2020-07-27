@@ -8,6 +8,7 @@ import com.bank.manage.dto.HouseRaceCharts;
 import com.bank.manage.dto.HouseRaceDto;
 import com.bank.manage.dto.HouseRaceItem;
 import com.bank.manage.service.WbmpOperateRacingIndexMService;
+import com.bank.manage.util.Tools;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -36,43 +37,69 @@ public class WbmpOperateRacingIndexMServiceImpl extends ServiceImpl<WbmpOperateR
     public HouseRaceDto racingAssessIndex(String orgId) {
         HouseRaceDto houseRaceDto=new HouseRaceDto();
         HouseRaceCharts houseRaceCharts=new HouseRaceCharts();
-        String date= LocalDate.now().minusDays(1).toString().substring(0, 7);
-        List<HouseRaceItem> listItem=wbmpOperateRacingIndexMDao.getItemNames(orgId,date);
+        String date= LocalDate.now().minusMonths(1).toString().substring(0, 7);
         List<HouseRaceItem> sortItem=new ArrayList<>();
-        sortItem.addAll(listItem);
-        for (HouseRaceItem item:listItem){
-            if(item.getId().equals(WbmpConstFile.SMZ_RACING_008)){
-                sortItem.set(0,item);
-            }
-            if(item.getId().equals(WbmpConstFile.SMZ_RACING_005)){
-                sortItem.set(1,item);
-            }
-            if(item.getId().equals(WbmpConstFile.SMZ_RACING_004)){
-                sortItem.set(2,item);
-            }
-            if(item.getId().equals(WbmpConstFile.SMZ_RACING_006)){
-                sortItem.set(3,item);
-            }
-            if(item.getId().equals(WbmpConstFile.SMZ_RACING_007)){
-                sortItem.set(4,item);
-            }
-            if(item.getId().equals(WbmpConstFile.SMZ_RACING_002)){
-                sortItem.set(5,item);
-            }
-            if(item.getId().equals(WbmpConstFile.SMZ_RACING_003)){
-                sortItem.set(6,item);
-            }
-            if(item.getId().equals(WbmpConstFile.SMZ_RACING_001)){
-                sortItem.set(7,item);
-            }
-        }
+        HouseRaceItem houseRaceItem_008=new HouseRaceItem();
+        houseRaceItem_008.setId(WbmpConstFile.SMZ_RACING_008);
+        houseRaceItem_008.setMax("100");
+        houseRaceItem_008.setName("个人及企业客户线上开通率");
+        sortItem.add(houseRaceItem_008);
+
+        HouseRaceItem houseRaceItem_005=new HouseRaceItem();
+        houseRaceItem_005.setId(WbmpConstFile.SMZ_RACING_005);
+        houseRaceItem_005.setMax("100");
+        houseRaceItem_005.setName("现金业务分流率");
+        sortItem.add(houseRaceItem_005);
+
+
+        HouseRaceItem houseRaceItem_004=new HouseRaceItem();
+        houseRaceItem_004.setId(WbmpConstFile.SMZ_RACING_004);
+        houseRaceItem_004.setMax("100");
+        houseRaceItem_004.setName("电子对账率");
+        sortItem.add(houseRaceItem_004);
+
+
+        HouseRaceItem houseRaceItem_006=new HouseRaceItem();
+        houseRaceItem_006.setId(WbmpConstFile.SMZ_RACING_006);
+        houseRaceItem_006.setMax("100");
+        houseRaceItem_006.setName("自助设备业务分摊率");
+        sortItem.add(houseRaceItem_006);
+
+        HouseRaceItem houseRaceItem_007=new HouseRaceItem();
+        houseRaceItem_007.setId(WbmpConstFile.SMZ_RACING_007);
+        houseRaceItem_007.setMax("100");
+        houseRaceItem_007.setName("对公账户线上开户率");
+        sortItem.add(houseRaceItem_007);
+
+
+        HouseRaceItem houseRaceItem_002=new HouseRaceItem();
+        houseRaceItem_002.setId(WbmpConstFile.SMZ_RACING_002);
+        houseRaceItem_002.setMax("100");
+        houseRaceItem_002.setName("自助设备可用率");
+        sortItem.add(houseRaceItem_002);
+
+
+        HouseRaceItem houseRaceItem_003=new HouseRaceItem();
+        houseRaceItem_003.setId(WbmpConstFile.SMZ_RACING_003);
+        houseRaceItem_003.setMax("100");
+        houseRaceItem_003.setName("银企对账率");
+        sortItem.add(houseRaceItem_003);
+
+        HouseRaceItem houseRaceItem_001=new HouseRaceItem();
+        houseRaceItem_001.setId(WbmpConstFile.SMZ_RACING_001);
+        houseRaceItem_001.setMax("100");
+        houseRaceItem_001.setName("取消无纸化比率");
+        sortItem.add(houseRaceItem_001);
+
         List<Float> data=new ArrayList<>();
-        if(listItem.size()>0){
+        if(sortItem.size()>0){
             for(HouseRaceItem item:sortItem){
 
-                float dataNumber=wbmpOperateRacingIndexMDao.getData(orgId,date,item.getId());
+                float dataNumber= Tools.formatFloat(wbmpOperateRacingIndexMDao.getData(orgId,date,item.getId()));
+                if(item.getId().equals("RACING_004")){
+                    dataNumber = dataNumber/100;
+                }
                 data.add(dataNumber);
-
             }
         }
         //按顺序 排序

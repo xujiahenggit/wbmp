@@ -1,7 +1,6 @@
 package com.bank.icop.dto;
 
 import java.io.Serializable;
-import java.util.List;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -31,9 +30,6 @@ public class CheckProblemDTO implements Serializable {
     @ApiModelProperty(value = "检查任务ID")
     private String taskId;
 
-    @ApiModelProperty(value = "检查任务项ID")
-    private String taskItemId;
-
     @ApiModelProperty(value = "问题Id")
     private String problemId;
 
@@ -46,12 +42,13 @@ public class CheckProblemDTO implements Serializable {
     @ApiModelProperty(value = "问题整改机构")
     private String problemRectifyOrg;
 
-    @ApiModelProperty(value = "整改责任人列表")
-    private List<String> rectifyDutyUserList;
+    @ApiModelProperty(value = "整改责任人编号，多个用半角逗号隔开")
+    private String rectifyDutyUser;
+
+    @ApiModelProperty(value = "整改责任人名称，多个用半角逗号隔开")
+    private String rectifyDutyUserName;
 
     @ApiModelProperty(value = "问题描述")
     private String problemDes;
 
-    @ApiModelProperty(value = "审核反馈")
-    private String auditFeedback;
 }

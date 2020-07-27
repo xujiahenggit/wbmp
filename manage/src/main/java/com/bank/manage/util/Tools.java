@@ -4,6 +4,8 @@ import cn.hutool.core.date.DateUtil;
 import com.bank.core.sysConst.WbmpConstFile;
 import oracle.sql.DATE;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -80,15 +82,15 @@ public class Tools {
                 break;
             case WbmpConstFile.DATE_TYPE_JIDU:
                 DateRange range = getLastQuarter(new Date());
-                Date endDate =   range.getEnd();
-                int month = DateUtil.month(endDate);
-                int jidu =   (month+1)/3;
+                Date start =   range.getStart();
+                int month = DateUtil.month(start);
+                int jidu =   (month+3)/3;
                 xAxis.add(numFormatJd(jidu));
                    for(int i=3;i>0;i--){
-                       range =  getLastQuarter(endDate);
-                       endDate = range.getEnd();
-                       month = DateUtil.month(endDate);
-                       jidu =   (month+1)/3;
+                       range =  getLastQuarter(start);
+                       start = range.getStart();
+                       month = DateUtil.month(start);
+                       jidu =   (month+3)/3;
                        xAxis.add(numFormatJd(jidu));
                    }
                 break;
@@ -114,6 +116,7 @@ public class Tools {
     public static List<String> getXDateDetail(String tpye) {
         List<String> xDateDetail = new ArrayList<String>();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM");
+        SimpleDateFormat formatYear = new SimpleDateFormat("yyyy");
         switch (tpye) {
             case WbmpConstFile.DATE_TYPE_YEAR:
                 int year = DateUtil.year(new Date());
@@ -122,17 +125,24 @@ public class Tools {
                 }
                 break;
             case WbmpConstFile.DATE_TYPE_JIDU:
+
                 DateRange range = getLastQuarter(new Date());
-                Date endDate =   range.getEnd();
-                String date = format.format(endDate);
-                xDateDetail.add(date);
+                Date start =   range.getStart();
+                int month = DateUtil.month(start);
+                String jidu =   String.valueOf((month+3)/3);
+                String date  = formatYear.format(start);
+                xDateDetail.add(date+"-"+jidu);
+
                 for(int i=3;i>0;i--){
-                    range =  getLastQuarter(endDate);
-                    endDate = range.getEnd();
-                    date = format.format(endDate);
-                    xDateDetail.add(date);
+                    range =  getLastQuarter(start);
+                    start = range.getStart();
+                    month = DateUtil.month(start);
+                     jidu =   String.valueOf((month+3)/3);
+                    date = formatYear.format(start);
+                    xDateDetail.add(date+"-"+jidu);
                 }
                 break;
+
             case WbmpConstFile.DATE_TYPE_MONTH:
                 Calendar c = Calendar.getInstance();
                 c.setTime(new Date());
@@ -316,17 +326,61 @@ public class Tools {
         return  cal;
     }
 
+
+    /**
+     * Bigdecimal 默认保留两位小数,保留四位小数点
+     * @param bigDecimal
+     */
+    public static String formatBigdecimal(BigDecimal bigDecimal,int type){
+        DecimalFormat df = new DecimalFormat("0.0");
+        if(type == 0){
+            df = new DecimalFormat("0");
+        }else if(type == 2){
+            df = new DecimalFormat("0.00");
+        }else if(type == 4){
+             df = new DecimalFormat("0.0000");
+        }
+       return df.format(bigDecimal);
+    }
+
+    /**
+     * float 保留两位小数点
+     * @param f
+     */
+    public static float formatFloat(float f){
+        DecimalFormat df = new DecimalFormat("0.00");
+        BigDecimal bigDecimal = new BigDecimal(f);
+        return Float.parseFloat( df.format(bigDecimal));
+    }
+
+    /**
+     * 获取随机数
+     */
+    public static String getFreeOrderNo(){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        String dateStr = sdf.format(new Date());
+        Random r = new Random();
+        int randomNum =  r.nextInt(900000)+100000;
+        return dateStr+String.valueOf(randomNum);
+    }
+
+
     public static void main(String[] args) {
 //        DateRange rage = getThisQuarter(null);
 //
 //        System.out.println(format(rage.getStart()));
 //        System.out.println(format(rage.getEnd()));
-        int num = (DateUtil.month(new Date())+1)%3;
-        System.out.println("num:"+num);
-        int jidu =   ((DateUtil.month(new Date())+1)%3)+1;
-        System.out.println("jidu:"+jidu);
+//        int num = (DateUtil.month(new Date())+1)%3;
+//        System.out.println("num:"+num);
+//        int jidu =   ((DateUtil.month(new Date())+1)%3)+1;
+//        System.out.println("jidu:"+jidu);
+//
+//        int e =   1/3;
+//        System.out.println("e:"+e);
 
-        int e =   1/3;
-        System.out.println("e:"+e);
+         float f = 0.4586412f;
+        System.out.println("ss:"+formatFloat(f));
+
+
     }
 }

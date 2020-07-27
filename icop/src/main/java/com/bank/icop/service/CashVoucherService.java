@@ -12,7 +12,7 @@ import java.util.List;
 public interface CashVoucherService {
     List<VoucherStockVo> queryVoucherStock(VoucherStockDo voucherStockDo);
 
-    List queryVoucherNumber(VoucherNumberDo voucherNumberDo);
+    List<VoucherNumberVo> queryVoucherNumber(VoucherNumberDo voucherNumberDo);
 
     Object voucherNumberSave(InputVoucherNumberVo inputVoucherNumberVo);
 
@@ -60,5 +60,18 @@ public interface CashVoucherService {
 
     ReceiptInfoVo getReceiptInfoByOrg(String orgId);
 
-    List<OrderDetailDo> queryDetailList(OrderQueryDetailVo orderQueryDetailVo);
+    IPage<OrderDetailDo> queryDetailList(OrderQueryDetailVo orderQueryDetailVo);
+
+    /**
+     * 查询凭证 待办列表
+     * @param waitListQueryVo 查询参数
+     */
+    List<VoucherWaitListVo> getWaitList(WaitListQueryVo waitListQueryVo);
+
+    /**
+     * 查询订单凭证详情
+     * @param orderVoucherDetailVo
+     * @return
+     */
+    OrderVoucherDetailResponseVo getOrderVoucherDetailInfo(OrderVoucherDetailVo orderVoucherDetailVo);
 }

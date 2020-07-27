@@ -12,7 +12,7 @@ public class HeaderDO {
 
     private String ServiceCode;
     private String AuthorizerID;
-    private String ChannelId="811";
+    private String ChannelId="812";
     private String ExternalReference= UUID.randomUUID().toString();
     private String RequestTime= DateUtil.format(LocalDateTime.now(),"yyyyMMddHHmmssSSS");
     private String TradeDate= DateUtil.format(LocalDateTime.now(),"yyyyMMdd");

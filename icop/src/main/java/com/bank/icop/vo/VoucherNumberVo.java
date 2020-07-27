@@ -18,7 +18,7 @@ public class VoucherNumberVo implements Serializable {
     @ApiModelProperty(value = "凭证结束号码  ")
     private String endNo;
 
-    @ApiModelProperty(value = "数量  ")
-    private Integer num;
+    @ApiModelProperty(value = "数量")
+    private long num;
 
 }

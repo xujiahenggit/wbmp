@@ -1,6 +1,7 @@
 package com.bank.manage.dos;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
@@ -15,7 +16,7 @@ import java.time.LocalDate;
  * @Date: 2020/6/19 9:31
  */
 @Data
-@TableName("WBMP_MANGEMENT_SCORE")
+@TableName("WBMP_OPERATE_SCORE")
 @ApiModel("经营分数")
 public class WbmpOperateScoreDO extends Model<WbmpOperateScoreDO> {
 
@@ -44,6 +45,7 @@ public class WbmpOperateScoreDO extends Model<WbmpOperateScoreDO> {
      * 得分
      */
     @ApiModelProperty(value = "得分")
+
     private Float operateScore;
 
     /**

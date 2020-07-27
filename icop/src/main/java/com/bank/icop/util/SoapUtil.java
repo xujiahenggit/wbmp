@@ -1,26 +1,27 @@
 package com.bank.icop.util;
 
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.http.HttpRequest;
-import cn.hutool.http.HttpResponse;
-import com.bank.core.entity.BizException;
-import com.bank.core.entity.HeaderDO;
-import com.bank.core.utils.ApplicationContextUtil;
-import lombok.extern.slf4j.Slf4j;
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
+import java.util.*;
+
+import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.springframework.core.env.Environment;
 
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.alibaba.fastjson.JSON;
+import com.bank.core.entity.BizException;
+import com.bank.core.entity.HeaderDO;
+import com.bank.core.utils.ApplicationContextUtil;
+
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 发送soap请求工具类
@@ -30,10 +31,29 @@ public class SoapUtil {
 
     private static StringBuilder builder = new StringBuilder();
 
+    public static Map sendReport(String serviceCode, String channelId, Map<String, Object> paramMap) {
+        HeaderDO headerDO = new HeaderDO();
+        headerDO.setServiceCode(serviceCode);
+        headerDO.setChannelId(channelId);
+        return sendReport(headerDO, paramMap);
+    }
+
     public static Map sendReport(String serviceCode, Map<String, Object> paramMap) {
         HeaderDO headerDO = new HeaderDO();
         headerDO.setServiceCode(serviceCode);
-        return sendReport(headerDO,paramMap);
+        return sendReport(headerDO, paramMap);
+    }
+
+    /**
+     * 号段录入 专用
+     * @param serviceCode
+     * @param paramMap
+     * @return
+     */
+    public static Map sendReportHd(String serviceCode, Map<String, Object> paramMap) {
+        HeaderDO headerDO = new HeaderDO();
+        headerDO.setServiceCode(serviceCode);
+        return sendReportHd(headerDO, paramMap);
     }
 
     public static Map sendReport(HeaderDO headerDO, Map<String, Object> paramMap) {
@@ -60,20 +80,69 @@ public class SoapUtil {
         String xml = builder.append(document)
                 .insert(builder.indexOf("</Header>"), beanToXmlStr(headerDO))
                 .insert(builder.indexOf("</Request>"), mapToXmlStr(paramMap)).toString();
-        log.info(xml);
+        log.info("ICOP请求流水：[{}]，请求服务编码：[{}]，请求参数：[{}]", headerDO.getExternalReference(), headerDO.getServiceCode(), xml);
         HttpResponse response = HttpRequest.post(env.getProperty("ICOP.PATH")).header("SOAPAction", "application/soap+xml;charset=utf-8")
-                .body(xml, "text/xml").execute();
-
+                .body(xml, "text/xml").timeout(Integer.parseInt(env.getProperty("ICOP.TIMEOUT"))).execute();
 
         Map<String, Object> domParse = null;
         try {
             domParse = domParse(response.body());
-        } catch (DocumentException e) {
+            log.info("ICOP返回数据：[{}]", JSON.toJSONString(domParse));
+        }
+        catch (DocumentException e) {
             throw new BizException("解析dom失败");
         }
         return domParse;
 
     }
+
+    /**
+     * 号段录入专用
+     * @param headerDO
+     * @param paramMap
+     * @return
+     */
+    public static Map sendReportHd(HeaderDO headerDO, Map<String, Object> paramMap) {
+        Environment env = (Environment) ApplicationContextUtil.getBeanByClass(Environment.class);
+        StringBuilder builder = new StringBuilder();
+        String document = "<soapenv:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ser=\"http://service.framework.platform\">\n" +
+                "   <soapenv:Header/>\n" +
+                "   <soapenv:Body>\n" +
+                "      <ser:request soapenv:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">\n" +
+                "         <xml xsi:type=\"soapenc:string\" xmlns:soapenc=\"http://schemas.xmlsoap.org/soap/encoding/\">\n" +
+                "     <![CDATA[    \n" +
+                "<Service>" +
+                "<Header>\n" +
+                "</Header>\n" +
+                "<Body>\n" +
+                "<Request>\n" +
+                "</Request>\n" +
+                "</Body>\n" +
+                "</Service>]]>\n" +
+                "</xml>\n" +
+                "      </ser:request>\n" +
+                "   </soapenv:Body>\n" +
+                "</soapenv:Envelope>";
+        StringBuffer sb=new StringBuffer();
+        String xml = builder.append(document)
+                .insert(builder.indexOf("</Header>"), beanToXmlStr(headerDO))
+                .insert(builder.indexOf("</Request>"), mapToXmlStr2(paramMap,sb)).toString();
+        log.info("ICOP请求流水：[{}]，请求服务编码：[{}]，请求参数：[{}]", headerDO.getExternalReference(), headerDO.getServiceCode(), xml);
+        HttpResponse response = HttpRequest.post(env.getProperty("ICOP.PATH")).header("SOAPAction", "application/soap+xml;charset=utf-8")
+                .body(xml, "text/xml").timeout(Integer.parseInt(env.getProperty("ICOP.TIMEOUT"))).execute();
+
+        Map<String, Object> domParse = null;
+        try {
+            domParse = domParse(response.body());
+            log.info("ICOP返回数据：[{}]", JSON.toJSONString(domParse));
+        }
+        catch (DocumentException e) {
+            throw new BizException("解析dom失败");
+        }
+        return domParse;
+
+    }
+
 
     /**
      * 通过XML转换为Map<String,Object>
@@ -92,8 +161,8 @@ public class SoapUtil {
         Element rootElement = doc.getRootElement();
         List<Element> list = rootElement.selectNodes("//Response");
         Map<String, Object> headMap = new HashMap<>();
-        headMap=elementTomap(list.get(0));
-        if (!headMap.get("ReturnCode").equals("00000000")){
+        headMap = elementTomap(list.get(0));
+        if (!headMap.get("ReturnCode").equals("00000000")) {
             throw new BizException(headMap.get("ReturnMessage").toString());
         }
         map = elementTomap(list.get(1));
@@ -126,43 +195,69 @@ public class SoapUtil {
                             mapList.add(m);
                         }
                         map.put(iter.getName(), mapList);
-                    } else {
+                    }
+                    else {
                         map.put(iter.getName(), m);
                     }
-                } else {
+                }
+                else {
                     if (map.get(iter.getName()) != null) {
                         Object obj = map.get(iter.getName());
                         if (!obj.getClass().getName().equals("java.util.ArrayList")) {
                             mapList = new ArrayList();
                             mapList.add(obj);
-                            mapList.add(iter.getText());
+                            mapList.add(StringUtils.equals(iter.getText(), "null") ? "" : iter.getText());
                         }
                         if (obj.getClass().getName().equals("java.util.ArrayList")) {
                             mapList = (List) obj;
-                            mapList.add(iter.getText());
+                            mapList.add(StringUtils.equals(iter.getText(), "null") ? "" : iter.getText());
                         }
                         map.put(iter.getName(), mapList);
-                    } else {
-                        map.put(iter.getName(), iter.getText());
+                    }
+                    else {
+                        map.put(iter.getName(), StringUtils.equals(iter.getText(), "null") ? "" : iter.getText());
                     }
                 }
             }
-        } else {
-            map.put(e.getName(), e.getText());
+        }
+        else {
+            map.put(e.getName(), StringUtils.equals(e.getText(), "null") ? "" : e.getText());
         }
         return map;
     }
-
 
     private static String replaceALL(String xml) {
         return xml.replaceAll("&gt;", ">").replaceAll("&lt;", "<");
     }
 
-
     private static String mapToXmlStr(Map<String, Object> map) {
         builder.setLength(0);
         map.forEach((k, v) -> builder.append("<").append(k).append(">").append(v).append("</").append(k).append(">"));
         return builder.toString();
+    }
+
+    public static String mapToXmlStr2(Map<String,Object> map,StringBuffer sb){
+        Set<?> set=map.keySet();
+        for (Iterator<?> it=set.iterator();it.hasNext();){
+            String key=(String) it.next();
+            Object value=map.get(key);
+            if(value instanceof Map){
+                sb.append("<"+key+">\n");
+                mapToXmlStr2((Map<String,Object>) value,sb);
+                sb.append("</"+key+">\n");
+            }else if(value instanceof List){
+                List<?> list= (List<?>) map.get(key);
+                for(int i=0;i<list.size();i++){
+                    sb.append("<"+key+">\n");
+                    Map<String,Object> hm= (Map<String, Object>) list.get(i);
+                    mapToXmlStr2(hm,sb);
+                    sb.append("</"+key+">\n");
+                }
+            }else{
+                sb.append("<"+key+">"+value+"</"+key+">\n");
+            }
+        }
+        return sb.toString();
     }
 
     private static String beanToXmlStr(Object bean) {
@@ -184,7 +279,8 @@ public class SoapUtil {
                     }
                 }
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             String errMsg = e.getMessage();
             log.info("{}", errMsg);
             throw new BizException(errMsg);

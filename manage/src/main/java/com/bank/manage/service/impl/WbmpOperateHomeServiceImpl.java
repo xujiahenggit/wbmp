@@ -2,13 +2,17 @@ package com.bank.manage.service.impl;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.*;
 
 import javax.annotation.Resource;
 
+import com.bank.core.utils.DateUtils;
+import com.bank.manage.dos.WbmpMangementScoreDO;
+import com.bank.manage.dos.WbmpOperateScoreDO;
+import com.bank.manage.service.OperateCurveService;
+import com.bank.manage.service.WbmpOperateScoreService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -41,10 +45,15 @@ public class WbmpOperateHomeServiceImpl implements WbmpOperateHomeService {
     @Resource
     private NfrtOrgDao nfrtOrgDao;
 
+    @Resource
+    private OperateCurveService operateCurveService;
+
+    @Resource
+    private WbmpOperateScoreService wbmpOperateScoreService;
+
     @Override
     public Map<String, Object> queryBranchDepositBalance(String orgId, String depositTypeCode) {
         Map<String, Object> resultData = new HashMap<>();
-
         String balType = "";
         switch (depositTypeCode) {
             case "00":
@@ -57,21 +66,43 @@ public class WbmpOperateHomeServiceImpl implements WbmpOperateHomeService {
                 balType = "public_bal";
                 break;
         }
+        //查询当前日存款数
         Map<String, Object> depositDay = wbmpOperateHomeDao.queyDepositDay(orgId);
-        BigDecimal deposit = depositDay == null ? new BigDecimal("0.00") : (BigDecimal) depositDay.get(balType);
-        deposit = deposit == null ? new BigDecimal("0.00") : deposit;
-        DecimalFormat decimalFormat = new DecimalFormat("0.00#");
-        resultData.put("deposit", decimalFormat.format(deposit.divide(new BigDecimal("100000000"), 2, BigDecimal.ROUND_HALF_UP)));
 
+        DecimalFormat decimalFormat = new DecimalFormat("0.00#");
+        BigDecimal billion = new BigDecimal("100000000"); //亿元
+        //当日存款余额（单位：亿元）
+        BigDecimal deposit = new BigDecimal("0.00");
+        if(depositDay !=null){
+             deposit = new BigDecimal(String.valueOf(depositDay.get(balType) ==null ?deposit:depositDay.get(balType)));
+        }else if(depositDay ==null){
+            depositDay = new HashMap<String, Object>();
+            SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
+            String  today = df.format(new Date());
+            depositDay.put("org_no",orgId);
+            depositDay.put("private_bal",deposit);
+            depositDay.put("public_bal",deposit);
+            depositDay.put("generality_bal",deposit);
+            depositDay.put("date_str",today);
+        }
+        resultData.put("deposit", decimalFormat.format(deposit.divide(billion, 2, BigDecimal.ROUND_HALF_UP)));
+        
         List<BigDecimal> data = new ArrayList<>();
         List<String> xAxis = new ArrayList<>();
+        //获取最近30天的记录
+        List<String> days= DateUtils.getDateBefor30();
+
         List<Map<String, Object>> depositDay30 = wbmpOperateHomeDao.queyDepositDay30(orgId);
-        for (int i = 0; i < depositDay30.size(); i++) {
-            Map<String, Object> depositData = depositDay30.get(i);
-            BigDecimal value = (BigDecimal) depositData.get(balType);
-            value = value == null ? new BigDecimal("0.00") : value;
-            data.add(value.divide(new BigDecimal("100000000"), 2, BigDecimal.ROUND_HALF_UP));
-            xAxis.add((String) depositData.get("date_str"));
+        depositDay30.add(depositDay);
+        for(String item:days){
+            xAxis.add(DateUtils.formartToMonthDay(item));
+            BigDecimal balance = new BigDecimal("0.00");
+            for(Map<String, Object> arg:depositDay30){
+                if(item.equals(arg.get("date_str"))){
+                    balance = new BigDecimal(String.valueOf(arg.get(balType) == null?balance:arg.get(balType))).divide(billion,2, BigDecimal.ROUND_HALF_UP);
+                }
+            }
+            data.add(balance);
         }
         resultData.put("data", data);
         resultData.put("xAxis", xAxis);
@@ -179,6 +210,22 @@ public class WbmpOperateHomeServiceImpl implements WbmpOperateHomeService {
             }
         }
         return result;
+    }
+
+    /**
+     * 计算分数
+     * @param orgId 机构号时间
+     * @param date 时间
+     * @return
+     */
+    @Override
+    public String calScore(String orgId, String date) {
+        // 根据时间和机构号 来查询 经营分数
+        float manageScore=operateCurveService.calcOrgMonthScore(orgId,date);
+        //根据时间和机构号 查询运营分数
+        float operateScore=wbmpOperateScoreService.calOperScore(orgId,date);
+
+        return "success";
     }
 
 }

@@ -32,4 +32,12 @@ public interface WbmpOperateHomeService {
      * @return
      */
     Map<String, Object> queryOrgTierInfo(String orgId);
+
+    /**
+     * 计算分数用
+     * @param orgId 机构号时间
+     * @param date 时间
+     * @return
+     */
+    String calScore(String orgId, String date);
 }

@@ -75,4 +75,10 @@ public interface NfrtOrgDao extends BaseMapper<NfrtOrgDO> {
      * @return
      */
     List<OrgNftDto> getOutlegetOutSitListByUsertsList(@Param(value = "departId") String departId, @Param(value = "orgId") String orgId);
+
+    /**
+     * 获取所有的 核心机构号列表 计算综合分数用
+     * @return
+     */
+    List<OrgNftDto> getAllOrgUseOperate();
 }

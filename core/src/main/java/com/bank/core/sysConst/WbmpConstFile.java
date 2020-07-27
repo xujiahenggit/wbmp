@@ -54,8 +54,30 @@ public class WbmpConstFile {
     public static final String DEVICE_NO="无效";
 
     public static final String CASH_DISPENSER_CASSMORE="CASSMORE";
-    public static final String CASH_DISPENSER_CASSMORE_NAME="钞多";
 
+    public static final String CASH_PRINTER_REC="REC";
+    public static final String CASH_PRINTER_ERROR="故障";
+
+    /**
+     * 打印机状态-缺纸
+     */
+    public static final String CASH_PRINTER_JRNPEPT = "JRNPEPT";
+    public static final String CASH_PRINTER_JRNPEPT_NAME = "缺纸";
+    public static final String CASH_PRINTER_RECPEPT = "RECPEPT";
+    public static final String CASH_PRINTER_RECPEPT_NAME = "缺纸";
+    public static final String CASH_PRINTER_DOCPEPT = "DOCPEPT";
+    public static final String CASH_PRINTER_DOCPEPT_NAME = "缺纸";
+
+    /**
+     * 打印机状态-卡纸
+     */
+    public static final String CASH_PRINTER_JRNPJAM = "JRNPJAM";
+    public static final String CASH_PRINTER_RECPJAM = "RECPJAM";
+    public static final String CASH_PRINTER_DOCPJAM = "DOCPJAM";
+    public static final String CASH_PRINTER_DOCPJAM_NAME = "卡纸";
+
+
+    public static final String CASH_DISPENSER_CASSMORE_NAME="钞多";
     public static final String CASH_DISPENSER_CASSEPT="CASSEPT";
     public static final String CASH_DISPENSER_CASSEPT_NAME="断钞";
 

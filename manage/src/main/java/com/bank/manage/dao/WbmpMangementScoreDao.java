@@ -2,6 +2,7 @@ package com.bank.manage.dao;
 
 import com.bank.manage.dos.WbmpMangementScoreDO;
 import com.bank.manage.vo.OperateRankVO;
+import com.bank.manage.vo.OrgScoreVo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -15,14 +16,14 @@ import java.util.List;
 public interface WbmpMangementScoreDao extends BaseMapper<WbmpMangementScoreDO> {
 
     /**
-     * 红榜top5
+     * 运营红榜top5
      * @param now
      * @return
      */
     List<OperateRankVO> findRedTop(@Param(value = "now") String now);
 
     /**
-     * 灰榜top5
+     * 运营灰榜top5
      * @param now
      * @return
      */
@@ -30,21 +31,17 @@ public interface WbmpMangementScoreDao extends BaseMapper<WbmpMangementScoreDO> 
 
 
     /**
-     * 查询月度日期最大一天的分数[运营]
-     * @param orgId
-     * @param mouth
-     * @return
+     *查询最近三年的数据
      */
-    Float findOrgMouthScore(@Param(value = "orgId")String orgId,@Param(value = "mouth")String mouth);
-
-
+    List<OrgScoreVo> queryManageByYear(@Param(value = "orgId")String orgId);
 
     /**
-     * 查询年度日期最大一天的分数[运营]
-     * @param orgId
-     * @param year
-     * @return
+     *查询最近12个月的数据【不包含当月记录】
      */
-    Float findYearOrgScore(@Param(value = "orgId")String orgId,@Param(value = "year")String year);
+    List<OrgScoreVo> queryManageByMonth(@Param(value = "orgId")String orgId);
 
+    /**
+     *查询最近五个季度的数据【包含当季度的数据】
+     */
+    List<OrgScoreVo> queryManageByQuart(@Param(value = "orgId")String orgId);
 }

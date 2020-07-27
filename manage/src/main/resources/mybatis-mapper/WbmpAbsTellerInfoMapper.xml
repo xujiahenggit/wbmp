@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.WbmpAbsTellerInfoDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="wbmpAbsTellerInfoResultMap" type="com.bank.manage.dos.WbmpAbsTellerInfoDO">
+        <id column="TELLER_ID" property="tellerId"/>
+        <result column="ORG_ID" property="orgId"/>
+        <result column="TELLER_NAME" property="tellerName"/>
+        <result column="TELLER_IND" property="tellerInd"/>
+    </resultMap>
+
+
+    <select id="listPage" resultMap="wbmpAbsTellerInfoResultMap">
+        select * from wbmp_abs_teller_info
+        <where>
+                <if test="model!=null">
+                    <if test="model.orgId != null and model.orgId !=''">
+                        ORG_ID = #{model.orgId}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.tellerId != null and model.tellerId !=''">
+ AND                         TELLER_ID = #{model.tellerId}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.tellerName != null and model.tellerName !=''">
+ AND                         TELLER_NAME = #{model.tellerName}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.tellerInd != null and model.tellerInd !=''">
+ AND                         TELLER_IND = #{model.tellerInd}
+                    </if>
+                </if>
+        </where>
+    </select>
+
+
+</mapper>
