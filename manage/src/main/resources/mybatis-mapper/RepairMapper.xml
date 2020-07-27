@@ -165,12 +165,12 @@
           operation_type
          )
          values(
-          wordOrderCode,
-          dealWithPeopleId,
-          dealWithPeopleName,
-          dealWithPeopleRole,
-          createTime,
-          operationType
+          #{model.wordOrderCode},
+          #{model.dealWithPeopleId},
+          #{model.dealWithPeopleName},
+          #{model.dealWithPeopleRole},
+          #{model.createTime},
+          #{model.operationType}
          )
     </insert>
 
