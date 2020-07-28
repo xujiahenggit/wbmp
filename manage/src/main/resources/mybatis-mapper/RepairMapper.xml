@@ -397,6 +397,9 @@
         where t.escorts_patrol = #{userId} and t.work_order_code = #{repairCode}
     </select>
 
+    <select id="getOrgCodeById" resultType="java.lang.String">
+         select t.ORG_CODE from t_organization t where t.ORG_ID = #{orgId}
+    </select>
 
     <select id="getEquipmentByCode" resultType="com.bank.manage.vo.EquipmentVo">
             SELECT
@@ -423,6 +426,7 @@
             left join ssamgt.vendorpersonnel vendorpersonnel
             on vendorpersonnel.DEVICEMANU = device.STRDEVMANU
             where term.STRTERMNUM =#{terminalCode}
+            and term.ORGANIZATION = #{orgCode}
     </select>
 
     <select id="getInspectionEquipmentByCode" resultType="com.bank.manage.vo.InspectionEquipmentVo">

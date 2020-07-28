@@ -18,7 +18,7 @@ public interface RepairDao extends BaseMapper<ManageWorkOrderDO> {
 
     RepairVo getRepairById(@Param(value = "repairCode")String repairCode);
 
-    List<EquipmentVo> getEquipmentByCode(@Param(value = "terminalCode") String terminalCode);
+    List<EquipmentVo> getEquipmentByCode(@Param(value = "orgCode") String orgCode,@Param(value = "terminalCode") String terminalCode);
 
     int saveWorkOrder(WorkOrderDto workOrderDto);
 
@@ -120,4 +120,6 @@ public interface RepairDao extends BaseMapper<ManageWorkOrderDO> {
     List<PictureVo> getPictureByCode(String repairCode);
 
     String getAccompaniedByCode(@Param("userId") String userId,@Param("repairCode") String repairCode);
+
+    String getOrgCodeById(@Param("orgId") String orgId);
 }
