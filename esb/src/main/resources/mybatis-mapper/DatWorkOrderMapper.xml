@@ -238,7 +238,9 @@
         FROM
         t_work_order
         <where>
-            and (director=#{m.userId} or engineer=#{m.userId})
+            <if test="m.userId!=null and m.userId!=''">
+                and (director=#{m.userId} or engineer=#{m.userId})
+            </if>
             <if test="m.orderType != null and m.orderType != ''">
                 and work_order_type=#{m.orderType}
             </if>
