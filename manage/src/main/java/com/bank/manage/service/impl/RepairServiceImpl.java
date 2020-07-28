@@ -355,7 +355,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
         List<DirectorVo> directorVoList=repairDao.getDirectorList(repairCode);
         Collection collec =new Vector();
         collec.add(null);
-        engineerListVoList.removeAll(collec);
+        directorVoList.removeAll(collec);
         if(directorVoList.size()!=0){
             serviceInfoVo.setDirectorVoList(directorVoList);
 
@@ -698,6 +698,11 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
     @Override
     public List<PictureVo> getPictureByCode(String repairCode) {
         return repairDao.getPictureByCode(repairCode);
+    }
+
+    @Override
+    public String getAccompaniedByCode(String userId, String repairCode) {
+        return repairDao.getAccompaniedByCode(userId,repairCode);
     }
 
     public void getTime(InspectionEquipmentDto inspectionEquipmentDto){

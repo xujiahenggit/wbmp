@@ -84,6 +84,14 @@ public class RepairController extends BaseController {
                   throw new BizException("未找到对应的故障单信息");
               }
               repairVo.setCreateName("admin");
+              //判断是否是现场联系人
+              if(tokenUserInfo.getUserId().equals(repairVo.getContactName())){
+                  repairVo.setIsCreateUser("0");
+              }else{
+                  repairVo.setIsCreateUser("1");
+              }
+
+
               return repairVo;
           }else{
               //人工创建
@@ -164,7 +172,7 @@ public class RepairController extends BaseController {
         TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
         InspectionRepairVo inspectionRepairVo= repairService.getInspectionRepairById(repairCode);
         if(inspectionRepairVo == null){
-            throw new BizException("未找到对应的投诉单信息");
+            throw new BizException("未找到对应的巡检单信息");
         }
         int i=repairService.getUserRoleById(tokenUserInfo.getUserId(),"19");
         if(i==0){
@@ -180,9 +188,10 @@ public class RepairController extends BaseController {
             inspectionRepairVo.setUserType("1");
         }
 
-        //判断是否为创建人
-        String isCreateUser = repairService.getUserByCode(tokenUserInfo.getUserId(),repairCode);
+        //判断是否为陪同人员
+        String isCreateUser = repairService.getAccompaniedByCode(tokenUserInfo.getUserId(),repairCode);
         if(isCreateUser !=null ){
+            //0:是陪同人员 1:否
             inspectionRepairVo.setIsCreateUser("0");
         }else{
             inspectionRepairVo.setIsCreateUser("1");

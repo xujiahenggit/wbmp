@@ -82,4 +82,6 @@ public interface RepairService extends IService<ManageWorkOrderDO> {
     int getUserRoleById(String userId, String s);
 
     List<PictureVo> getPictureByCode(String repairCode);
+
+    String getAccompaniedByCode( String userId, String repairCode);
 }

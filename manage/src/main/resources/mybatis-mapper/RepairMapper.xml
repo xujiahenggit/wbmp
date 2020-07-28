@@ -377,6 +377,14 @@
            select count(*) from s_user_role where ROLE_ID =#{code} and USER_ID=#{userId}
     </select>
 
+    <select id="getAccompaniedByCode" resultType="java.lang.String">
+        select
+        t.escorts_patrol
+        from t_work_order t
+        where t.escorts_patrol = #{userId} and t.work_order_code = #{repairCode}
+    </select>
+
+
     <select id="getEquipmentByCode" resultType="com.bank.manage.vo.EquipmentVo">
             SELECT
                     term.STRTERMNUM terminalCode,
