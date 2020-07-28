@@ -34,7 +34,7 @@ public class FileToZip {
         ZipOutputStream zos = null;
         try {
             File temp=new File(zipFilePath);
-            if(!temp.exists()){
+            if(!temp.exists() && !temp.isDirectory()){
                 temp.mkdirs();
             }
 
