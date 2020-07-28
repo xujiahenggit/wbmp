@@ -244,7 +244,7 @@
     <select id="getInspectionRepairById" resultType="com.bank.manage.vo.InspectionRepairVo">
                    select     t.id id,
                                t.work_order_code repairCode,
-                               t.work_order_status status,
+                               t.work_order_status repairStatus,
                                t.work_order_type repairType,
                                a.user_name createName,
                                a.USER_PHONE createPhone,
