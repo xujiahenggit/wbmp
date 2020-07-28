@@ -456,7 +456,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         String orderStatus = inspectionSheetVo.getOrderStatus();
         List<Map<String, String>> data = esbService.getXjd(inspectionSheetVo);
         //巡检状态获取
-        if (orderStatus == null) {
+        if (StrUtil.isBlankIfStr(orderStatus)) {
             responseInspectionSheetDto.setRepcode("-1");
             return responseInspectionSheetDto;
         } else if (orderStatus.equals("1")) {
