@@ -642,8 +642,8 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                 break;
 
             case "5":
-                    //判断是否为创建人
-                    String user = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
+                    //判断是否陪同人员
+                    String user = repairDao.getAccompaniedByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
                     if(user ==null ){
                         throw new BizException("10001 无法操作");
                     }
