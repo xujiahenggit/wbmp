@@ -373,7 +373,7 @@
                  sub_cancel_opinion =#{commentVo.returnOpinion},
              </if>
              <if test="commentVo.bankCancelOpinion !=null and commentVo.bankCancelOpinion !=''">
-                 bank_cancel_opinion =#{commentVo.bankCancelOpinion}
+                 bank_cancel_opinion =#{commentVo.bankCancelOpinion},
              </if>
              work_order_status =#{code}
          </set>
