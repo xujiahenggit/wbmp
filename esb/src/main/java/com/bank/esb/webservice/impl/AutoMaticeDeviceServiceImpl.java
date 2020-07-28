@@ -461,7 +461,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
             return responseInspectionSheetDto;
         } else if (orderStatus.equals("1")) {
             String statisticalTime = inspectionSheetVo.getStatisticalTime();//1-上季度；2-本季度；3-上个半年；4-本半年
-            if (statisticalTime == null) {
+            if (StrUtil.isBlankIfStr(statisticalTime)) {
                 responseInspectionSheetDto.setRepcode("-1");
                 return responseInspectionSheetDto;
             }
