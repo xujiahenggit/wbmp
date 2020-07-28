@@ -353,7 +353,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
             }
             orderDO.setDealType(processMode);
             orderDO.setWorkOrderStatus(orderDealWithVo.getOrderStatus());
-            if (!StrUtil.isBlankIfStr(serviceDescribe)){
+            if (!StrUtil.isBlankIfStr(serviceDescribe)) {
                 orderDO.setDealNote(serviceDescribe);
             }
             workOrderService.saveOrUpdate(orderDO);
@@ -517,13 +517,13 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         //巡检单创建
         String deviceNo = inspectionSheetsVo.getDeviceNo();
         String accompany = inspectionSheetsVo.getAccompany();
-        if (StrUtil.isBlankIfStr(deviceNo)||StrUtil.isBlankIfStr(accompany)) {
+        if (StrUtil.isBlankIfStr(deviceNo) || StrUtil.isBlankIfStr(accompany)) {
             log.error("设备号,巡检陪同人员id号不能为空");
             inspectionSheetsDto.setRepcode("-1");
             return inspectionSheetsDto;
         }
         Map<String, Object> xjdInfo = esbService.getXjdInfo(deviceNo);
-        if (xjdInfo==null){
+        if (xjdInfo == null) {
             log.error("设备号错误，没有查到设备信息");
             inspectionSheetsDto.setRepcode("-1");
             return inspectionSheetsDto;
@@ -534,8 +534,8 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         Object strdevsn = xjdInfo.get("STRDEVSN");
         String orderId = "03" + DateUtils.now();
         //获取巡检陪同人员信息
-        Map<String,String> userInfo=datWorkOrderDao.getuserInfo(accompany);
-        if (userInfo==null){
+        Map<String, String> userInfo = datWorkOrderDao.getuserInfo(accompany);
+        if (userInfo == null) {
             log.error("巡检陪同人员id错误，没有任何信息");
             inspectionSheetsDto.setRepcode("-1");
             return inspectionSheetsDto;
@@ -612,35 +612,50 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         ResponseEngineerDto responseEngineerDto = new ResponseEngineerDto();
         responseEngineerDto.setRepcode("1");
         String engineerId = engineerDto.getEngineerId();
-        String orderId = engineerDto.getOrderId();
-        Map<String, String> engineerInfo = getEngineerInfo(engineerId);
-        String name = "";
-        String phone = "";
-        if (engineerInfo != null) {
-            name = engineerInfo.get("NAME");
-            phone = engineerInfo.get("TELEPHONE");
-        }
+        String orderNo = engineerDto.getOrderId();
         //工单分派
-        WorkOrderDO orderDO = workOrderService.getOne(new LambdaQueryWrapper<WorkOrderDO>().eq(WorkOrderDO::getWorkOrderCode, orderId));
+        WorkOrderDO orderDO = workOrderService.getOne(new LambdaQueryWrapper<WorkOrderDO>().eq(WorkOrderDO::getWorkOrderCode, orderNo));
         if (orderDO != null) {
-            orderDO.setEngineer(engineerId);
-            orderDO.setEngineerName(name);
-            orderDO.setWorkOrderStatus("11");
+            //查询信息
+            Map<String, String> engineerInfo = getEngineerInfo(engineerId);
+            String name = "";
+            String phone = "";
+            String role = "";
+            if (engineerInfo != null) {
+                name = engineerInfo.get("NAME");
+                phone = engineerInfo.get("TELEPHONE");
+                role = engineerInfo.get("MANUEMPNATURE");
+            } else {
+                responseEngineerDto.setRepcode("-1");
+                log.error("获取处理人信息为空，engineerId为必传字段,请检查");
+                return responseEngineerDto;
+            }
+
+            if (role.equals("1")) {
+                orderDO.setDirector(engineerId);
+                orderDO.setDirectorName(name);
+            } else {
+                orderDO.setEngineer(engineerId);
+                orderDO.setEngineerName(name);
+            }
+            orderDO.setWorkOrderStatus("7");
             workOrderService.saveOrUpdate(orderDO);
+
+
+            //插入流水，分派
+            workWaterService.save(
+                    WorkWaterDO.builder()
+                            .wordOrderId(orderNo)
+                            .dealWithTime(new Date())
+                            .dealWithPeopleId(engineerId)
+                            .dealWithPeopleRole(Integer.parseInt(role))
+                            .dealWithNote("工单分派")
+                            .dealWithPeopleName(name)
+                            .phone(phone)
+                            .operationType("11")
+                            .build()
+            );
         }
-        //插入流水
-        workWaterService.save(
-                WorkWaterDO.builder()
-                        .wordOrderId(orderId)
-                        .dealWithTime(new Date())
-                        .dealWithPeopleId(engineerId)
-                        .dealWithPeopleName(name)
-                        .dealWithPeopleRole(1)
-                        .dealWithNote("工单分派")
-                        .phone(phone)
-                        .operationType("11")
-                        .build()
-        );
         return responseEngineerDto;
     }
 
@@ -649,26 +664,40 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         stateChangesDto.setRepcode("0");
         String engineerId = stateChangesVo.getEngineerId();
         String orderId = stateChangesVo.getOrderNo();
+        WorkOrderDO orderDO = workOrderService.getOne(new LambdaQueryWrapper<WorkOrderDO>().eq(WorkOrderDO::getWorkOrderCode, orderId));
+        if (orderDO != null) {
+            Map<String, String> engineerInfo = getEngineerInfo(engineerId);
+            String name = "";
+            String phone = "";
+            if (engineerInfo != null) {
+                name = engineerInfo.get("NAME");
+                phone = engineerInfo.get("TELEPHONE");
+            } else {
+                stateChangesDto.setRepcode("-1");
+                log.error("获取处理人信息为空，engineerId为必传字段,请检查");
+                return stateChangesDto;
+            }
 
-        Map<String, String> engineerInfo = getEngineerInfo(engineerId);
-        String name = "";
-        String phone = "";
-        if (engineerInfo != null) {
-            name = engineerInfo.get("NAME");
-            phone = engineerInfo.get("TELEPHONE");
+            orderDO.setWorkOrderStatus("8");
+            orderDO.setEngineer(engineerId);
+            orderDO.setEngineerName(name);
+            workOrderService.saveOrUpdate(orderDO);
+
+
+            //更改状态
+            workWaterService.save(
+                    WorkWaterDO.builder()
+                            .wordOrderId(orderId)
+                            .dealWithTime(new Date())
+                            .dealWithPeopleId(engineerId)
+                            .dealWithPeopleName(name)
+                            .dealWithPeopleRole(2)
+                            .dealWithNote("工程师到达现场处理状态变更")
+                            .phone(phone)
+                            .operationType("12")
+                            .build()
+            );
         }
-        //更改状态
-        workWaterService.save(
-                WorkWaterDO.builder()
-                        .wordOrderId(orderId)
-                        .dealWithTime(new Date())
-                        .dealWithPeopleName(name)
-                        .dealWithPeopleRole(2)
-                        .dealWithNote("工程师到达现场处理状态变更")
-                        .phone(phone)
-                        .operationType("12")
-                        .build()
-        );
         return stateChangesDto;
     }
 
@@ -718,7 +747,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                             .dealWithTime(new Date())
                             .dealWithPeopleId(engineerId)
                             .dealWithPeopleRole(Integer.parseInt(role))
-                            .dealWithNote("厂商恢复")
+                            .dealWithNote("厂商回复")
                             .dealWithPeopleName(name)
                             .phone(phone)
                             .operationType("5")
