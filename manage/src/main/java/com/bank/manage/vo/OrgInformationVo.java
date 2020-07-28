@@ -16,5 +16,8 @@ public class OrgInformationVo {
     private  String name;
     @ApiModelProperty("1：总行；2：分行；3：支行")
     private  String flog;
+    @ApiModelProperty("核心机构号")
+    private  String orgCode;
+
 
 }

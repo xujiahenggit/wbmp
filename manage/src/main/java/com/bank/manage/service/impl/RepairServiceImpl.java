@@ -706,15 +706,19 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
          //先查询总行
         OrgInformationVo orgInformationVo =  repairDao.getOrgInformationBank(orgCode);
         if(orgInformationVo != null){
+            orgInformationVo.setOrgCode(orgCode);
             return orgInformationVo;
         }
         //分行
         OrgInformationVo orgInformation = repairDao.getOrgInformationBranch(orgCode);
         if(orgInformation != null){
+            orgInformation.setOrgCode(orgCode);
             return orgInformation;
         }
         //分行
-        return repairDao.getOrgInformationSub(orgCode);
+        OrgInformationVo orgInf = repairDao.getOrgInformationSub(orgCode);
+        orgInf.setOrgCode(orgCode);
+        return orgInf;
     }
 
     @Override
