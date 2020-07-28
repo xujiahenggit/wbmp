@@ -367,10 +367,10 @@
          update t_work_order
          <set>
              <if test="commentVo.returnOpinion !=null and commentVo.returnOpinion !=''">
-                 return_opinion =#{commentVo.returnOpinion}
+                 return_opinion =#{commentVo.returnOpinion},
              </if>
              <if test="commentVo.subCancelOpinion !=null and commentVo.subCancelOpinion !=''">
-                 sub_cancel_opinion =#{commentVo.returnOpinion}
+                 sub_cancel_opinion =#{commentVo.returnOpinion},
              </if>
              <if test="commentVo.bankCancelOpinion !=null and commentVo.bankCancelOpinion !=''">
                  bank_cancel_opinion =#{commentVo.bankCancelOpinion}

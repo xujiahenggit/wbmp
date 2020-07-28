@@ -454,12 +454,12 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                      //判断该角色是否有权限(总行)
                    int i= repairDao.getUserRoleById(tokenUserInfo.getUserId(),"19");
                     if(i<=0){
-                        throw new BizException("用户权限不足");
+                        throw new BizException("10002 无操作权限");
                     }
                     //判断是否为创建人
                     String isCreateUser = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
                     if(isCreateUser !=null ){
-                        throw new BizException("自己创建的工单自己不能处理");
+                        throw new BizException("10001 无法操作");
                     }
                     //总行确认 -> 待厂商回复
                     repairDao.updateWordStatusByCode(commentVo,"3");
@@ -479,12 +479,12 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                     //判断该角色是否有权限(分行)
                     int i= repairDao.getUserRoleById(tokenUserInfo.getUserId(),"18");
                     if(i<=0){
-                        throw new BizException("用户权限不足");
+                        throw new BizException("10002 无操作权限");
                     }
                     //判断是否为创建人
                     String isCreateUser = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
                     if(isCreateUser !=null ){
-                        throw new BizException("自己创建的工单自己不能处理");
+                        throw new BizException("10001 无法操作");
                     }
                     //分行确认 -> 待总行确认
                     repairDao.updateWordStatusByCode(commentVo,"2");
@@ -506,12 +506,12 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                     //判断该角色是否有权限(总行)
                     int i= repairDao.getUserRoleById(tokenUserInfo.getUserId(),"19");
                     if(i<=0){
-                        throw new BizException("用户权限不足");
+                        throw new BizException("10002 无操作权限");
                     }
                     //判断是否为创建人
                     String isCreateUser = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
                     if(isCreateUser !=null ){
-                        throw new BizException("自己创建的工单自己不能处理");
+                        throw new BizException("10001 无法操作");
                     }
                     //总行取消
                     repairDao.updateWordStatusByCode(commentVo,"10");
@@ -531,12 +531,12 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                     //判断该角色是否有权限(分行)
                     int i= repairDao.getUserRoleById(tokenUserInfo.getUserId(),"18");
                     if(i<=0){
-                        throw new BizException("用户权限不足");
+                        throw new BizException("10002 无操作权限");
                     }
                     //判断是否为创建人
                     String isCreateUser = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
                     if(isCreateUser !=null ){
-                        throw new BizException("自己创建的工单自己不能处理");
+                        throw new BizException("10001 无法操作");
                     }
                     //分行取消
                     repairDao.updateWordStatusByCode(commentVo,"10");
@@ -558,12 +558,12 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                     //判断该角色是否有权限(总行)
                     int i= repairDao.getUserRoleById(tokenUserInfo.getUserId(),"19");
                     if(i<=0){
-                        throw new BizException("用户权限不足");
+                        throw new BizException("10002 无操作权限");
                     }
                     //判断是否为创建人
                     String isCreateUser = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
                     if(isCreateUser !=null ){
-                        throw new BizException("自己创建的工单自己不能处理");
+                        throw new BizException("10001 无法操作");
                     }
                     //总行知悉->分行知悉
                     repairDao.updateWordStatusByCode(commentVo,"5");
@@ -583,12 +583,12 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                     //判断该角色是否有权限(分行)
                     int i= repairDao.getUserRoleById(tokenUserInfo.getUserId(),"18");
                     if(i<=0){
-                        throw new BizException("用户权限不足");
+                        throw new BizException("10002 无操作权限");
                     }
                     //判断是否为创建人
                     String isCreateUser = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
                     if(isCreateUser !=null ){
-                        throw new BizException("自己创建的工单自己不能处理");
+                        throw new BizException("10001 无法操作");
                     }
                     //分行取消
                     repairDao.updateWordStatusByCode(commentVo,"8");
@@ -611,7 +611,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                     //退回
                 String isCreateUser = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
                 if(isCreateUser ==null ){
-                    throw new BizException("自己创建的工单只能自己退回");
+                    throw new BizException("10001 无法操作");
                 }
                     //用户退回
                 if("1".equals(orgType)) {
@@ -640,7 +640,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                     //判断是否为创建人
                     String user = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
                     if(user ==null ){
-                        throw new BizException("只有创建人才可以评价");
+                        throw new BizException("10001 无法操作");
                     }
                     //评价
                     repairDao.updateWordStatusByCodeRating(commentVo.getWorkOrderCode(),"9",commentVo.getRating(),commentVo.getRatingNote());
