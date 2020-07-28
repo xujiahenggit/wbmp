@@ -19,6 +19,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -94,7 +95,7 @@ public class CheckWorkAttendServiceImpl implements CheckWorkAttendService {
         list.add(rejectData);
         //String fileName="D:/excel/excelFile/月度考勤数据.xls";
         String fileName=configFileReader.getDOWN_EXCEL_PATH()+date+"月度考勤数据.xls";
-        createExcelFile("月度考勤","月度考勤数据",fileName,list);
+        createExcelFile("月度考勤","月度考勤数据",fileName,list,configFileReader.getDOWN_EXCEL_PATH());
         return fileName;
     }
 
@@ -126,8 +127,14 @@ public class CheckWorkAttendServiceImpl implements CheckWorkAttendService {
      * @param fileName   文件名称
      * @param listRecord 列表
      */
-    private void createExcelFile(String title, String sheetName, String fileName, List<CheckWorkAttendExcel> listRecord) {
+    private void createExcelFile(String title, String sheetName, String fileName, List<CheckWorkAttendExcel> listRecord,String filePath) {
         try {
+            //创建目录
+            File temp=new File(filePath);
+            if(!temp.exists()){
+                temp.mkdirs();
+            }
+
             FileOutputStream fos = null;
             Workbook workbook = null;
             ExportParams exportParams = new ExportParams(title, sheetName);
