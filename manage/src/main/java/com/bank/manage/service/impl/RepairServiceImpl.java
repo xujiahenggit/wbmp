@@ -700,6 +700,29 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
         return repairDao.getAccompaniedByCode(userId,repairCode);
     }
 
+    @Override
+    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
+    public OrgInformationVo getOrgInformation(String orgCode) {
+         //先查询总行
+        OrgInformationVo orgInformationVo =  repairDao.getOrgInformationBank(orgCode);
+        if(orgInformationVo != null){
+            return orgInformationVo;
+        }
+        //分行
+        OrgInformationVo orgInformation = repairDao.getOrgInformationBranch(orgCode);
+        if(orgInformation != null){
+            return orgInformation;
+        }
+        //分行
+        return repairDao.getOrgInformationSub(orgCode);
+    }
+
+    @Override
+    public String getOrgCodeById(String orgId) {
+
+        return repairDao.getOrgCodeById(orgId);
+    }
+
     public void getTime(InspectionEquipmentDto inspectionEquipmentDto){
         //获取当前系统的月份
         Calendar calendar =Calendar.getInstance();

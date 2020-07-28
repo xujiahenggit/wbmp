@@ -572,6 +572,32 @@
         where termstatus.STRTERMNUM = #{terminalCode}
     </select>
 
+    <select id="getOrgInformationBank" resultType="com.bank.manage.vo.OrgInformationVo">
+         select
+            t.STRBANKNUM code,
+            t.STRBANKNAME name,
+            '1' flog
+             from ssamgt.bank t
+            where t.org_code = #{orgCode}
+    </select>
+
+    <select id="getOrgInformationBranch" resultType="com.bank.manage.vo.OrgInformationVo">
+         select
+            t.STRBANKNUM code,
+            t.STRBRANCHNAME name,
+            '2' flog
+             from ssamgt.branch t
+            where t.org_code = #{orgCode}
+    </select>
+
+    <select id="getOrgInformationSub" resultType="com.bank.manage.vo.OrgInformationVo">
+          select
+            t.STRBANKNUM code,
+            t.STRSUBBRANCHNAME name,
+            '3' flog
+             from ssamgt.subbranch t
+            where t.org_code = #{orgCode}
+    </select>
 
     <select id="getWorkOrderList" resultType="com.bank.manage.vo.WorkOrderVO">
         select

@@ -471,4 +471,17 @@ public class RepairController extends BaseController {
         return repairService.getSubbranchList(code);
 
     }
+
+    @ApiOperation(value ="查询所有的支行")
+    @GetMapping("/getOrgInformation")
+    public OrgInformationVo getOrgInformation(HttpServletRequest request){
+        TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
+        //获取核心机构号
+        String orgCode= repairService.getOrgCodeById(tokenUserInfo.getOrgId());
+        if(StringUtils.isEmpty(orgCode)){
+            throw new BizException("该用户无组织机构");
+        }
+        return repairService.getOrgInformation(orgCode);
+
+    }
 }

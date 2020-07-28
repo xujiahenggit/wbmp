@@ -122,4 +122,10 @@ public interface RepairDao extends BaseMapper<ManageWorkOrderDO> {
     String getAccompaniedByCode(@Param("userId") String userId,@Param("repairCode") String repairCode);
 
     String getOrgCodeById(@Param("orgId") String orgId);
+
+    OrgInformationVo getOrgInformationBank(@Param("orgCode")String orgCode);
+
+    OrgInformationVo getOrgInformationBranch(@Param("orgCode") String orgCode);
+
+    OrgInformationVo getOrgInformationSub(@Param("orgCode") String orgCode);
 }
