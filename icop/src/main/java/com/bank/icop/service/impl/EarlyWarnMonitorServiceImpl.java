@@ -490,9 +490,11 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
     }
 
     @Override
-    public Object getUserByNo(String userNo) {
+    public Object getUserByNo(UserListDo userListDo) {
         Map<String, Object> parmMap = new HashMap<>();
-        parmMap.put("userNo",userNo);
+        parmMap.put("userNo",userListDo.getUserNo());
+        parmMap.put("userid",userListDo.getUserid());
+        parmMap.put("userna",userListDo.getUserna());
         Map report = null;
         try {
             report = SoapUtil.sendReport("FXYJ11030","812",parmMap);
@@ -601,6 +603,8 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         parmMap.put("userNo",userListDo.getUserNo());
         parmMap.put("limit",userListDo.getLimit());
         parmMap.put("offset",userListDo.getOffset());
+        parmMap.put("ORGANKEY",userListDo.getORGANKEY());
+        parmMap.put("ORGANNAME",userListDo.getORGANNAME());
         Map report = null;
         try {
             report = SoapUtil.sendReport("FXYJ10032","812",parmMap);

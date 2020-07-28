@@ -230,10 +230,10 @@ public class EarlyWarnMonitorController {
     }
 
     @ApiOperation("用户所属机构11030")
-    @GetMapping("/getUserByNo/{userNo}")
-    @ApiImplicitParam(name = "userNo", value = "用户编号", required = true, paramType = "path")
-    public Object getUserByNo(@PathVariable("userNo") String userNo) {
-        return earlyWarnMonitorService.getUserByNo(userNo);
+    @GetMapping("/getUserByNo")
+
+    public Object getUserByNo(@RequestBody UserListDo userListDo) {
+        return earlyWarnMonitorService.getUserByNo(userListDo);
     }
 
     @ApiOperation("处理记录保存接口10025")

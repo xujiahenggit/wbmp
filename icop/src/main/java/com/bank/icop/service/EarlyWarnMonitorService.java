@@ -54,7 +54,7 @@ public interface EarlyWarnMonitorService {
 
     Object getTaskByCode(String taskkey);
 
-    Object getUserByNo(String userNo);
+    Object getUserByNo( UserListDo userListDo);
 
     Object getProcessingRecords(ProcessingRecordsDo processingRecordsDo);
 

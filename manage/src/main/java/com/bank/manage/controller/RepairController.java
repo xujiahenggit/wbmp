@@ -472,7 +472,7 @@ public class RepairController extends BaseController {
 
     }
 
-    @ApiOperation(value ="查询所有的支行")
+    @ApiOperation(value ="查询机构信息")
     @GetMapping("/getOrgInformation")
     public OrgInformationVo getOrgInformation(HttpServletRequest request){
         TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
