@@ -18,7 +18,7 @@ public class WorkOrdersDto {
     @ApiModelProperty("分页大小：默认10行")
     private Integer pageSize = 10;
 
-    @ApiModelProperty("工单类型（1-故障工单；2-投诉工单；3-巡检）")
+    @ApiModelProperty("工单类型（01-故障工单；02-投诉工单；03-巡检）")
     private String workOrderType;
 
     @ApiModelProperty("来源类型 1 我发起的，2 我审批的、3 我办结的、4 系统自建；5 所有")

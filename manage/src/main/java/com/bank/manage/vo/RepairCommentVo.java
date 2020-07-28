@@ -37,6 +37,14 @@ public class RepairCommentVo {
     private String  ratingNote ;
 
 
+    @ApiModelProperty("退回原因")
+    private String returnOpinion;
+
+    @ApiModelProperty("分行取消意见")
+    private String subCancelOpinion;
+
+    @ApiModelProperty("总行取消意见")
+    private String bankCancelOpinion;
 
     @ApiModelProperty("操作: 1:确认；2：取消;3：知悉；4：退回；5：评价；6：厂商回复")
     private String type;

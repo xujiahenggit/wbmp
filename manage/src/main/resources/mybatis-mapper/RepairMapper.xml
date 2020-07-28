@@ -364,8 +364,21 @@
     </select>
 
     <update id="updateWordStatusByCode">
-         update t_work_order set work_order_status =#{code}
-         where work_order_code = #{workOrderCode}
+         update t_work_order
+         <set>
+             <if test="commentVo.returnOpinion !=null and commentVo.returnOpinion !=''">
+                 return_opinion =#{commentVo.returnOpinion}
+             </if>
+             <if test="commentVo.subCancelOpinion !=null and commentVo.subCancelOpinion !=''">
+                 sub_cancel_opinion =#{commentVo.returnOpinion}
+             </if>
+             <if test="commentVo.bankCancelOpinion !=null and commentVo.bankCancelOpinion !=''">
+                 bank_cancel_opinion =#{commentVo.bankCancelOpinion}
+             </if>
+             work_order_status =#{code}
+         </set>
+
+         where work_order_code = #{commentVo.workOrderCode}
     </update>
 
     <update id="updateWordStatusByCodeRating">
@@ -611,7 +624,7 @@
                 and t.terminal_code = #{model.terminalCode}
             </if>
         </where>
-
+     order by t.create_time desc
     </select>
 
     <select id="getWorkOrder" resultType="com.bank.manage.vo.WorkOrderVO">
@@ -731,11 +744,7 @@
                 and t.terminal_code = #{model.terminalCode}
             </if>
         </where>
-
-
-
-
-
+        order by t.create_time desc
     </select>
 
     <select id="getWorkOrderByMeApp" resultType="com.bank.manage.vo.WorkOrderVO">
@@ -772,6 +781,8 @@
         <where>
             t.work_order_code  in (
             select word_order_id   from t_work_water
+            where deal_with_people_id = #{model.logUserId}
+            and operation_type !='0'
             )
             <if test="model.workOrderType != null and model.workOrderType !=''">
                 and t.work_order_type = #{model.workOrderType}
@@ -796,7 +807,7 @@
             </if>
 
         </where>
-
+         order by t.create_time desc
     </select>
 
     <select id="getWorkOrderByOther" resultType="com.bank.manage.vo.WorkOrderVO">
@@ -831,9 +842,10 @@
         t.work_order_describe workOrderDescribe
         from t_work_order t
         <where>
-         t.work_order_code  in (
+          t.work_order_status ='9'
+         and t.work_order_code  in (
             select word_order_id   from t_work_water
-            where deal_with_type ='4' and deal_with_people_id = #{model.logUserId}
+            where deal_with_people_id = #{model.logUserId}
             )
             <if test="model.workOrderType != null and model.workOrderType !=''">
                 and t.work_order_type = #{model.workOrderType}
@@ -856,8 +868,9 @@
             <if test="model.terminalCode != null and model.terminalCode !='' ">
                 and t.terminal_code = #{model.terminalCode}
             </if>
-
         </where>
+        order by t.create_time desc
+
     </select>
 
 
@@ -930,9 +943,8 @@
             <if test="model.status != null and model.status !=''">
                 and   work_order.`status` = #{model.status}
             </if>
-
-
         </where>
+        order by work_order.beginDate desc
     </select>
 
     <select id="getWorkOrderBySystemList" resultType="com.bank.manage.vo.WorkOrderVO">
@@ -1002,9 +1014,8 @@
             <if test="model.status != null and model.status !=''">
                 and   work_order.`status` = #{model.status}
             </if>
-
-
         </where>
+        order by work_order.beginDate desc
     </select>
 
 
@@ -1295,6 +1306,7 @@
                 left join t_user a
                 on a.USER_ID = w.deal_with_people_id
                 WHERE w.word_order_id = #{repairCode}
+                order by  w.create_time desc
     </select>
 
 

@@ -159,17 +159,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
         Page<WorkOrderVO> page = new Page<>(workOrdersDto.getPageIndex(), workOrdersDto.getPageSize());
         //判断来源类型  1 我发起的，2 我审批的、3 我办结的、4 系统自建；5 所有
         Map<String, Object> resultMap = new HashMap<>();
-        if("5".equals(workOrdersDto.getSourceType())){
-            //查询所有
-            IPage<WorkOrderVO>  workOrderList=  repairDao.getWorkOrder(page,workOrdersDto);
-            resultMap.put("records", workOrderList.getRecords());
-            resultMap.put("current", workOrderList.getCurrent());
-            resultMap.put("size", workOrderList.getSize());
-            resultMap.put("total", workOrderList.getTotal());
-            return resultMap;
-
-
-        }else if("1".equals(workOrdersDto.getSourceType())){
+        if("1".equals(workOrdersDto.getSourceType())){
             //我发起的
             IPage<WorkOrderVO>  workOrderList= repairDao.getWorkOrderByMe(page,workOrdersDto);
             resultMap.put("records", workOrderList.getRecords());
@@ -472,7 +462,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                         throw new BizException("自己创建的工单自己不能处理");
                     }
                     //总行确认 -> 待厂商回复
-                    repairDao.updateWordStatusByCode(commentVo.getWorkOrderCode(),"3");
+                    repairDao.updateWordStatusByCode(commentVo,"3");
                     //插入到流水表
                     workWater.setCreateTime(new Date());
                     workWater.setDealWithPeopleRole(4);
@@ -497,7 +487,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                         throw new BizException("自己创建的工单自己不能处理");
                     }
                     //分行确认 -> 待总行确认
-                    repairDao.updateWordStatusByCode(commentVo.getWorkOrderCode(),"2");
+                    repairDao.updateWordStatusByCode(commentVo,"2");
                     //插入到流水表
                     workWater.setCreateTime(new Date());
                     workWater.setDealWithPeopleRole(3);
@@ -524,7 +514,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                         throw new BizException("自己创建的工单自己不能处理");
                     }
                     //总行取消
-                    repairDao.updateWordStatusByCode(commentVo.getWorkOrderCode(),"10");
+                    repairDao.updateWordStatusByCode(commentVo,"10");
                     //插入到流水表
                     workWater.setCreateTime(new Date());
                     workWater.setDealWithPeopleRole(4);
@@ -549,7 +539,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                         throw new BizException("自己创建的工单自己不能处理");
                     }
                     //分行取消
-                    repairDao.updateWordStatusByCode(commentVo.getWorkOrderCode(),"10");
+                    repairDao.updateWordStatusByCode(commentVo,"10");
                     //插入到流水表
                     workWater.setCreateTime(new Date());
                     workWater.setDealWithPeopleRole(3);
@@ -576,7 +566,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                         throw new BizException("自己创建的工单自己不能处理");
                     }
                     //总行知悉->分行知悉
-                    repairDao.updateWordStatusByCode(commentVo.getWorkOrderCode(),"5");
+                    repairDao.updateWordStatusByCode(commentVo,"5");
                     //插入到流水表
                     workWater.setCreateTime(new Date());
                     workWater.setDealWithPeopleRole(4);
@@ -601,7 +591,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                         throw new BizException("自己创建的工单自己不能处理");
                     }
                     //分行取消
-                    repairDao.updateWordStatusByCode(commentVo.getWorkOrderCode(),"8");
+                    repairDao.updateWordStatusByCode(commentVo,"8");
                     //插入到流水表
                     workWater.setCreateTime(new Date());
                     workWater.setDealWithPeopleRole(3);
@@ -626,10 +616,10 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                     //用户退回
                 if("1".equals(orgType)) {
                        //总行退回
-                        repairDao.updateWordStatusByCode(commentVo.getWorkOrderCode(),"2");
+                        repairDao.updateWordStatusByCode(commentVo,"2");
                 }else{
                     //分行退回
-                    repairDao.updateWordStatusByCode(commentVo.getWorkOrderCode(),"1");
+                    repairDao.updateWordStatusByCode(commentVo,"1");
                 }
 
                     //插入到流水表
@@ -669,7 +659,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
 
             case "6":
                     //厂商回复
-                    repairDao.updateWordStatusByCode(commentVo.getWorkOrderCode(),"4");
+                    repairDao.updateWordStatusByCode(commentVo,"4");
                     //插入到流水表
                     workWater.setCreateTime(new Date());
                     workWater.setDealWithPeopleRole(5);

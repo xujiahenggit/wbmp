@@ -109,7 +109,7 @@ public interface RepairDao extends BaseMapper<ManageWorkOrderDO> {
 
     List<DirectorVo> getDirectorListBySyS(String vendor);
 
-    void updateWordStatusByCode(@Param("workOrderCode") String workOrderCode,@Param("code") String code);
+    void updateWordStatusByCode(@Param("commentVo")RepairCommentVo commentVo,@Param("code") String code);
 
     int getUserRoleById(@Param("userId")String userId,@Param("code") String code);
 

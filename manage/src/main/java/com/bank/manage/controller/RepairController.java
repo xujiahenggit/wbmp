@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -259,13 +260,21 @@ public class RepairController extends BaseController {
             return resultMap;
         }else if("5".equals(workOrdersDto.getSourceType())){
             List<WorkOrderVO> list = repairService.getWorkOrderList(workOrdersDto);
-            //加上系统自建的
-            List<WorkOrderVO> workOrderList = repairService.getWorkOrderBySystemList(workOrdersDto);
+            List<WorkOrderVO> workOrderList=null;
+            if (workOrdersDto.getWorkOrderType().equals("01")) {
+                   //故障单加上系统自建的
+                workOrderList = repairService.getWorkOrderBySystemList(workOrdersDto);
+
+            }
+
             if(!CollectionUtils.isNotEmpty(workOrderList)){
                 workOrderList =new ArrayList<>();
             }
+            
             if(CollectionUtils.isNotEmpty(list)){
                 list.addAll(workOrderList);
+                //按时间排序
+                listSort(list);
                 //分页
                 resultMap.put("total", list.size());
                 resultMap.put("current", workOrdersDto.getPageIndex());
@@ -293,6 +302,26 @@ public class RepairController extends BaseController {
 
         return repairService.getWorkOrder(workOrdersDto);
       }
+
+    private void listSort(List<WorkOrderVO> list) {
+            Collections.sort(list, new Comparator<WorkOrderVO>() {
+                @Override
+                public int compare(WorkOrderVO o1, WorkOrderVO o2) {
+                    try {
+                       if(o1.getCreateTime().getTime()<o2.getCreateTime().getTime()){
+                           return 1;
+                       }else if(o1.getCreateTime().getTime()>o2.getCreateTime().getTime()){
+                           return -1;
+                       }else{
+                           return 0;
+                       }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    return 0;
+                }
+            });
+    }
 
     @ApiOperation(value ="（主管，工程师收到故障单）人工创建工单信息查询")
     @GetMapping("/getBreakWorkOrderByCode/{repairCode}")
