@@ -40,11 +40,11 @@ spring:
       type: com.alibaba.druid.pool.DruidDataSource
     esbmgt:
       # 连接数据库的url
-      url: jdbc:mysql://162.16.4.33:3306/ssamgt?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true&failOverReadOnly=false&serverTimezone=GMT%2B8
+      url: jdbc:mysql://162.16.21.122:3306/ssamgt?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true&failOverReadOnly=false&serverTimezone=GMT%2B8
       # 连接数据库的账号
       username: query
       #  连接数据库的密码
-      #password: Query@123
+      #password: query
       password: Z4gKzn+Et8Oty7suge9jHw==
       # 使用druid数据源
       type: com.alibaba.druid.pool.DruidDataSource
