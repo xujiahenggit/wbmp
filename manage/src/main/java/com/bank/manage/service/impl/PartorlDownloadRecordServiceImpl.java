@@ -189,7 +189,7 @@ public class PartorlDownloadRecordServiceImpl extends ServiceImpl<PartorlDownloa
 
             //创建目录
             File temp=new File(filePath);
-            if(temp.exists() && !temp.isDirectory()){
+            if(!temp.isDirectory()){
                 temp.mkdirs();
             }
             FileOutputStream fos = null;
