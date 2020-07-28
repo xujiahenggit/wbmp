@@ -1298,7 +1298,10 @@
                 w.deal_with_people_id AS userId,
                 w.deal_with_people_name AS userName,
                 a.USER_PHONE AS userPhone,
-                w.create_time AS operateTime
+                w.create_time AS operateTime,
+                o.sub_cancel_opinion subCancelOpinion,
+                o.bank_cancel_opinion bankCancelOpinion,
+                o.return_opinion returnOpinion
                 FROM
                 t_work_water w
                 LEFT JOIN t_work_order o
