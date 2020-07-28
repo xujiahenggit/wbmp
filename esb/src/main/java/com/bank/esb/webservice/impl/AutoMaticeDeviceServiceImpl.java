@@ -352,7 +352,8 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                 orderDO.setEngineerName(name);
             }
             orderDO.setDealType(processMode);
-            orderDO.setWorkOrderStatus(orderDealWithVo.getOrderStatus());
+            String orderStatus = orderDealWithVo.getOrderStatus();
+            orderDO.setWorkOrderStatus(orderStatus);
             if (!StrUtil.isBlankIfStr(serviceDescribe)) {
                 orderDO.setDealNote(serviceDescribe);
             }
@@ -369,7 +370,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                             .dealWithNote(serviceDescribe)
                             .dealWithPeopleName(name)
                             .phone(phone)
-                            .operationType(orderDealWithVo.getOrderStatus())
+                            .operationType(getoperationType(orderStatus))
                             .build()
             );
 
@@ -379,6 +380,34 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
             orderDealWithDto.setRepcode("-1");
         }
         return orderDealWithDto;
+    }
+
+    private String getoperationType(String orderStatus) {
+        switch (orderStatus){
+            case "1":
+                return "0";
+            case "2":
+                return "3";
+            case "3":
+                return "4";
+            case "4":
+                return "5";
+            case "5":
+                return "6";
+            case "6":
+                return "0";//8
+            case "7":
+                return "11";
+            case "8":
+                return "7";//12
+            case "9":
+                return "2";//13、14、
+            case "10":
+                return "2";
+            default:
+                return "-1";
+        }
+
     }
 
     private ResponseInstitutionsDto WBMP10003(InstitutionsVo institutionsVo) {

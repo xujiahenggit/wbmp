@@ -270,7 +270,7 @@ public class RepairController extends BaseController {
             if(!CollectionUtils.isNotEmpty(workOrderList)){
                 workOrderList =new ArrayList<>();
             }
-            
+
             if(CollectionUtils.isNotEmpty(list)){
                 list.addAll(workOrderList);
                 //按时间排序

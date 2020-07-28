@@ -50,4 +50,14 @@ public class RepairHistoryListVo {
     @ApiModelProperty(value = "时间")
     private String operateTime;
 
+    @ApiModelProperty(value = "退回意见")
+    private String returnOpinion;
+
+    @ApiModelProperty(value = "总行取消意见")
+    private String bankCancelOpinion;
+
+    @ApiModelProperty(value = "分行取消意见")
+    private String subCancelOpinion;
+
+
 }
