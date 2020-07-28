@@ -353,7 +353,9 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
             }
             orderDO.setDealType(processMode);
             orderDO.setWorkOrderStatus(orderDealWithVo.getOrderStatus());
-            orderDO.setDealNote(serviceDescribe);
+            if (!StrUtil.isBlankIfStr(serviceDescribe)){
+                orderDO.setDealNote(serviceDescribe);
+            }
             workOrderService.saveOrUpdate(orderDO);
 
 
@@ -680,11 +682,48 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         String engineerId = repairOrderBVo.getEngineerId();
         //获取工单
         WorkOrderDO orderDO = workOrderService.getOne(new LambdaQueryWrapper<WorkOrderDO>().eq(WorkOrderDO::getWorkOrderCode, orderNo));
-        if (orderDO != null) {
-            orderDO.setEngineer(engineerId);
+        if (orderDO != null && !StrUtil.isBlankIfStr(engineerId)) {
             orderDO.setSuggestion(repairOrderBVo.getOrderDescribe());//记录厂商回复意见
             orderDO.setWorkOrderStatus("4");
+            //查询信息
+            Map<String, String> engineerInfo = getEngineerInfo(engineerId);
+            String name = "";
+            String phone = "";
+            String role = "";
+            if (engineerInfo != null) {
+                name = engineerInfo.get("NAME");
+                phone = engineerInfo.get("TELEPHONE");
+                role = engineerInfo.get("MANUEMPNATURE");
+            } else {
+                repairOrderBDto.setRepcode("-1");
+                log.error("获取处理人信息为空，engineerId为必传字段,请检查");
+                return repairOrderBDto;
+            }
+
+            if (role.equals("1")) {
+                orderDO.setDirector(engineerId);
+                orderDO.setDirectorName(name);
+            } else {
+                orderDO.setEngineer(engineerId);
+                orderDO.setEngineerName(name);
+            }
+
             workOrderService.saveOrUpdate(orderDO);
+
+
+            //插入流水，待处理
+            workWaterService.save(
+                    WorkWaterDO.builder()
+                            .wordOrderId(orderNo)
+                            .dealWithTime(new Date())
+                            .dealWithPeopleId(engineerId)
+                            .dealWithPeopleRole(Integer.parseInt(role))
+                            .dealWithNote("厂商恢复")
+                            .dealWithPeopleName(name)
+                            .phone(phone)
+                            .operationType("5")
+                            .build()
+            );
             repairOrderBDto.setRepcode("0");
         } else {
             repairOrderBDto.setRepcode("-1");
