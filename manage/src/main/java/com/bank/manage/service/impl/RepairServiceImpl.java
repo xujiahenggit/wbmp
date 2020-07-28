@@ -105,8 +105,13 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
 
     @Override
     @DataSource(DynamicDataSourceSwitcher.esb_mgt)
-    public List<EquipmentVo> getEquipmentByCode(String terminalCode) {
-        return repairDao.getEquipmentByCode(terminalCode);
+    public List<EquipmentVo> getEquipmentByCode(String orgId,String terminalCode) {
+        //获取核心机构号
+        String orgCode= repairDao.getOrgCodeById(orgId);
+         if(StringUtils.isEmpty(orgCode)){
+             throw new BizException("该用户无组织机构");
+         }
+        return repairDao.getEquipmentByCode(orgCode,terminalCode);
     }
 
     @Override
@@ -146,7 +151,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
             largerScreenDto.setTerminalCode(null);
         }
         Page<LargerScreenVo> page = new Page<>(largerScreenDto.getPageIndex(), largerScreenDto.getPageSize());
-        return repairDao.getLargerScreen(page,largerScreenDto.getBranchCode(),largerScreenDto.getTerminalCode());
+        return repairDao.getLargerScreen(page,largerScreenDto.getOrgId(),largerScreenDto.getTerminalCode());
     }
 
     @Override

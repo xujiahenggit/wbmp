@@ -512,7 +512,9 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                         iterator.remove();
                     }
                 }
-                if (data.size() > 0) {
+                int size = data.size();
+                if (size > 0) {
+                    responseInspectionSheetDto.setTotal(size);
                     data = PageUtils.startPage(data, pageIndex, pageSize);
                 } else {
                     data = new ArrayList<>();
@@ -520,6 +522,8 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
             } else {
                 data = new ArrayList<>();
             }
+        }else if (orderStatus.equals("2")){
+            responseInspectionSheetDto.setTotal(esbService.getXjdTotal(inspectionSheetVo));
         }
         ArrayList<InspectionSheetDto> inspectionSheetDtos = new ArrayList<>();
         for (Map<String, String> map : data) {
@@ -632,6 +636,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         int pageSize = engineerVo.getPageSize();
         engineerVo.setPageIndex((pageIndex - 1) * pageSize);
         List<EngineerDto> engineerDtoList = esbService.getEngineer(engineerVo);
+        responseEngineerDto.setTotal( esbService.getEngineerTotal(engineerVo));
         responseEngineerDto.setList(engineerDtoList);
         return responseEngineerDto;
     }

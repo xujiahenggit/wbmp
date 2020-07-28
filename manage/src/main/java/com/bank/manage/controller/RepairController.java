@@ -57,12 +57,15 @@ public class RepairController extends BaseController {
 
     @ApiOperation(value ="故障工单新增--设备信息查询")
     @GetMapping("/getequipmentByCode/{terminalCode}")
-    @ApiImplicitParam(name = "terminalCode",value = "终端编号",required = true,paramType = "path")
-    public List<EquipmentVo> getEquipmentByCode(@PathVariable String terminalCode){
+    public List<EquipmentVo> getEquipmentByCode(@PathVariable String terminalCode, HttpServletRequest request){
         if(StringUtils.isEmpty(terminalCode)){
             throw new BizException("终端编号不能为空");
         }
-       return  repairService.getEquipmentByCode(terminalCode);
+
+        TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
+        String orgId= tokenUserInfo.getOrgId();
+
+       return  repairService.getEquipmentByCode(orgId,terminalCode);
 
     }
 
