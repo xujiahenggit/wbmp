@@ -116,4 +116,8 @@ public interface RepairDao extends BaseMapper<ManageWorkOrderDO> {
     void saveWater(WorkWaterDO workWater);
 
     void updateWordStatusByCodeRating(@Param("workOrderCode") String workOrderCode, @Param("code") String code,@Param("rating") String rating,@Param("ratingNote") String ratingNote);
+
+    List<PictureVo> getPictureByCode(String repairCode);
+
+    String getAccompaniedByCode(@Param("userId") String userId,@Param("repairCode") String repairCode);
 }

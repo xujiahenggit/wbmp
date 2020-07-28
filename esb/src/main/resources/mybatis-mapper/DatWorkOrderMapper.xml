@@ -276,6 +276,10 @@
             </if>
         </where>
     </select>
+    <select id="getuserInfo" resultType="java.util.Map">
+        select USER_NAME name,USER_PHONE phone from  t_user
+        where USER_ID=#{id}
+    </select>
 
 
 </mapper>

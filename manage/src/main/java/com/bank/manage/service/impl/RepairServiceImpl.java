@@ -78,14 +78,19 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
         ServiceInfoVo serviceInfoVo = repairDao.getServiceInfoList(repairCode);
         //服务工程师
         List<EngineerListVo> engineerListVoList =repairDao.getEngineerList(repairCode);
-
-        if(!engineerListVoList.toString().equals("[null]")){
+        Collection collection =new Vector();
+        collection.add(null);
+        engineerListVoList.removeAll(collection);
+        if(engineerListVoList.size()!=0){
             serviceInfoVo.setEngineerListVoList(engineerListVoList);
 
         }
         //服务主管
         List<DirectorVo> directorVoList=repairDao.getDirectorList(repairCode);
-        if(!directorVoList.toArray().equals("[null]")){
+        Collection colle =new Vector();
+        colle.add(null);
+        directorVoList.removeAll(colle);
+        if(directorVoList.size()!=0){
             serviceInfoVo.setDirectorVoList(directorVoList);
 
         }
@@ -129,8 +134,10 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
 
     @Override
     @DataSource(DynamicDataSourceSwitcher.esb_mgt)
-    public DevicesNumberVo getDevicesNumber(String orgId) {
-        return repairDao.getDevicesNumber(orgId);
+    public DevicesNumberVo getDevicesNumber(String orgId ) {
+            //总行
+            return repairDao.getDevicesNumber(orgId);
+
     }
 
     @Override
@@ -337,13 +344,19 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
         ServiceInfoVo serviceInfoVo = repairDao.getServiceInfoList(repairCode);
         //服务工程师
         List<EngineerListVo> engineerListVoList =repairDao.getEngineerList(repairCode);
-        if(!engineerListVoList.toString().equals("[null]")){
+        Collection collection =new Vector();
+        collection.add(null);
+        engineerListVoList.removeAll(collection);
+        if(engineerListVoList.size()!=0){
             serviceInfoVo.setEngineerListVoList(engineerListVoList);
 
         }
         //服务主管
         List<DirectorVo> directorVoList=repairDao.getDirectorList(repairCode);
-        if(!directorVoList.toString().equals("[null]")){
+        Collection collec =new Vector();
+        collec.add(null);
+        directorVoList.removeAll(collec);
+        if(directorVoList.size()!=0){
             serviceInfoVo.setDirectorVoList(directorVoList);
 
         }
@@ -388,13 +401,19 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
             //
             //服务工程师
             List<EngineerListVo> engineerListVoList =repairDao.getEngineerListBySyS(repairVo.getVendor());
-            if(!engineerListVoList.toString().equals("[null]")){
+            Collection collec =new Vector();
+            collec.add(null);
+            engineerListVoList.removeAll(collec);
+            if(engineerListVoList.size()!=0){
                 serviceInfoVo.setEngineerListVoList(engineerListVoList);
 
             }
             //服务主管
             List<DirectorVo> directorVoList=repairDao.getDirectorListBySyS(repairVo.getVendor());
-            if(!directorVoList.toString().equals("[null]")){
+            Collection collection =new Vector();
+            collection.add(null);
+            directorVoList.removeAll(collection);
+            if(directorVoList.size()!=0){
                 serviceInfoVo.setDirectorVoList(directorVoList);
 
             }
@@ -674,6 +693,16 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
     public int getUserRoleById(String userId, String code) {
         int i= repairDao.getUserRoleById(userId,code);
         return i;
+    }
+
+    @Override
+    public List<PictureVo> getPictureByCode(String repairCode) {
+        return repairDao.getPictureByCode(repairCode);
+    }
+
+    @Override
+    public String getAccompaniedByCode(String userId, String repairCode) {
+        return repairDao.getAccompaniedByCode(userId,repairCode);
     }
 
     public void getTime(InspectionEquipmentDto inspectionEquipmentDto){

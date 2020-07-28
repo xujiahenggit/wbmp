@@ -80,4 +80,8 @@ public interface RepairService extends IService<ManageWorkOrderDO> {
     boolean wordOperation(TokenUserInfo tokenUserInfo,RepairCommentVo repairCommentVo);
 
     int getUserRoleById(String userId, String s);
+
+    List<PictureVo> getPictureByCode(String repairCode);
+
+    String getAccompaniedByCode( String userId, String repairCode);
 }

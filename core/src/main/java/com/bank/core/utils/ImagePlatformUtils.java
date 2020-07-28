@@ -349,7 +349,7 @@ public class ImagePlatformUtils {
                 Document doc = builder.read(byteArrayInputStream);
                 Element rootElement = doc.getRootElement();
                 String amount = rootElement.element("BatchBean").element("index_Object").element("customMap").element("AMOUNT").element("string").getTextTrim();
-                response.setAmount(Integer.parseInt(amount));
+                response.setAmount(Integer.parseInt(StringUtils.isBlank(amount) ? "0" : amount));
                 List<Element> fileElements = rootElement.element("BatchBean").element("document_Objects").element("BatchFileBean").element("files").elements("FileBean");
 
                 List<ImagePlatformFile> imagePlatformFileList = new ArrayList<ImagePlatformFile>();
@@ -365,7 +365,7 @@ public class ImagePlatformUtils {
                     file.setFileType("2");
                     file.setHttpFilePath(url);
                     file.setFileName(fileNo + "." + fileType);
-                    file.setPageNum(Integer.parseInt(pageNum == "" ? "0" : pageNum));
+                    file.setPageNum(Integer.parseInt(StringUtils.isBlank(pageNum) ? "0" : pageNum));
                     imagePlatformFileList.add(file);
                 }
                 //按照页码数升序排列

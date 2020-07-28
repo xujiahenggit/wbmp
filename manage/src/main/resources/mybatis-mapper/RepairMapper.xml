@@ -254,7 +254,22 @@
                                t.vendor_name vendorName,
                              t.escorts_start_time escortsStartTime,
                              t.escorts_complete_time escortsCompletTime,
-                             t.escorts_handling escortsHandling
+                             t.escorts_handling escortsHandling,
+                              t.create_time createTime,
+                               case when  t.escorts_handling ='1' then
+                                            '处理方式1'
+								when  t.escorts_handling ='2' then
+		                                    '处理方式2'
+								when  t.escorts_handling ='3' then
+											'处理方式3'
+								when  t.escorts_handling ='4' then
+											'处理方式4'
+								when  t.escorts_handling ='5' then
+											'处理方式5'
+								when  t.escorts_handling ='6' then
+											'处理方式6'
+								end
+
                     from t_work_order t
                         left join t_user a
                     on a.user_id = t.create_id
@@ -361,6 +376,14 @@
     <select id="getUserRoleById" resultType="java.lang.Integer">
            select count(*) from s_user_role where ROLE_ID =#{code} and USER_ID=#{userId}
     </select>
+
+    <select id="getAccompaniedByCode" resultType="java.lang.String">
+        select
+        t.escorts_patrol
+        from t_work_order t
+        where t.escorts_patrol = #{userId} and t.work_order_code = #{repairCode}
+    </select>
+
 
     <select id="getEquipmentByCode" resultType="com.bank.manage.vo.EquipmentVo">
             SELECT
@@ -477,31 +500,31 @@
 
     <select id="getDevicesNumber"  resultType="com.bank.manage.vo.DevicesNumberVo">
         select    count(*) totalNumber,
-               ifnull(sum( case when device.ISTATUS ='4' then
-           1
-               end ),0) onlineNumber,
-        ifnull(sum( case when device.ISTATUS ='2' then
-        1
-        end ),0) suspendedNumber,
-        ifnull(sum( case when device.ISTATUS ='5' then
-        1
-        end ),0) faultNumber,
-        ifnull(sum( case when device.ISTATUS ='1' then
-        1
-        end ),0) offlineNumber,
-        round(ifnull(sum( case when device.ISTATUS ='4' then
-        1
-        end )/count(*),0),2) availability
+            ifnull(sum( case when device.ISTATUS ='4' then
+            1
+            end ),0) onlineNumber,
+            ifnull(sum( case when device.ISTATUS ='2' then
+            1
+            end ),0) suspendedNumber,
+            ifnull(sum( case when device.ISTATUS ='5' then
+            1
+            end ),0) faultNumber,
+            ifnull(sum( case when device.ISTATUS ='1' then
+            1
+            end ),0) offlineNumber,
+            round(ifnull(sum( case when device.ISTATUS ='4' then
+            1
+            end )/count(*),0),2) availability
         from ssarun.device device
-            left join  ssamgt.branch branch
-        on device.STRBRANCHNUM = branch.STRBRANCHNUM
-            left join ssamgt.subbranch subbranch
-        on  subbranch.STRBRANCHNUM = branch.STRBRANCHNUM
-           left join ssarun.term term
+        left join ssarun.term term
         on term.DEVICEID = device.id
+        left join ssamgt.branch branch
+        on branch.STRBRANCHNUM = term.STRBRANCHNUM
+        left join ssamgt.subbranch subbranch
+        on subbranch.STRSUBBRANCHNUM =term.STRSUBBRANCHNUM
         <where>
             <if test="orgId != null">
-                branch.org_code = #{orgId} or subbranch.org_code = #{orgId} or term.ORGANIZATION = #{orgId}
+                term.ORGANIZATION = #{orgId}
             </if>
         </where>
 
@@ -1249,18 +1272,38 @@
                 when  w.operation_type ='14' then
                                              '总行取消'
                 end   operationTypeName,
-                o.rating AS evaluationLevel,
+                case when o.rating='1' then
+                      '优'
+				when o.rating='2' then
+					  '良'
+				when o.rating='3' then
+					  '一般'
+				when o.rating='4' then
+					  '差'
+				else o.rating
+				end  evaluationLevel,
                 o.rating_note AS evaluationComment,
                 w.deal_with_note AS dealWithNote,
                 w.deal_with_people_id AS userId,
                 w.deal_with_people_name AS userName,
-                w.phone AS userPhone,
+                a.USER_PHONE AS userPhone,
                 w.create_time AS operateTime
                 FROM
                 t_work_water w
                 LEFT JOIN t_work_order o
-                ON w.word_order_id = o.id
+                ON w.word_order_id = o.work_order_code
+                left join t_user a
+                on a.USER_ID = w.deal_with_people_id
                 WHERE w.word_order_id = #{repairCode}
+    </select>
+
+
+
+    <select id="getPictureByCode" resultType="com.bank.manage.vo.PictureVo">
+           select path id,
+           name startTime
+           from t_work_order_attachment
+           where repair_id = #{repairCode}
     </select>
 
     <!--根据工单ID查询处理附件表-->

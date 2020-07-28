@@ -2,7 +2,10 @@ package com.bank.manage.controller;
 
 import com.bank.auth.base.BaseController;
 import com.bank.core.entity.BizException;
+import com.bank.core.entity.ImagePlatformFile;
+import com.bank.core.entity.ImagePlatformResponse;
 import com.bank.core.entity.TokenUserInfo;
+import com.bank.core.utils.ImagePlatformUtils;
 import com.bank.manage.dao.InspectionEquipmentDto;
 import com.bank.manage.dao.LargerScreenDto;
 import com.bank.manage.dos.ManageWorkOrderDO;
@@ -81,6 +84,14 @@ public class RepairController extends BaseController {
                   throw new BizException("未找到对应的故障单信息");
               }
               repairVo.setCreateName("admin");
+              //判断是否是现场联系人
+              if(tokenUserInfo.getUserId().equals(repairVo.getContactName())){
+                  repairVo.setIsCreateUser("0");
+              }else{
+                  repairVo.setIsCreateUser("1");
+              }
+
+
               return repairVo;
           }else{
               //人工创建
@@ -161,7 +172,7 @@ public class RepairController extends BaseController {
         TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
         InspectionRepairVo inspectionRepairVo= repairService.getInspectionRepairById(repairCode);
         if(inspectionRepairVo == null){
-            throw new BizException("未找到对应的投诉单信息");
+            throw new BizException("未找到对应的巡检单信息");
         }
         int i=repairService.getUserRoleById(tokenUserInfo.getUserId(),"19");
         if(i==0){
@@ -177,9 +188,10 @@ public class RepairController extends BaseController {
             inspectionRepairVo.setUserType("1");
         }
 
-        //判断是否为创建人
-        String isCreateUser = repairService.getUserByCode(tokenUserInfo.getUserId(),repairCode);
+        //判断是否为陪同人员
+        String isCreateUser = repairService.getAccompaniedByCode(tokenUserInfo.getUserId(),repairCode);
         if(isCreateUser !=null ){
+            //0:是陪同人员 1:否
             inspectionRepairVo.setIsCreateUser("0");
         }else{
             inspectionRepairVo.setIsCreateUser("1");
@@ -367,6 +379,27 @@ public class RepairController extends BaseController {
             throw new BizException("工单编号不能为空");
         }
         list = repairService.getRepairHistoryList(repairCode);
+        //获取图片id
+        List<PictureVo> pictureVos =repairService.getPictureByCode(repairCode);
+        if(pictureVos.size()!=0){
+             List<String> li =new ArrayList<>();
+            //获取图片路径
+            ImagePlatformUtils imagePlatformUtils = new ImagePlatformUtils("zzsbgl");
+            for(PictureVo pictureVo : pictureVos){
+                ImagePlatformResponse response = imagePlatformUtils.query(pictureVo.getId(), pictureVo.getStartTime());
+                List<ImagePlatformFile> imagePlatformFiles= response.getImagePlatformFileList();
+                for(ImagePlatformFile imagePlatformFile : imagePlatformFiles){
+                    li.add(imagePlatformFile.getHttpFilePath());
+                }
+            }
+
+            //保存路径
+            for( RepairHistoryListVo repairHistoryListVos :list){
+                repairHistoryListVos.setThumbs(li);
+            }
+        }
+
+
         return  list;
     }
 
