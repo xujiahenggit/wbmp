@@ -282,7 +282,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
 
     private ResponseDto WBMP10001(OrderNumVo orderNumVo) {
         ResponseDto responseDto = new ResponseDto();
-        responseDto.setStatus("0");
+        responseDto.setRepcode("0");
         Integer pageIndex = orderNumVo.getPageIndex();
         Integer pageSize = orderNumVo.getPageSize();
         pageIndex = pageIndex == 0 ? 1 : pageIndex;
@@ -291,8 +291,6 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
 
         responseDto.setPageIndex(pageIndex);
         responseDto.setPageSize(pageSize);
-        orderNumVo.setPageIndex((pageIndex - 1) * pageSize);
-        orderNumVo.setPageSize(pageSize);
         List<OrderDto> orderDtoList = datWorkOrderDao.queryOrders(orderNumVo);
         String orderType = orderNumVo.getOrderType();
         List<OrderDto> esblist = new ArrayList<>();
@@ -300,7 +298,6 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                 && orderNumVo.getRelated() != null
                 && orderNumVo.getOrderType().equals("01")) {
             esblist = esbService.getEsbErrOrder(orderNumVo);
-
         }
         orderDtoList.addAll(esblist);
         total = orderDtoList.size();
