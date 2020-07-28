@@ -12,8 +12,8 @@ import lombok.Data;
 @Data
 @ApiModel
 public class LargerScreenDto {
-    @ApiModelProperty(value = "支行号")
-    private String branchCode;
+    @ApiModelProperty(value = "机构号")
+    private String orgId;
 //    @ApiModelProperty(value = "自助银行")
 //    private String selfBankCode;
     @ApiModelProperty(value = "终端编号")

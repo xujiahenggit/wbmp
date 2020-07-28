@@ -28,7 +28,7 @@ public interface RepairDao extends BaseMapper<ManageWorkOrderDO> {
 
     DevicesNumberVo getDevicesNumber( @Param("orgId") String orgId);
 
-    IPage<LargerScreenVo> getLargerScreen(Page<LargerScreenVo> page, @Param("branchCode")String branchCode,
+    IPage<LargerScreenVo> getLargerScreen(Page<LargerScreenVo> page, @Param("orgId")String orgId,
                                           @Param("terminalCode") String terminalCode);
 
     PrinterVo getPrinterByCode(String terminalCode);

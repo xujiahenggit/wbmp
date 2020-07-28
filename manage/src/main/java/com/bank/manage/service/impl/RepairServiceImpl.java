@@ -151,7 +151,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
             largerScreenDto.setTerminalCode(null);
         }
         Page<LargerScreenVo> page = new Page<>(largerScreenDto.getPageIndex(), largerScreenDto.getPageSize());
-        return repairDao.getLargerScreen(page,largerScreenDto.getBranchCode(),largerScreenDto.getTerminalCode());
+        return repairDao.getLargerScreen(page,largerScreenDto.getOrgId(),largerScreenDto.getTerminalCode());
     }
 
     @Override
