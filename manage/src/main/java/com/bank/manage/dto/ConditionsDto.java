@@ -16,4 +16,6 @@ public class ConditionsDto {
     private  String repairCode;
     @ApiModelProperty("1：系统自建；2：人工创建")
     private  String flog;
+    @ApiModelProperty("登录人id")
+    private  String userId;
 }
