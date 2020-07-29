@@ -537,7 +537,7 @@
         on term.DEVICEID = device.id
         where
            term.ORGANIZATION = #{orgId}
-        
+
 
     </select>
 
