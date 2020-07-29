@@ -646,7 +646,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                 if("01".equals(commentVo.getRepairType())){
                     if(commentVo.getWorkOrderCode().length()<18){
                         //系统自建  现场人
-                        if(!commentVo.getContactId().equals(tokenUserInfo.getUserId())){
+                        if(!commentVo.getContactId().contains(tokenUserInfo.getUserId())){
                             throw new BizException("10001 无法操作");
                         }
 
