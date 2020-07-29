@@ -216,7 +216,7 @@ public class EarlyWarnMonitorController {
     }
 
     @ApiOperation("柜员号 10030")
-    @GetMapping("/returnCounterNo")
+    @PostMapping("/returnCounterNo")
     public Object returnCounterNo(@RequestBody UserListDo userListDo) {
         return earlyWarnMonitorService.returnCounterNo(userListDo);
     }
