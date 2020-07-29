@@ -158,7 +158,7 @@
         JOIN T_USHER U ON SA.USHER_ID = U.USHER_ID
         WHERE
             U.ORG_ID = #{orgId} AND SA.SATISFACT_ATTEND_YEAR = #{queryDate}
-        AND SA.SATISFACT_ATTEND_SUBMIT_STATE = 20
+        AND SA.SATISFACT_ATTEND_SUBMIT_STATE = 10
     </select>
 
     <!--    查询满意度 考核人数-->
