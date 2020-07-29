@@ -19,7 +19,7 @@ public interface RepairService extends IService<ManageWorkOrderDO> {
 
     RepairVo getRepairById(String repairCode);
 
-    List<EquipmentVo> getEquipmentByCode(String terminalCode);
+    List<EquipmentVo> getEquipmentByCode(String orgId,String terminalCode);
 
     List<InspectionEquipmentVo> getInspectionEquipmentByCode(InspectionEquipmentDto inspectionEquipmentDto);
 
@@ -84,4 +84,8 @@ public interface RepairService extends IService<ManageWorkOrderDO> {
     List<PictureVo> getPictureByCode(String repairCode);
 
     String getAccompaniedByCode( String userId, String repairCode);
+
+    OrgInformationVo getOrgInformation(String orgCode);
+
+    String getOrgCodeById(String orgId);
 }

@@ -216,10 +216,9 @@ public class EarlyWarnMonitorController {
     }
 
     @ApiOperation("柜员号 10030")
-    @GetMapping("/returnCounterNo/{userNo}")
-    @ApiImplicitParam(name = "userNo", value = "主键", required = true, paramType = "path")
-    public Object returnCounterNo(@PathVariable("userNo") String userNo) {
-        return earlyWarnMonitorService.returnCounterNo(userNo);
+    @PostMapping("/returnCounterNo")
+    public Object returnCounterNo(@RequestBody UserListDo userListDo) {
+        return earlyWarnMonitorService.returnCounterNo(userListDo);
     }
 
     @ApiOperation("调查任务详情接口029")
@@ -231,8 +230,8 @@ public class EarlyWarnMonitorController {
 
     @ApiOperation("用户所属机构11030")
     @GetMapping("/getUserByNo/{userNo}")
-    @ApiImplicitParam(name = "userNo", value = "用户编号", required = true, paramType = "path")
-    public Object getUserByNo(@PathVariable("userNo") String userNo) {
+
+    public Object getUserByNo(@PathVariable String userNo) {
         return earlyWarnMonitorService.getUserByNo(userNo);
     }
 

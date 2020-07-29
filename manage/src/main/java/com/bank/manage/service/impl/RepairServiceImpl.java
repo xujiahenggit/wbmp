@@ -105,8 +105,13 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
 
     @Override
     @DataSource(DynamicDataSourceSwitcher.esb_mgt)
-    public List<EquipmentVo> getEquipmentByCode(String terminalCode) {
-        return repairDao.getEquipmentByCode(terminalCode);
+    public List<EquipmentVo> getEquipmentByCode(String orgId,String terminalCode) {
+        //获取核心机构号
+        String orgCode= repairDao.getOrgCodeById(orgId);
+        if(StringUtils.isEmpty(orgCode)){
+            throw new BizException("该用户无组织机构");
+        }
+        return repairDao.getEquipmentByCode(orgCode,terminalCode);
     }
 
     @Override
@@ -121,12 +126,12 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
             }
             return list;
         }
-            //未巡检
-            List<InspectionEquipmentVo> list = repairDao.getInspectionEquipment(inspectionEquipmentDto);
-            for(int i=0;i<list.size();i++){
-                list.get(i).setLogo("1");
+        //未巡检
+        List<InspectionEquipmentVo> list = repairDao.getInspectionEquipment(inspectionEquipmentDto);
+        for(int i=0;i<list.size();i++){
+            list.get(i).setLogo("1");
 
-            }
+        }
         return list;
 
 
@@ -135,8 +140,8 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
     @Override
     @DataSource(DynamicDataSourceSwitcher.esb_mgt)
     public DevicesNumberVo getDevicesNumber(String orgId ) {
-            //总行
-            return repairDao.getDevicesNumber(orgId);
+        //总行
+        return repairDao.getDevicesNumber(orgId);
 
     }
 
@@ -146,7 +151,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
             largerScreenDto.setTerminalCode(null);
         }
         Page<LargerScreenVo> page = new Page<>(largerScreenDto.getPageIndex(), largerScreenDto.getPageSize());
-        return repairDao.getLargerScreen(page,largerScreenDto.getBranchCode(),largerScreenDto.getTerminalCode());
+        return repairDao.getLargerScreen(page,largerScreenDto.getOrgId(),largerScreenDto.getTerminalCode());
     }
 
     @Override
@@ -367,8 +372,8 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
         String phone[];
         if(repairVo.getContactName()!=null ||!"".equals(repairVo.getContactName())){
             //现场联系人存在
-             temp =repairVo.getContactName().split("\\|");
-             for(String name :temp){
+            temp =repairVo.getContactName().split("\\|");
+            for(String name :temp){
                 ContactVo contactVo =new ContactVo();
                 contactVo.setContactName(name);
                 list.add(contactVo);
@@ -378,9 +383,9 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
         //现场联系电话
         if(repairVo.getContactPhone()!=null ||!"".equals(repairVo.getContactPhone())){
             phone =repairVo.getContactPhone().split("\\|");
-         for(int i=0; i<list.size();i++){
-             list.get(i).setContactPhone(phone[i]);
-         }
+            for(int i=0; i<list.size();i++){
+                list.get(i).setContactPhone(phone[i]);
+            }
         }
         if(CollectionUtils.isNotEmpty(list)){
             repairVo.setContactVoList(list);
@@ -451,15 +456,15 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
         switch (commentVo.getType()){
             case "1":
                 if("1".equals(orgType)){
-                     //判断该角色是否有权限(总行)
-                   int i= repairDao.getUserRoleById(tokenUserInfo.getUserId(),"19");
+                    //判断该角色是否有权限(总行)
+                    int i= repairDao.getUserRoleById(tokenUserInfo.getUserId(),"19");
                     if(i<=0){
-                        throw new BizException("用户权限不足");
+                        throw new BizException("10002 无操作权限");
                     }
                     //判断是否为创建人
                     String isCreateUser = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
                     if(isCreateUser !=null ){
-                        throw new BizException("自己创建的工单自己不能处理");
+                        throw new BizException("10001 无法操作");
                     }
                     //总行确认 -> 待厂商回复
                     repairDao.updateWordStatusByCode(commentVo,"3");
@@ -479,12 +484,12 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                     //判断该角色是否有权限(分行)
                     int i= repairDao.getUserRoleById(tokenUserInfo.getUserId(),"18");
                     if(i<=0){
-                        throw new BizException("用户权限不足");
+                        throw new BizException("10002 无操作权限");
                     }
                     //判断是否为创建人
                     String isCreateUser = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
                     if(isCreateUser !=null ){
-                        throw new BizException("自己创建的工单自己不能处理");
+                        throw new BizException("10001 无法操作");
                     }
                     //分行确认 -> 待总行确认
                     repairDao.updateWordStatusByCode(commentVo,"2");
@@ -506,12 +511,12 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                     //判断该角色是否有权限(总行)
                     int i= repairDao.getUserRoleById(tokenUserInfo.getUserId(),"19");
                     if(i<=0){
-                        throw new BizException("用户权限不足");
+                        throw new BizException("10002 无操作权限");
                     }
                     //判断是否为创建人
                     String isCreateUser = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
                     if(isCreateUser !=null ){
-                        throw new BizException("自己创建的工单自己不能处理");
+                        throw new BizException("10001 无法操作");
                     }
                     //总行取消
                     repairDao.updateWordStatusByCode(commentVo,"10");
@@ -531,12 +536,12 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                     //判断该角色是否有权限(分行)
                     int i= repairDao.getUserRoleById(tokenUserInfo.getUserId(),"18");
                     if(i<=0){
-                        throw new BizException("用户权限不足");
+                        throw new BizException("10002 无操作权限");
                     }
                     //判断是否为创建人
                     String isCreateUser = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
                     if(isCreateUser !=null ){
-                        throw new BizException("自己创建的工单自己不能处理");
+                        throw new BizException("10001 无法操作");
                     }
                     //分行取消
                     repairDao.updateWordStatusByCode(commentVo,"10");
@@ -558,12 +563,12 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                     //判断该角色是否有权限(总行)
                     int i= repairDao.getUserRoleById(tokenUserInfo.getUserId(),"19");
                     if(i<=0){
-                        throw new BizException("用户权限不足");
+                        throw new BizException("10002 无操作权限");
                     }
                     //判断是否为创建人
                     String isCreateUser = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
                     if(isCreateUser !=null ){
-                        throw new BizException("自己创建的工单自己不能处理");
+                        throw new BizException("10001 无法操作");
                     }
                     //总行知悉->分行知悉
                     repairDao.updateWordStatusByCode(commentVo,"5");
@@ -583,12 +588,12 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                     //判断该角色是否有权限(分行)
                     int i= repairDao.getUserRoleById(tokenUserInfo.getUserId(),"18");
                     if(i<=0){
-                        throw new BizException("用户权限不足");
+                        throw new BizException("10002 无操作权限");
                     }
                     //判断是否为创建人
                     String isCreateUser = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
                     if(isCreateUser !=null ){
-                        throw new BizException("自己创建的工单自己不能处理");
+                        throw new BizException("10001 无法操作");
                     }
                     //分行取消
                     repairDao.updateWordStatusByCode(commentVo,"8");
@@ -608,69 +613,69 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                 break;
 
             case "4":
-                    //退回
+                //退回
                 String isCreateUser = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
                 if(isCreateUser ==null ){
-                    throw new BizException("自己创建的工单只能自己退回");
+                    throw new BizException("10001 无法操作");
                 }
-                    //用户退回
+                //用户退回
                 if("1".equals(orgType)) {
-                       //总行退回
-                        repairDao.updateWordStatusByCode(commentVo,"2");
+                    //总行退回
+                    repairDao.updateWordStatusByCode(commentVo,"2");
                 }else{
                     //分行退回
                     repairDao.updateWordStatusByCode(commentVo,"1");
                 }
 
-                    //插入到流水表
-                    workWater.setCreateTime(new Date());
-                    workWater.setDealWithPeopleRole(6);
-                    workWater.setDealWithPeopleId(tokenUserInfo.getUserId());
-                    workWater.setDealWithPeopleName(tokenUserInfo.getUserName());
-                    workWater.setOrgId(tokenUserInfo.getOrgId());
-                    workWater.setWordOrderId(commentVo.getWorkOrderCode());
-                    workWater.setDealWithNote(commentVo.getRatingNote());
-                    workWater.setOperationType("8");
-                    repairDao.saveWater(workWater);
-                    temp=true;
+                //插入到流水表
+                workWater.setCreateTime(new Date());
+                workWater.setDealWithPeopleRole(6);
+                workWater.setDealWithPeopleId(tokenUserInfo.getUserId());
+                workWater.setDealWithPeopleName(tokenUserInfo.getUserName());
+                workWater.setOrgId(tokenUserInfo.getOrgId());
+                workWater.setWordOrderId(commentVo.getWorkOrderCode());
+                workWater.setDealWithNote(commentVo.getRatingNote());
+                workWater.setOperationType("8");
+                repairDao.saveWater(workWater);
+                temp=true;
 
                 break;
 
             case "5":
-                    //判断是否为创建人
-                    String user = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
-                    if(user ==null ){
-                        throw new BizException("只有创建人才可以评价");
-                    }
-                    //评价
-                    repairDao.updateWordStatusByCodeRating(commentVo.getWorkOrderCode(),"9",commentVo.getRating(),commentVo.getRatingNote());
-                    //插入到流水表
-                    workWater.setCreateTime(new Date());
-                    workWater.setDealWithPeopleRole(6);
-                    workWater.setDealWithPeopleId(tokenUserInfo.getUserId());
-                    workWater.setDealWithPeopleName(tokenUserInfo.getUserName());
-                    workWater.setOrgId(tokenUserInfo.getOrgId());
-                    workWater.setWordOrderId(commentVo.getWorkOrderCode());
-                    workWater.setDealWithNote(commentVo.getRatingNote());
-                    workWater.setOperationType("1");
-                    repairDao.saveWater(workWater);
-                    temp=true;
+                //判断是否陪同人员
+                String user = repairDao.getAccompaniedByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
+                if(user ==null ){
+                    throw new BizException("10001 无法操作");
+                }
+                //评价
+                repairDao.updateWordStatusByCodeRating(commentVo.getWorkOrderCode(),"9",commentVo.getRating(),commentVo.getRatingNote());
+                //插入到流水表
+                workWater.setCreateTime(new Date());
+                workWater.setDealWithPeopleRole(6);
+                workWater.setDealWithPeopleId(tokenUserInfo.getUserId());
+                workWater.setDealWithPeopleName(tokenUserInfo.getUserName());
+                workWater.setOrgId(tokenUserInfo.getOrgId());
+                workWater.setWordOrderId(commentVo.getWorkOrderCode());
+                workWater.setDealWithNote(commentVo.getRatingNote());
+                workWater.setOperationType("1");
+                repairDao.saveWater(workWater);
+                temp=true;
                 break;
 
             case "6":
-                    //厂商回复
-                    repairDao.updateWordStatusByCode(commentVo,"4");
-                    //插入到流水表
-                    workWater.setCreateTime(new Date());
-                    workWater.setDealWithPeopleRole(5);
-                    workWater.setDealWithPeopleId(tokenUserInfo.getUserId());
-                    workWater.setDealWithPeopleName(tokenUserInfo.getUserName());
-                    workWater.setOrgId(tokenUserInfo.getOrgId());
-                    workWater.setWordOrderId(commentVo.getWorkOrderCode());
-                    workWater.setDealWithNote(commentVo.getRatingNote());
-                    workWater.setOperationType("5");
-                    repairDao.saveWater(workWater);
-                    temp=true;
+                //厂商回复
+                repairDao.updateWordStatusByCode(commentVo,"4");
+                //插入到流水表
+                workWater.setCreateTime(new Date());
+                workWater.setDealWithPeopleRole(5);
+                workWater.setDealWithPeopleId(tokenUserInfo.getUserId());
+                workWater.setDealWithPeopleName(tokenUserInfo.getUserName());
+                workWater.setOrgId(tokenUserInfo.getOrgId());
+                workWater.setWordOrderId(commentVo.getWorkOrderCode());
+                workWater.setDealWithNote(commentVo.getRatingNote());
+                workWater.setOperationType("5");
+                repairDao.saveWater(workWater);
+                temp=true;
 
                 break;
 
@@ -695,6 +700,33 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
         return repairDao.getAccompaniedByCode(userId,repairCode);
     }
 
+    @Override
+    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
+    public OrgInformationVo getOrgInformation(String orgCode) {
+        //先查询总行
+        OrgInformationVo orgInformationVo =  repairDao.getOrgInformationBank(orgCode);
+        if(orgInformationVo != null){
+            orgInformationVo.setOrgCode(orgCode);
+            return orgInformationVo;
+        }
+        //分行
+        OrgInformationVo orgInformation = repairDao.getOrgInformationBranch(orgCode);
+        if(orgInformation != null){
+            orgInformation.setOrgCode(orgCode);
+            return orgInformation;
+        }
+        //分行
+        OrgInformationVo orgInf = repairDao.getOrgInformationSub(orgCode);
+        orgInf.setOrgCode(orgCode);
+        return orgInf;
+    }
+
+    @Override
+    public String getOrgCodeById(String orgId) {
+
+        return repairDao.getOrgCodeById(orgId);
+    }
+
     public void getTime(InspectionEquipmentDto inspectionEquipmentDto){
         //获取当前系统的月份
         Calendar calendar =Calendar.getInstance();
@@ -706,48 +738,48 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
         //1:本季度 2：上季度  3：本半年 4：上半年
         if("1".equals(inspectionEquipmentDto.getStatisticalTime())){
 
-             if(month<=3){
-                 try {
-                     startDate =simpleDateFormat.parse(year+"-01-01"+" 00:00:00");
-                     inspectionEquipmentDto.setStartTime(startDate);
-                     endDate=simpleDateFormat.parse(year+"-03-30"+" 23:59:59");
-                     inspectionEquipmentDto.setEndTime(endDate);
-                 } catch (ParseException e) {
-                     e.printStackTrace();
-                 }
-             }else if(month<=6){
-                 try {
-                     startDate =simpleDateFormat.parse(year+"-04-01"+" 00:00:00");
-                     inspectionEquipmentDto.setStartTime(startDate);
-                     endDate=simpleDateFormat.parse(year+"-06-30"+" 23:59:59");
-                     inspectionEquipmentDto.setEndTime(endDate);
-                 } catch (ParseException e) {
-                     e.printStackTrace();
-                 }
+            if(month<=3){
+                try {
+                    startDate =simpleDateFormat.parse(year+"-01-01"+" 00:00:00");
+                    inspectionEquipmentDto.setStartTime(startDate);
+                    endDate=simpleDateFormat.parse(year+"-03-30"+" 23:59:59");
+                    inspectionEquipmentDto.setEndTime(endDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }else if(month<=6){
+                try {
+                    startDate =simpleDateFormat.parse(year+"-04-01"+" 00:00:00");
+                    inspectionEquipmentDto.setStartTime(startDate);
+                    endDate=simpleDateFormat.parse(year+"-06-30"+" 23:59:59");
+                    inspectionEquipmentDto.setEndTime(endDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
 
-             }else if(month<=9){
-                 try {
-                     startDate =simpleDateFormat.parse(year+"-07-01"+" 00:00:00");
-                     inspectionEquipmentDto.setStartTime(startDate);
-                     endDate=simpleDateFormat.parse(year+"-09-30"+" 23:59:59");
-                     inspectionEquipmentDto.setEndTime(endDate);
-                 } catch (ParseException e) {
-                     e.printStackTrace();
-                 }
+            }else if(month<=9){
+                try {
+                    startDate =simpleDateFormat.parse(year+"-07-01"+" 00:00:00");
+                    inspectionEquipmentDto.setStartTime(startDate);
+                    endDate=simpleDateFormat.parse(year+"-09-30"+" 23:59:59");
+                    inspectionEquipmentDto.setEndTime(endDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
 
-             }else if(month<=12){
-                 try {
-                     startDate =simpleDateFormat.parse(year+"-10-01"+" 00:00:00");
-                     inspectionEquipmentDto.setStartTime(startDate);
-                     endDate=simpleDateFormat.parse(year+"-12-30"+" 23:59:59");
-                     inspectionEquipmentDto.setEndTime(endDate);
-                 } catch (ParseException e) {
-                     e.printStackTrace();
-                 }
+            }else if(month<=12){
+                try {
+                    startDate =simpleDateFormat.parse(year+"-10-01"+" 00:00:00");
+                    inspectionEquipmentDto.setStartTime(startDate);
+                    endDate=simpleDateFormat.parse(year+"-12-30"+" 23:59:59");
+                    inspectionEquipmentDto.setEndTime(endDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
 
-             }else{
-                 throw new BizException("月份异常不在1-12之间");
-             }
+            }else{
+                throw new BizException("月份异常不在1-12之间");
+            }
         }else if("2".equals(inspectionEquipmentDto.getStatisticalTime())){
             //上季度
             if(month<=3){
