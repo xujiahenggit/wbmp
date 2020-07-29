@@ -14,7 +14,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
@@ -26,6 +28,7 @@ import java.util.List;
  * @Date: 2020/5/29 21:18
  */
 @Service
+@Slf4j
 public class SatisfactAttendServiceImpl extends ServiceImpl<SatisfactAttendDao, SatisfactAttendDO> implements SatisfactAttendService {
 
     @Resource
@@ -163,6 +166,7 @@ public class SatisfactAttendServiceImpl extends ServiceImpl<SatisfactAttendDao, 
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean submit(SatisfactAssessmentActDto satisfactAssessmentActDto, TokenUserInfo tokenUserInfo) {
         try {
             //修改满意度状态
@@ -171,6 +175,7 @@ public class SatisfactAttendServiceImpl extends ServiceImpl<SatisfactAttendDao, 
             //提交满意度数据
             List<SatisfactAttendItemDO> list = getSatisfactAttendItemModelList(satisfactAssessmentActDto);
             satisfactAttendItemService.saveBatch(list);
+
             SatisfactAttendDO satisfactAttendDOQuery=this.getById(satisfactAssessmentActDto.getSatisfactAttendId());
             //2.判断是否是最后一条满意度
             List<SatisfactAttendDO> satisfactattentRejectList=satisfactAttendDao.getSatisfactAttendRejectSize(tokenUserInfo.getOrgId(),satisfactAttendDOQuery.getSatisfactAttendYear().toString());
@@ -183,6 +188,8 @@ public class SatisfactAttendServiceImpl extends ServiceImpl<SatisfactAttendDao, 
                 monthAttendDO.setMonthAttendYear(satisfactAttendDOQuery.getSatisfactAttendYear());
                 //设置机构号
                 monthAttendDO.setMonthAttendOrgId(tokenUserInfo.getOrgId());
+                //状态
+                monthAttendDO.setMonthAttendState("10");
                 //设置机构名称
                 monthAttendDO.setMonthAttendOrgName(tokenUserInfo.getOrgName());
                 monthAttendService.save(monthAttendDO);
@@ -211,6 +218,7 @@ public class SatisfactAttendServiceImpl extends ServiceImpl<SatisfactAttendDao, 
             }
             return true;
         } catch (Exception e) {
+            log.info("满意度考核提交报错："+e);
             throw new BizException("满意度考核提交失败");
         }
     }
