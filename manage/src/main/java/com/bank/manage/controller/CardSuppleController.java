@@ -6,8 +6,6 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import com.bank.core.entity.BizException;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -82,15 +80,6 @@ public class CardSuppleController extends BaseController {
     @PostMapping("/saveCardSupple")
     @ApiOperation(value = "新增外包人员补卡申请")
     public Boolean saveCardSupple(@RequestBody CardSuppleDO cardSuppleDO) {
-
-        QueryWrapper<CardSuppleDO> queryWrapper=new QueryWrapper<>();
-        queryWrapper.eq("USHER_ID",cardSuppleDO.getUsherId());
-        queryWrapper.eq("CARD_SUPPLE_DATE",cardSuppleDO.getCardSuppleDate());
-        CardSuppleDO cardSuppleDOExist=cardSuppleService.getOne(queryWrapper);
-        if(cardSuppleDOExist!=null){
-            throw new BizException("补卡申请审批中，不能重复申请！");
-        }
-
         String path = "";
         if (StrUtil.isNotBlank(cardSuppleDO.getCardSuppleImg())) {
             path = StringSplitUtil.splitMaterialPath(cardSuppleDO.getCardSuppleImg(), netUtil.getUrlSuffix(""));

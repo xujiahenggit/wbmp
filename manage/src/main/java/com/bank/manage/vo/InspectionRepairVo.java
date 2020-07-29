@@ -23,7 +23,7 @@ public class InspectionRepairVo {
     @ApiModelProperty(value = "工单类型")
     private String repairType;
     @ApiModelProperty(value = "工单状态 0 :待处理；1：待评价；2：办接；3：待分行确认；4：待总行确认；4：待厂商回复；6：总行知悉；7：分行知悉；8：退回；9：已关闭")
-    private String repairStatus;
+    private String status;
     @ApiModelProperty(value = "创建人姓名")
     private String createName;
     @ApiModelProperty(value = "创建人手机")

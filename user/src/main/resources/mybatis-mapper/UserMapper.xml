@@ -71,13 +71,10 @@
         <!--        <if test="userVO.roleId!=null and userVO.roleId!=''">-->
         <!--            AND UR.ROLE_ID=#{userVO.roleId}-->
         <!--        </if>-->
-        <if test="userVO.orgId!=null and userVO.orgId!=''">
-            AND U.ORG_ID=#{userVO.orgId}
-        </if>
+
         <if test="userVO.keyWork!=null and userVO.keyWork!=''">
             <bind name="keyWork" value="'%'+userVO.keyWork+'%'"/>
-            AND (U.USER_NAME LIKE #{keyWork} OR U.USER_ID LIKE #{keyWork} OR ORG.ORG_NAME
-            LIKE #{keyWork})
+            AND (U.USER_NAME LIKE #{keyWork} OR U.USER_ID LIKE #{keyWork} OR ORG.ORG_ID LIKE #{keyWork} OR ORG.ORG_NAME LIKE #{keyWork})
         </if>
         AND U.USER_WORK_STATUS IN ('正式在岗','借调','待岗培训','其他','总行备员','见习','待岗清收','病休','休产假')
     </select>

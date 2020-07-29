@@ -282,7 +282,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
 
     private ResponseDto WBMP10001(OrderNumVo orderNumVo) {
         ResponseDto responseDto = new ResponseDto();
-        responseDto.setRepcode("0");
+        responseDto.setStatus("0");
         Integer pageIndex = orderNumVo.getPageIndex();
         Integer pageSize = orderNumVo.getPageSize();
         pageIndex = pageIndex == 0 ? 1 : pageIndex;
@@ -291,6 +291,8 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
 
         responseDto.setPageIndex(pageIndex);
         responseDto.setPageSize(pageSize);
+        orderNumVo.setPageIndex((pageIndex - 1) * pageSize);
+        orderNumVo.setPageSize(pageSize);
         List<OrderDto> orderDtoList = datWorkOrderDao.queryOrders(orderNumVo);
         String orderType = orderNumVo.getOrderType();
         List<OrderDto> esblist = new ArrayList<>();
@@ -298,6 +300,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                 && orderNumVo.getRelated() != null
                 && orderNumVo.getOrderType().equals("01")) {
             esblist = esbService.getEsbErrOrder(orderNumVo);
+
         }
         orderDtoList.addAll(esblist);
         total = orderDtoList.size();
@@ -362,7 +365,6 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                     WorkWaterDO.builder()
                             .wordOrderId(orderNo)
                             .dealWithTime(new Date())
-                            .createTime(new Date())
                             .dealWithPeopleId(engineerId)
                             .dealWithPeopleRole(Integer.parseInt(role))
                             .dealWithNote(serviceDescribe)
@@ -456,12 +458,12 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         String orderStatus = inspectionSheetVo.getOrderStatus();
         List<Map<String, String>> data = esbService.getXjd(inspectionSheetVo);
         //巡检状态获取
-        if (StrUtil.isBlankIfStr(orderStatus)) {
+        if (orderStatus == null) {
             responseInspectionSheetDto.setRepcode("-1");
             return responseInspectionSheetDto;
         } else if (orderStatus.equals("1")) {
             String statisticalTime = inspectionSheetVo.getStatisticalTime();//1-上季度；2-本季度；3-上个半年；4-本半年
-            if (StrUtil.isBlankIfStr(statisticalTime)) {
+            if (statisticalTime == null) {
                 responseInspectionSheetDto.setRepcode("-1");
                 return responseInspectionSheetDto;
             }
@@ -512,9 +514,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                         iterator.remove();
                     }
                 }
-                int size = data.size();
-                if (size > 0) {
-                    responseInspectionSheetDto.setTotal(size);
+                if (data.size() > 0) {
                     data = PageUtils.startPage(data, pageIndex, pageSize);
                 } else {
                     data = new ArrayList<>();
@@ -522,8 +522,6 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
             } else {
                 data = new ArrayList<>();
             }
-        }else if (orderStatus.equals("2")){
-            responseInspectionSheetDto.setTotal(esbService.getXjdTotal(inspectionSheetVo));
         }
         ArrayList<InspectionSheetDto> inspectionSheetDtos = new ArrayList<>();
         for (Map<String, String> map : data) {
@@ -615,7 +613,6 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                 WorkWaterDO.builder()
                         .wordOrderId(orderId)
                         .dealWithTime(new Date())
-                        .createTime(new Date())
                         .dealWithPeopleId(createUserId)
                         .dealWithNote("小程序:巡检单创建或更新")
                         .dealWithPeopleName(createUserName)
@@ -636,7 +633,6 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         int pageSize = engineerVo.getPageSize();
         engineerVo.setPageIndex((pageIndex - 1) * pageSize);
         List<EngineerDto> engineerDtoList = esbService.getEngineer(engineerVo);
-        responseEngineerDto.setTotal( esbService.getEngineerTotal(engineerVo));
         responseEngineerDto.setList(engineerDtoList);
         return responseEngineerDto;
     }
@@ -680,7 +676,6 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                     WorkWaterDO.builder()
                             .wordOrderId(orderNo)
                             .dealWithTime(new Date())
-                            .createTime(new Date())
                             .dealWithPeopleId(engineerId)
                             .dealWithPeopleRole(Integer.parseInt(role))
                             .dealWithNote("工单分派")
@@ -723,7 +718,6 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                     WorkWaterDO.builder()
                             .wordOrderId(orderId)
                             .dealWithTime(new Date())
-                            .createTime(new Date())
                             .dealWithPeopleId(engineerId)
                             .dealWithPeopleName(name)
                             .dealWithPeopleRole(2)
@@ -780,7 +774,6 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                     WorkWaterDO.builder()
                             .wordOrderId(orderNo)
                             .dealWithTime(new Date())
-                            .createTime(new Date())
                             .dealWithPeopleId(engineerId)
                             .dealWithPeopleRole(Integer.parseInt(role))
                             .dealWithNote("厂商回复")

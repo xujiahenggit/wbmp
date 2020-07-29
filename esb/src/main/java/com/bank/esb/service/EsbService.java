@@ -39,8 +39,4 @@ public interface EsbService {
     Map<String, Object> getXjdInfo(String deviceNo);
 
     List<Map<String, String>> getXjd(InspectionSheetVo inspectionSheetVo);
-
-    int getXjdTotal(InspectionSheetVo inspectionSheetVo);
-
-    int getEngineerTotal(EngineerVo engineerVo);
 }

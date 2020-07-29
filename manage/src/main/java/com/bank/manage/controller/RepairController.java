@@ -57,15 +57,12 @@ public class RepairController extends BaseController {
 
     @ApiOperation(value ="故障工单新增--设备信息查询")
     @GetMapping("/getequipmentByCode/{terminalCode}")
-    public List<EquipmentVo> getEquipmentByCode(@PathVariable String terminalCode, HttpServletRequest request){
+    @ApiImplicitParam(name = "terminalCode",value = "终端编号",required = true,paramType = "path")
+    public List<EquipmentVo> getEquipmentByCode(@PathVariable String terminalCode){
         if(StringUtils.isEmpty(terminalCode)){
             throw new BizException("终端编号不能为空");
         }
-
-        TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
-        String orgId= tokenUserInfo.getOrgId();
-
-       return  repairService.getEquipmentByCode(orgId,terminalCode);
+       return  repairService.getEquipmentByCode(terminalCode);
 
     }
 
@@ -451,7 +448,7 @@ public class RepairController extends BaseController {
 
     }
 
-    @ApiOperation(value ="查询所有的自助行")
+    @ApiOperation(value ="机构信息")
     @PostMapping("/getBuffetLineList")
     public List<BuffetLineVo> getBuffetLineList(@RequestBody BuffetLineDto buffetLineDto){
         return repairService.getBuffetLineList(buffetLineDto);
@@ -469,19 +466,6 @@ public class RepairController extends BaseController {
     @GetMapping("/getSubbranchList/{code}")
     public List<BuffetLineVo> getSubbranchList(@PathVariable String code){
         return repairService.getSubbranchList(code);
-
-    }
-
-    @ApiOperation(value ="查询机构信息")
-    @GetMapping("/getOrgInformation")
-    public OrgInformationVo getOrgInformation(HttpServletRequest request){
-        TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
-        //获取核心机构号
-        String orgCode= repairService.getOrgCodeById(tokenUserInfo.getOrgId());
-        if(StringUtils.isEmpty(orgCode)){
-            throw new BizException("该用户无组织机构");
-        }
-        return repairService.getOrgInformation(orgCode);
 
     }
 }

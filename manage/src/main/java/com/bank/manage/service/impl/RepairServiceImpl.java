@@ -105,13 +105,8 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
 
     @Override
     @DataSource(DynamicDataSourceSwitcher.esb_mgt)
-    public List<EquipmentVo> getEquipmentByCode(String orgId,String terminalCode) {
-        //获取核心机构号
-        String orgCode= repairDao.getOrgCodeById(orgId);
-         if(StringUtils.isEmpty(orgCode)){
-             throw new BizException("该用户无组织机构");
-         }
-        return repairDao.getEquipmentByCode(orgCode,terminalCode);
+    public List<EquipmentVo> getEquipmentByCode(String terminalCode) {
+        return repairDao.getEquipmentByCode(terminalCode);
     }
 
     @Override
@@ -151,7 +146,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
             largerScreenDto.setTerminalCode(null);
         }
         Page<LargerScreenVo> page = new Page<>(largerScreenDto.getPageIndex(), largerScreenDto.getPageSize());
-        return repairDao.getLargerScreen(page,largerScreenDto.getOrgId(),largerScreenDto.getTerminalCode());
+        return repairDao.getLargerScreen(page,largerScreenDto.getBranchCode(),largerScreenDto.getTerminalCode());
     }
 
     @Override
@@ -459,12 +454,12 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                      //判断该角色是否有权限(总行)
                    int i= repairDao.getUserRoleById(tokenUserInfo.getUserId(),"19");
                     if(i<=0){
-                        throw new BizException("10002 无操作权限");
+                        throw new BizException("用户权限不足");
                     }
                     //判断是否为创建人
                     String isCreateUser = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
                     if(isCreateUser !=null ){
-                        throw new BizException("10001 无法操作");
+                        throw new BizException("自己创建的工单自己不能处理");
                     }
                     //总行确认 -> 待厂商回复
                     repairDao.updateWordStatusByCode(commentVo,"3");
@@ -484,12 +479,12 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                     //判断该角色是否有权限(分行)
                     int i= repairDao.getUserRoleById(tokenUserInfo.getUserId(),"18");
                     if(i<=0){
-                        throw new BizException("10002 无操作权限");
+                        throw new BizException("用户权限不足");
                     }
                     //判断是否为创建人
                     String isCreateUser = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
                     if(isCreateUser !=null ){
-                        throw new BizException("10001 无法操作");
+                        throw new BizException("自己创建的工单自己不能处理");
                     }
                     //分行确认 -> 待总行确认
                     repairDao.updateWordStatusByCode(commentVo,"2");
@@ -511,12 +506,12 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                     //判断该角色是否有权限(总行)
                     int i= repairDao.getUserRoleById(tokenUserInfo.getUserId(),"19");
                     if(i<=0){
-                        throw new BizException("10002 无操作权限");
+                        throw new BizException("用户权限不足");
                     }
                     //判断是否为创建人
                     String isCreateUser = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
                     if(isCreateUser !=null ){
-                        throw new BizException("10001 无法操作");
+                        throw new BizException("自己创建的工单自己不能处理");
                     }
                     //总行取消
                     repairDao.updateWordStatusByCode(commentVo,"10");
@@ -536,12 +531,12 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                     //判断该角色是否有权限(分行)
                     int i= repairDao.getUserRoleById(tokenUserInfo.getUserId(),"18");
                     if(i<=0){
-                        throw new BizException("10002 无操作权限");
+                        throw new BizException("用户权限不足");
                     }
                     //判断是否为创建人
                     String isCreateUser = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
                     if(isCreateUser !=null ){
-                        throw new BizException("10001 无法操作");
+                        throw new BizException("自己创建的工单自己不能处理");
                     }
                     //分行取消
                     repairDao.updateWordStatusByCode(commentVo,"10");
@@ -563,12 +558,12 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                     //判断该角色是否有权限(总行)
                     int i= repairDao.getUserRoleById(tokenUserInfo.getUserId(),"19");
                     if(i<=0){
-                        throw new BizException("10002 无操作权限");
+                        throw new BizException("用户权限不足");
                     }
                     //判断是否为创建人
                     String isCreateUser = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
                     if(isCreateUser !=null ){
-                        throw new BizException("10001 无法操作");
+                        throw new BizException("自己创建的工单自己不能处理");
                     }
                     //总行知悉->分行知悉
                     repairDao.updateWordStatusByCode(commentVo,"5");
@@ -588,12 +583,12 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                     //判断该角色是否有权限(分行)
                     int i= repairDao.getUserRoleById(tokenUserInfo.getUserId(),"18");
                     if(i<=0){
-                        throw new BizException("10002 无操作权限");
+                        throw new BizException("用户权限不足");
                     }
                     //判断是否为创建人
                     String isCreateUser = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
                     if(isCreateUser !=null ){
-                        throw new BizException("10001 无法操作");
+                        throw new BizException("自己创建的工单自己不能处理");
                     }
                     //分行取消
                     repairDao.updateWordStatusByCode(commentVo,"8");
@@ -616,7 +611,7 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                     //退回
                 String isCreateUser = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
                 if(isCreateUser ==null ){
-                    throw new BizException("10001 无法操作");
+                    throw new BizException("自己创建的工单只能自己退回");
                 }
                     //用户退回
                 if("1".equals(orgType)) {
@@ -642,10 +637,10 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                 break;
 
             case "5":
-                    //判断是否陪同人员
-                    String user = repairDao.getAccompaniedByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
+                    //判断是否为创建人
+                    String user = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
                     if(user ==null ){
-                        throw new BizException("10001 无法操作");
+                        throw new BizException("只有创建人才可以评价");
                     }
                     //评价
                     repairDao.updateWordStatusByCodeRating(commentVo.getWorkOrderCode(),"9",commentVo.getRating(),commentVo.getRatingNote());
@@ -698,33 +693,6 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
     @Override
     public String getAccompaniedByCode(String userId, String repairCode) {
         return repairDao.getAccompaniedByCode(userId,repairCode);
-    }
-
-    @Override
-    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
-    public OrgInformationVo getOrgInformation(String orgCode) {
-         //先查询总行
-        OrgInformationVo orgInformationVo =  repairDao.getOrgInformationBank(orgCode);
-        if(orgInformationVo != null){
-            orgInformationVo.setOrgCode(orgCode);
-            return orgInformationVo;
-        }
-        //分行
-        OrgInformationVo orgInformation = repairDao.getOrgInformationBranch(orgCode);
-        if(orgInformation != null){
-            orgInformation.setOrgCode(orgCode);
-            return orgInformation;
-        }
-        //分行
-        OrgInformationVo orgInf = repairDao.getOrgInformationSub(orgCode);
-        orgInf.setOrgCode(orgCode);
-        return orgInf;
-    }
-
-    @Override
-    public String getOrgCodeById(String orgId) {
-
-        return repairDao.getOrgCodeById(orgId);
     }
 
     public void getTime(InspectionEquipmentDto inspectionEquipmentDto){

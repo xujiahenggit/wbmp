@@ -244,7 +244,7 @@
     <select id="getInspectionRepairById" resultType="com.bank.manage.vo.InspectionRepairVo">
                    select     t.id id,
                                t.work_order_code repairCode,
-                               t.work_order_status repairStatus,
+                               t.work_order_status status,
                                t.work_order_type repairType,
                                a.user_name createName,
                                a.USER_PHONE createPhone,
@@ -367,13 +367,13 @@
          update t_work_order
          <set>
              <if test="commentVo.returnOpinion !=null and commentVo.returnOpinion !=''">
-                 return_opinion =#{commentVo.returnOpinion},
+                 return_opinion =#{commentVo.returnOpinion}
              </if>
              <if test="commentVo.subCancelOpinion !=null and commentVo.subCancelOpinion !=''">
-                 sub_cancel_opinion =#{commentVo.subCancelOpinion},
+                 sub_cancel_opinion =#{commentVo.returnOpinion}
              </if>
              <if test="commentVo.bankCancelOpinion !=null and commentVo.bankCancelOpinion !=''">
-                 bank_cancel_opinion =#{commentVo.bankCancelOpinion},
+                 bank_cancel_opinion =#{commentVo.bankCancelOpinion}
              </if>
              work_order_status =#{code}
          </set>
@@ -397,9 +397,6 @@
         where t.escorts_patrol = #{userId} and t.work_order_code = #{repairCode}
     </select>
 
-    <select id="getOrgCodeById" resultType="java.lang.String">
-         select t.ORG_CODE from t_organization t where t.ORG_ID = #{orgId}
-    </select>
 
     <select id="getEquipmentByCode" resultType="com.bank.manage.vo.EquipmentVo">
             SELECT
@@ -426,7 +423,6 @@
             left join ssamgt.vendorpersonnel vendorpersonnel
             on vendorpersonnel.DEVICEMANU = device.STRDEVMANU
             where term.STRTERMNUM =#{terminalCode}
-            and term.ORGANIZATION = #{orgCode}
     </select>
 
     <select id="getInspectionEquipmentByCode" resultType="com.bank.manage.vo.InspectionEquipmentVo">
@@ -535,9 +531,15 @@
         from ssarun.device device
         left join ssarun.term term
         on term.DEVICEID = device.id
-        where
-           term.ORGANIZATION = #{orgId}
-
+        left join ssamgt.branch branch
+        on branch.STRBRANCHNUM = term.STRBRANCHNUM
+        left join ssamgt.subbranch subbranch
+        on subbranch.STRSUBBRANCHNUM =term.STRSUBBRANCHNUM
+        <where>
+            <if test="orgId != null">
+                term.ORGANIZATION = #{orgId}
+            </if>
+        </where>
 
     </select>
 
@@ -549,7 +551,7 @@
                     a.STATUS status,
                     a.ORG_ID
             from s_device a
-            where  a.ORG_ID = #{orgId}
+            where  a.ORG_ID = #{branchCode}
                 <if test="terminalCode != null">
                   and  a.TERMINAL_NUM = #{terminalCode}
                 </if>
@@ -566,32 +568,6 @@
         where termstatus.STRTERMNUM = #{terminalCode}
     </select>
 
-    <select id="getOrgInformationBank" resultType="com.bank.manage.vo.OrgInformationVo">
-         select
-            t.STRBANKNUM code,
-            t.STRBANKNAME name,
-            '1' flog
-             from ssamgt.bank t
-            where t.org_code = #{orgCode}
-    </select>
-
-    <select id="getOrgInformationBranch" resultType="com.bank.manage.vo.OrgInformationVo">
-         select
-            t.STRBANKNUM code,
-            t.STRBRANCHNAME name,
-            '2' flog
-             from ssamgt.branch t
-            where t.org_code = #{orgCode}
-    </select>
-
-    <select id="getOrgInformationSub" resultType="com.bank.manage.vo.OrgInformationVo">
-          select
-            t.STRBANKNUM code,
-            t.STRSUBBRANCHNAME name,
-            '3' flog
-             from ssamgt.subbranch t
-            where t.org_code = #{orgCode}
-    </select>
 
     <select id="getWorkOrderList" resultType="com.bank.manage.vo.WorkOrderVO">
         select
@@ -742,8 +718,7 @@
         concat(concat(concat(concat(t.branch_name,'/'),t.sub_branch_name),'/'),t.buffet_line_name) orgName,
         t.create_time createTime,
         t.work_order_type workOrderType,
-        t.work_order_describe workOrderDescribe,
-        "2" type
+        t.work_order_describe workOrderDescribe
         from t_work_order t
         <where>
             t.create_id = #{model.logUserId}
@@ -801,8 +776,7 @@
         concat(concat(concat(concat(t.branch_name,'/'),t.sub_branch_name),'/'),t.buffet_line_name) orgName,
         t.create_time createTime,
         t.work_order_type workOrderType,
-        t.work_order_describe workOrderDescribe,
-        "2" type
+        t.work_order_describe workOrderDescribe
         from t_work_order t
         <where>
             t.work_order_code  in (
@@ -865,8 +839,7 @@
         concat(concat(concat(concat(t.branch_name,'/'),t.sub_branch_name),'/'),t.buffet_line_name) orgName,
         t.create_time createTime,
         t.work_order_type workOrderType,
-        t.work_order_describe workOrderDescribe,
-        "2" type
+        t.work_order_describe workOrderDescribe
         from t_work_order t
         <where>
           t.work_order_status ='9'

@@ -42,8 +42,4 @@ public interface EsbDao {
     Map<String, Object> getXjdInfo(@Param("deviceId") String deviceNo);
 
     List<Map<String, String>> getXjd(@Param("m") InspectionSheetVo inspectionSheetVo);
-
-    int getXjdTotal(@Param("m")InspectionSheetVo inspectionSheetVo);
-
-    int getEngineerTotal(@Param("m")EngineerVo engineerVo);
 }
