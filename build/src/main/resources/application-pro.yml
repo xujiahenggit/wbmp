@@ -40,7 +40,7 @@ spring:
       type: com.alibaba.druid.pool.DruidDataSource
     esbmgt:
       # 连接数据库的url
-      url: jdbc:mysql://162.16.4.33:3306/ssamgt?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true&failOverReadOnly=false&serverTimezone=GMT%2B8
+      url: jdbc:mysql://atmp-db-ro.prod.bcs:3306/ssamgt?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true&failOverReadOnly=false&serverTimezone=GMT%2B8
       # 连接数据库的账号
       username: query
       #  连接数据库的密码
@@ -108,7 +108,7 @@ ICOP:
   TIMEOUT: 15000 #毫秒
 #影像平台
 IMAGE_PLATFORM:
-  IP: 162.16.12.80
+  IP: 192.168.3.34
   PORT: 8021
   USER_NAME: Wdzhgl
   PASS_WORD: 'Wdzhgl*abcd1234'
