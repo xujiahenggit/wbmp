@@ -473,11 +473,11 @@ public class RepairController extends BaseController {
     }
 
     @ApiOperation(value ="查询机构信息")
-    @GetMapping("/getOrgInformation")
-    public OrgInformationVo getOrgInformation(HttpServletRequest request){
-        TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
+    @GetMapping("/getOrgInformation/{orgId}")
+    public OrgInformationVo getOrgInformation(@PathVariable String orgId){
+        //TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
         //获取核心机构号
-        String orgCode= repairService.getOrgCodeById(tokenUserInfo.getOrgId());
+        String orgCode= repairService.getOrgCodeById(orgId);
         if(StringUtils.isEmpty(orgCode)){
             throw new BizException("该用户无组织机构");
         }
