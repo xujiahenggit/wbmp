@@ -45,7 +45,7 @@ spring:
       username: query
       #  连接数据库的密码
       #password: query
-      password: Z4gKzn+Et8Oty7suge9jHw==
+      password: GWdSRfDzleo=
       # 使用druid数据源
       type: com.alibaba.druid.pool.DruidDataSource
     druid:
