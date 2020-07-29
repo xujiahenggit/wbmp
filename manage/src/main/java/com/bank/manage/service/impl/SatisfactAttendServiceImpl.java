@@ -173,9 +173,11 @@ public class SatisfactAttendServiceImpl extends ServiceImpl<SatisfactAttendDao, 
             satisfactAttendItemService.saveBatch(list);
             SatisfactAttendDO satisfactAttendDOQuery=this.getById(satisfactAssessmentActDto.getSatisfactAttendId());
             //2.判断是否是最后一条满意度
+            List<SatisfactAttendDO> satisfactattentRejectList=satisfactAttendDao.getSatisfactAttendRejectSize(tokenUserInfo.getOrgId(),satisfactAttendDOQuery.getSatisfactAttendYear().toString());
+
             List<SatisfactAttendDO> satisfactattentPassList=satisfactAttendDao.getSatisfactAttendPassSize(tokenUserInfo.getOrgId(),satisfactAttendDOQuery.getSatisfactAttendYear().toString());
             //需要 项月度考勤审核列表推送 审核流程
-            if(satisfactattentPassList.size()==0){
+            if(satisfactattentRejectList.size()==0){
                 MonthAttendDO monthAttendDO=new MonthAttendDO();
                 //设置考勤月份
                 monthAttendDO.setMonthAttendYear(satisfactAttendDOQuery.getSatisfactAttendYear());
