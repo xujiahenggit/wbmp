@@ -60,6 +60,10 @@ public class RepairVo implements Serializable {
     private String contactName;
     @ApiModelProperty(value = "现场联系人号码")
     private String contactPhone;
+
+    @ApiModelProperty(value = "现场联系人工号")
+    private String contactId;
+
     @ApiModelProperty(value = "描述类型")
     private String describeType;
     @ApiModelProperty(value = "描述描述")

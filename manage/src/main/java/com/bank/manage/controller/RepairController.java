@@ -78,8 +78,8 @@ public class RepairController extends BaseController {
 
     @ApiOperation(value ="（故障）工单详情查询")
     @PostMapping("/getRepairById")
-    public RepairVo getRepairById(@RequestBody ConditionsDto conditionsDto, HttpServletRequest request){
-        TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
+    public RepairVo getRepairById(@RequestBody ConditionsDto conditionsDto){
+       // TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
 
         if("1".equals(conditionsDto.getFlog())){
             //系统自建
@@ -89,7 +89,7 @@ public class RepairController extends BaseController {
             }
             repairVo.setCreateName("admin");
             //判断是否是现场联系人
-            if(tokenUserInfo.getUserId().equals(repairVo.getContactName())){
+            if(conditionsDto.getUserId().equals(repairVo.getContactName())){
                 repairVo.setIsCreateUser("0");
             }else{
                 repairVo.setIsCreateUser("1");
@@ -103,10 +103,10 @@ public class RepairController extends BaseController {
             if(repairVo == null){
                 throw new BizException("未找到对应的故障单信息");
             }
-            int i=repairService.getUserRoleById(tokenUserInfo.getUserId(),"19");
+            int i=repairService.getUserRoleById(conditionsDto.getUserId(),"19");
             if(i==0){
                 //判断是否是分行管理员
-                int b = repairService.getUserRoleById(tokenUserInfo.getUserId(),"18");
+                int b = repairService.getUserRoleById(conditionsDto.getUserId(),"18");
                 if(b==0){
                     repairVo.setUserType("0");
                 }else{
@@ -118,7 +118,7 @@ public class RepairController extends BaseController {
             }
 
             //判断是否为创建人
-            String isCreateUser = repairService.getUserByCode(tokenUserInfo.getUserId(),conditionsDto.getRepairCode());
+            String isCreateUser = repairService.getUserByCode(conditionsDto.getUserId(),conditionsDto.getRepairCode());
             if(isCreateUser !=null ){
                 repairVo.setIsCreateUser("0");
             }else{

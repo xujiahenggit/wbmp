@@ -21,6 +21,16 @@ public class RepairCommentVo {
     @NotBlank(message = "工单编号不能为空！")
     private String workOrderCode;
 
+    @ApiModelProperty(value = "现场联系人工号")
+    private String contactId;
+
+    /**
+     * 工单类型
+     */
+    @ApiModelProperty("工单类型")
+    @NotBlank(message = "工单类型！")
+    private String repairType;
+
     /**
      * 评论等级
      */

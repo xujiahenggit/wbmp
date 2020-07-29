@@ -642,11 +642,46 @@ public class RepairServiceImpl extends ServiceImpl<RepairDao, ManageWorkOrderDO>
                 break;
 
             case "5":
-                //判断是否陪同人员
-                String user = repairDao.getAccompaniedByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
-                if(user ==null ){
-                    throw new BizException("10001 无法操作");
+                String user =null;
+                if("01".equals(commentVo.getRepairType())){
+                    if(commentVo.getWorkOrderCode().length()<18){
+                        //系统自建  现场人
+                        if(!commentVo.getContactId().equals(tokenUserInfo.getUserId())){
+                            throw new BizException("10001 无法操作");
+                        }
+
+                    }else{
+                        //故障单  创建人评价
+                        user = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
+                        if(user ==null ){
+                            throw new BizException("10001 无法操作");
+                        }
+
+                    }
+
+
+
+                }else if ("02".equals(commentVo.getRepairType())){
+                    //投诉单  创建人评价
+                    user = repairDao.getUserByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
+                    if(user ==null ){
+                        throw new BizException("10001 无法操作");
+                    }
+                }else{
+                    //巡检单
+                    //判断是否陪同人员
+                    user = repairDao.getAccompaniedByCode(tokenUserInfo.getUserId(),commentVo.getWorkOrderCode());
+                    if(user ==null ){
+                        throw new BizException("10001 无法操作");
+                    }
+
                 }
+
+
+
+
+
+
                 //评价
                 repairDao.updateWordStatusByCodeRating(commentVo.getWorkOrderCode(),"9",commentVo.getRating(),commentVo.getRatingNote());
                 //插入到流水表

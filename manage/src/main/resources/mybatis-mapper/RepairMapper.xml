@@ -1134,6 +1134,7 @@
                 beginDate createTime,
                 bankReceiveMobile contactPhone,
                 bankReceiveName contactName,
+                bankReceiveNum contactId,
                 deviceManu vendor
         from ssamgt.work_order
         where id =#{repairCode}
