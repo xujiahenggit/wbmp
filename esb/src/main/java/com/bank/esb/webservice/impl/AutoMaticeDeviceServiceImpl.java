@@ -37,7 +37,6 @@ import javax.jws.WebService;
 import java.io.ByteArrayInputStream;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -455,7 +454,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         int pageSize = inspectionSheetVo.getPageSize();
         inspectionSheetVo.setPageIndex((pageIndex - 1) * pageSize);
         String orderStatus = inspectionSheetVo.getOrderStatus();
-        List<Map<String, String>> data = esbService.getXjd(inspectionSheetVo);
+        List<Map<String, String>> data = new ArrayList<>();
         //巡检状态获取
         if (StrUtil.isBlankIfStr(orderStatus)) {
             responseInspectionSheetDto.setRepcode("-1");
@@ -500,48 +499,25 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
             inspectionSheetVo.setStartTime(startTime);
             inspectionSheetVo.setEndTime(endTime);
             List<WorkOrderDO> xjdDo = datWorkOrderDao.getXjd(inspectionSheetVo);
-            List<String> xjd = xjdDo.stream().map(WorkOrderDO::getTerminalCode).collect(Collectors.toList());
-            if (xjd.size() > 0) {
-                Map<String, Boolean> terms = new HashMap<>();
-                for (String s : xjd) {
-                    terms.put(s, true);
-                }
-                Iterator<Map<String, String>> iterator = data.iterator();
-                while (iterator.hasNext()) {
-                    Map<String, String> next = iterator.next();
-                    String term = next.get("STRTERMNUM");
-                    if (!terms.containsKey(term)) {
-                        iterator.remove();
-                    }
-                }
-                int size = data.size();
-                if (size > 0) {
-                    responseInspectionSheetDto.setTotal(size);
-                    data = PageUtils.startPage(data, pageIndex, pageSize);
-                } else {
-                    data = new ArrayList<>();
-                }
-
-                for (Map<String, String> datum : data) {
-                    String term = datum.get("STRTERMNUM");
-                    if (xjdDo.size() > 0) {
-                        Optional<WorkOrderDO> collect = xjdDo.stream().filter(workOrderDO -> workOrderDO.getTerminalCode().equals(term)).findFirst();
-                        WorkOrderDO workOrderDO = collect.get();
-                        Map<String, String> order = new HashMap<>();
-                        order.put("orderNo", workOrderDO.getWorkOrderCode());
-                        order.put("startTime", DateUtil.formatLocalDateTime(workOrderDO.getEscortsStartTime()));
-                        order.put("endTime", DateUtil.formatLocalDateTime(workOrderDO.getEscortsCompleteTime()));
-                        order.put("engineerName", workOrderDO.getCreateName());
-                        order.put("engineerPhone", workOrderDO.getCreateUserPhone());
-                        order.put("accompanyName", workOrderDO.getEscortsPatrolName());
-                        order.put("accompanyPhone", workOrderDO.getEscortsPatrolPhone());
-                        data.add(order);
-                    }
-                }
-            } else {
-                data = new ArrayList<>();
+            for (WorkOrderDO workOrderDO : xjdDo) {
+                Map<String, String> order = new HashMap<>();
+                order.put("STRDEVSN", workOrderDO.getSerialNum());
+                order.put("STRTERMNUM", workOrderDO.getTerminalCode());
+                order.put("IDEVTYPE", String.valueOf(workOrderDO.getDeviceType()));
+                order.put("STRORGNO", workOrderDO.getBuffetLineName());
+                order.put("STRSSBNAME", workOrderDO.getInstallAddr());
+                order.put("freeduedate", workOrderDO.getFreeduedate());
+                order.put("orderNo", workOrderDO.getWorkOrderCode());
+                order.put("startTime", DateUtil.formatLocalDateTime(workOrderDO.getEscortsStartTime()));
+                order.put("endTime", DateUtil.formatLocalDateTime(workOrderDO.getEscortsCompleteTime()));
+                order.put("engineerName", workOrderDO.getCreateName());
+                order.put("engineerPhone", workOrderDO.getCreateUserPhone());
+                order.put("accompanyName", workOrderDO.getEscortsPatrolName());
+                order.put("accompanyPhone", workOrderDO.getEscortsPatrolPhone());
+                data.add(order);
             }
         } else if (orderStatus.equals("2")) {
+            data=esbService.getXjd(inspectionSheetVo);
             responseInspectionSheetDto.setTotal(esbService.getXjdTotal(inspectionSheetVo));
         }
 
