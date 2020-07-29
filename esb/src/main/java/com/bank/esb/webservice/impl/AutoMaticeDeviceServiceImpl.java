@@ -91,7 +91,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         try {
             switch (requestHeader.getServiceCode()) {
                 case "WBMP10001"://工单查询
-                    OrderNumVo orderNumVO = JSON.parseObject(JSON.toJSONString(body), OrderNumVo.class);
+                    OrderNumVo orderNumVO = JSON.parseObject(JSON.toJSONString(body.get("Request")), OrderNumVo.class);
                     returnVO = JSON.parseObject(JSON.toJSONString(WBMP10001(orderNumVO)), Map.class);
                     break;
                 case "WBMP10002"://工单处理
