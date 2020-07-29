@@ -535,15 +535,9 @@
         from ssarun.device device
         left join ssarun.term term
         on term.DEVICEID = device.id
-        left join ssamgt.branch branch
-        on branch.STRBRANCHNUM = term.STRBRANCHNUM
-        left join ssamgt.subbranch subbranch
-        on subbranch.STRSUBBRANCHNUM =term.STRSUBBRANCHNUM
-        <where>
-            <if test="orgId != null">
-                term.ORGANIZATION = #{orgId}
-            </if>
-        </where>
+        where
+           term.ORGANIZATION = #{orgId}
+        
 
     </select>
 
