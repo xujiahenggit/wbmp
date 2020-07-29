@@ -630,8 +630,6 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                 .escortsPatrolName(userInfo.get("name"))
                 .escortsPatrolPhone(userInfo.get("phone"))
                 .createUserPhone(createUserPhone)
-                .engineer(createUserId)
-                .engineerName(createUserName)
                 .escortsStartTime(DateUtil.parseLocalDateTime(inspectionSheetsVo.getStartTime()))
                 .escortsCompleteTime(DateUtil.parseLocalDateTime(inspectionSheetsVo.getEndTime()))
                 .escortsHandling(inspectionSheetsVo.getProcessMode())
