@@ -37,6 +37,7 @@ import javax.jws.WebService;
 import java.io.ByteArrayInputStream;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -282,7 +283,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
 
     private ResponseDto WBMP10001(OrderNumVo orderNumVo) {
         ResponseDto responseDto = new ResponseDto();
-        responseDto.setStatus("0");
+        responseDto.setRepcode("0");
         Integer pageIndex = orderNumVo.getPageIndex();
         Integer pageSize = orderNumVo.getPageSize();
         pageIndex = pageIndex == 0 ? 1 : pageIndex;
@@ -291,8 +292,6 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
 
         responseDto.setPageIndex(pageIndex);
         responseDto.setPageSize(pageSize);
-        orderNumVo.setPageIndex((pageIndex - 1) * pageSize);
-        orderNumVo.setPageSize(pageSize);
         List<OrderDto> orderDtoList = datWorkOrderDao.queryOrders(orderNumVo);
         String orderType = orderNumVo.getOrderType();
         List<OrderDto> esblist = new ArrayList<>();
@@ -300,7 +299,6 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                 && orderNumVo.getRelated() != null
                 && orderNumVo.getOrderType().equals("01")) {
             esblist = esbService.getEsbErrOrder(orderNumVo);
-
         }
         orderDtoList.addAll(esblist);
         total = orderDtoList.size();
@@ -365,6 +363,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                     WorkWaterDO.builder()
                             .wordOrderId(orderNo)
                             .dealWithTime(new Date())
+                            .createTime(new Date())
                             .dealWithPeopleId(engineerId)
                             .dealWithPeopleRole(Integer.parseInt(role))
                             .dealWithNote(serviceDescribe)
@@ -383,7 +382,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
     }
 
     private String getoperationType(String orderStatus) {
-        switch (orderStatus){
+        switch (orderStatus) {
             case "1":
                 return "0";
             case "2":
@@ -458,12 +457,12 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         String orderStatus = inspectionSheetVo.getOrderStatus();
         List<Map<String, String>> data = esbService.getXjd(inspectionSheetVo);
         //巡检状态获取
-        if (orderStatus == null) {
+        if (StrUtil.isBlankIfStr(orderStatus)) {
             responseInspectionSheetDto.setRepcode("-1");
             return responseInspectionSheetDto;
         } else if (orderStatus.equals("1")) {
             String statisticalTime = inspectionSheetVo.getStatisticalTime();//1-上季度；2-本季度；3-上个半年；4-本半年
-            if (statisticalTime == null) {
+            if (StrUtil.isBlankIfStr(statisticalTime)) {
                 responseInspectionSheetDto.setRepcode("-1");
                 return responseInspectionSheetDto;
             }
@@ -500,7 +499,8 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
             }
             inspectionSheetVo.setStartTime(startTime);
             inspectionSheetVo.setEndTime(endTime);
-            List<String> xjd = datWorkOrderDao.getXjd(inspectionSheetVo);
+            List<WorkOrderDO> xjdDo = datWorkOrderDao.getXjd(inspectionSheetVo);
+            List<String> xjd = xjdDo.stream().map(WorkOrderDO::getTerminalCode).collect(Collectors.toList());
             if (xjd.size() > 0) {
                 Map<String, Boolean> terms = new HashMap<>();
                 for (String s : xjd) {
@@ -514,15 +514,37 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                         iterator.remove();
                     }
                 }
-                if (data.size() > 0) {
+                int size = data.size();
+                if (size > 0) {
+                    responseInspectionSheetDto.setTotal(size);
                     data = PageUtils.startPage(data, pageIndex, pageSize);
                 } else {
                     data = new ArrayList<>();
                 }
+
+                for (Map<String, String> datum : data) {
+                    String term = datum.get("STRTERMNUM");
+                    if (xjdDo.size() > 0) {
+                        Optional<WorkOrderDO> collect = xjdDo.stream().filter(workOrderDO -> workOrderDO.getTerminalCode().equals(term)).findFirst();
+                        WorkOrderDO workOrderDO = collect.get();
+                        Map<String, String> order = new HashMap<>();
+                        order.put("orderNo", workOrderDO.getWorkOrderCode());
+                        order.put("startTime", DateUtil.formatLocalDateTime(workOrderDO.getEscortsStartTime()));
+                        order.put("endTime", DateUtil.formatLocalDateTime(workOrderDO.getEscortsCompleteTime()));
+                        order.put("engineerName", workOrderDO.getCreateName());
+                        order.put("engineerPhone", workOrderDO.getCreateUserPhone());
+                        order.put("accompanyName", workOrderDO.getEscortsPatrolName());
+                        order.put("accompanyPhone", workOrderDO.getEscortsPatrolPhone());
+                        data.add(order);
+                    }
+                }
             } else {
                 data = new ArrayList<>();
             }
+        } else if (orderStatus.equals("2")) {
+            responseInspectionSheetDto.setTotal(esbService.getXjdTotal(inspectionSheetVo));
         }
+
         ArrayList<InspectionSheetDto> inspectionSheetDtos = new ArrayList<>();
         for (Map<String, String> map : data) {
             inspectionSheetDtos.add(InspectionSheetDto.builder()
@@ -533,6 +555,13 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                     .orgId(map.get("STRORGNO"))
                     .orgAddress(map.get("STRSSBNAME"))
                     .warrantyTime(map.get("freeduedate"))
+                    .orderNo(map.get("orderNo"))
+                    .startTime(map.get("startTime"))
+                    .endTime(map.get("endTime"))
+                    .engineerName(map.get("engineerName"))
+                    .engineerPhone(map.get("engineerPhone"))
+                    .accompanyName(map.get("accompanyName"))
+                    .accompanyPhone(map.get("accompanyPhone"))
                     .build()
             );
         }
@@ -544,6 +573,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         InspectionSheetsDto inspectionSheetsDto = new InspectionSheetsDto();
         inspectionSheetsDto.setRepcode("0");
         //巡检单创建
+        String orderNo = inspectionSheetsVo.getOrderNo();
         String deviceNo = inspectionSheetsVo.getDeviceNo();
         String accompany = inspectionSheetsVo.getAccompany();
         if (StrUtil.isBlankIfStr(deviceNo) || StrUtil.isBlankIfStr(accompany)) {
@@ -561,7 +591,10 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         Object firstinstalldate = xjdInfo.get("firstinstalldate");
         Object strtermaddr = xjdInfo.get("STRTERMADDR");
         Object strdevsn = xjdInfo.get("STRDEVSN");
-        String orderId = "03" + DateUtils.now();
+        boolean isSave = StrUtil.isBlankIfStr(orderNo);
+        if (isSave) {
+            orderNo = "03" + DateUtils.now();
+        }
         //获取巡检陪同人员信息
         Map<String, String> userInfo = datWorkOrderDao.getuserInfo(accompany);
         if (userInfo == null) {
@@ -576,7 +609,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         WorkOrderDO workOrderDO = WorkOrderDO.builder()
                 .terminalCode(deviceNo)
                 .workOrderType("03")
-                .workOrderCode(orderId)
+                .workOrderCode(orderNo)
                 .escortsFlag("1")
                 .deviceType(Integer.parseInt(xjdInfo.get("IDEVTYPE").toString()))
                 .deviceClass(xjdInfo.get("IDEVCLASS").toString())
@@ -596,8 +629,6 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                 .escortsPatrol(accompany)//巡检陪同人员
                 .escortsPatrolName(userInfo.get("name"))
                 .escortsPatrolPhone(userInfo.get("phone"))
-                .createId(createUserId)
-                .createName(createUserName)
                 .createUserPhone(createUserPhone)
                 .escortsStartTime(DateUtil.parseLocalDateTime(inspectionSheetsVo.getStartTime()))
                 .escortsCompleteTime(DateUtil.parseLocalDateTime(inspectionSheetsVo.getEndTime()))
@@ -606,18 +637,35 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                 .contactName(inspectionSheetsVo.getSceneUserName())
                 .contactPhone(inspectionSheetsVo.getSceneUserPhone())
                 .build();
+
+        Map<String, String> engineerInfo = esbService.getEngineerInfo(createUserId);
+        int role = 0;
+        if (engineerInfo.size() == 1) {
+            role = Integer.parseInt(engineerInfo.get("MANUEMPNATURE"));
+            if (role == 1) {
+                workOrderDO.setDirector(createUserId);
+                workOrderDO.setDirectorName(createUserName);
+            } else {
+                workOrderDO.setEngineer(createUserId);
+                workOrderDO.setEngineerName(createUserName);
+            }
+        }
+
+
         workOrderService.saveOrUpdate(workOrderDO);
 
         //添加一条流水,创建巡检单
         workWaterService.save(
                 WorkWaterDO.builder()
-                        .wordOrderId(orderId)
+                        .wordOrderId(orderNo)
                         .dealWithTime(new Date())
+                        .createTime(new Date())
+                        .dealWithPeopleRole(role)
                         .dealWithPeopleId(createUserId)
-                        .dealWithNote("小程序:巡检单创建或更新")
+                        .dealWithNote(isSave ? "巡检单创建" : "巡检单更新")
                         .dealWithPeopleName(createUserName)
                         .phone(createUserPhone)
-                        .operationType("0")
+                        .operationType(isSave ? "0" : "8")
                         .build()
         );
         return inspectionSheetsDto;
@@ -633,6 +681,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
         int pageSize = engineerVo.getPageSize();
         engineerVo.setPageIndex((pageIndex - 1) * pageSize);
         List<EngineerDto> engineerDtoList = esbService.getEngineer(engineerVo);
+        responseEngineerDto.setTotal(esbService.getEngineerTotal(engineerVo));
         responseEngineerDto.setList(engineerDtoList);
         return responseEngineerDto;
     }
@@ -676,6 +725,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                     WorkWaterDO.builder()
                             .wordOrderId(orderNo)
                             .dealWithTime(new Date())
+                            .createTime(new Date())
                             .dealWithPeopleId(engineerId)
                             .dealWithPeopleRole(Integer.parseInt(role))
                             .dealWithNote("工单分派")
@@ -718,6 +768,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                     WorkWaterDO.builder()
                             .wordOrderId(orderId)
                             .dealWithTime(new Date())
+                            .createTime(new Date())
                             .dealWithPeopleId(engineerId)
                             .dealWithPeopleName(name)
                             .dealWithPeopleRole(2)
@@ -774,6 +825,7 @@ public class AutoMaticeDeviceServiceImpl implements AutoMaticeDeviceService {
                     WorkWaterDO.builder()
                             .wordOrderId(orderNo)
                             .dealWithTime(new Date())
+                            .createTime(new Date())
                             .dealWithPeopleId(engineerId)
                             .dealWithPeopleRole(Integer.parseInt(role))
                             .dealWithNote("厂商回复")

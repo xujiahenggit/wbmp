@@ -1,6 +1,7 @@
 package com.bank.esb.dao;
 
 import com.bank.esb.dos.DatWorkOrderDO;
+import com.bank.esb.dos.WorkOrderDO;
 import com.bank.esb.dto.OrderDto;
 import com.bank.esb.vo.InspectionSheetVo;
 import com.bank.esb.vo.OrderNumVo;
@@ -30,7 +31,7 @@ public interface DatWorkOrderDao extends BaseMapper<DatWorkOrderDO> {
 
     List<OrderDto> queryOrders(@Param("m") OrderNumVo orderNumVo);
 
-    List<String> getXjd(@Param("m") InspectionSheetVo inspectionSheetVo);
+    List<WorkOrderDO> getXjd(@Param("m") InspectionSheetVo inspectionSheetVo);
 
     Map<String, String> getuserInfo(@Param("id") String accompany);
 }
