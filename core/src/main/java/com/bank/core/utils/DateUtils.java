@@ -547,9 +547,11 @@ public class DateUtils {
 //        DateTimeFormatter dateTimeFormatter=DateTimeFormatter.ofPattern("yyyy-mm");
 //        String date= LocalDate.now().minusDays(1).toString().substring(0, 7);
 //        System.out.println(date);
+//
+//        List<String> list = getLatest12Month();
+//        System.out.println( Arrays.toString(list.toArray()));
 
-        List<String> list = getLatest12Month();
-        System.out.println( Arrays.toString(list.toArray()));
+        System.out.println(("2020-06-29").substring(0,7));
     }
 
     public static String now() {

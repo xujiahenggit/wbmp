@@ -60,6 +60,7 @@
 
     <!--    统计加班时长-->
     <select id="getRestWorkLenghth" resultType="java.lang.Float">
+       SELECT IFNULL((
         SELECT
             SUM(WORK_SUPPLE_LENGTH)
         FROM
@@ -69,6 +70,7 @@
         AND WORK_SUPPLE_DATE=#{satisfactAttendYear}
         AND WORK_SUPPLE_STATE = 20
         AND WORK_SUPPLE_TYPE = #{type}
+       ),0)
     </select>
 
 

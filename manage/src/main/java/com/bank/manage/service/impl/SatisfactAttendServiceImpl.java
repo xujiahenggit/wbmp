@@ -5,6 +5,8 @@ import com.bank.core.entity.TokenUserInfo;
 import com.bank.core.sysConst.NewProcessStatusFile;
 import com.bank.core.sysConst.SysStatus;
 import com.bank.manage.dao.SatisfactAttendDao;
+import com.bank.manage.dao.UsherSignDao;
+import com.bank.manage.dao.UsherWorkDaysDao;
 import com.bank.manage.dos.*;
 import com.bank.manage.dto.*;
 import com.bank.manage.service.*;
@@ -49,6 +51,12 @@ public class SatisfactAttendServiceImpl extends ServiceImpl<SatisfactAttendDao, 
 
     @Resource
     private WorkSuppleService workSuppleService;
+
+    @Resource
+    private UsherWorkDaysDao usherWorkDaysDao;
+
+    @Resource
+    private UsherSignDao usherSignDao;
 
     /**
      * 待办列表
@@ -203,9 +211,15 @@ public class SatisfactAttendServiceImpl extends ServiceImpl<SatisfactAttendDao, 
                     //满意度考核得分
                     monthAttendItemDO.setMonthAttendScore(item.getSatisfactAttendScore());
                     //应出勤天数
-                    monthAttendItemDO.setMonthAttendMustDays(10);
+                    /**查询引导员应出勤天数**/
+                    QueryWrapper<UsherWorkDaysDO> queryWrapper = new QueryWrapper<>();
+                    queryWrapper.eq("USHER_ID",item.getUsherId());
+                    queryWrapper.eq("WORK_YEAR_MONTH",item.getSatisfactAttendYear().toString().substring(0,7));
+                    UsherWorkDaysDO usherWorkDaysDO = usherWorkDaysDao.selectOne(queryWrapper);
+                    monthAttendItemDO.setMonthAttendMustDays(usherWorkDaysDO==null?0:usherWorkDaysDO.getWorkDays());
                     //实际出勤天数
-                    monthAttendItemDO.setMonthAttendRealDays(10);
+                    List<UsherSignDO> usherSignList =  usherSignDao.selInfoByMonth(item.getUsherId().toString(),item.getSatisfactAttendYear().toString().substring(0,7));
+                    monthAttendItemDO.setMonthAttendRealDays(usherSignList.size());
                     //工作日加班时长
                     float workWorkLength=workSuppleService.getRestWorkLenghth(item.getUsherId(),item.getSatisfactAttendYear(),SysStatus.WORK_TYPE_WORK);
                     monthAttendItemDO.setMonthAttendWorkLength(workWorkLength);
