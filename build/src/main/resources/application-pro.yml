@@ -78,8 +78,8 @@ spring:
       max-open-prepared-statements: -1
   #redis 配置
   redis:
-    host: 192.168.6.42
-    port: 6379
+    host: 192.168.6.43
+    port: 7000
     password: redisAdmin888
     expireTime: 1440 #设置token过期时间（分钟)
     lettuce:
