@@ -12,6 +12,9 @@ import lombok.Data;
 @Data
 public class InspectionSheetsVo {
 
+    @ApiModelProperty(value = "工单号")
+    private String orderNo;
+
     @ApiModelProperty(value = "设备终端号")
     private String deviceNo;
 

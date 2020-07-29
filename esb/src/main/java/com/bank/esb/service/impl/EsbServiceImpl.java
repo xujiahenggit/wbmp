@@ -99,4 +99,16 @@ public class EsbServiceImpl implements EsbService {
         return esbDao.getXjd(inspectionSheetVo);
     }
 
+    @Override
+    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
+    public int getXjdTotal(InspectionSheetVo inspectionSheetVo) {
+        return esbDao.getXjdTotal(inspectionSheetVo);
+    }
+
+    @Override
+    @DataSource(DynamicDataSourceSwitcher.esb_mgt)
+    public int getEngineerTotal(EngineerVo engineerVo) {
+        return esbDao.getEngineerTotal(engineerVo);
+    }
+
 }

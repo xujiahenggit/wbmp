@@ -17,7 +17,7 @@ import lombok.Data;
 public class ResponseDto {
 
     @ApiModelProperty(value = "业务响应码 -1: 交易失败 ; 0: 正常 , ")
-    private String status;
+    private String repcode;
 
     @ApiModelProperty(value = "分页大小")
     private int pageSize;
