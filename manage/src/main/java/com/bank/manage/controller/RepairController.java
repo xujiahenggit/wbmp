@@ -448,7 +448,7 @@ public class RepairController extends BaseController {
 
     }
 
-    @ApiOperation(value ="查询所有的自助行")
+    @ApiOperation(value ="机构信息")
     @PostMapping("/getBuffetLineList")
     public List<BuffetLineVo> getBuffetLineList(@RequestBody BuffetLineDto buffetLineDto){
         return repairService.getBuffetLineList(buffetLineDto);
