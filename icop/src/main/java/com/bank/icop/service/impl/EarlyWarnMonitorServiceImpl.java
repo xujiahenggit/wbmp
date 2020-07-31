@@ -1,13 +1,18 @@
 package com.bank.icop.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 import com.bank.core.entity.BizException;
 import com.bank.icop.dos.*;
 import com.bank.icop.dto.TaskListsDto;
 import com.bank.icop.service.EarlyWarnMonitorService;
 import com.bank.icop.util.SoapUtil;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -29,9 +34,10 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
     }
 
     @Override
-    public Object getT69Alerts(String alertkey) {
+    public Object getT69Alerts(AlertsDo alertsDo) {
         Map<String, Object> parmMap = new HashMap<>();
-        parmMap.put("alertkey",alertkey);
+        parmMap.put("alertkey",alertsDo.getAlertKey());
+        parmMap.put("userNo",alertsDo.getUserNo());
         Map report = null;
         try {
             report = SoapUtil.sendReport("FXYJ10002","812",parmMap);
@@ -53,7 +59,7 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
     @Override
     public Object getTaskDetails(String alertKey) {
         Map<String, Object> parmMap = new HashMap<>();
-        parmMap.put("alertKey",alertKey);
+        parmMap.put("TASKKEY",alertKey);
         Map report = null;
         try {
             report = SoapUtil.sendReport("FXYJ10003","812",parmMap);
@@ -249,20 +255,9 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         parmMap.put("alertkey",taskListsDto.getAlertkey());
         parmMap.put("userNo",taskListsDto.getUserNo());
         Map report = null;
-        try {
-            report = SoapUtil.sendReport("FXYJ10018","812",parmMap);
-        } catch (Exception e) {
-            throw new BizException("协查任务基本信息查询报错！"+e.getMessage());
-        }
+        return getIcopTagList(parmMap, "FXYJ10018", "协查任务列表", "0", "执行失败");
 
-        if("-1".equals((String)report.get("status"))){
-            throw new BizException("预警编号为空,状态码:"+(String)report.get("status"));
-        }else if("1".equals((String)report.get("status"))){
-            throw new BizException("编号未查询出预警信息,状态码:"+(String)report.get("status"));
-        }else if("3".equals((String)report.get("status"))){
-            throw new BizException("无预警日志,状态码:"+(String)report.get("status"));
-        }
-        return report;
+
     }
 
     @Override
@@ -275,6 +270,9 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         parmMap.put("taskkey",updateDealRecordsDo.getTaskkey());
         parmMap.put("verdict",updateDealRecordsDo.getVerdict());
         parmMap.put("processdes",updateDealRecordsDo.getProcessdes());
+        parmMap.put("CONTENTID",updateDealRecordsDo.getCONTENTID());
+        parmMap.put("BUSISTARTDATE",updateDealRecordsDo.getBUSISTARTDATE());
+        parmMap.put("BUSISERIALNO",updateDealRecordsDo.getBUSISERIALNO());
         Map report = null;
         try {
             report = SoapUtil.sendReport("FXYJ10019","812",parmMap);
@@ -335,17 +333,14 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         parmMap.put("risklev",alertListDo.getRisklev());
         parmMap.put("dealflag",alertListDo.getDealflag());
         parmMap.put("fcettypecode",alertListDo.getFcettypecode());
-        parmMap.put("cjstatus",alertListDo.getCjstatus());
-        Map report = null;
-        try {
-            report = SoapUtil.sendReport("FXYJ10022","812",parmMap);
-        } catch (Exception e) {
-            throw new BizException("预警发起与识别数据列表报错！"+e.getMessage());
+        if(alertListDo.getCjstatus() != null && !"".equals(alertListDo.getCjstatus())){
+            parmMap.put("cjstatus",alertListDo.getCjstatus());
         }
-        if(!"0".equals((String)report.get("status"))){
-            throw new BizException("执行失败,状态码:"+(String)report.get("status"));
-        }
-        return report;
+
+        parmMap.put("limit",alertListDo.getLimit());
+        parmMap.put("offset",alertListDo.getOffset());
+
+        return getIcopTagList(parmMap, "FXYJ10022", "预警发起与识别数据列表", "0", "执行失败");
     }
 
     @Override
@@ -353,7 +348,8 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("userNo",replyDataDo.getUserNo());
         parmMap.put("alertKey",replyDataDo.getAlertKey());
-        parmMap.put("alertdt",replyDataDo.getAlertdt());
+        parmMap.put("endDt",replyDataDo.getEndDt());
+        parmMap.put("startDt",replyDataDo.getStartDt());
         parmMap.put("risklev",replyDataDo.getRisklev());
         parmMap.put("dealflag",replyDataDo.getDealflag());
 //        parmMap.put("fcettypecode",replyDataDo.getFcettypecode());
@@ -375,21 +371,14 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("userNo",replyDataDo.getUserNo());
         parmMap.put("alertKey",replyDataDo.getAlertKey());
-        parmMap.put("alertdt",replyDataDo.getAlertdt());
+        parmMap.put("endDt",replyDataDo.getEndDt());
+        parmMap.put("startDt",replyDataDo.getStartDt());
         parmMap.put("risklev",replyDataDo.getRisklev());
         parmMap.put("dealflag",replyDataDo.getDealflag());
 //        parmMap.put("fcettypecode",replyDataDo.getFcettypecode());
 //        parmMap.put("cjstatus",replyDataDo.getCjstatus());
-        Map report = null;
-        try {
-            report = SoapUtil.sendReport("FXYJ10024","812",parmMap);
-        } catch (Exception e) {
-            throw new BizException("未回复协查数据列表报错！"+e.getMessage());
-        }
-        if(!"0".equals((String)report.get("status"))){
-            throw new BizException("执行失败,状态码:"+(String)report.get("status"));
-        }
-        return report;
+        return getIcopTagList(parmMap, "FXYJ10024", "未回复协查数据列表报错", "0", "执行失败");
+
     }
 
     @Override
@@ -480,16 +469,8 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
     public Object returnRoleLists(String userNo) {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("userNo",userNo);
-        Map report = null;
-        try {
-            report = SoapUtil.sendReport("FXYJ11032","812",parmMap);
-        } catch (Exception e) {
-            throw new BizException("查看用户角色报错！"+e.getMessage());
-        }
-        if(!"0".equals((String)report.get("status"))){
-            throw new BizException("执行失败,状态码:"+(String)report.get("status"));
-        }
-        return report;
+        return getIcopTagList(parmMap, "FXYJ11032", "查看用户角色报错", "1", "执行失败");
+
     }
 
     @Override
@@ -534,6 +515,9 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
         parmMap.put("taskkey",processingRecordsDo.getTaskkey());
         parmMap.put("topic",processingRecordsDo.getTopic());
         parmMap.put("verdict",processingRecordsDo.getVerdict());
+        parmMap.put("CONTENTID",processingRecordsDo.getCONTENTID());
+        parmMap.put("BUSISTARTDATE",processingRecordsDo.getBUSISTARTDATE());
+        parmMap.put("BUSISERIALNO",processingRecordsDo.getBUSISERIALNO());
 
         Map report = null;
         try {
@@ -593,5 +577,105 @@ public class EarlyWarnMonitorServiceImpl implements EarlyWarnMonitorService {
             throw new BizException("执行失败,状态码:"+(String)report.get("status"));
         }
         return report;
+    }
+
+    @Override
+    public Object returnCounterNo(UserListDo userListDo) {
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("userNo",userListDo.getUserNo());
+        parmMap.put("userid",userListDo.getUserid());
+        parmMap.put("userna",userListDo.getUserna());
+        Map report = null;
+        try {
+            report = SoapUtil.sendReport("FXYJ10030","812",parmMap);
+        } catch (Exception e) {
+            throw new BizException("柜员号接口！"+e.getMessage());
+        }
+        if(!"0".equals((String)report.get("status"))){
+            throw new BizException("执行失败,状态码:"+(String)report.get("status"));
+        }
+        return report;
+    }
+
+    @Override
+    public Object getUserList(UserListDo userListDo) {
+        Map<String, Object> parmMap = new HashMap<>();
+        parmMap.put("userNo",userListDo.getUserNo());
+        parmMap.put("limit",userListDo.getLimit());
+        parmMap.put("offset",userListDo.getOffset());
+        parmMap.put("ORGANKEY",userListDo.getORGANKEY());
+        parmMap.put("ORGANNAME",userListDo.getORGANNAME());
+        Map report = null;
+        try {
+            report = SoapUtil.sendReport("FXYJ10032","812",parmMap);
+        } catch (Exception e) {
+            throw new BizException("柜员号接口！"+e.getMessage());
+        }
+        if(!"0".equals((String)report.get("status"))){
+            throw new BizException("执行失败,状态码:"+(String)report.get("status"));
+        }
+        return report;
+    }
+
+    private Object getIcopTagData(Map<String, Object> parmMap, String serviceCode, String serviceName, String rightCode, String errMsg, String tag) {
+        Map report = getReport(parmMap, serviceCode, serviceName, rightCode, errMsg);
+        Object list = report.get(tag);
+        if (list != null) {
+            return list;
+        }
+        else {
+            throw new BizException("返回值不包含" + tag + "标签！");
+        }
+    }
+
+    private List getIcopTagList(Map<String, Object> parmMap, String serviceCode, String serviceName, String rightCode, String errMsg) {
+        Object data = getIcopTagData(parmMap, serviceCode, serviceName, rightCode, errMsg, "List");
+        return getArray(data);
+    }
+
+    private List getArray(Object data) {
+        if (data instanceof ArrayList) {
+            return (List) data;
+        }
+        else {
+            List result = new ArrayList();
+            if (data instanceof String) {
+            }
+            else {
+                result.add(data);
+            }
+            return result;
+        }
+    }
+
+    private Map getReport(Map<String, Object> parmMap, String serviceCode, String serviceName, String rightCode, String errMsg) {
+        Map report = null;
+        try {
+            report = SoapUtil.sendReport(serviceCode, "812", parmMap);
+        }
+        catch (Exception e) {
+            String errorMess = e.getMessage();
+            if (StringUtils.equals("Read timed out", e.getMessage())) {
+                errorMess = "请求超时！排查ICOP、ESB、源系统应用服务是否正常！";
+            }
+            throw new BizException(serviceName + "【" + serviceCode + "】报错：" + errorMess);
+        }
+        if (CollectionUtil.isEmpty(report)) {
+            throw new BizException("返回报文为空！");
+        }
+        checkStatus(serviceName, rightCode, errMsg, report);
+        return report;
+    }
+
+    private void checkStatus(String serviceName, String rightCode, String errMsg, Map report) {
+        String status = (String) report.get("status");
+        if (StrUtil.isBlankIfStr(status)) {
+            throw new BizException(serviceName + "接口返回状态码为空！");
+        }
+        else {
+            if (StringUtils.indexOf(rightCode, status) == -1) {
+                throw new BizException(errMsg + "；该接口返回状态码为：" + status + "！");
+            }
+        }
     }
 }

@@ -5,6 +5,7 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="workOrderResultMap" type="com.bank.esb.dos.WorkOrderDO">
         <id column="id" property="id"/>
+        <result column="return_opinion" property="returnOpinion"/>
         <result column="terminal_code" property="terminalCode"/>
         <result column="work_order_type" property="workOrderType"/>
         <result column="priority_code" property="priorityCode"/>
@@ -42,6 +43,11 @@
                 <if test="model!=null">
                     <if test="model.id != null and model.id !=''">
                         id = #{model.id}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.returnOpinion != null and model.returnOpinion !=''">
+ AND                         return_opinion = #{model.returnOpinion}
                     </if>
                 </if>
                 <if test="model!=null">

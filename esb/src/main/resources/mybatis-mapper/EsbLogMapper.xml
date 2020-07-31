@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.esb.dao.EsbLogDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="esbLogResultMap" type="com.bank.esb.dos.EsbLogDO">
+        <id column="id" property="id"/>
+        <result column="xml" property="xml"/>
+    </resultMap>
+
+
+    <select id="listPage" resultMap="esbLogResultMap">
+        select * from t_esb_log
+        <where>
+                <if test="model!=null">
+                    <if test="model.id != null and model.id !=''">
+                        id = #{model.id}
+                    </if>
+                </if>
+                <if test="model!=null">
+                    <if test="model.xml != null and model.xml !=''">
+ AND                         xml = #{model.xml}
+                    </if>
+                </if>
+        </where>
+    </select>
+
+
+</mapper>

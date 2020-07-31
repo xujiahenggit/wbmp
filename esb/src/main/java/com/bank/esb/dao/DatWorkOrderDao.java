@@ -1,7 +1,9 @@
 package com.bank.esb.dao;
 
 import com.bank.esb.dos.DatWorkOrderDO;
+import com.bank.esb.dos.WorkOrderDO;
 import com.bank.esb.dto.OrderDto;
+import com.bank.esb.vo.InspectionSheetVo;
 import com.bank.esb.vo.OrderNumVo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -29,5 +31,7 @@ public interface DatWorkOrderDao extends BaseMapper<DatWorkOrderDO> {
 
     List<OrderDto> queryOrders(@Param("m") OrderNumVo orderNumVo);
 
-	Map<String, Object> getDeviceInfo(String toString);
+    List<WorkOrderDO> getXjd(@Param("m") InspectionSheetVo inspectionSheetVo);
+
+    Map<String, String> getuserInfo(@Param("id") String accompany);
 }

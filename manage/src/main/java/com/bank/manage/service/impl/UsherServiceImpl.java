@@ -3,6 +3,7 @@ package com.bank.manage.service.impl;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
@@ -64,14 +65,20 @@ public class UsherServiceImpl implements UsherService {
     @Override
     @Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public Integer insert(UsherDTO usherDTO, String currentUser) {
+        //手机号码验证正则表达式
+        String regExp = "^1[3456789]\\d{9}$";
+        if (!Pattern.compile(regExp).matcher(usherDTO.getPhoneNo()).matches()) {
+            throw new BizException("请输入正确格式的手机号码进行引导员新增操作！");
+        }
+
         QueryWrapper<UsherPopulationDO> queryWrapperEx = new QueryWrapper<>();
         queryWrapperEx.eq("ORG_ID", usherDTO.getOrgId());
-        UsherPopulationDO usherPopulationDO = this.usherPopulationDao.selectOne(queryWrapperEx);
+        UsherPopulationDO usherPopulationDO = usherPopulationDao.selectOne(queryWrapperEx);
         if (usherPopulationDO != null) {
             //查询当前机构下引导员人数
             QueryWrapper<UsherDO> queryWrapperExt = new QueryWrapper<>();
             queryWrapperExt.eq("ORG_ID", usherDTO.getOrgId()).eq("USHER_DELFLAG", "0");
-            int usherCount = this.usherDao.selectCount(queryWrapperExt);
+            int usherCount = usherDao.selectCount(queryWrapperExt);
 
             if (usherCount >= usherPopulationDO.getPopulationLimit().intValue()) {
                 throw new BizException("机构[" + usherDTO.getOrgName() + "]已存在引导员" + usherCount + "人，引导员人数不允许超过人数控制，请调整该机构人数控制");
@@ -81,7 +88,7 @@ public class UsherServiceImpl implements UsherService {
         QueryWrapper<UsherDO> queryWrapper = new QueryWrapper<>();
         //手机号+未删除 唯一校验
         queryWrapper.eq("PHONE_NO", usherDTO.getPhoneNo()).eq("USHER_DELFLAG", "0");
-        if (this.usherDao.selectCount(queryWrapper) > 0) {
+        if (usherDao.selectCount(queryWrapper) > 0) {
             throw new BizException("根据手机号[" + usherDTO.getPhoneNo() + "]已查找到对应的引导员信息，不允许新增");
         }
 
@@ -94,14 +101,14 @@ public class UsherServiceImpl implements UsherService {
         usherDO.setCreatedTime(LocalDateTime.now());
         usherDO.setUpdatedBy(currentUser);
         usherDO.setUpdatedTime(LocalDateTime.now());
-        this.usherDao.insert(usherDO);
+        usherDao.insert(usherDO);
 
         //新增本月出勤天数数据
         UsherWorkDaysDO workDays = new UsherWorkDaysDO();
         workDays.setUsherId(usherDO.getUsherId());
         workDays.setWorkYearMonth(DateUtil.format(new Date(), "yyyy-MM"));
         workDays.setWorkDays(usherDTO.getWorkDays());
-        return this.usherWorkDaysDao.insert(workDays);
+        return usherWorkDaysDao.insert(workDays);
     }
 
     private void ValidIdentityNo(String identityNo) {
@@ -109,14 +116,14 @@ public class UsherServiceImpl implements UsherService {
             throw new BizException("无效的身份证号[" + identityNo + "]");
         }
 
-        if (this.usherDao.selectCount(new LambdaQueryWrapper<UsherDO>().eq(UsherDO::getIdentityNo, identityNo).eq(UsherDO::getUsherDelflag, "0")) > 0) {
+        if (usherDao.selectCount(new LambdaQueryWrapper<UsherDO>().eq(UsherDO::getIdentityNo, identityNo).eq(UsherDO::getUsherDelflag, "0")) > 0) {
             throw new BizException("根据身份证号[" + identityNo + "]已查找到对应的引导员信息");
         }
     }
 
     @Override
     public Integer insertBatch(List<UsherDO> usherDOList) {
-        return this.usherDao.insertBatch(usherDOList);
+        return usherDao.insertBatch(usherDOList);
     }
 
     @Override
@@ -127,7 +134,7 @@ public class UsherServiceImpl implements UsherService {
         usherDO.setUpdatedTime(LocalDateTime.now());
         usherDO.setUsherDelflag("1");
         //逻辑删除
-        return this.usherDao.updateById(usherDO);
+        return usherDao.updateById(usherDO);
     }
 
     @Override
@@ -137,7 +144,7 @@ public class UsherServiceImpl implements UsherService {
         //手机号+未删除 唯一校验
         queryWrapper.eq("PHONE_NO", usherDTO.getPhoneNo()).eq("USHER_DELFLAG", "0");
 
-        UsherDO usherDOE = this.usherDao.selectOne(queryWrapper);
+        UsherDO usherDOE = usherDao.selectOne(queryWrapper);
         if (usherDOE != null && !usherDOE.getUsherId().equals(usherDTO.getUsherId())) {
             throw new BizException("更改手机号[" + usherDTO.getPhoneNo() + "]与其他引导员信息冲突，不允许更新");
         }
@@ -148,7 +155,7 @@ public class UsherServiceImpl implements UsherService {
         if (!IdcardUtil.isValidCard(identityNo)) {
             throw new BizException("无效的身份证号[" + identityNo + "]");
         }
-        UsherDO usher = this.usherDao.selectOne(new LambdaQueryWrapper<UsherDO>().eq(UsherDO::getIdentityNo, identityNo).eq(UsherDO::getUsherDelflag, "0"));
+        UsherDO usher = usherDao.selectOne(new LambdaQueryWrapper<UsherDO>().eq(UsherDO::getIdentityNo, identityNo).eq(UsherDO::getUsherDelflag, "0"));
         if (usher != null && !usher.getUsherId().equals(usherDTO.getUsherId())) {
             throw new BizException("更改身份证号[" + identityNo + "]与其他引导员信息冲突，不允许更新");
         }
@@ -159,7 +166,7 @@ public class UsherServiceImpl implements UsherService {
         }
         usherDO.setUpdatedBy(currentUser);
         usherDO.setUpdatedTime(LocalDateTime.now());
-        int updateRow = this.usherDao.updateById(usherDO);
+        int updateRow = usherDao.updateById(usherDO);
 
         //主表未更新到数据，从表不做操作
         if (updateRow > 0) {
@@ -171,17 +178,17 @@ public class UsherServiceImpl implements UsherService {
             UpdateWrapper<UsherWorkDaysDO> updateWrapper = new UpdateWrapper<>();
             updateWrapper.eq("USHER_ID", usherDTO.getUsherId()).eq("WORK_YEAR_MONTH", DateUtil.format(new Date(), "yyyy-MM"));
 
-            updateRow = this.usherWorkDaysDao.update(workDays, updateWrapper);
+            updateRow = usherWorkDaysDao.update(workDays, updateWrapper);
             //未更新到数据就新增
             if (updateRow == 0) {
-                updateRow = this.usherWorkDaysDao.insert(workDays);
+                updateRow = usherWorkDaysDao.insert(workDays);
             }
         }
         return updateRow;
     }
 
     @Override
-    public IPage<UsherDTO> selectPageExt(PageQueryModel pageQueryModel) {
+    public IPage<UsherDTO> selectPageExt(PageQueryModel pageQueryModel, String orgId) {
         Page<UsherDTO> page = new Page<>(pageQueryModel.getPageIndex(), pageQueryModel.getPageSize());
 
         if (StringUtils.isNotBlank(pageQueryModel.getSort())) {
@@ -193,8 +200,14 @@ public class UsherServiceImpl implements UsherService {
             }
         }
 
+        //总行
+        if (StringUtils.startsWith(orgId, "100")) {
+            orgId = "";
+        }
+
         pageQueryModel.getQueryParam().put("workYearMonth", DateUtil.format(new Date(), "yyyy-MM"));
-        IPage<UsherDTO> usherDTOIPage = this.usherDao.selectPageExt(page, pageQueryModel.getQueryParam());
+        pageQueryModel.getQueryParam().put("orgId", orgId);
+        IPage<UsherDTO> usherDTOIPage = usherDao.selectPageExt(page, pageQueryModel.getQueryParam());
         int workDay = DateUtils.getCuruentMonthWorkDays();
         List<UsherDTO> list = usherDTOIPage.getRecords().stream().map(usherDTO -> {
             Integer workDays = usherDTO.getWorkDays();
@@ -215,12 +228,12 @@ public class UsherServiceImpl implements UsherService {
 
     @Override
     public Integer insertBatchLimit(List<UsherPopulationDO> usherPopulationDOList) {
-        return this.usherPopulationDao.insertBatch(usherPopulationDOList);
+        return usherPopulationDao.insertBatch(usherPopulationDOList);
     }
 
     @Override
     public List<UsherPopulationDO> selectUsherPopulation(String orgName) {
-        return this.usherPopulationDao.selectOrgUsherPopulation(orgName);
+        return usherPopulationDao.selectOrgUsherPopulation(orgName);
     }
 
     /**
@@ -233,7 +246,7 @@ public class UsherServiceImpl implements UsherService {
         QueryWrapper<UsherDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("PHONE_NO", userPhone);
         queryWrapper.eq("USHER_DELFLAG", SysStatus.FLAG_NO_DELETE);
-        UsherDO usherDO = this.usherDao.selectOne(queryWrapper);
+        UsherDO usherDO = usherDao.selectOne(queryWrapper);
         return usherDO;
     }
 
@@ -245,7 +258,7 @@ public class UsherServiceImpl implements UsherService {
     public List<UsherDO> SelectUseFullUsher() {
         QueryWrapper<UsherDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("USHER_DELFLAG", 0);
-        List<UsherDO> list = this.usherDao.selectList(queryWrapper);
+        List<UsherDO> list = usherDao.selectList(queryWrapper);
         return list;
     }
 
@@ -254,7 +267,7 @@ public class UsherServiceImpl implements UsherService {
         QueryWrapper<UsherDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("USHER_DELFLAG", 0);
         queryWrapper.eq("PHONE_NO", phone);
-        return this.usherDao.selectList(queryWrapper);
+        return usherDao.selectList(queryWrapper);
     }
 
     @Override
@@ -264,15 +277,15 @@ public class UsherServiceImpl implements UsherService {
         QueryWrapper<UsherPopulationDO> queryWrapper = new QueryWrapper<>();
         //机构号 唯一校验
         queryWrapper.eq("ORG_ID", orgId);
-        if (this.usherPopulationDao.selectCount(queryWrapper) > 0) {
+        if (usherPopulationDao.selectCount(queryWrapper) > 0) {
             throw new BizException("根据机构号[" + orgId + "]已查找到对应的引导员人员控制，不允许新增");
         }
 
-        if (this.usherPopulationDao.checkOrgExist(orgId) == 0) {
+        if (usherPopulationDao.checkOrgExist(orgId) == 0) {
             throw new BizException("机构号[" + orgId + "]在系统中不存在");
         }
 
-        return this.usherPopulationDao.insert(usherPopulationDO);
+        return usherPopulationDao.insert(usherPopulationDO);
     }
 
     @Override
@@ -285,7 +298,7 @@ public class UsherServiceImpl implements UsherService {
             //查询当前机构下引导员人数
             QueryWrapper<UsherDO> queryWrapperEx = new QueryWrapper<>();
             queryWrapperEx.eq("ORG_ID", orgId).eq("USHER_DELFLAG", "0");
-            int usherCount = this.usherDao.selectCount(queryWrapperEx);
+            int usherCount = usherDao.selectCount(queryWrapperEx);
 
             if (usherCount > usherPopulationDTO.getPopulationLimit().intValue()) {
                 throw new BizException("机构[" + usherPopulationDTO.getOrgName() + "]已存在引导员" + usherCount + "人，人数控制不允许小于它");
@@ -293,7 +306,7 @@ public class UsherServiceImpl implements UsherService {
 
             QueryWrapper<UsherPopulationDO> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("ORG_ID", orgId);
-            UsherPopulationDO usherPopulationDO = this.usherPopulationDao.selectOne(queryWrapper);
+            UsherPopulationDO usherPopulationDO = usherPopulationDao.selectOne(queryWrapper);
 
             if (usherPopulationDO == null) {
                 usherPopulationDO = new UsherPopulationDO();
@@ -302,13 +315,13 @@ public class UsherServiceImpl implements UsherService {
                 usherPopulationDO.setCreatedTime(new Date());
                 usherPopulationDO.setUpdatedBy(currentUser);
                 usherPopulationDO.setUpdatedTime(new Date());
-                this.usherPopulationDao.insert(usherPopulationDO);
+                usherPopulationDao.insert(usherPopulationDO);
             }
             else {
                 PropertyUtil.copyProperties(usherPopulationDTO, usherPopulationDO, "usherPopulationId");
                 usherPopulationDO.setUpdatedBy(currentUser);
                 usherPopulationDO.setUpdatedTime(new Date());
-                this.usherPopulationDao.updateById(usherPopulationDO);
+                usherPopulationDao.updateById(usherPopulationDO);
             }
         }
         return usherPopulationDTOList.size();
@@ -322,7 +335,7 @@ public class UsherServiceImpl implements UsherService {
         usherPopulationDO.setUpdatedBy(currentUser);
         usherPopulationDO.setUpdatedTime(new Date());
         //全更新
-        return this.usherPopulationDao.update(usherPopulationDO, null);
+        return usherPopulationDao.update(usherPopulationDO, null);
 
     }
 

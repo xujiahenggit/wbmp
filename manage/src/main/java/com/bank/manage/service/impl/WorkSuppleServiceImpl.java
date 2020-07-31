@@ -175,7 +175,7 @@ public class WorkSuppleServiceImpl extends ServiceImpl<WorkSuppleDao, WorkSupple
             //设置行员引导编号
             workSuppleDO.setUsherId(workSuppleDto.getUsherId());
             //设置加班日期
-            workSuppleDO.setWorkSuppleDate(workSuppleDO.getWorkSuppleDate());
+            workSuppleDO.setWorkSuppleDate(workSuppleDto.getWorkSuppleDate());
             //设置加班理由
             workSuppleDO.setWorkSuppleResion(workSuppleDto.getWorkSuppleResion());
             //设置状态为 待审核
@@ -185,7 +185,7 @@ public class WorkSuppleServiceImpl extends ServiceImpl<WorkSuppleDao, WorkSupple
             //设置加班结束时间
             workSuppleDO.setWorkSuppleEndtime(workSuppleDto.getWorkSuppleEndtime());
             //设置加班时长
-            workSuppleDO.setWorkSuppleLength(DateUtils.getTime(workSuppleDto.getWorkSuppleEndtime(), workSuppleDto.getWorkSuppleEndtime()));
+            workSuppleDO.setWorkSuppleLength(workSuppleDto.getWorkSuppleLength());
             //设置加班类型
             workSuppleDO.setWorkSuppleType(workSuppleDto.getWorkSuppleType());
             //设置证明文件地址

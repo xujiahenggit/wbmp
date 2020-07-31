@@ -5,6 +5,8 @@ import com.bank.core.entity.TokenUserInfo;
 import com.bank.core.sysConst.NewProcessStatusFile;
 import com.bank.core.sysConst.SysStatus;
 import com.bank.manage.dao.SatisfactAttendDao;
+import com.bank.manage.dao.UsherSignDao;
+import com.bank.manage.dao.UsherWorkDaysDao;
 import com.bank.manage.dos.*;
 import com.bank.manage.dto.*;
 import com.bank.manage.service.*;
@@ -14,7 +16,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
@@ -26,6 +30,7 @@ import java.util.List;
  * @Date: 2020/5/29 21:18
  */
 @Service
+@Slf4j
 public class SatisfactAttendServiceImpl extends ServiceImpl<SatisfactAttendDao, SatisfactAttendDO> implements SatisfactAttendService {
 
     @Resource
@@ -46,6 +51,12 @@ public class SatisfactAttendServiceImpl extends ServiceImpl<SatisfactAttendDao, 
 
     @Resource
     private WorkSuppleService workSuppleService;
+
+    @Resource
+    private UsherWorkDaysDao usherWorkDaysDao;
+
+    @Resource
+    private UsherSignDao usherSignDao;
 
     /**
      * 待办列表
@@ -163,6 +174,7 @@ public class SatisfactAttendServiceImpl extends ServiceImpl<SatisfactAttendDao, 
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean submit(SatisfactAssessmentActDto satisfactAssessmentActDto, TokenUserInfo tokenUserInfo) {
         try {
             //修改满意度状态
@@ -171,16 +183,21 @@ public class SatisfactAttendServiceImpl extends ServiceImpl<SatisfactAttendDao, 
             //提交满意度数据
             List<SatisfactAttendItemDO> list = getSatisfactAttendItemModelList(satisfactAssessmentActDto);
             satisfactAttendItemService.saveBatch(list);
+
             SatisfactAttendDO satisfactAttendDOQuery=this.getById(satisfactAssessmentActDto.getSatisfactAttendId());
             //2.判断是否是最后一条满意度
+            List<SatisfactAttendDO> satisfactattentRejectList=satisfactAttendDao.getSatisfactAttendRejectSize(tokenUserInfo.getOrgId(),satisfactAttendDOQuery.getSatisfactAttendYear().toString());
+
             List<SatisfactAttendDO> satisfactattentPassList=satisfactAttendDao.getSatisfactAttendPassSize(tokenUserInfo.getOrgId(),satisfactAttendDOQuery.getSatisfactAttendYear().toString());
             //需要 项月度考勤审核列表推送 审核流程
-            if(satisfactattentPassList.size()==0){
+            if(satisfactattentRejectList.size()==0){
                 MonthAttendDO monthAttendDO=new MonthAttendDO();
                 //设置考勤月份
                 monthAttendDO.setMonthAttendYear(satisfactAttendDOQuery.getSatisfactAttendYear());
                 //设置机构号
                 monthAttendDO.setMonthAttendOrgId(tokenUserInfo.getOrgId());
+                //状态
+                monthAttendDO.setMonthAttendState("10");
                 //设置机构名称
                 monthAttendDO.setMonthAttendOrgName(tokenUserInfo.getOrgName());
                 monthAttendService.save(monthAttendDO);
@@ -194,9 +211,15 @@ public class SatisfactAttendServiceImpl extends ServiceImpl<SatisfactAttendDao, 
                     //满意度考核得分
                     monthAttendItemDO.setMonthAttendScore(item.getSatisfactAttendScore());
                     //应出勤天数
-                    monthAttendItemDO.setMonthAttendMustDays(10);
+                    /**查询引导员应出勤天数**/
+                    QueryWrapper<UsherWorkDaysDO> queryWrapper = new QueryWrapper<>();
+                    queryWrapper.eq("USHER_ID",item.getUsherId());
+                    queryWrapper.eq("WORK_YEAR_MONTH",item.getSatisfactAttendYear().toString().substring(0,7));
+                    UsherWorkDaysDO usherWorkDaysDO = usherWorkDaysDao.selectOne(queryWrapper);
+                    monthAttendItemDO.setMonthAttendMustDays(usherWorkDaysDO==null?0:usherWorkDaysDO.getWorkDays());
                     //实际出勤天数
-                    monthAttendItemDO.setMonthAttendRealDays(10);
+                    List<UsherSignDO> usherSignList =  usherSignDao.selInfoByMonth(item.getUsherId().toString(),item.getSatisfactAttendYear().toString().substring(0,7));
+                    monthAttendItemDO.setMonthAttendRealDays(usherSignList.size());
                     //工作日加班时长
                     float workWorkLength=workSuppleService.getRestWorkLenghth(item.getUsherId(),item.getSatisfactAttendYear(),SysStatus.WORK_TYPE_WORK);
                     monthAttendItemDO.setMonthAttendWorkLength(workWorkLength);
@@ -209,6 +232,7 @@ public class SatisfactAttendServiceImpl extends ServiceImpl<SatisfactAttendDao, 
             }
             return true;
         } catch (Exception e) {
+            log.info("满意度考核提交报错："+e);
             throw new BizException("满意度考核提交失败");
         }
     }

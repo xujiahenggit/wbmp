@@ -45,7 +45,7 @@ public class BusinessPanelController {
     }
 
     @GetMapping("/transCnfTop5/{orgId}")
-    @ApiOperation(value = "自助设备交易量Top5")
+    @ApiOperation(value = "自助设备交易量Top5【当日的数据】")
     @ApiImplicitParam(name = "orgId", value = "机构号", required = true, paramType = "path")
     public Object transCnfTop5(@PathVariable String orgId) {
         List<TransCntInfo> list = this.businessPanelService.devicetransCnfTop5(orgId);
@@ -105,24 +105,22 @@ public class BusinessPanelController {
         return list;
     }
 
+    @ApiOperation(value = "自助设备交易趋势")
+    @PostMapping("/deviceTradeList")
+    public List<DeviceTradeTrendVo> deviceTradeList(@RequestBody DeviceTradeListVo deviceTradeListVo) {
+        List<DeviceTradeTrendVo> list = new ArrayList<DeviceTradeTrendVo>();
+        if(deviceTradeListVo.getTermNo() !=null){
+            list = businessPanelService.deviceTradeList(deviceTradeListVo.getOrgId(),deviceTradeListVo.getTermNo(),deviceTradeListVo.getQueryType());
+        }
+        return list;
+    }
+
     @GetMapping("/deviceDetail/{deviceId}")
     @ApiOperation(value = "设备详情")
     @ApiImplicitParam(name = "deviceId", value = "设备id", required = true, paramType = "path")
     public DeviceDetailInfoVo deviceDetail(@PathVariable String deviceId) {
         DeviceDetailInfoVo deviceDetail = businessPanelService.findByDeviceId(deviceId);
         return deviceDetail;
-    }
-
-    @GetMapping("/deviceTradeList/{termNo}/{queryType}")
-    @ApiOperation(value = "自助设备交易趋势")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "orgId", value = "机构号", required = false, paramType = "query"),
-            @ApiImplicitParam(name = "termNo", value = "终端编号", required = true, paramType = "path"),
-            @ApiImplicitParam(name = "queryType", value = "按月查询-01，按年查询-02", required = true, paramType = "path")
-    })
-    public List<DeviceTradeTrendVo> deviceTradeList(@RequestParam(value = "orgId", required = false) String orgId,@PathVariable String termNo, @PathVariable String queryType) {
-        List<DeviceTradeTrendVo> list = businessPanelService.deviceTradeList(orgId,termNo,queryType);
-        return list;
     }
 
 

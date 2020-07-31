@@ -3,15 +3,13 @@ package com.bank.esb.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.util.Date;
-
 /**
  * cq
  */
 @Data
 public class ServiceInformationDto {
     @ApiModelProperty(value = "服务商")
-    private String serviceProvider;
+    private String provider;
 
     @ApiModelProperty(value = "服务主管ID")
     private String serverId;
@@ -35,5 +33,5 @@ public class ServiceInformationDto {
     private String processMode;
 
     @ApiModelProperty(value = "完成时间")
-    private Date finishTime;
+    private String finishTime;
 }

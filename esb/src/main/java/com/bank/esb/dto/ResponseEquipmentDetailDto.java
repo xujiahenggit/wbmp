@@ -17,5 +17,5 @@ public class ResponseEquipmentDetailDto {
     private String repcode;
 
     @ApiModelProperty(value = "设备详细")
-    private List<EquipmentDetailDto> equipmentDetailDtoList;
+    private List<EquipmentDetailDto> List;
 }

@@ -8,20 +8,21 @@ import com.bank.manage.service.DeviceErrorLogService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.Map;
 
 @Service
 @Slf4j
-public class DeviceErrorLogServiceImpl implements DeviceErrorLogService {
+public class DeviceErrorLogServiceImpl extends ServiceImpl<DeviceErrorLogDao, DeviceErrorLogDO> implements DeviceErrorLogService {
 
-    @Autowired
+    @Resource
     private DeviceErrorLogDao deviceErrorLogDao;
 
     @Override
@@ -56,17 +57,24 @@ public class DeviceErrorLogServiceImpl implements DeviceErrorLogService {
             }
         }
         //条件查询
-        Map<String, Object> queryParam = pageQueryModel.getQueryParam();
-        String terminalNum = (String) queryParam.get("terminalNum");
-        String startTime = (String) queryParam.get("startTime");
-        String endTime = (String) queryParam.get("endTime");
-
         QueryWrapper<DeviceErrorLogDO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq(StringUtils.isNotBlank(terminalNum), "TERMINAL_NUM", terminalNum);
+        Map<String, Object> queryParam = pageQueryModel.getQueryParam();
+        if(queryParam.get("terminalNum") !=null && !"".equals(queryParam.get("terminalNum"))){
+            String terminalNum = (String) queryParam.get("terminalNum");
+            queryWrapper.eq(StringUtils.isNotBlank(terminalNum), "TERMINAL_NUM", terminalNum);
+        }
+
+        String startTime = "";
+        String endTime = "";
+        if(queryParam.get("startTime") !=null  ){
+             startTime = (String) queryParam.get("startTime");
+        }
+        if(queryParam.get("endTime") !=null ){
+            endTime = (String) queryParam.get("endTime");
+        }
         if(StringUtils.isNotBlank(startTime) && StringUtils.isNotBlank(endTime)){
             queryWrapper.between("CREATE_TIME",startTime,endTime);
         }
-
         return deviceErrorLogDao.selectPage(page,queryWrapper);
     }
 }

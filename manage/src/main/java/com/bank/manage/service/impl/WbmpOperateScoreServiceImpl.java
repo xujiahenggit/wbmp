@@ -97,9 +97,9 @@ public class WbmpOperateScoreServiceImpl extends ServiceImpl<WbmpOperateScoreDao
         WbmpCommonCalcMethodDO wbmpCommonCalcMethodDO=wbmpCommonCalcMethodService.getOne(new QueryWrapper<>());
 
         //数据占比配置
-        //S2111日均业务量 =网点日均业务量（柜面+自助）/流水总数
-        int absNum = wbmpAbsTransinfoService.getCurrentMonthTrandNum(orgId, date);
-        int atmNum = wbmpAtmpTranInfoService.getCurrentMonthAtmTranNum(orgId, date);
+        //S2111日均业务量 =网点日均业务量（柜面+自助）/流水总数[modify bu zhangfuqiang 2020-07-24]
+        int absNum = wbmpAbsTransinfoService.getAllAbsTranNumByOrgId(orgId, date);
+        int atmNum = wbmpAtmpTranInfoService.getAllTranNumByOrgId(orgId, date);
         int total = absNum + atmNum;
 
         //日均业务量
@@ -152,7 +152,7 @@ public class WbmpOperateScoreServiceImpl extends ServiceImpl<WbmpOperateScoreDao
         for (WbmpOperateRacingIndexMDO item : listRacing) {
             //无纸化业务取消率(12.5%)
             if(WbmpConstFile.SMZ_RACING_001.equals(item.getIndexNo())){
-                wzh= WbmpOperRateUtils.Maht2digit(item.getIndexVal().floatValue()*wzhper*100);
+                wzh= WbmpOperRateUtils.Maht2digit((100-(item.getIndexVal().floatValue()*100))*wzhper);
             }
             //S21212=银企对账率(12.5%)
             if(WbmpConstFile.SMZ_RACING_003.equals(item.getIndexNo())){

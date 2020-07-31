@@ -71,7 +71,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @RestController
 @RequestMapping("/excelData")
-@Api(value = "Excel数据导入记录表", tags = "快乐服务---Excel数据记录表接口")
+@Api(value = "Excel数据导入记录表", tags = "快乐服务-Excel数据记录表接口")
 public class ExcelDataController extends BaseController {
 
     @Autowired
@@ -188,8 +188,9 @@ public class ExcelDataController extends BaseController {
 
     @GetMapping("/downloadExamineTemp")
     @ApiOperation("考核数据Excel模板下载")
-    public void down(HttpServletResponse response) {
-        List<Map<String, Object>> countModuleList = countModuleService.queryCountModule();
+    @ApiImplicitParam(name = "moduleYear", value = "考核模块设置年份", required = false, defaultValue = "", dataType = "String")
+    public void down(@RequestParam(value = "moduleYear", required = false, defaultValue = "") String moduleYear, HttpServletResponse response) {
+        List<Map<String, Object>> countModuleList = countModuleService.queryCountModule(moduleYear);
         List<String> oneModuleList = new ArrayList<>();
         countModuleList.forEach(s -> {
             String key = s.entrySet().iterator().next().getKey();
@@ -303,12 +304,12 @@ public class ExcelDataController extends BaseController {
     public void downloadExamineTemp(HttpServletResponse response) throws IOException {
     	Resource resource = new ClassPathResource("file/ExamineTemp.xlsx");
     	InputStream inputStream = resource.getInputStream();
-    
+
     	response.setContentType("application/vnd.ms-excel");
     	response.setCharacterEncoding("UTF-8");
     	String fileName = URLEncoder.encode("ExamineTemp", "UTF-8");
     	response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
-    
+
     	OutputStream out = response.getOutputStream();
     	int b = 0;
     	byte[] buffer = new byte[1000000];

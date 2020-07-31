@@ -69,4 +69,27 @@ public interface WbmpOperateCustDao extends BaseMapper<WbmpOperateCustDO> {
      */
     List<WbmpOperateCustVo> findYearCust(@Param(value = "orgId") String orgId,@Param(value = "customerTypeCode") String customerTypeCode);
 
+
+    /**
+     * 按日统计 所有客户数
+     * @param orgId 机构编号
+     * @return
+     */
+    int findDaysCustAll(@Param(value = "orgId") String orgId,@Param(value = "date") String date);
+
+    /**
+     * 按月统计 所有客户数
+     * @param orgId 机构编号
+     * @param date 日期
+     * @return
+     */
+    int findMouthsCustAll(@Param(value = "orgId") String orgId,@Param(value = "date") String date);
+
+    /**
+     * 按年统计 所有客户数
+     * @param orgId 机构编号
+     * @param date 日期
+     * @return
+     */
+    int findYearCustAll(@Param(value = "orgId") String orgId,@Param(value = "date") String date);
 }

@@ -56,7 +56,7 @@ public class ImagePlatformController {
     @PostMapping("/localUpload")
     @ApiOperation("影像文件本地上传")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "type", value = "类型（现场检查-xcjc；预警监测-yjjc；）等", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "type", value = "类型（现场检查-xcjc；预警监测-yjjc；整改反馈-fkzg；）等", required = true, dataType = "String"),
             @ApiImplicitParam(name = "pathId", value = "文件目录主键", required = true, dataType = "String")
     })
     public ImagePlatformFile localUpload(@RequestParam(value = "file") MultipartFile file, @RequestParam(value = "type") String type, @RequestParam(value = "pathId") String pathId) {
@@ -155,30 +155,34 @@ public class ImagePlatformController {
     @GetMapping("/imagePlatformQuery")
     @ApiOperation("影像平台文件查询")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "type", value = "类型（现场检查-xcjc；预警监测-yjjc；）等", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "pathId", value = "文件目录主键", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "type", value = "类型（现场检查-xcjc；预警监测-yjjc；整改反馈-fkzg；自助设备-zzsbgl；）等", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "pathId", value = "文件目录主键（上传时必传、查看时可以不用传）", required = false, dataType = "String"),
             @ApiImplicitParam(name = "contentId", value = "影像ID", required = true, dataType = "String"),
             @ApiImplicitParam(name = "busiStartDate", value = "影像时间", required = true, dataType = "String")
     })
-    public ImagePlatformResponse imagePlatformQuery(@RequestParam(value = "type") String type, @RequestParam(value = "pathId") String pathId, @RequestParam(value = "contentId", defaultValue = "") String contentId, @RequestParam(value = "busiStartDate", defaultValue = "") String busiStartDate) {
-        String dir = imagePlatformPath + "/" + type + "/" + pathId;
-        //判断目录是否存在
-        File f = new File(dir);
-        if (!f.exists()) {
-            f.mkdirs();
-        }
-        File fileDir = new File(dir);
-        File[] listFiles = fileDir.listFiles();
+    public ImagePlatformResponse imagePlatformQuery(@RequestParam(value = "type") String type, @RequestParam(value = "pathId", required = false, defaultValue = "") String pathId, @RequestParam(value = "contentId", defaultValue = "") String contentId, @RequestParam(value = "busiStartDate",
+            defaultValue = "") String busiStartDate) {
         //首先列出本地文件
         List<ImagePlatformFile> imagePlatformFileList = new ArrayList<ImagePlatformFile>();
-        for (int i = 0; i < listFiles.length; i++) {
-            ImagePlatformFile imagePlatformFile = new ImagePlatformFile();
-            String name = listFiles[i].getName();
-            imagePlatformFile.setFileType("1");
-            imagePlatformFile.setFilePath(dir);
-            imagePlatformFile.setFileName(name);
-            imagePlatformFile.setHttpFilePath(netUtil.getUrlSuffix("") + dir + "/" + name);
-            imagePlatformFileList.add(imagePlatformFile);
+        //文件目录主键 不传入时不载入本地文件
+        if (StringUtils.isNotBlank(pathId)) {
+            String dir = imagePlatformPath + "/" + type + "/" + pathId;
+            //判断目录是否存在
+            File f = new File(dir);
+            if (!f.exists()) {
+                f.mkdirs();
+            }
+            File fileDir = new File(dir);
+            File[] listFiles = fileDir.listFiles();
+            for (int i = 0; i < listFiles.length; i++) {
+                ImagePlatformFile imagePlatformFile = new ImagePlatformFile();
+                String name = listFiles[i].getName();
+                imagePlatformFile.setFileType("1");
+                imagePlatformFile.setFilePath(dir);
+                imagePlatformFile.setFileName(name);
+                imagePlatformFile.setHttpFilePath(netUtil.getUrlSuffix("") + dir + "/" + name);
+                imagePlatformFileList.add(imagePlatformFile);
+            }
         }
 
         ImagePlatformUtils imagePlatformUtils = new ImagePlatformUtils(type);

@@ -86,7 +86,7 @@ public interface UsherService {
      * @param pageQueryModel
      * @return
      */
-    IPage<UsherDTO> selectPageExt(PageQueryModel pageQueryModel);
+    IPage<UsherDTO> selectPageExt(PageQueryModel pageQueryModel, String orgId);
 
     /**
      *  查询引导员人数控制

@@ -8,6 +8,10 @@ package com.bank.core.sysConst;
 public class WbmpConstFile {
 
     /**
+     * 所有用户
+     */
+    public static final String CUSTOMER_TYPE_CUST_000="CUST_000";
+    /**
      * 普通客户
      */
     public static final String CUSTOMER_TYPE_CUST_001="CUST_001";
@@ -43,6 +47,27 @@ public class WbmpConstFile {
      * 按季度统计
      */
     public static final String DATE_TYPE_JIDU="03";
+
+
+    /**
+     * 按日统计--文本
+     */
+    public static final String DATE_TYPE_DAY_TXT="日";
+
+    /**
+     * 按月统计--文本
+     */
+    public static final String DATE_TYPE_MONTH_TXT="月";
+    /**
+     * 按年统计--文本
+     */
+    public static final String DATE_TYPE_YEAR_TXT="年";
+
+    /**
+     * 按季度统计--文本
+     */
+    public static final String DATE_TYPE_JIDU_TXT="季度";
+
 
 
     /**

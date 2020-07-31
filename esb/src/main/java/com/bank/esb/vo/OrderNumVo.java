@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 /**
  * @Author: cq
@@ -31,10 +32,10 @@ public class OrderNumVo {
     private String orderNo;
 
     @ApiModelProperty(value = "开始时间")
-    private Date startTime;
+    private String startTime;
 
     @ApiModelProperty(value = "结束时间")
-    private Date endTime;
+    private String endTime;
 
     @ApiModelProperty(value = "工单状态")
     private String orderStatus;

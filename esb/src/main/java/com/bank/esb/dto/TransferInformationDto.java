@@ -1,6 +1,10 @@
 package com.bank.esb.dto;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
@@ -8,6 +12,10 @@ import java.util.Date;
  * @Author: cq
  * @Date: 2020/7/2
  */
+@Data
+@NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class TransferInformationDto {
     @ApiModelProperty(value = "操作人ID")
     private String operatorUserId;
@@ -22,9 +30,9 @@ public class TransferInformationDto {
     private String operatorStatus;
 
     @ApiModelProperty(value = "操作时间")
-    private Date operatorTime;
+    private String operatorTime;
 
     @ApiModelProperty(value = "安装日期")
-    private Date installDate;
+    private String installDate;
 
 }

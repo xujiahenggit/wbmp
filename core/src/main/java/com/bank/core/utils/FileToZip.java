@@ -33,6 +33,11 @@ public class FileToZip {
         FileOutputStream fos = null;
         ZipOutputStream zos = null;
         try {
+            File temp=new File(zipFilePath);
+            if(!temp.isDirectory()){
+                temp.mkdirs();
+            }
+
             for (String item:srcFiles){
                 files.add(new File(item));
             }

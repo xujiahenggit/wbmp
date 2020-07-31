@@ -1,6 +1,7 @@
 package com.bank.manage.dao;
 
 import com.bank.manage.dos.ManageWorkOrderDO;
+import com.bank.manage.dos.WorkWaterDO;
 import com.bank.manage.dto.*;
 import com.bank.manage.vo.*;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -17,7 +18,7 @@ public interface RepairDao extends BaseMapper<ManageWorkOrderDO> {
 
     RepairVo getRepairById(@Param(value = "repairCode")String repairCode);
 
-    List<EquipmentVo> getEquipmentByCode(@Param(value = "terminalCode") String terminalCode);
+    List<EquipmentVo> getEquipmentByCode(@Param(value = "orgCode") String orgCode,@Param(value = "terminalCode") String terminalCode);
 
     int saveWorkOrder(WorkOrderDto workOrderDto);
 
@@ -27,18 +28,18 @@ public interface RepairDao extends BaseMapper<ManageWorkOrderDO> {
 
     DevicesNumberVo getDevicesNumber( @Param("orgId") String orgId);
 
-    IPage<LargerScreenVo> getLargerScreen(Page<LargerScreenVo> page, @Param("branchCode")String branchCode,
-                                          @Param("terminalCode") String terminalCode,@Param("selfBankCode") String selfBankCode);
+    IPage<LargerScreenVo> getLargerScreen(Page<LargerScreenVo> page, @Param("orgId")String orgId,
+                                          @Param("terminalCode") String terminalCode);
 
     PrinterVo getPrinterByCode(String terminalCode);
 
-    IPage<WorkOrderVO> getWorkOrder(Page<LargerScreenVo> page,@Param("model") WorkOrdersDto workOrdersDto);
+    IPage<WorkOrderVO> getWorkOrder(Page<WorkOrderVO> page,@Param("model") WorkOrdersDto workOrdersDto);
 
-    IPage<WorkOrderVO> getWorkOrderByMe(Page<LargerScreenVo> page,@Param("model") WorkOrdersDto workOrdersDto);
+    IPage<WorkOrderVO> getWorkOrderByMe(Page<WorkOrderVO> page,@Param("model") WorkOrdersDto workOrdersDto);
 
-    IPage<WorkOrderVO> getWorkOrderBySystem(Page<LargerScreenVo> page,@Param("model") WorkOrdersDto workOrdersDto);
+    IPage<WorkOrderVO> getWorkOrderBySystem(Page<WorkOrderVO> page,@Param("model") WorkOrdersDto workOrdersDto);
 
-    IPage<WorkOrderVO> getWorkOrderByOther(Page<LargerScreenVo> page,@Param("model") WorkOrdersDto workOrdersDto);
+    IPage<WorkOrderVO> getWorkOrderByOther(Page<WorkOrderVO> page,@Param("model") WorkOrdersDto workOrdersDto);
 
     int saveInspectionWorkOrder(InspectionWorkOrderDto inspectionWorkOrderDto);
 
@@ -50,7 +51,81 @@ public interface RepairDao extends BaseMapper<ManageWorkOrderDO> {
 
     ServiceInformationsVo getServiceInformationByCode( @Param("repairCode") String repairCode);
 
-    IPage<KioskVo> kioskDto(Page<LargerScreenVo> page,@Param("model") KioskDto kioskDto);
+    IPage<KioskVo> kioskDto(Page<KioskVo> page,@Param("model") KioskDto kioskDto);
 
     CompletedWordOrderVo getKioskById(@Param("id") String id);
+
+    List<VendorVo> getVendorList();
+
+    String getBuffetLine(@Param("orgId")  String orgId);
+
+    IPage<WorkOrderVO> getWorkOrderByMeApp(Page<WorkOrderVO> page, @Param("model")WorkOrdersDto workOrdersDto);
+
+    ServiceInfoVo getServiceInfoList(@Param("repairCode") String repairCode);
+
+    /**
+     * 工单流转历史
+     * @param repairCode
+     * @return
+     */
+    List<RepairHistoryListVo> getRepairHistoryList(@Param("repairCode") String repairCode);
+
+    /**
+     * 根据工单id获取附件地址
+     * @param repairCode
+     * @return
+     */
+    List<String> getOrderAttachList(@Param("repairCode") String repairCode);
+
+    List<BuffetLineVo> getBuffetLineList(@Param("model")BuffetLineDto buffetLineDto);
+
+    List<BuffetLineVo> getBranchVoList();
+
+    List<BuffetLineVo> getSubbranchList(@Param("code") String code);
+
+    List<EngineerListVo> getEngineerList(String repairCode);
+
+    List<DirectorVo> getDirectorList(String repairCode);
+
+    RepairVo getComplaintsRepairById(String repairCode);
+
+    InspectionRepairVo getInspectionRepairById(String repairCode);
+
+    RepairVo getWOrkSystemByCode(String repairCode);
+
+    String getUserByCode(@Param("userId") String userId,@Param("repairCode") String repairCode);
+
+    List<WorkOrderVO> getWorkOrderBySystemList(@Param("model") WorkOrdersDto workOrdersDto);
+
+    List<WorkOrderVO> getWorkOrderList(@Param("model")WorkOrdersDto workOrdersDto);
+
+    String getUserNameById(String createId);
+
+    void saveWorkOrderWater(@Param("model") WordOrderWaterDto wordOrderWaterDto);
+
+    ServiceInfoVo getServiceInfoListBySys(@Param("repairCode") String repairCode,@Param("vendor") String vendor);
+
+    List<EngineerListVo> getEngineerListBySyS(String vendor);
+
+    List<DirectorVo> getDirectorListBySyS(String vendor);
+
+    void updateWordStatusByCode(@Param("commentVo")RepairCommentVo commentVo,@Param("code") String code);
+
+    int getUserRoleById(@Param("userId")String userId,@Param("code") String code);
+
+    void saveWater(WorkWaterDO workWater);
+
+    void updateWordStatusByCodeRating(@Param("workOrderCode") String workOrderCode, @Param("code") String code,@Param("rating") String rating,@Param("ratingNote") String ratingNote);
+
+    List<PictureVo> getPictureByCode(String repairCode);
+
+    String getAccompaniedByCode(@Param("userId") String userId,@Param("repairCode") String repairCode);
+
+    String getOrgCodeById(@Param("orgId") String orgId);
+
+    OrgInformationVo getOrgInformationBank(@Param("orgCode")String orgCode);
+
+    OrgInformationVo getOrgInformationBranch(@Param("orgCode") String orgCode);
+
+    OrgInformationVo getOrgInformationSub(@Param("orgCode") String orgCode);
 }

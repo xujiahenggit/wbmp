@@ -31,6 +31,12 @@ public class RepairRebackVo {
     @NotBlank(message = "处理人姓名不能为空！")
     private String dealWithPeopleName;
 
+    /**
+     * 处理人角色
+     */
+    @ApiModelProperty("处理人角色")
+    @NotBlank(message = "处理人角色不能为空！")
+    private String dealWithPeopleRole;
 
     /**
      * 处理人机构号
@@ -56,5 +62,9 @@ public class RepairRebackVo {
     @NotBlank(message = "退回原因！")
     private String  dealWithNote ;
 
+
+    @ApiModelProperty("处理人电话")
+    @NotBlank(message = "处理人电话！")
+    private String  phone ;
 
 }

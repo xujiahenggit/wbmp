@@ -18,4 +18,10 @@ public class EngineerVo {
     @ApiModelProperty(value = "查询文本：该字段可以为工程师名称、工程师电话")
     private String seachTxt;
 
+    @ApiModelProperty(value = "分页大小")
+    private int pageSize;
+
+    @ApiModelProperty(value = "第几页")
+    private int pageIndex;
+
 }

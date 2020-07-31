@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import lombok.Data;
+import lombok.Value;
 import org.springframework.boot.SpringApplication;
 
 import java.io.Serializable;
@@ -35,4 +36,7 @@ public class UserVO implements Serializable {
 
     @ApiModelProperty("角色编号")
     private Integer roleId;
+
+    @ApiModelProperty("关键字")
+    private String keyWork;
 }

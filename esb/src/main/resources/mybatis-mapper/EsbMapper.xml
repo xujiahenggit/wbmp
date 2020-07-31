@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.esb.dao.EsbDao">
+    <select id="getEngineer" resultType="com.bank.esb.dto.EngineerDto">
+        SELECT TELEPHONE engineerId,
+        NAME engineerName,
+        TELEPHONE phone
+        FROM vendorpersonnel
+        <where>
+            <if test="m.seachTxt != null and m.seachTxt != ''">
+                NAME LIKE concat('%',#{m.seachTxt},'%') or TELEPHONE LIKE CONCAT('%',#{m.seachTxt},'%')
+            </if>
+        </where>
+        LIMIT #{m.pageIndex},#{m.pageSize}
+    </select>
+
+
+    <select id="getEngineerTotal" resultType="java.lang.Integer">
+        SELECT count(ID)
+        FROM vendorpersonnel
+        <where>
+            <if test="m.seachTxt != null and m.seachTxt != ''">
+                NAME LIKE concat('%',#{m.seachTxt},'%') or TELEPHONE LIKE CONCAT('%',#{m.seachTxt},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="getCSMaster" resultType="com.bank.esb.dto.ManagerDto">
+            SELECT ID serverId,
+            NAME serverName
+            FROM vendorpersonnel
+            WHERE
+            DEVICEMANU = (SELECT b.STRDEVMANU FROM ssarun.term a
+                    LEFT JOIN ssarun.device b ON a.DEVICEID=b.ID
+                    WHERE a.STRTERMNUM = #{id})
+            AND MANUEMPNATURE='1'
+    </select>
+
+
+    <select id="getDeviceInfo" resultType="java.util.Map">
+         SELECT
+            STRTERMNUM deviceId,
+            STRDEVMODEL deviceModel,
+            STRORGNO orgId,
+            STRSSBNAME orgName,
+            STRTERMADDR address,
+            firstinstalldate installDate,
+            STRVALUE deviceVendor
+            FROM (
+            SELECT d.*,c.STRORGNO,c.STRTERMNUM,c.STRTERMADDR,e.STRSSBNAME,a.STRVALUE FROM ssarun.term c
+            left JOIN ssarun.device d on c.DEVICEID = d.ID
+            left JOIN selfsvcbank e on c.STRSSBNUM=e.STRSSBNUM
+			LEFT JOIN ssarun.domaindict a ON d.STRDEVMANU = a.STRNAME
+            WHERE c.STRTERMNUM= #{id}
+            ) b
+    </select>
+
+    <select id="getEsbErrOrder" resultType="com.bank.esb.dto.OrderDto">
+        SELECT
+        a.status orderStatus,
+        a.ID ID,
+        "sys" createUser,
+        "" serviceTime,
+        a.beginDate createTime,
+        "" priority,
+        a.STRSSBNUM orgId,
+        b.STRSSBNAME orgName,
+        a.strTermNum deviceNo,
+        a.deviceType,
+        a.deviceType deviceName,
+        a.deviceManu deviceBrand,
+        a.errorDesc orderDetail,
+        "" createUserPhone,
+        a.bankReceiveName sceneUserName,
+        a.manuReceiveMobile sceneUserPhone,
+        '03' orderType
+        FROM work_order a LEFT JOIN selfsvcbank b ON a.STRSSBNUM=b.STRSSBNUM
+        <where>
+            <if test="o.deviceClassify!=null and o.deviceClassify!=''">
+                a.deviceClass = #{o.deviceClassify}
+            </if>
+            <if test="o.orderStatus!=null and o.orderStatus!=''">
+                and a.status = #{o.orderStatus}
+            </if>
+            <if test="o.startTime!=null and o.endTime!=null and o.startTime!='' and o.endTime!=''">
+                and a.beginDate BETWEEN #{o.startTime} AND #{o.endTime}
+            </if>
+            <if test="o.orderNo!=null and o.orderNo!=''">
+                and a.ID = #{o.orderNo}
+            </if>
+            <if test="o.deviceNo!=null and o.deviceNo!=''">
+                and a.strTermNum = #{o.deviceNo}
+            </if>
+            <if test="o.deviceType!=null and o.deviceType!=''">
+                and a.deviceType = #{o.deviceType}
+            </if>
+            <if test="o.related!=null and o.related!='1'">
+                and a.status=3
+            </if>
+            <if test="o.related!=null and and o.related!='' and o.related==''">
+                and a.status=4
+            </if>
+        </where>
+    </select>
+
+
+    <select id="getCSInfo" resultType="com.bank.esb.dto.CSInfoDto">
+       SELECT STRNAME vendorId,STRVALUE vendorName from ssarun.domaindict where STRTYPE = 'DevManu'
+    </select>
+
+    <select id="getEngineerInfo" resultType="java.util.Map">
+        SELECT a.*,b.STRVALUE fws FROM vendorpersonnel a
+        LEFT JOIN ssarun.domaindict b ON a.DEVICEMANU= b.STRNAME
+        where a.TELEPHONE = #{engineerId}
+    </select>
+
+    <select id="getBranch" resultType="com.bank.esb.dos.DatBranchDO">
+        select * from  branch where STRBANKNUM=#{orgid}
+    </select>
+
+    <select id="getSubBranch" resultType="com.bank.esb.dos.DatSubbranchDO">
+        select * from  subbranch where STRBRANCHNUM=#{orgid}
+    </select>
+
+    <select id="getSelfBranch" resultType="com.bank.esb.dos.DatSelfsvcbankDO">
+        select * from  selfsvcbank where STRSUBBRANCHNUM=#{orgid}
+    </select>
+
+    <select id="getXjdInfo" resultType="java.util.Map">
+        SELECT b.STRDEVSN,b.IDEVTYPE,b.IDEVCLASS,b.STRDEVMANU,c.STRVALUE,
+        a.STRBRANCHNUM,d.STRBRANCHNAME,
+        a.STRSUBBRANCHNUM,e.STRSUBBRANCHNAME,
+        a.STRSSBNUM,f.STRSSBNAME,a.STRORGNO,b.freeduedate,a.STRTERMADDR,b.firstinstalldate
+        FROM ssarun.term a
+        LEFT JOIN ssarun.device b on a.DEVICEID=b.ID
+        LEFT JOIN ssarun.domaindict c ON b.STRDEVMANU = c.STRNAME
+        LEFT JOIN branch d ON d.STRBRANCHNUM=a.STRBRANCHNUM
+        LEFT JOIN subbranch e ON e.STRSUBBRANCHNUM=a.STRSUBBRANCHNUM
+        LEFT JOIN selfsvcbank f ON a.STRSSBNUM=f.STRSSBNUM
+        WHERE a.STRTERMNUM=#{deviceId}
+    </select>
+
+    <select id="getAllSubBranch" resultType="com.bank.esb.dos.DatSubbranchDO">
+        select * from  subbranch
+    </select>
+    <select id="getXjd" resultType="java.util.Map">
+        SELECT a.STRTERMNUM,b.STRDEVSN,b.IDEVTYPE,a.STRORGNO,a.STRTERMADDR,
+        date_format(b.freeduedate,'%Y-%m-%d %H:%i:%s') freeduedate,f.STRSSBNAME
+        FROM ssarun.term a
+        LEFT JOIN ssarun.device b on a.DEVICEID=b.ID
+        LEFT JOIN selfsvcbank f ON a.STRSSBNUM=f.STRSSBNUM
+        <where>
+            <if test="m.resourceCode != null and m.resourceCode != ''">
+                and b.assetnum = #{m.resourceCode}
+            </if>
+            <if test="m.deviceClassify != null and m.deviceClassify != ''">
+                and b.IDEVCLASS = #{m.deviceClassify}
+            </if>
+            <if test="m.deviceType != null and m.deviceType != ''">
+                and b.IDEVTYPE = #{m.deviceType}
+            </if>
+            <if test="m.deviceNo != null and m.deviceNo != ''">
+                and a.STRTERMNUM = #{m.deviceNo}
+            </if>
+            <if test="m.serialNum != null and m.serialNum != ''">
+                and b.STRDEVSN = #{m.serialNum}
+            </if>
+            <if test="m.orgId != null and m.orgId != ''">
+                and a.STRORGNO = #{m.orgId}
+            </if>
+            <if test="m.provider != null and m.provider != ''">
+                and b.STRDEVMANU = #{m.serviceProvider}
+            </if>
+        </where>
+        <if test='m.orderStatus != null and m.orderStatus != "" and m.orderStatus == "2"'>
+            LIMIT #{m.pageIndex},#{m.pageSize}
+        </if>
+    </select>
+    <select id="getXjdTotal" resultType="java.lang.Integer">
+        SELECT count(a.ID)
+        FROM ssarun.term a
+        LEFT JOIN ssarun.device b on a.DEVICEID=b.ID
+        LEFT JOIN selfsvcbank f ON a.STRSSBNUM=f.STRSSBNUM
+        <where>
+            <if test="m.resourceCode != null and m.resourceCode != ''">
+                and b.assetnum = #{m.resourceCode}
+            </if>
+            <if test="m.deviceClassify != null and m.deviceClassify != ''">
+                and b.IDEVCLASS = #{m.deviceClassify}
+            </if>
+            <if test="m.deviceType != null and m.deviceType != ''">
+                and b.IDEVTYPE = #{m.deviceType}
+            </if>
+            <if test="m.deviceNo != null and m.deviceNo != ''">
+                and a.STRTERMNUM = #{m.deviceNo}
+            </if>
+            <if test="m.serialNum != null and m.serialNum != ''">
+                and b.STRDEVSN = #{m.serialNum}
+            </if>
+            <if test="m.orgId != null and m.orgId != ''">
+                and a.STRORGNO = #{m.orgId}
+            </if>
+            <if test="m.provider != null and m.provider != ''">
+                and b.STRDEVMANU = #{m.serviceProvider}
+            </if>
+        </where>
+    </select>
+
+</mapper>

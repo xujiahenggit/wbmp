@@ -139,12 +139,12 @@
 
     <!--    查找父机机构-->
     <select id="getParentOrg" resultType="com.bank.user.dto.OrgDemandDto">
-        SELECT ORG_ID,ORG_NAME,ORG_LASTFLAG FROM T_ORGANIZATION WHERE ORG_ID=#{tempOrgId}
+        SELECT ORG_ID,ORG_NAME,ORG_LASTFLAG FROM T_ORGANIZATION WHERE ORG_ID=#{tempOrgId} AND ORG_STATUS=1
     </select>
 
     <!--    查找子机构-->
     <select id="getChild" resultType="com.bank.user.dto.OrgDemandDto">
-        SELECT ORG_ID,ORG_NAME,ORG_LASTFLAG FROM T_ORGANIZATION WHERE PARENT_ID=#{orgId}
+        SELECT ORG_ID,ORG_NAME,ORG_LASTFLAG FROM T_ORGANIZATION WHERE PARENT_ID=#{orgId} AND ORG_STATUS=1
     </select>
 
 

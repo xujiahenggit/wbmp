@@ -190,4 +190,16 @@
             DATE_FORMAT(SA.SATISFACT_ATTEND_YEAR,'%Y-%m') = #{date}
     </select>
 
+
+    <select id="getSatisfactAttendRejectSize" resultType="com.bank.manage.dos.SatisfactAttendDO">
+        SELECT
+            SA.*
+        FROM
+            T_SATISFACT_ATTEND SA
+        JOIN T_USHER U ON SA.USHER_ID = U.USHER_ID
+        WHERE
+            U.ORG_ID = #{orgId} AND SA.SATISFACT_ATTEND_YEAR = #{queryDate}
+        AND SA.SATISFACT_ATTEND_SUBMIT_STATE = 10
+    </select>
+
 </mapper>

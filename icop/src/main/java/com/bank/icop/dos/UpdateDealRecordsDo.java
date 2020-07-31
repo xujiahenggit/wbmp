@@ -23,5 +23,11 @@ public class UpdateDealRecordsDo implements Serializable {
     private String taskkey;
     @ApiModelProperty("过程描述")
     private String processdes;
+    @ApiModelProperty("影像id")
+    private String CONTENTID;
+    @ApiModelProperty("影像时间")
+    private String BUSISTARTDATE;
+    @ApiModelProperty("影响流水号")
+    private String BUSISERIALNO;
 
 }
