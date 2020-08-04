@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.MsglogDao">
+
+    <select id="queryList" resultType="com.bank.manage.dos.MsglogDO">
+        SELECT *
+        FROM z_smsmessagesentlog
+        <where>
+            <if test="model!=null">
+                <if test="model.strBankNum != null and model.strBankNum !=''">
+                    and STRBANKNUM = #{model.strBankNum}
+                </if>
+                <if test="model.strBranchNum != null and model.strBranchNum !=''">
+                    and STRBRANCHNUM= #{model.strBranchNum}
+                </if>
+                <if test="model.strSubBranchNum != null and model.strSubBranchNum !=''">
+                    and STRSUBBRANCHNUM = #{model.strSubBranchNum}
+                </if>
+                <if test="model.strSsbNum != null and model.strSsbNum !=''">
+                    and STRSSBNUM = #{model.strSsbNum}
+                </if>
+                <if test="model.strTermNum != null and model.strTermNum !=''">
+                    and STRTERMNUM = #{model.strTermNum}
+                </if>
+                <if test="model.strCusName != null and model.strCusName !=''">
+                    and STRCUSNAME = #{model.strCusName}
+                </if>
+                <if test="model.sendSucc != null and model.sendSucc !=''">
+                    and SENDSUCC = #{model.sendSucc}
+                </if>
+                <if test="model.strPhoneNum != null and model.strPhoneNum !=''">
+                    and STRPHONENUM = #{model.strPhoneNum}
+                </if>
+            </if>
+        </where>
+    </select>
+
+</mapper>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.TransDao">
+    <select id="queryList" resultType="com.bank.manage.dos.TransDO">
+        select * from z_vw_translog
+        <where>
+            <if test="model!=null">
+                <if test="model.termNum != null and model.termNum !=''">
+                    AND term_num = #{model.termNum}
+                </if>
+                <if test="model.strbanknum != null and model.strbanknum !=''">
+                    AND strbanknum = #{model.strbanknum}
+                </if>
+                <if test="model.strbranchnum != null and model.strbranchnum !=''">
+                    AND strbranchnum = #{model.strbranchnum}
+                </if>
+                <if test="model.strsubbranchnum != null and model.strsubbranchnum !=''">
+                    AND strsubbranchnum = #{model.strsubbranchnum}
+                </if>
+                <if test="model.strssbnum != null and model.strssbnum !=''">
+                    AND strssbnum = #{model.strssbnum}
+                </if>
+                <if test="model.beginTime != null and model.beginTime !=''">
+                    AND trans_time &gt;= #{model.beginTime}
+                </if>
+                <if test="model.endTime != null and model.endTime !=''">
+                    AND trans_time &lt;= #{model.endTime}
+                </if>
+            </if>
+        </where>
+    </select>
+
+    <select id="transCount" resultType="com.bank.manage.dto.TransInfoDTO">
+        SELECT HOUR(t.trans_time) as transH,COUNT(*) as transHnum
+        FROM z_vw_translog t
+        WHERE HOUR(t.trans_time) is not null
+        <if test="model != null and model !=''">
+            AND term_num = #{model}
+        </if>
+        GROUP BY HOUR(t.trans_time)
+    </select>
+
+</mapper>

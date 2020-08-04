@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.TaccountingOrderDao">
+
+    <select id="selectPageList" resultType="com.bank.manage.dto.TaccountingOrderDTO">
+        SELECT T.*,SB.ORG_NAME
+        FROM T_ACCOUNTINGORDER T LEFT JOIN T_ORGANIZATION SB
+        ON T.BRANCH = SB.ORG_ID
+        <where>
+            <if test="model!=null">
+                <if test="model.branch != null and model.branch !=''">
+                    T.BRANCH = #{model.branch}
+                </if>
+            </if>
+        </where>
+    </select>
+
+</mapper>

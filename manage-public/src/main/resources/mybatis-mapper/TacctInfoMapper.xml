@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.TacctInfoDao">
+
+    <select id="selectPageList" resultType="com.bank.manage.vo.TacctInfoVO">
+        SELECT T.*,SB.ORG_NAME ORGNAME1,SB2.ORG_NAME ORGNAME2
+        FROM T_ACCT_INFO T LEFT JOIN T_ORGANIZATION SB
+        ON T.BRCHNO = SB.ORG_ID
+        LEFT JOIN T_ORGANIZATION SB2
+        ON T.BRCHNO = SB2.ORG_ID
+        <where>
+            <if test="model!=null">
+                <if test="model.brchno != null and model.brchno !=''">
+                    T.BRCHNO = #{model.brchno}
+                </if>
+            </if>
+            <if test="model!=null">
+                <if test="model.model != null and model.model !=''">
+                    AND                         T.MODEL = #{model.model}
+                </if>
+            </if>
+            <if test="model!=null">
+                <if test="model.flagKeyacct != null and model.flagKeyacct !=''">
+                    AND                         T.FLAG_KEYACCT &gt;= #{model.flagKeyacct}
+                </if>
+            </if>
+            <if test="model!=null">
+                <if test="model.flagNotaccounting != null and model.flagNotaccounting !=''">
+                    AND                         T.FLAG_NOTACCOUNTING &lt;= #{model.flagNotaccounting}
+                </if>
+            </if>
+            <if test="model!=null">
+                <if test="model.acctno != null and model.acctno !=''">
+                    AND                         T.ACCTNO = #{model.acctno}
+                </if>
+            </if>
+            <if test="model!=null">
+                <if test="model.acctst != null and model.acctst !=''">
+                    AND                         T.ACCTST &gt;= #{model.acctst}
+                </if>
+            </if>
+        </where>
+    </select>
+
+</mapper>

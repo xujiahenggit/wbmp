@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.TlogTellerDao">
+
+    <select id="selectPageList" resultType="com.bank.manage.vo.TlogTellerVO">
+        SELECT T.*,K.MENU_NAME,SB.ORG_NAME
+        FROM T_LOG_TELLER T LEFT JOIN SYS_MENU K
+        ON T.MENU_ID = K.MENU_ID
+        LEFT JOIN T_ORGANIZATION SB
+        ON T.BRANCH_CODE = SB.ORG_ID
+        <where>
+            <if test="model!=null">
+                <if test="model.userCode != null and model.userCode !=''">
+                    T.USER_CODE = #{model.userCode}
+                </if>
+            </if>
+            <if test="model!=null">
+                <if test="model.branchCode != null and model.branchCode !=''">
+                    AND                         T.BRANCH_CODE = #{model.branchCode}
+                </if>
+            </if>
+            <if test="model!=null">
+                <if test="model.beginModifyTime != null">
+                    AND                         T.MODIFY_TIME &gt;= #{model.beginModifyTime}
+                </if>
+            </if>
+            <if test="model!=null">
+                <if test="model.endModifyTime != null">
+                    AND                         T.MODIFY_TIME &lt;= #{model.endModifyTime}
+                </if>
+            </if>
+            <if test="model!=null">
+                <if test="model.menuId != null and model.menuId !=''">
+                    AND                         T.MENU_ID = #{model.menuId}
+                </if>
+            </if>
+        </where>
+    </select>
+
+</mapper>

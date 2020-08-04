@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.SettlecyclelogDao">
+
+    <select id="querySettlecyclelog" resultType="com.bank.manage.dos.SettlecyclelogDO">
+        SELECT
+          s.id,s.STRTERMNUM,s.ISETTLECYCLE as settleCycle,s.DTSTART,SUM(s.DCDMREFILLCASHAMT) AS cdmRefillCashAmt
+        from z_settlecyclelog s
+        WHERE
+          s.ISTATUS = 0
+        <if test="model != null and model != ''">
+            AND ISETTLECYCLE = #{model}
+        </if>
+    </select>
+
+    <select id="queryDeposit"  resultType="com.bank.manage.dos.SettlecyclelogDO">
+        SELECT
+        COUNT(*) depCount,SUM(DAMOUNT) depAmount
+        from z_translogdeposit
+        WHERE
+        ISETTLECYCLESTATUS = 0
+        <if test="model != null and model != ''">
+            AND ISETTLECYCLE = #{model}
+        </if>
+    </select>
+    <select id="queryWithdraw"  resultType="com.bank.manage.dos.SettlecyclelogDO">
+        SELECT
+        COUNT(*) cwdCount,SUM(DAMOUNT) cwdAmount
+        from z_translogwithdraw
+        WHERE
+        ISETTLECYCLESTATUS = 0
+        <if test="model != null and model != ''">
+            AND ISETTLECYCLE = #{model}
+        </if>
+    </select>
+</mapper>

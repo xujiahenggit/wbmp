@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.PersonnelDao">
+
+    <select id="queryList" resultType="com.bank.manage.dos.PersonnelDO">
+        SELECT *
+        FROM z_sms_personnel z ,z_bank b1,z_branch b2,z_subbranch b3,
+        z_selfsvcbank b4
+        where z. STRBANKNUM= b1.STRBANKNUM
+        and z. STRBRANCHNUM= b2.STRBRANCHNUM
+        and z. STRSUBBRANCHNUM= b3.STRSUBBRANCHNUM
+        and z. STRSSBNUM= b4.STRSSBNUM
+        <if test="model!=null">
+            <if test="model.strOperatorNum != null and model.strOperatorNum !=''">
+                AND z.STROPERATORNUM = #{model.strOperatorNum}
+            </if>
+            <if test="model.strOperatorName != null and model.strOperatorName !=''">
+                AND z.STROPERATORNAME = #{model.strOperatorName}
+            </if>
+            <if test="model.strOperatorTel != null and model.strOperatorTel !=''">
+                AND z.STROPERATORTEL = #{model.strOperatorTel}
+            </if>
+            <if test="model.strAlertType != null and model.strAlertType !=''">
+                AND z.STRALERTTYPE = #{model.strAlertType}
+            </if>
+            <if test="model.strBankNum != null and model.strBankNum !=''">
+                AND z.STRBANKNUM = #{model.strBankNum}
+            </if>
+            <if test="model.strBranchNum != null and model.strBranchNum !=''">
+                AND z.STRBRANCHNUM = #{model.strBranchNum}
+            </if>
+            <if test="model.strSubBranchNum != null and model.strSubBranchNum !=''">
+                AND z.STRSUBBRANCHNUM = #{model.strSubBranchNum}
+            </if>
+            <if test="model.strSsbNum != null and model.strSsbNum !=''">
+                AND z.STRSSBNUM = #{model.strSsbNum}
+            </if>
+            <if test="model.createDate != null and model.createDate !=''">
+                AND z.CREATEDATE = #{model.createDate}
+            </if>
+        </if>
+    </select>
+
+    <select id="getOne" resultType="com.bank.manage.dos.PersonnelDO">
+        select emp_name as strOperatorName, mobile as strOperatorTel
+        from z_hr_hrms_operator
+        <where>
+            <if test="model!=null and model !=''">
+                emp_id = #{model}
+            </if>
+        </where>
+    </select>
+</mapper>

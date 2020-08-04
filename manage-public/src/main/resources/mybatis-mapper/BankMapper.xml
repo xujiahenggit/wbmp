@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.BankDao">
+    <!--<resultMap id="bankMap" type="com.bank.manage.dos.BankDO">-->
+    <!--<id property="id" column="ID"/>-->
+    <!--<result property="strBankNum" column="STRBANKNUM"/>-->
+    <!--<result property="strBankName" column="STRBANKNAME"/>-->
+    <!--</resultMap>-->
+    <select id="queryBank" resultType="com.bank.manage.dos.BankDO">
+        select * from z_bank
+    </select>
+    <select id="queryBranch" resultType="com.bank.manage.dos.BankDO">
+        select b2.id id,b2.STRBRANCHNUM strBranchNum,b2.STRBRANCHNAME strBranchName,b1.STRBANKNUM strBankNum,b1.STRBANKNAME strBankName
+        from z_bank b1,z_branch b2
+        where b2.STRBANKNUM = b1.STRBANKNUM
+    </select>
+    <select id="querySubBranch" resultType="com.bank.manage.dos.BankDO">
+        select b3.id id,b3.STRSUBBRANCHNUM strSubBranchNum,b3.STRSUBBRANCHNAME strSubBranchName,
+        b2.STRBRANCHNUM strBranchNum,b2.STRBRANCHNAME strBranchName,
+        b1.STRBANKNUM strBankNum,b1.STRBANKNAME strBankName
+        from z_bank b1,z_branch b2,z_subbranch b3
+        where b2.STRBANKNUM = b1.STRBANKNUM
+        and b3.STRBRANCHNUM = b2.STRBRANCHNUM
+    </select>
+    <select id="querySsbank" resultType="com.bank.manage.dos.BankDO">
+        select b4.id id,b4.STRSSBNUM strSsbNum,b4.STRSSBNAME strSsbName,
+        b3.STRSUBBRANCHNUM strSubBranchNum,b3.STRSUBBRANCHNAME strSubBranchName,
+        b2.STRBRANCHNUM strBranchNum,b2.STRBRANCHNAME strBranchName,
+        b1.STRBANKNUM strBankNum,b1.STRBANKNAME strBankName
+        from z_bank b1,z_branch b2,z_subbranch b3,z_selfsvcbank b4
+        where b2.STRBANKNUM = b1.STRBANKNUM
+        and b3.STRBRANCHNUM = b2.STRBRANCHNUM
+        and b4.STRSUBBRANCHNUM = b3.STRSUBBRANCHNUM
+    </select>
+</mapper>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.DcStatusDao">
+
+    <select id="queryList" resultType="com.bank.manage.dos.DcStatusDO">
+        SELECT *
+        FROM z_dcstatuslog
+        <where>
+            <if test="model!=null">
+                STRTERMNUM = #{model}
+            </if>
+        </where>
+    </select>
+</mapper>

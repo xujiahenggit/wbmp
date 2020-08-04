@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.CassalertDao">
+    <select id="queryList" resultType="com.bank.manage.dos.CassalertDO">
+        SELECT C.*
+        FROM z_cassalert C,z_term T
+        WHERE C.STRTERMNUM = T.STRTERMNUM
+        <if test="model != null and model !=''">
+            and T.STRSUBBRANCHNUM = #{model}
+        </if>
+    </select>
+
+    <select id="selectBank" resultType="com.bank.manage.dos.CassalertDO">
+        SELECT *
+        FROM z_bankcassalert
+        WHERE 1=1
+        <if test="model != null and model !=''">
+            and STRBANKNUM = #{model}
+        </if>
+    </select>
+
+    <update id="updateBank">
+        update z_bankcassalert
+        set IDEFALERTVALUE = #{model.idefalertvalue},IHOURSFORSUGG = #{model.ihoursforsugg}
+        where ID = #{model.id}
+    </update>
+    <insert id="insertBank">
+        insert z_bankcassalert (STRBANKNUM,IDEFALERTVALUE,IHOURSFORSUGG)
+        values (#{model.strBankNum},#{model.idefalertvalue},#{model.ihoursforsugg})
+    </insert>
+    <select id="selectBranch" resultType="com.bank.manage.dos.CassalertDO">
+        SELECT *
+        FROM z_branchcassalert
+        WHERE 1=1
+        <if test="model != null and model !=''">
+            and STRBRANCHNUM = #{model}
+        </if>
+    </select>
+
+    <update id="updateBranch">
+        update z_branchcassalert
+        set IDEFALERTVALUE = #{model.idefalertvalue},IHOURSFORSUGG = #{model.ihoursforsugg}
+        where ID = #{model.id}
+    </update>
+
+    <insert id="insertBranch">
+        insert z_branchcassalert (STRBRANCHNUM,IDEFALERTVALUE,IHOURSFORSUGG)
+        values (#{model.strBranchNum},#{model.idefalertvalue},#{model.ihoursforsugg})
+    </insert>
+</mapper>

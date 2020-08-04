@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.TlogUserDao">
+
+    <select id="selectPageList" resultType="com.bank.manage.dto.TlogUserDTO">
+        SELECT *
+        FROM T_LOG_USER
+        <where>
+            <if test="model!=null">
+                <if test="model.jyId != null and model.jyId !=''">
+                    AND JY_ID = #{model.jyId}
+                </if>
+                <if test="model.userId != null and model.userId !=''">
+                    AND USER_ID = #{model.userId}
+                </if>
+                <if test="model.telNo != null and model.telNo !=''">
+                    AND TEL_NO = #{model.telNo}
+                </if>
+                <if test="model.beginTime != null">
+                    AND MODIFY_TIME &gt;= #{model.beginTime}
+                </if>
+                <if test="model.endTime != null">
+                    AND MODIFY_TIME &lt;= #{model.endTime}
+                </if>
+                <if test="model.memo != null and model.memo !=''">
+                    AND MEMO = #{model.memo}
+                </if>
+                <if test="model.czbz != null and model.czbz !=''">
+                    AND CZBZ = #{model.czbz}
+                </if>
+                <if test="model.chanlid != null and model.chanlid !=''">
+                    AND CHANLID = #{model.chanlid}
+                </if>
+            </if>
+        </where>
+    </select>
+</mapper>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.SparamDao">
+
+    <select id="selectPageList" resultType="com.bank.manage.dto.SparamDTO">
+        SELECT *
+        FROM s_param
+        <where>
+            <if test="model!=null">
+                <if test="model.id != null and model.id !=''">
+                    AND ID = #{model.id}
+                </if>
+                <if test="model.ename != null and model.ename !=''">
+                    AND ENAME = #{model.ename}
+                </if>
+                <if test="model.cname != null and model.cname !=''">
+                    AND CNAME = #{model.cname}
+                </if>
+                <if test="model.value != null and model.value !=''">
+                    AND VALUE = #{model.value}
+                </if>
+                <if test="model.statusUpdate != null and model.statusUpdate !=''">
+                    AND STATUS_UPDATE = #{model.statusUpdate}
+                </if>
+                <if test="model.chanlid != null and model.chanlid !=''">
+                    AND CHANLID = #{model.chanlid}
+                </if>
+                <if test="model.status != null and model.status !=''">
+                    AND STATUS = #{model.status}
+                </if>
+            </if>
+        </where>
+    </select>
+
+    <insert id="save">
+        INSERT INTO s_param
+        (ENAME,CNAME,VALUE,STATUS_UPDATE,CHANLID,STATUS)
+        VALUES
+        (#{model.ename}, #{model.cname}, #{model.value}, #{model.statusUpdate,jdbcType=CHAR}, #{model.chanlid}, #{model.status,jdbcType=CHAR});
+    </insert>
+
+    <update id="update">
+        update s_param
+        SET
+        ENAME = #{model.ename}, CNAME = #{model.cname},VALUE = #{model.value},STATUS_UPDATE =
+        #{model.statusUpdate,jdbcType=CHAR},CHANLID = #{model.chanlid},STATUS = #{model.status,jdbcType=CHAR}
+        where ID =  #{model.id,jdbcType=INTEGER}
+    </update>
+    <update id="updateList">
+        update s_param
+        SET VALUE = #{value}
+        where ID in (
+        <foreach collection="list" item="id" index="index" separator=",">
+             #{id,jdbcType=INTEGER}
+        </foreach>
+        )
+    </update>
+</mapper>
