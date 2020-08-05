@@ -33,6 +33,7 @@ public class TermStatusServiceImpl extends ServiceImpl<TermStatusDao, TermStatus
         wrapper.eq("svcstatus", termStatusDO.getSvcstatus());
         Integer i2 = termStatusDao.selectCount(wrapper);
         LocalDateTime now = LocalDateTime.now();
+        termStatusDO.setIagentstatus("0");
         if (i1 == 0) {
             termStatusDO.setDtsvcstatusbegin(now);
             termStatusDao.insert(termStatusDO);
@@ -44,5 +45,10 @@ public class TermStatusServiceImpl extends ServiceImpl<TermStatusDao, TermStatus
             now = termDO1.getDtsvcstatusbegin();
         }
         return now;
+    }
+
+    @Override
+    public void agent(LocalDateTime agentTime) {
+        termStatusDao.updateByTime(agentTime);
     }
 }

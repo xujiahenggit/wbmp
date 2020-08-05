@@ -24,7 +24,7 @@
         <module>PAD</module>
         <module>icop</module>
         <module>esb</module>
-	<module>manage-public</module>
+        <module>manage-public</module>
     </modules>
 
     <properties>
@@ -229,7 +229,6 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpmime</artifactId>
         </dependency>
-
 
         <!--获取视频第一帧-->
         <!-- <dependency>

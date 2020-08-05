@@ -2,6 +2,7 @@ package com.bank.manage.dos;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
@@ -166,8 +167,10 @@ public class TransDO implements Serializable {
     @ExcelProperty(value = "交易时间", index = 14)
     private LocalDateTime transTime;
 
+    @TableField(exist = false)
     private LocalDateTime beginTime;
 
+    @TableField(exist = false)
     private LocalDateTime endTime;
 
 }

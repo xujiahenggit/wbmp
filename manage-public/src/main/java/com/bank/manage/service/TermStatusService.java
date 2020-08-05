@@ -8,4 +8,6 @@ import java.time.LocalDateTime;
 public interface TermStatusService extends IService<TermStatusDO> {
 
     LocalDateTime getNow(TermStatusDO termStatusDO);
+
+    void agent(LocalDateTime agentTime);
 }

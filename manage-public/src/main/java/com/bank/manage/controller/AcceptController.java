@@ -6,6 +6,7 @@ import com.bank.manage.dos.*;
 import com.bank.manage.dto.AcceptDTO;
 import com.bank.manage.entity.Result;
 import com.bank.manage.service.*;
+import com.bank.message.conf.WebSocketServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -126,6 +127,10 @@ public class AcceptController {
                 .deviceType(jsonObject.getString("deviceType"))
                 .deviceClass(jsonObject.getString("deviceClass"))
                 .deviceId(jsonObject.getString("deviceId")).build();
+
+        String s = JSONObject.toJSONString(transDO);
+        WebSocketServer.sendInfo(s, "");
+
         boolean save = ts.save(transDO);
         return new Result("0000", "");
     }

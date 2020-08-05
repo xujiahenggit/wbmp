@@ -2,20 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.bank.manage.dao.CommandlogDao">
 
-    <resultMap id="commandlogMap" type="com.bank.manage.dos.CommandlogDO">
-        <id property="id" column="id"/>
-        <result property="name" column="name"/>
-        <result property="termNum" column="term_num"/>
-        <result property="pendStatus" column="pend_status"/>
-        <result property="responseStatus" column="response_status"/>
-        <result property="request" column="request"/>
-        <result property="response" column="response"/>
-        <result property="operatorName" column="operator_name"/>
-        <result property="termIp" column="term_ip"/>
-        <result property="createdAt" column="created_at"/>
-    </resultMap>
-    <select id="queryList" resultMap="commandlogMap">
-        SELECT id,name,term_num,pend_status,response_status,request,response,operator_name,term_ip,created_at
+    <select id="queryList" resultType="com.bank.manage.dos.CommandlogDO">
+        SELECT *
         FROM z_vw_command_log
         <where>
             <if test="model!=null">
@@ -25,10 +13,10 @@
                 <if test="model.name != null and model.name !=''">
                     and name = #{model.name}
                 </if>
-                <if test="model.beginTime != null and model.beginTime !=''">
+                <if test="model.beginTime != null">
                     and created_at &gt;= #{model.beginTime}
                 </if>
-                <if test="model.endTime != null and model.endTime !=''">
+                <if test="model.endTime != null">
                     and created_at &lt;= #{model.endTime}
                 </if>
             </if>

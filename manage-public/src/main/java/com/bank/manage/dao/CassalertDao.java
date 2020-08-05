@@ -16,7 +16,7 @@ import java.util.List;
 public interface CassalertDao extends BaseMapper<CassalertDO> {
     List<CassalertDO> queryList(IPage page, @Param("model") String subBranchNum);
 
-//    List<CassalertDO> queryList(IPage page, @Param("model") CassalertDO cassalertDO);
+//    List<CassalertDO> queryPage(IPage page, @Param("model") CassalertDO cassalertDO);
 
     CassalertDO selectBank(@Param("model") String strBankNum);
 

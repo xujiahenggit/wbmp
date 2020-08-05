@@ -35,7 +35,7 @@ public class TransServiceImpl extends ServiceImpl<TransDao, TransDO> implements 
 
 
     @Override
-    public IPage<TransDO> queryList(PageQueryModel pageQueryModel) {
+    public IPage<TransDO> queryPage(PageQueryModel pageQueryModel) {
         Page<TransDO> page = new Page<>(pageQueryModel.getPageIndex(), pageQueryModel.getPageSize());
         if (StringUtils.isNotBlank(pageQueryModel.getSort())) {
             if (StringUtils.equalsIgnoreCase("DESC", pageQueryModel.getOrder())) {
@@ -73,6 +73,8 @@ public class TransServiceImpl extends ServiceImpl<TransDao, TransDO> implements 
         log.info("交易时间统计：{}", map);
         return map;
     }
+
+
 
     @Override
     public boolean save(TransDO entity) {
