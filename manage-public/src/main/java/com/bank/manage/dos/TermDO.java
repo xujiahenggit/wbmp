@@ -36,7 +36,7 @@ public class TermDO implements Serializable {
     private String aptlId;
     private String strDevType;
     /**
-     * æƒé™å·ç 
+     * È¨ÏŞºÅÂë
      */
     @TableField(exist = false)
     private String powerNum ;

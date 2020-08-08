@@ -1,8 +1,8 @@
 package com.bank.manage.dos;
 
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.metadata.BaseRowModel;
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
@@ -17,33 +17,14 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName("z_vw_translog")
-public class TransDO implements Serializable {
+@TableName("vw_translog")
+public class TransSlaveDO extends BaseRowModel implements Serializable {
     /**
      * 主键ID
      */
     @TableId(value = "ID", type = IdType.AUTO)
     @ExcelProperty(value = "ID", index = 0)
     private String id;
-
-    /**
-     * 权限号码
-     */
-    @TableField(exist = false)
-    private String powerNum;
-
-
-    /**
-     * 设备ip
-     */
-    @TableField(exist = false)
-    private String termip;
-
-    /**
-     * 设备类型
-     */
-    @TableField(exist = false)
-    private String strtype;
 
     /**
      * 设备id
@@ -57,7 +38,7 @@ public class TransDO implements Serializable {
 
     /**
      * 设备类型 1: 自动取款机 2: 自动存款机 3: 自动存取款机 4: 自动查询机
-     * 5: 多媒体终端 6：个性化发卡机 7：回单打印机 8：智能现金柜
+     *          5: 多媒体终端 6：个性化发卡机 7：回单打印机 8：智能现金柜
      */
     private String deviceType;
 
@@ -111,7 +92,7 @@ public class TransDO implements Serializable {
      * 柜员编号
      */
     @ExcelProperty(value = "", index = 2)
-    private String tellernum;
+    private String tellerNum;
 
     /**
      * 银行号
@@ -147,7 +128,7 @@ public class TransDO implements Serializable {
      * 金额
      */
     @ExcelProperty(value = "金额", index = 8)
-    private Float amount;
+    private String amount;
 
     /**
      * 账号
@@ -186,10 +167,8 @@ public class TransDO implements Serializable {
     @ExcelProperty(value = "交易时间", index = 14)
     private LocalDateTime transTime;
 
-    @TableField(exist = false)
     private LocalDateTime beginTime;
 
-    @TableField(exist = false)
     private LocalDateTime endTime;
 
 }

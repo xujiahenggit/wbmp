@@ -14,4 +14,6 @@ public interface TransService extends IService<TransDO> {
     void export(PageQueryModel pageQueryModel, HttpServletResponse response);
 
     Map<String, Object> queryCount(String termNum);
+
+    TransDO queryOne(String strtermnum);
 }

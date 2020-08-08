@@ -90,6 +90,11 @@ public class TransServiceImpl extends ServiceImpl<TransDao, TransDO> implements 
         return map;
     }
 
+    @Override
+    public TransDO queryOne(String strtermnum) {
+        return transDao.selectOne(strtermnum);
+    }
+
 
     @Override
     public boolean save(TransDO entity) {

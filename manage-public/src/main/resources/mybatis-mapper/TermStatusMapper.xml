@@ -1,9 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.bank.manage.dao.TermStatusDao">
-    <update id="updateByTime">
+
+<update id="updateByTime">
         update z_termstatus
         set IAGENTSTATUS = 1
         where DTSVCSTATUSBEGIN &lt; #{model}
     </update>
+
+    <select id="listDeviceTermDTO" resultType="com.bank.manage.dto.DeviceTermDTO">
+        SELECT
+		ZT.ID, ZT.STRTERMNUM, ZT.APTLID, ZT.STRNETADDR, ZT.DEVICEID, ZT.USINGSTATUS, ZT.STRTERMADDR,
+		T.SVCSTATUS, D.STRDEVSN, D.STRDEVMANU, D.IDEVTYPE, D.IDEVCLASS
+        FROM Z_TERM ZT INNER JOIN Z_TERMSTATUS T ON T.STRTERMNUM = ZT.STRTERMNUM
+        LEFT JOIN Z_DEVICE D ON ZT.DEVICEID = D.ID
+        <where>
+            <if test="deviceClass != null and deviceClass !='' and deviceClass == '0'.toString()">
+                D.IDEVCLASS != 1
+            </if>
+            <if test="deviceClass != null and deviceClass !='' and deviceClass == '1'.toString()">
+                AND D.IDEVCLASS = #{deviceClass}
+            </if>
+            <if test="branchnum != null and branchnum != '' and branchnum.length() == 8">
+                AND ZT.STRSUBBRANCHNUM = #{branchnum}
+            </if>
+            <if test="branchnum != null and branchnum != '' and branchnum.length() == 4">
+                AND ZT.STRBRANCHNUM = #{branchnum}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectHomePageDeviceTerm" resultType="com.bank.manage.dto.HomePageTermStatusDTO">
+        -- 全部
+        SELECT
+			COUNT(*) TOTALNUM,
+			SUM(IF(T.SVCSTATUS = -1 OR T.SVCSTATUS = 0, 1,0)) ONLINENUM,
+			SUM(IF(T.SVCSTATUS = 4 OR T.SVCSTATUS = 6 OR T.SVCSTATUS = 7, 1,0)) OFFLINENUM,
+			SUM(IF(T.SVCSTATUS = 2 OR T.SVCSTATUS = 3, 1,0)) FAULTNUM,
+			SUM(IF(T.SVCSTATUS = 1 OR T.SVCSTATUS = 5, 1,0)) MAINTAINNUM
+        FROM Z_TERMSTATUS T INNER JOIN Z_TERM ZT ON T.STRTERMNUM = ZT.STRTERMNUM
+        <where>
+            <if test="branchnum != null and branchnum != '' and branchnum.length() == 8">
+                ZT.STRSUBBRANCHNUM = #{branchnum}
+            </if>
+            <if test="branchnum != null and branchnum != '' and branchnum.length() == 4">
+                AND ZT.STRBRANCHNUM = #{branchnum}
+            </if>
+        </where>
+        UNION ALL
+        -- 现金
+        SELECT
+                    COUNT(*) TOTALNUM,
+                    SUM(IF(T.SVCSTATUS = -1 OR T.SVCSTATUS = 0, 1,0)) ONLINENUM,
+                    SUM(IF(T.SVCSTATUS = 4 OR T.SVCSTATUS = 6 OR T.SVCSTATUS = 7, 1,0)) OFFLINENUM,
+                    SUM(IF(T.SVCSTATUS = 2 OR T.SVCSTATUS = 3, 1,0)) FAULTNUM,
+                    SUM(IF(T.SVCSTATUS = 1 OR T.SVCSTATUS = 5, 1,0)) MAINTAINNUM
+        FROM Z_TERM ZT INNER JOIN Z_TERMSTATUS T ON T.STRTERMNUM = ZT.STRTERMNUM
+        LEFT JOIN Z_DEVICE D ON ZT.DEVICEID = D.ID
+        WHERE D.IDEVCLASS != 1
+        <if test="branchnum != null and branchnum != '' and branchnum.length() == 8">
+            AND ZT.STRSUBBRANCHNUM = #{branchnum}
+        </if>
+        <if test="branchnum != null and branchnum != '' and branchnum.length() == 4">
+            AND ZT.STRBRANCHNUM = #{branchnum}
+        </if>
+        UNION ALL
+         -- 非现金
+        SELECT
+                    COUNT(*) TOTALNUM,
+                    SUM(IF(T.SVCSTATUS = -1 OR T.SVCSTATUS = 0, 1,0)) ONLINENUM,
+                    SUM(IF(T.SVCSTATUS = 4 OR T.SVCSTATUS = 6 OR T.SVCSTATUS = 7, 1,0)) OFFLINENUM,
+                    SUM(IF(T.SVCSTATUS = 2 OR T.SVCSTATUS = 3, 1,0)) FAULTNUM,
+                    SUM(IF(T.SVCSTATUS = 1 OR T.SVCSTATUS = 5, 1,0)) MAINTAINNUM
+        FROM Z_TERM ZT INNER JOIN Z_TERMSTATUS T ON T.STRTERMNUM = ZT.STRTERMNUM
+        LEFT JOIN Z_DEVICE D ON ZT.DEVICEID = D.ID
+        WHERE D.IDEVCLASS = 1
+        <if test="branchnum != null and branchnum != '' and branchnum.length() == 8">
+            AND ZT.STRSUBBRANCHNUM = #{branchnum}
+        </if>
+        <if test="branchnum != null and branchnum != '' and branchnum.length() == 4">
+            AND ZT.STRBRANCHNUM = #{branchnum}
+        </if>
+    </select>
+
 </mapper>

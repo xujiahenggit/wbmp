@@ -109,7 +109,15 @@ public class AcceptController {
 
     //(jsonObject.getString("transTime"))
     private Result setTradeLog(JSONObject jsonObject) {
+
+        TransDO transDO1 = ts.queryOne(jsonObject.getString("STRTERMNUM"));
         TransDO transDO = new TransDO();
+        if (StringUtils.isNotBlank(transDO1.getTermip())) {
+            transDO.setTermip(transDO1.getTermip());
+        }
+        if (StringUtils.isNotBlank(transDO1.getStrtype())) {
+            transDO.setStrtype(transDO1.getStrtype());
+        }
         if (StringUtils.isNotBlank(jsonObject.getString("deviceId"))) {
             transDO.setDeviceId(jsonObject.getString("deviceId"));
         }
@@ -167,6 +175,9 @@ public class AcceptController {
         if (StringUtils.isNotBlank(jsonObject.getString("account"))) {
             transDO.setAccount(jsonObject.getString("account"));
         }
+        if (StringUtils.isNotBlank(jsonObject.getString("amount"))) {
+            transDO.setAmount(jsonObject.getFloat("amount"));
+        }
         if (StringUtils.isNotBlank(jsonObject.getString("accountType"))) {
             transDO.setAccountType(jsonObject.getString("accountType"));
         }
@@ -183,6 +194,7 @@ public class AcceptController {
         if (StringUtils.isNotBlank(jsonObject.getString("transStatus"))) {
             transDO.setTransStatus(jsonObject.getString("transStatus"));
         }
+
 
         //使用websocket推送给前端
         try {
