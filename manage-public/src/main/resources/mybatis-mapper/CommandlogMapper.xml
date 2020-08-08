@@ -19,6 +19,12 @@
                 <if test="model.endTime != null">
                     and created_at &lt;= #{model.endTime}
                 </if>
+
+                <if test="model.powerNum != null and model.powerNum !=''">
+                    and (strbanknum = #{model.powerNum}
+                    or strbranchnum = #{model.powerNum}
+                    or strsubbranchnum = #{model.powerNum})
+                </if>
             </if>
         </where>
     </select>

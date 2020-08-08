@@ -17,13 +17,8 @@ public class WorkOrdersDto {
 
     @ApiModelProperty("分页大小：默认10行")
     private Integer pageSize = 10;
-    @ApiModelProperty("排序字段")
-    private String sort;
 
-    @ApiModelProperty("排序方式")
-    private String order;
-
-    @ApiModelProperty("工单类型（1-故障工单；2-投诉工单；3-巡检）")
+    @ApiModelProperty("工单类型（01-故障工单；02-投诉工单；03-巡检）")
     private String workOrderType;
 
     @ApiModelProperty("来源类型 1 我发起的，2 我审批的、3 我办结的、4 系统自建；5 所有")
@@ -34,8 +29,12 @@ public class WorkOrdersDto {
     private String vendor;
     @ApiModelProperty(value = "0 :待处理；1：待评价；2：办接；3：待分行确认；4：待总行确认；4：待厂商回复；6：总行知悉；7：分行知悉；8：退回；9：已关闭")
     private String status;
-    @ApiModelProperty(value = "设备所在机构")
-    private String orgId;
+    @ApiModelProperty(value = "分行编码")
+    private String branchCode;
+    @ApiModelProperty(value = "支行编码")
+    private String subBranchCode;
+    @ApiModelProperty(value = "自助行编码")
+    private String buffetLineCode;
     @ApiModelProperty(value = "终端编号")
     private String terminalCode;
 

@@ -15,8 +15,9 @@ public class SettlecyclelogController extends BaseController {
     @Autowired
     private SettlecyclelogService ss;
 
-    @PostMapping("/get/{termNum}")
+    @PostMapping("/noclean/{termNum}")
     public SettlecyclelogDO getOne(@PathVariable String termNum) {
-        return ss.getOne(termNum);
+        SettlecyclelogDO one = ss.getOne(termNum);
+        return one ==null?new SettlecyclelogDO():one;
     }
 }

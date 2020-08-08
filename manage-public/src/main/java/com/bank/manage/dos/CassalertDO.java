@@ -25,4 +25,9 @@ public class CassalertDO implements Serializable {
     private String icimalertvalue;
     private String idefalertvalue;
     private String ihoursforsugg;
+
+    /**
+     * 权限号码
+     */
+//    private String powerNum;
 }

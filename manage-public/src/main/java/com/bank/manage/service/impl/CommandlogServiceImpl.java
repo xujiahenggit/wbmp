@@ -46,6 +46,7 @@ public class CommandlogServiceImpl extends ServiceImpl<CommandlogDao, Commandlog
         CommandlogDO commandlogDO = null;
         if (!MapUtils.isEmpty(queryParam)) {
             commandlogDO = BeanUtil.mapToBean(queryParam, CommandlogDO.class, false);
+            commandlogDO.setPowerNum("");
         }
         List<CommandlogDO> list = commandlogDao.queryList(page, commandlogDO);
         page.setRecords(list);

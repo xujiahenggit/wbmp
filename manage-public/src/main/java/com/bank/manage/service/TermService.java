@@ -6,5 +6,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
 
 public interface TermService extends IService<TermDO> {
-    List<TermDO> queryList();
+    List<TermDO> queryList(String powerNum);
 }

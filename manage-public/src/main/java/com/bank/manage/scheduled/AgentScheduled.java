@@ -16,7 +16,7 @@ public class AgentScheduled {
     @Autowired
     TermStatusService termStatusService;
 
-    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "0 */10 * * * *")
     private void isAgent() {
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();

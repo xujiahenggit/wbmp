@@ -3,7 +3,7 @@
 <mapper namespace="com.bank.manage.dao.HappyDao">
 
     <select id="HeadStatus" resultType="java.util.Map">
-        SELECT CREATE_TYPE type,COUNT(ID) count FROM
+        SELECT CREATE_TYPE type, ORG_ID orgId, ORG_NAME orgName FROM
         <choose>
             <when test="hasAdmin">
                 T_EXAMPLE_ADMIN
@@ -12,44 +12,68 @@
                 T_EXAMPLE_BRANCH
             </otherwise>
         </choose>
-        WHERE START_YEAR = #{year}
-         AND FAILURE_YEAR >= START_YEAR
-        GROUP BY CREATE_TYPE
+        WHERE START_YEAR = #{year} AND FAILURE_YEAR >= START_YEAR
     </select>
 
-    <select id="checkStatusDetails" resultType="com.bank.manage.dos.ExamineDataAdminDO">
-        SELECT ORG_ID,ORG_NAME,SUM(EXAMINE_SCORE) EXAMINE_SCORE FROM
-        <choose>
-            <when test="hasAdmin">
-                T_EXAMINE_DATA_ADMIN
-            </when>
-            <otherwise>
-                T_EXAMINE_DATA_BRANCH
-            </otherwise>
-        </choose>
-        WHERE EXCEL_QUARTER = #{quarter} AND EXCEL_DATE = #{year}
-        <choose>
-            <when test="orgids==''">
-                AND EXAMINE_ID IS NULL
-            </when>
-            <otherwise>
-                AND EXAMINE_ID IS NOT NULL
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="networks!=''">
-                AND ORG_ID = #{networks}
-            </when>
-            <otherwise>
-                <if test="orgs!=null">
-                    AND ORG_ID IN
-                    <foreach item="orgid" collection="orgs" index="index" open="(" separator="," close=")">
-                        #{orgid}
-                    </foreach>
-                </if>
-            </otherwise>
-        </choose>
-        GROUP BY ORG_ID,ORG_NAME ORDER BY EXAMINE_SCORE DESC
+    <select id="checkStatusDetails" resultType="java.util.Map">
+		SELECT D.ORG_ID orgId, D.ORG_NAME orgName, D.EXAMINE_SCORE examineScore, C.rankNum FROM (
+			<!-- 整体排名信息 -->
+			SELECT A.*, (@rowNum := @rowNum + 1) rankNum FROM(
+				SELECT ORG_ID, ORG_NAME, SUM(EXAMINE_SCORE) EXAMINE_SCORE FROM 
+				<choose>
+		            <when test="hasAdmin">
+		                T_EXAMINE_DATA_ADMIN
+		            </when>
+		            <otherwise>
+		                T_EXAMINE_DATA_BRANCH
+		            </otherwise>
+		        </choose>
+				WHERE EXCEL_QUARTER = #{quarter} AND EXCEL_DATE = #{year}
+		        <choose>
+		            <when test="orgids==''">
+		                AND EXAMINE_ID IS NULL
+		            </when>
+		            <otherwise>
+		                AND EXAMINE_ID IS NOT NULL
+		            </otherwise>
+		        </choose>
+		        GROUP BY ORG_ID,ORG_NAME ORDER BY EXAMINE_SCORE DESC
+			)A, (SELECT @rowNum := 0) B
+		)C
+		INNER JOIN (
+	        SELECT ORG_ID, ORG_NAME, SUM(EXAMINE_SCORE) EXAMINE_SCORE FROM
+	        <choose>
+	            <when test="hasAdmin">
+	                T_EXAMINE_DATA_ADMIN
+	            </when>
+	            <otherwise>
+	                T_EXAMINE_DATA_BRANCH
+	            </otherwise>
+	        </choose>
+	        WHERE EXCEL_QUARTER = #{quarter} AND EXCEL_DATE = #{year}
+	        <choose>
+	            <when test="orgids==''">
+	                AND EXAMINE_ID IS NULL
+	            </when>
+	            <otherwise>
+	                AND EXAMINE_ID IS NOT NULL
+	            </otherwise>
+	        </choose>
+	        <choose>
+	            <when test="networks!=''">
+	                AND ORG_ID = #{networks}
+	            </when>
+	            <otherwise>
+	                <if test="orgs!=null">
+	                    AND ORG_ID IN
+	                    <foreach item="orgid" collection="orgs" index="index" open="(" separator="," close=")">
+	                        #{orgid}
+	                    </foreach>
+	                </if>
+	            </otherwise>
+	        </choose>
+	        GROUP BY ORG_ID,ORG_NAME ORDER BY EXAMINE_SCORE DESC
+        )D ON C.ORG_ID = D.ORG_ID
     </select>
 
     <select id="checkStatusStatisticsYear"  resultType="com.bank.manage.dto.StatisticsDTO">
@@ -149,7 +173,7 @@
     </select>
 
     <select id="starStatus" resultType="java.util.Map" >
-        SELECT ASSESS_STAR star,COUNT(ID) count FROM
+        SELECT ASSESS_STAR star, OUT_ORG_ID orgId, CONCAT(BRANCH_ORG_NAME, '-' ,OUT_ORG_NAME) orgName FROM
         <choose>
             <when test="hasAdmin">
                 T_STAR_DATA_ADMIN
@@ -176,52 +200,39 @@
                     </if>
                 </otherwise>
             </choose>
-            GROUP BY ASSESS_STAR
     </select>
 
     <select id="serviceLevelStatus"  resultType="java.util.Map">
-        SELECT a.level,COUNT(a.ID) count FROM(
-            SELECT ID,
-            CASE
-            WHEN EXAMINE_SCORE &lt; 950 THEN '重点关注'
-            WHEN EXAMINE_SCORE &gt;= 950 AND EXAMINE_SCORE &lt; 960 THEN '关注'
-            WHEN EXAMINE_SCORE &gt;= 960 AND EXAMINE_SCORE &lt; 970 THEN '一般'
-            WHEN EXAMINE_SCORE &gt;= 970 AND EXAMINE_SCORE &lt; 980 THEN '优秀'
-            WHEN EXAMINE_SCORE &gt;= 980 AND EXAMINE_SCORE &lt;= 1000 THEN '卓越'
-            END as 'level'
-            FROM
-            <choose>
-                <when test="hasAdmin">
-                    T_EXAMINE_DATA_ADMIN
-                </when>
-                <otherwise>
-                    T_EXAMINE_DATA_BRANCH
-                </otherwise>
-            </choose>
-            WHERE EXCEL_QUARTER = #{quarter} AND EXCEL_DATE = #{year}
-<!--            AND-->
-<!--            <choose>-->
-<!--                <when test="orgids==''">-->
-<!--                    EXAMINE_ID IS NULL-->
-<!--                </when>-->
-<!--                <otherwise>-->
-<!--                    EXAMINE_ID IS NOT NULL-->
-<!--                </otherwise>-->
-<!--            </choose>-->
-            <choose>
-                <when test="networks!=''">
-                    AND ORG_ID = #{networks}
-                </when>
-                <otherwise>
-                    <if test="orgs!=null">
-                        AND ORG_ID IN
-                        <foreach item="orgid" collection="orgs" index="index" open="(" separator="," close=")">
-                            #{orgid}
-                        </foreach>
-                    </if>
-                </otherwise>
-            </choose>
-        )a GROUP BY a.level
+		SELECT CASE
+		WHEN EXAMINE_SCORE &lt; 950 THEN '重点关注'
+		WHEN EXAMINE_SCORE &gt;= 950 AND EXAMINE_SCORE &lt; 960 THEN '关注'
+		WHEN EXAMINE_SCORE &gt;= 960 AND EXAMINE_SCORE &lt; 970 THEN '一般'
+		WHEN EXAMINE_SCORE &gt;= 970 AND EXAMINE_SCORE &lt; 980 THEN '优秀'
+		WHEN EXAMINE_SCORE &gt;= 980 AND EXAMINE_SCORE &lt;= 1000 THEN '卓越'
+		END as 'level', ORG_ID orgId, ORG_NAME orgName
+		FROM
+		<choose>
+		    <when test="hasAdmin">
+		        T_EXAMINE_DATA_ADMIN
+		    </when>
+		    <otherwise>
+		        T_EXAMINE_DATA_BRANCH
+		    </otherwise>
+		</choose>
+		WHERE EXCEL_QUARTER = #{quarter} AND EXCEL_DATE = #{year} AND EXAMINE_ID IS NOT NULL
+		<choose>
+		    <when test="networks!=''">
+		        AND ORG_ID = #{networks}
+		    </when>
+		    <otherwise>
+		        <if test="orgs!=null">
+		            AND ORG_ID IN
+		            <foreach item="orgid" collection="orgs" index="index" open="(" separator="," close=")">
+		                #{orgid}
+		            </foreach>
+		        </if>
+		    </otherwise>
+		</choose>
     </select>
 
 

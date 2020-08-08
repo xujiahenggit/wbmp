@@ -41,19 +41,21 @@
 
     <!--    显示分支行列表-->
     <select id="getNftOrgList" resultMap="nftOrgDto">
-        SELECT DISTINCT
-            O.ORG_UNIT_ID AS NFRT_ORGID,
-            O.ORG_UNIT_NAME AS NFRT_ORGNAME,
-            'TYPE_N' TYPE
-        FROM
-            T_ORGANIZATION O
-        INNER JOIN T_NFRT_ORG NFRT ON CONCAT(
-            NFRT.NFRT_ORG_ID,
-            NFRT.NFRT_ORG_NO
-        ) = O.ORG_CODE
-        WHERE
-            O.ORG_STATUS = '1'
-        AND O.ORG_ID NOT LIKE '17%'
+        SELECT NFRT.*, ORG.ORG_CODE FROM(
+			SELECT DISTINCT
+					O.ORG_UNIT_ID AS NFRT_ORGID,
+					O.ORG_UNIT_NAME AS NFRT_ORGNAME,
+					'TYPE_N' TYPE
+			FROM
+					T_ORGANIZATION O
+			INNER JOIN T_NFRT_ORG NFRT ON CONCAT(
+					NFRT.NFRT_ORG_ID,
+					NFRT.NFRT_ORG_NO
+			) = O.ORG_CODE
+			WHERE
+					O.ORG_STATUS = '1'
+			AND O.ORG_ID NOT LIKE '17%'
+		) NFRT INNER JOIN T_ORGANIZATION ORG ON ORG.ORG_ID = NFRT.NFRT_ORGID
     </select>
 
     <!--    查询村镇支行名称-->
@@ -165,11 +167,19 @@
     <!--    获取所有核心机构号列表 计算综合分数用-->
     <select id="getAllOrgUseOperate" resultMap="nftOrgDto">
         SELECT DISTINCT
-            CONCAT(NFRT_ORG_ID, '01') AS NFRT_ORGID,
-            NFRT_ORG_NAME AS NFRT_ORGNAME
+            CONCAT(
+                nfrt.NFRT_ORG_ID,
+                nfrt.NFRT_ORG_NO
+            ) AS NFRT_ORGID,
+            nfrt.NFRT_ORG_NAME AS NFRT_ORGNAME
         FROM
-            t_nfrt_org
+            t_organization org
+        INNER JOIN t_nfrt_org nfrt ON CONCAT(
+            nfrt.NFRT_ORG_ID,
+            nfrt.NFRT_ORG_NO
+        ) = org.ORG_CODE
         WHERE
-            NFRT_ORG_NO='01'
+            nfrt.NFRT_ORG_NO = '01'
+        AND org.ORG_STATUS = '1'
     </select>
 </mapper>

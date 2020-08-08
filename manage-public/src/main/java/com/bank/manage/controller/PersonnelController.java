@@ -3,11 +3,13 @@ package com.bank.manage.controller;
 import com.bank.auth.base.BaseController;
 import com.bank.core.entity.PageQueryModel;
 import com.bank.manage.dos.PersonnelDO;
+import com.bank.manage.service.BankService;
 import com.bank.manage.service.PersonnelService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -16,9 +18,13 @@ public class PersonnelController extends BaseController {
     @Autowired
     private PersonnelService ps;
 
+    @Autowired
+    private BankService bs;
+
     @PostMapping("/page")
-    public IPage<PersonnelDO> queryPage(@RequestBody PageQueryModel pageQueryModel) {
-        return ps.queryList(pageQueryModel);
+    public IPage<PersonnelDO> queryPage(@RequestBody PageQueryModel pageQueryModel, HttpServletRequest request) {
+        String powerNum = bs.selectByOrgcode(getCurrentUserInfo(request).getOrgId());
+        return ps.queryList(pageQueryModel,powerNum);
     }
 
     @PostMapping("/update")

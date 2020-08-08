@@ -16,9 +16,9 @@ public class AlertListDo implements Serializable {
     @ApiModelProperty("预警编号")
     private String alertKey;
     @ApiModelProperty("预警开始时间")
-    private Date startDt;
+    private String startDt;
     @ApiModelProperty("预警结束时间")
-    private Date endDt;
+    private String endDt;
     @ApiModelProperty("风险度")
     private String risklev;
     @ApiModelProperty("状态")
@@ -27,5 +27,10 @@ public class AlertListDo implements Serializable {
     private String fcettypecode;
     @ApiModelProperty("抽检状态")
     private String cjstatus;
+    @ApiModelProperty("条数")
+    private String limit;
+    @ApiModelProperty("取数")
+    private String offset;
+
 
 }

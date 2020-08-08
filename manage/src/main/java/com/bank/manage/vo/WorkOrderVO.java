@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -19,23 +20,34 @@ public class WorkOrderVO {
     private String id;
     @ApiModelProperty(value = "设备所在机构")
     private String orgId;
+    @ApiModelProperty(value = "机构名称")
+    private String orgName;
     @ApiModelProperty(value = "工单状态 0 :待处理；1：待评价；2：办接；3：待分行确认；4：待总行确认；4：待厂商回复；6：总行知悉；7：分行知悉；8：退回；9：已关闭")
     private String status;
-    @ApiModelProperty(value = "设备名称")
-    private String repairName;
-    @ApiModelProperty(value = "厂商")
-    private String vendor;
+    @ApiModelProperty(value = "设备类型")
+    private String deviceType;
+    @ApiModelProperty(value = "厂商id")
+    private String vendorId;
+    @ApiModelProperty(value = "厂商名称")
+    private String vendorName;
     @ApiModelProperty(value = "终端编号")
     private String terminalCode;
 
     @ApiModelProperty(value = "工单编号")
     private String workOrderCode;
-    @ApiModelProperty(value = "设备编号")
-    private String repairCode;
+    @ApiModelProperty(value = "设备型号")
+    private String deviceModel;
     @ApiModelProperty(value = "创建时间")
     private Date createTime;
     @ApiModelProperty(value = "处理方式")
     private String way;
     @ApiModelProperty(value = "服务工程师")
     private String engineer;
+    @ApiModelProperty(value = "工单类型")
+    private String workOrderType;
+    @ApiModelProperty(value = "是否系统创建 1:是  2:否")
+    private String type;
+    @ApiModelProperty(value = "工单描述")
+    private String workOrderDescribe;
+
 }

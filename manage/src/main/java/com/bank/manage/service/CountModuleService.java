@@ -1,15 +1,15 @@
 package com.bank.manage.service;
 
+import java.util.List;
+import java.util.Map;
+
 import com.bank.core.entity.PageQueryModel;
 import com.bank.core.entity.TokenUserInfo;
 import com.bank.manage.dos.CountModuleDO;
 import com.bank.manage.dto.CountModuleDTO;
 import com.bank.manage.vo.CountModuleVo;
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-
-import java.util.List;
-import java.util.Map;
+import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  *  统计模块主表 服务类
@@ -50,11 +50,11 @@ public interface CountModuleService extends IService<CountModuleDO> {
      * @param countModuleVo
      * @return
      */
-    Boolean updateCountModule(List<CountModuleVo> countModuleVo,TokenUserInfo tokenUserInfo);
+    Boolean updateCountModule(List<CountModuleVo> countModuleVo, TokenUserInfo tokenUserInfo);
 
     /**
      * 考核数据分析图统计模块接口
      * @return
      */
-    List<Map<String, Object>> queryCountModule();
+    List<Map<String, Object>> queryCountModule(String moduleYear);
 }

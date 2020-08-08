@@ -10,6 +10,7 @@ import com.bank.manage.dao.CardSuppleDao;
 import com.bank.manage.dao.UsherWorkDaysDao;
 import com.bank.manage.dos.UsherWorkDaysDO;
 import com.bank.manage.dos.WorkSuppleDO;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang.StringUtils;
@@ -47,7 +48,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Slf4j
-public class UsherSignServiceImpl implements UsherSignService {
+public class UsherSignServiceImpl extends ServiceImpl<UsherSignDao,UsherSignDO> implements UsherSignService {
 
     @Autowired
     private UsherSignDao usherSignDao;

@@ -5,12 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.bank.core.entity.BizException;
+import com.bank.core.utils.SerialNumberUtil;
 import com.bank.icop.dto.CheckItemCheckSubmitDTO;
 import com.bank.icop.dto.CheckProblemDTO;
 import com.bank.icop.dto.CheckTaskSaveDTO;
@@ -36,6 +39,9 @@ import cn.hutool.core.util.StrUtil;
  */
 @Service
 public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
+
+    @Resource
+    SerialNumberUtil serialNumberUtil;
 
     @Override
     public List inspectionTaskList(String userId) {
@@ -107,7 +113,7 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
         return getIcopTagData(parmMap,
                 "FXYJ11005",
                 "检查问题编辑",
-                "1,2",
+                "0,1",
                 "返回状态  -1:参数为空 , 0:未查询出数据 ,1:正常 ", "details");
     }
 
@@ -298,11 +304,15 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
     }
 
     @Override
-    public Object feedbackSave(String currentUserId, String key, String feedbackdes) {
+    public Object feedbackSave(String currentUserId, String key, String feedbackdes, String contentid, String busistartdate, String busiserialno) {
         Map<String, Object> parmMap = new HashMap<>();
         parmMap.put("userNo", currentUserId);
         parmMap.put("cpk", key);
         parmMap.put("feedbackdes", feedbackdes);
+        parmMap.put("contentid", contentid);
+        parmMap.put("busistartdate", busistartdate);
+        parmMap.put("busiserialno", busiserialno);
+
         Map report = getReport(parmMap,
                 "FXYJ11019",
                 "整改反馈说明保存",
@@ -520,12 +530,12 @@ public class OnSiteInspectionServiceImpl implements OnSiteInspectionService {
     private Map getReport(Map<String, Object> parmMap, String serviceCode, String serviceName, String rightCode, String errMsg) {
         Map report = null;
         try {
-            report = SoapUtil.sendReport(serviceCode, "812", parmMap);
+            report = SoapUtil.sendReport(serviceCode, "812", serialNumberUtil.getICOPSerialNumber(), parmMap);
         }
         catch (Exception e) {
             String errorMess = e.getMessage();
             if (StringUtils.equals("Read timed out", e.getMessage())) {
-                errorMess = "请求超时！排查ICOP、ESB、源系统应用服务是否正常！";
+                errorMess = "请求超时！排查ICOP、ESB、源系统应用服务是否正常运行！";
             }
             throw new BizException(serviceName + "【" + serviceCode + "】报错：" + errorMess);
         }

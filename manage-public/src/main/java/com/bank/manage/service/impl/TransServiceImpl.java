@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +36,7 @@ public class TransServiceImpl extends ServiceImpl<TransDao, TransDO> implements 
 
 
     @Override
-    public IPage<TransDO> queryPage(PageQueryModel pageQueryModel) {
+    public IPage<TransDO> queryPage(PageQueryModel pageQueryModel, String powerNum) {
         Page<TransDO> page = new Page<>(pageQueryModel.getPageIndex(), pageQueryModel.getPageSize());
         if (StringUtils.isNotBlank(pageQueryModel.getSort())) {
             if (StringUtils.equalsIgnoreCase("DESC", pageQueryModel.getOrder())) {
@@ -48,6 +49,7 @@ public class TransServiceImpl extends ServiceImpl<TransDao, TransDO> implements 
         TransDO transDO = null;
         if (!MapUtils.isEmpty(queryParam)) {
             transDO = BeanUtil.mapToBean(queryParam, TransDO.class, false);
+            transDO.setPowerNum(powerNum);
         }
         List<TransDO> list = transDao.queryList(page, transDO);
         page.setRecords(list);
@@ -64,16 +66,29 @@ public class TransServiceImpl extends ServiceImpl<TransDao, TransDO> implements 
     public Map<String, Object> queryCount(String termNum) {
         Map<String, Object> map = new HashMap<>();
         List<TransInfoDTO> list = transDao.transCount(termNum);
+        Calendar calendar = Calendar.getInstance();
+        int hours = calendar.get(Calendar.HOUR_OF_DAY);
+        for (int i = 0; i < hours; i++) {
+            boolean flag = false;
+            for (TransInfoDTO dto : list) {
+                if (dto.getTransH() == i) {
+                    flag = true;
+                }
+            }
+            if (!flag) {
+                list.add(new TransInfoDTO(i, 0));
+            }
+        }
         int count = 0;
+
         for (int i = 0; i < list.size(); i++) {
             count += list.get(i).getTransHnum();
         }
         map.put("totalCount", count);
-        map.put("transList: ", list);
+        map.put("transList", list);
         log.info("交易时间统计：{}", map);
         return map;
     }
-
 
 
     @Override

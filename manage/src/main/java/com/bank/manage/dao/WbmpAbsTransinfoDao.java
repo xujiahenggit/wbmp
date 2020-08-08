@@ -24,4 +24,11 @@ public interface WbmpAbsTransinfoDao extends BaseMapper<WbmpAbsTransinfoDO> {
      * @return
      */
     int getCurrentMonthTrandNum(@Param(value = "orgId") String orgId,@Param(value = "date") String date);
+
+
+    /**
+     *查询机构柜面交易总数【历史和当天记录合并查询】
+     */
+    int getAllAbsTranNumByOrgId(@Param(value = "orgId") String orgId,@Param(value = "date") String date);
+
 }

@@ -33,7 +33,7 @@ public class PersonnelServiceImpl extends ServiceImpl<PersonnelDao, PersonnelDO>
     private PersonnelDao personnelDao;
 
     @Override
-    public IPage<PersonnelDO> queryList(PageQueryModel pageQueryModel) {
+    public IPage<PersonnelDO> queryList(PageQueryModel pageQueryModel, String powerNum) {
         Page<PersonnelDO> page = new Page<>(pageQueryModel.getPageIndex(), pageQueryModel.getPageSize());
 
         if (StringUtils.isNotBlank(pageQueryModel.getSort())) {
@@ -47,7 +47,7 @@ public class PersonnelServiceImpl extends ServiceImpl<PersonnelDao, PersonnelDO>
         PersonnelDO personnelDO = null;
         if (!MapUtils.isEmpty(queryParam)) {
             personnelDO = BeanUtil.mapToBean(queryParam, PersonnelDO.class, false);
-
+            personnelDO.setPowerNum(powerNum);
         }
         List<PersonnelDO> list = personnelDao.queryList(page, personnelDO);
         page.setRecords(list);

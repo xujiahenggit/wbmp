@@ -32,8 +32,16 @@ public class ComplaintsWorkOrderDto {
     private String subBranch;
     @ApiModelProperty(value = "自助行")
     private String buffetLine;
+    @ApiModelProperty(value = "分行名称")
+    private String branchName;
+    @ApiModelProperty(value = "支行名称")
+    private String subBranchName;
+    @ApiModelProperty(value = "自助行名称")
+    private String buffetLineName;
     @ApiModelProperty(value = "厂商")
     private String vendor;
+    @ApiModelProperty(value = "厂商名称")
+    private String vendorName;
     @ApiModelProperty(value = "工单描述")
     private String workOrderDescribe;
 

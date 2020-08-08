@@ -16,7 +16,9 @@ import javax.annotation.Resource;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: Andy
@@ -62,7 +64,7 @@ public class WbmpOperateRacingIndexMServiceImpl extends ServiceImpl<WbmpOperateR
         HouseRaceItem houseRaceItem_006=new HouseRaceItem();
         houseRaceItem_006.setId(WbmpConstFile.SMZ_RACING_006);
         houseRaceItem_006.setMax("100");
-        houseRaceItem_006.setName("自助设备业务分摊率");
+        houseRaceItem_006.setName("自助设备业务分担率");
         sortItem.add(houseRaceItem_006);
 
         HouseRaceItem houseRaceItem_007=new HouseRaceItem();
@@ -85,26 +87,47 @@ public class WbmpOperateRacingIndexMServiceImpl extends ServiceImpl<WbmpOperateR
         houseRaceItem_003.setName("银企对账率");
         sortItem.add(houseRaceItem_003);
 
+        //2020-07-20 取消无纸化率 改为【完成无纸化率】
         HouseRaceItem houseRaceItem_001=new HouseRaceItem();
         houseRaceItem_001.setId(WbmpConstFile.SMZ_RACING_001);
         houseRaceItem_001.setMax("100");
-        houseRaceItem_001.setName("取消无纸化比率");
+        houseRaceItem_001.setName("完成无纸化率");
         sortItem.add(houseRaceItem_001);
-
+        //机构正常的赛马值数据
         List<Float> data=new ArrayList<>();
+        //全行月度最大的赛马制数据
+        List<Float> maxData=new ArrayList<>();
+
+        //结果数据
+        List<Map<String,Object>> list= new ArrayList<Map<String,Object>>();
+
         if(sortItem.size()>0){
             for(HouseRaceItem item:sortItem){
-
                 float dataNumber= Tools.formatFloat(wbmpOperateRacingIndexMDao.getData(orgId,date,item.getId()));
+
+                float maxDateNum = Tools.formatFloat(wbmpOperateRacingIndexMDao.getMouthMaxData(date,item.getId()));
                 if(item.getId().equals("RACING_004")){
+                    //电子对账率 源系统已经乘以了100
                     dataNumber = dataNumber/100;
+                    maxDateNum = maxDateNum/100;
+                }else if(item.getId().equals("RACING_001")){
+                    //完成无纸化比率 = 1-取消无纸化比率
+                    dataNumber = 100 - dataNumber;
+                    maxDateNum = 100 -Tools.formatFloat(wbmpOperateRacingIndexMDao.getMouthMinData(date,item.getId()));
                 }
                 data.add(dataNumber);
+                maxData.add(maxDateNum);
             }
         }
+        Map<String,Object> datemap = new HashMap<String,Object>();
+        datemap.put("value",data);
+        Map<String,Object> maxMap = new HashMap<String,Object>();
+        maxMap.put("value",maxData);
+        list.add(datemap);
+        list.add(maxMap);
         //按顺序 排序
         houseRaceCharts.setIndicator(sortItem);
-        houseRaceCharts.setData(data);
+        houseRaceCharts.setData(list);
         houseRaceDto.setCharts(houseRaceCharts);
         return houseRaceDto;
     }

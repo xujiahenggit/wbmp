@@ -3,9 +3,10 @@
 <mapper namespace="com.bank.manage.dao.DcStatuslogDao">
 
     <select id="queryList" resultType="com.bank.manage.dos.DcStatuslogDO">
-        SELECT *
-        FROM z_dcstatus
+        SELECT d.*,c.dcDesc as dcdesc
+        FROM z_dcstatus d,z_devicecontroller c
         <where>
+            d.STRVMNAME = c.DCNAME
             <if test="model!=null">
                 STRTERMNUM = #{model}
             </if>

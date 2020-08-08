@@ -37,4 +37,20 @@ public interface WbmpOperateRacingIndexMDao extends BaseMapper<WbmpOperateRacing
      * @return
      */
     List<WbmpOperateRacingIndexMDO> getRacingList(@Param(value = "orgId") String orgId,@Param(value = "date") String date);
+
+    /**
+     * 获取月度全行赛马制最大数据
+     * @param date
+     * @param id
+     * @return
+     */
+    float getMouthMaxData(@Param(value = "date") String date,@Param(value = "id") String id);
+
+    /**
+     * 获取月度全行赛马制最小数据
+     * @param date
+     * @param id
+     * @return
+     */
+    float getMouthMinData(@Param(value = "date") String date,@Param(value = "id") String id);
 }

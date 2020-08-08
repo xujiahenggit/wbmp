@@ -3,12 +3,13 @@ package com.bank.manage.controller;
 import com.bank.auth.base.BaseController;
 import com.bank.core.entity.PageQueryModel;
 import com.bank.manage.dos.TransDO;
+import com.bank.manage.service.BankService;
 import com.bank.manage.service.TransService;
-import com.bank.manage.service.TransfilterService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,7 @@ public class TransController extends BaseController {
     private TransService ts;
 
     @Autowired
-    private TransfilterService tfs;
+    private BankService bs;
 
     @PostMapping("/list")
     public List<TransDO> queryList() {
@@ -28,8 +29,9 @@ public class TransController extends BaseController {
     }
 
     @PostMapping("/page")
-    public IPage<TransDO> queryPage(@RequestBody PageQueryModel pageQueryModel) {
-        return ts.queryPage(pageQueryModel);
+    public IPage<TransDO> queryPage(@RequestBody PageQueryModel pageQueryModel, HttpServletRequest request) {
+        String powerNum = bs.selectByOrgcode(getCurrentUserInfo(request).getOrgId());
+        return ts.queryPage(pageQueryModel,powerNum);
     }
 
     @PostMapping("/export")

@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
 
 public interface PersonnelService extends IService<PersonnelDO> {
-    IPage<PersonnelDO> queryList(PageQueryModel pageQueryModel);
+    IPage<PersonnelDO> queryList(PageQueryModel pageQueryModel, String powerNum);
 
     boolean save(PersonnelDO personnelDO);
 

@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 public interface TransService extends IService<TransDO> {
-    IPage<TransDO> queryPage(PageQueryModel pageQueryModel);
+    IPage<TransDO> queryPage(PageQueryModel pageQueryModel, String powerNum);
 
     void export(PageQueryModel pageQueryModel, HttpServletResponse response);
 

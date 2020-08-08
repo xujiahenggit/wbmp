@@ -4,12 +4,7 @@
 
     <select id="queryList" resultType="com.bank.manage.dos.PersonnelDO">
         SELECT *
-        FROM z_sms_personnel z ,z_bank b1,z_branch b2,z_subbranch b3,
-        z_selfsvcbank b4
-        where z. STRBANKNUM= b1.STRBANKNUM
-        and z. STRBRANCHNUM= b2.STRBRANCHNUM
-        and z. STRSUBBRANCHNUM= b3.STRSUBBRANCHNUM
-        and z. STRSSBNUM= b4.STRSSBNUM
+        FROM z_sms_personnel z
         <if test="model!=null">
             <if test="model.strOperatorNum != null and model.strOperatorNum !=''">
                 AND z.STROPERATORNUM = #{model.strOperatorNum}
@@ -37,6 +32,12 @@
             </if>
             <if test="model.createDate != null and model.createDate !=''">
                 AND z.CREATEDATE = #{model.createDate}
+            </if>
+
+            <if test="model.powerNum != null and model.powerNum !=''">
+                and (z.strbanknum = #{model.powerNum}
+                or z.strbranchnum = #{model.powerNum}
+                or z.strsubbranchnum = #{model.powerNum})
             </if>
         </if>
     </select>

@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.bank.auth.base.BaseController;
 import com.bank.core.entity.TokenUserInfo;
-import com.bank.core.utils.HttpUtil;
 import com.bank.manage.dos.CommandlogDO;
 import com.bank.manage.service.CommandlogService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,22 +24,24 @@ public class SendController extends BaseController {
     private CommandlogService cs;
 
     @PostMapping("/tobip")
-    public String sendToBip(@RequestBody Map<String, Object> map, HttpServletRequest request) {
+    public JSONObject sendToBip(@RequestBody Map<String, Object> map, HttpServletRequest request) {
         String strRequest = JSON.toJSONString(map);
         TokenUserInfo tokenUserInfo = getCurrentUserInfo(request);
-        String response = null;
-        try {
-            response = HttpUtil.sendPost("www.baidu.com", map);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        JSONObject jsonObject = JSON.parseObject(response);
-        Integer responseStatus =
-                jsonObject.getString("code").equals("0000") ? 1 : 2;
+//        String response = null;
+//        try {
+//            response = HttpUtil.sendPost("www.baidu.com", map);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        JSONObject jsonObject = JSON.parseObject(response);
+//        Integer responseStatus =
+//                jsonObject.getString("code").equals("0000") ? 1 : 2;
         CommandlogDO build = CommandlogDO.builder()
-                .responseStatus(responseStatus)
-                .response(response)
+//                .responseStatus(responseStatus)
+//                .response(response)
+                .responseStatus(0)
+                .response("test")
                 .request(strRequest)
                 .operatorNum(tokenUserInfo.getUserId())
                 .operatorName(tokenUserInfo.getUserName())
@@ -48,11 +49,21 @@ public class SendController extends BaseController {
                 .termNum((String) map.get("termNum"))
                 .type((String) map.get("type"))
                 .name((String) map.get("name"))
+                .pendStatus(0)
                 .createdAt(LocalDateTime.now())
                 .build();
 
-        boolean save = cs.save(build);
-        return response;
+        cs.save(build);
+//        return JSON.parseObject(response);
+        return getStr();
+    }
+
+    private JSONObject getStr() {
+        String s;
+//         s = "{\"processID\":\"test\",\"processName\":\"测试\",\"processUri\":\"http://www.baidu.com\",\"cpuRate\":\"99%\",\"memoryUsage\":\"99%\",\"memoryName\":\"硬盘\",\"total\":\"100\",\"usd\":\"99\",\"surplus\":\"1\"}";
+        s = "{\"list\":[{\"funcModel\":\"测试1\",\"version\":\"1.0\",\"filename\":\"qwe\"},{\"funcModel\":\"测试2\",\"version\":\"1.2\",\"filename\":\"asd\"},{\"funcModel\":\"测试2\",\"version\":\"1.3\",\"filename\":\"zxc\"}]}";
+        JSONObject jsonObject = JSON.parseObject(s);
+        return jsonObject;
     }
 }
 

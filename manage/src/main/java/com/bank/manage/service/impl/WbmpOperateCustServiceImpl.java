@@ -37,91 +37,114 @@ public class WbmpOperateCustServiceImpl extends ServiceImpl<WbmpOperateCustDao, 
         CustomerAvgDto customerAvgDto=new CustomerAvgDto();
         if(WbmpConstFile.DATE_TYPE_DAY.equals(customerAvgVo.getCycleCode())){
             //按日统计
-            CustomerAvgChartsDto customerAvgChartsDto=new CustomerAvgChartsDto();
             List<String> days= DateUtils.getDateBefor15();
             List<String> formatDays=new ArrayList<>();
             List<Integer> data=new ArrayList<>();
-
             //获取最近15天的客群指标数据
-            List<WbmpOperateCustVo> custList = wbmpOperateCustDao.findDaysCust(customerAvgVo.getOrgId(),customerAvgVo.getCustomerTypeCode());
-            for (String item:days){
-                formatDays.add(DateUtils.formartToMonthDay(item));
-                int custValue = 0;
-                    for(WbmpOperateCustVo cust:custList){
-                    if(item.equals(cust.getDataDt())){
-                        custValue = cust.getCompLastd();
-                    }
+            List<WbmpOperateCustVo> custList = new ArrayList<>();
+            //查询所有客户
+            if(WbmpConstFile.CUSTOMER_TYPE_CUST_000.equals(customerAvgVo.getCustomerTypeCode())){
+                for (String item:days){
+                    formatDays.add(DateUtils.formartToMonthDay(item));
+                    int custValue =  wbmpOperateCustDao.findDaysCustAll(customerAvgVo.getOrgId(),item);
+                    data.add(custValue);
                 }
-                data.add(custValue);
+                customerAvgDto=getCunstomerDtoModel(WbmpConstFile.DATE_TYPE_DAY,WbmpConstFile.DATE_TYPE_DAY_TXT,customerAvgVo.getCustomerTypeCode(),formatDays,data);
+            }else{
+                custList =wbmpOperateCustDao.findDaysCust(customerAvgVo.getOrgId(),customerAvgVo.getCustomerTypeCode());
+                for (String item:days){
+                    formatDays.add(DateUtils.formartToMonthDay(item));
+                    int custValue = 0;
+                    for(WbmpOperateCustVo cust:custList){
+                        if(item.equals(cust.getDataDt())){
+                            custValue = cust.getCompLastd();
+                        }
+                    }
+                    data.add(custValue);
+                }
+                customerAvgDto=getCunstomerDtoModel(WbmpConstFile.DATE_TYPE_DAY,WbmpConstFile.DATE_TYPE_DAY_TXT,customerAvgVo.getCustomerTypeCode(),formatDays,data);
             }
-            customerAvgDto.setCycleCode(WbmpConstFile.DATE_TYPE_DAY);
-            customerAvgDto.setCycleName("日");
-            customerAvgDto.setCustomerTypeCode(customerAvgVo.getCustomerTypeCode());
-            customerAvgDto.setCustomerTypeName(getCustomerType(customerAvgVo.getCustomerTypeCode()));
-            customerAvgChartsDto.setData(data);
-            customerAvgChartsDto.setXAxis(formatDays);
-            customerAvgChartsDto.setXAxisName("时间");
-            customerAvgChartsDto.setYAxisName("人");
-            customerAvgDto.setCharts(customerAvgChartsDto);
+
         }else if(WbmpConstFile.DATE_TYPE_MONTH.equals(customerAvgVo.getCycleCode())){
             //按月统计
-            CustomerAvgChartsDto customerAvgChartsDto=new CustomerAvgChartsDto();
             List<String> months= DateUtils.getLatest12Month();
             List<Integer> data=new ArrayList<>();
-
-            //获取最近12个月的数据
-            List<WbmpOperateCustVo> custList = wbmpOperateCustDao.findMouthCust(customerAvgVo.getOrgId(),customerAvgVo.getCustomerTypeCode());
-            for (String item:months){
-                int custValue = 0;
-                for(WbmpOperateCustVo cust:custList){
-                    if(item.equals(cust.getDataDt())){
-                        custValue = cust.getCompLastm();
-                    }
+            if(WbmpConstFile.CUSTOMER_TYPE_CUST_000.equals(customerAvgVo.getCustomerTypeCode())){
+                for (String item:months){
+                    int custValue =  wbmpOperateCustDao.findMouthsCustAll(customerAvgVo.getOrgId(),item);
+                    data.add(custValue);
                 }
-                data.add(custValue);
+                customerAvgDto=getCunstomerDtoModel(WbmpConstFile.DATE_TYPE_MONTH,WbmpConstFile.DATE_TYPE_MONTH_TXT,customerAvgVo.getCustomerTypeCode(),months,data);
+            }else{
+                //获取最近12个月的数据
+                List<WbmpOperateCustVo> custList = wbmpOperateCustDao.findMouthCust(customerAvgVo.getOrgId(),customerAvgVo.getCustomerTypeCode());
+                for (String item:months){
+                    int custValue = 0;
+                    for(WbmpOperateCustVo cust:custList){
+                        if(item.equals(cust.getDataDt())){
+                            custValue = cust.getCompLastm();
+                        }
+                    }
+                    data.add(custValue);
+                }
+                customerAvgDto=getCunstomerDtoModel(WbmpConstFile.DATE_TYPE_MONTH,WbmpConstFile.DATE_TYPE_MONTH_TXT,customerAvgVo.getCustomerTypeCode(),months,data);
             }
-            customerAvgDto.setCycleCode(WbmpConstFile.DATE_TYPE_MONTH);
-            customerAvgDto.setCycleName("月");
-            customerAvgDto.setCustomerTypeCode(customerAvgVo.getCustomerTypeCode());
-            customerAvgDto.setCustomerTypeName(getCustomerType(customerAvgVo.getCustomerTypeCode()));
-            customerAvgChartsDto.setData(data);
-            customerAvgChartsDto.setXAxis(months);
-            customerAvgChartsDto.setXAxisName("时间");
-            customerAvgChartsDto.setYAxisName("人");
-            customerAvgDto.setCharts(customerAvgChartsDto);
-
         }else if(WbmpConstFile.DATE_TYPE_YEAR.equals(customerAvgVo.getCycleCode())){
             //按年统计
-            CustomerAvgChartsDto customerAvgChartsDto=new CustomerAvgChartsDto();
             List<String> years= DateUtils.getLatest3Year();
             List<Integer> data=new ArrayList<>();
-            //获取最近3年的数据
-            List<WbmpOperateCustVo> custList = wbmpOperateCustDao.findYearCust(customerAvgVo.getOrgId(),customerAvgVo.getCustomerTypeCode());
-            for (String item:years){
-                int custValue = 0;
-                for(WbmpOperateCustVo cust:custList){
-                    if(item.equals(cust.getDataDt())){
-                        custValue = cust.getCompLasty();
-                    }
+            if(WbmpConstFile.CUSTOMER_TYPE_CUST_000.equals(customerAvgVo.getCustomerTypeCode())){
+                for (String item:years){
+                    int custValue =wbmpOperateCustDao.findYearCustAll(customerAvgVo.getOrgId(),item);
+                    data.add(custValue);
                 }
-                data.add(custValue);
+                customerAvgDto=getCunstomerDtoModel(WbmpConstFile.DATE_TYPE_YEAR,WbmpConstFile.DATE_TYPE_YEAR_TXT,customerAvgVo.getCustomerTypeCode(),years,data);
+            }else{
+                //获取最近3年的数据
+                List<WbmpOperateCustVo> custList = wbmpOperateCustDao.findYearCust(customerAvgVo.getOrgId(),customerAvgVo.getCustomerTypeCode());
+                for (String item:years){
+                    int custValue = 0;
+                    for(WbmpOperateCustVo cust:custList){
+                        if(item.equals(cust.getDataDt())){
+                            custValue = cust.getCompLasty();
+                        }
+                    }
+                    data.add(custValue);
+                }
+                customerAvgDto=getCunstomerDtoModel(WbmpConstFile.DATE_TYPE_YEAR,WbmpConstFile.DATE_TYPE_YEAR_TXT,customerAvgVo.getCustomerTypeCode(),years,data);
             }
-            customerAvgDto.setCycleCode(WbmpConstFile.DATE_TYPE_YEAR);
-            customerAvgDto.setCycleName("年");
-            customerAvgDto.setCustomerTypeCode(customerAvgVo.getCustomerTypeCode());
-            customerAvgDto.setCustomerTypeName(getCustomerType(customerAvgVo.getCustomerTypeCode()));
-            customerAvgChartsDto.setData(data);
-            customerAvgChartsDto.setXAxis(years);
-            customerAvgChartsDto.setXAxisName("时间");
-            customerAvgChartsDto.setYAxisName("人");
-            customerAvgDto.setCharts(customerAvgChartsDto);
         }
         return customerAvgDto;
     }
 
+    /**
+     * 构建模型
+     * @param cyleCode 查询周期
+     * @param cyleName 周期文本
+     * @param customerTypeCode 客户类型
+     * @param times 时间列表
+     * @param data 值列表
+     * @return
+     */
+    private CustomerAvgDto getCunstomerDtoModel(String cyleCode,String cyleName,String customerTypeCode, List<String> times,List<Integer> data){
+        CustomerAvgDto customerAvgDto=new CustomerAvgDto();
+        customerAvgDto.setCycleCode(cyleCode);
+        customerAvgDto.setCycleName(cyleName);
+        customerAvgDto.setCustomerTypeCode(customerTypeCode);
+        customerAvgDto.setCustomerTypeName(getCustomerType(customerTypeCode));
+        CustomerAvgChartsDto customerAvgChartsDto=new CustomerAvgChartsDto();
+        customerAvgChartsDto.setData(data);
+        customerAvgChartsDto.setXAxis(times);
+        customerAvgChartsDto.setXAxisName("时间");
+        customerAvgChartsDto.setYAxisName("人");
+        customerAvgDto.setCharts(customerAvgChartsDto);
+        return customerAvgDto;
+    }
 
     private String  getCustomerType(String code){
         switch (code){
+            case WbmpConstFile.CUSTOMER_TYPE_CUST_000:
+                return "全部客户";
             case WbmpConstFile.CUSTOMER_TYPE_CUST_001:
                 return "普通客户";
             case WbmpConstFile.CUSTOMER_TYPE_CUST_002:

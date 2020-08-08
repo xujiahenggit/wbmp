@@ -11,11 +11,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/commandlog")
 public class CommandlogController extends BaseController {
     @Autowired
     private CommandlogService cs;
+
+    @PostMapping("/list")
+    public List<CommandlogDO> queryList() {
+        return cs.list();
+    }
 
     @PostMapping("/page")
     public IPage<CommandlogDO> queryPage(@RequestBody PageQueryModel pageQueryModel) {

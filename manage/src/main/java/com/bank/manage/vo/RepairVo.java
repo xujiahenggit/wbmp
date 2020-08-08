@@ -6,6 +6,8 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+
 /**
  * @Author: cq
  * @Date: 2020/5/8 22:50
@@ -44,4 +46,42 @@ public class RepairVo implements Serializable {
 
     @ApiModelProperty(value = "工单状态")
     private String repairStatus;
+
+    @ApiModelProperty(value = "创建人姓名")
+    private String createName;
+
+    @ApiModelProperty(value = "创建人手机号码")
+    private String createPhone;
+
+
+    @ApiModelProperty(value = "创建时间")
+    private Date createTime;
+    @ApiModelProperty(value = "现场联系人")
+    private String contactName;
+    @ApiModelProperty(value = "现场联系人号码")
+    private String contactPhone;
+
+    @ApiModelProperty(value = "现场联系人工号")
+    private String contactId;
+
+    @ApiModelProperty(value = "描述类型")
+    private String describeType;
+    @ApiModelProperty(value = "描述描述")
+    private String workOrderDescribe;
+    @ApiModelProperty(value = "工单编号")
+    private String workOrderCode;
+    @ApiModelProperty(value = "服务信息")
+    private ServiceInfoVo serviceInfoVo;
+    @ApiModelProperty(value = "机构名称")
+    private String orgName;
+    @ApiModelProperty(value = "厂商名称")
+    private String vendorName;
+    @ApiModelProperty(value = "厂商id")
+    private String vendor;
+    @ApiModelProperty(value = "用户类型 2:分行管理员；1:总行管理员;0:既不是分行管理员，也不是总行管理员")
+    private String userType;
+    @ApiModelProperty(value = " 0:发起人,1:否")
+    private String isCreateUser;
+
+    private List<ContactVo> contactVoList;
 }

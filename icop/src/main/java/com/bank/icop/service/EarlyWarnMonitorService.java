@@ -6,7 +6,7 @@ import com.bank.icop.dto.TaskListsDto;
 public interface EarlyWarnMonitorService {
     Object getdealDatas(String userNo);
 
-    Object getT69Alerts(String alertkey);
+    Object getT69Alerts(AlertsDo alertsDo);
 
     Object getTaskDetails(String taskkey);
 
@@ -54,7 +54,7 @@ public interface EarlyWarnMonitorService {
 
     Object getTaskByCode(String taskkey);
 
-    Object getUserByNo(String userNo);
+    Object getUserByNo( String userNo);
 
     Object getProcessingRecords(ProcessingRecordsDo processingRecordsDo);
 
@@ -63,4 +63,8 @@ public interface EarlyWarnMonitorService {
     Object getMyTaskByNo(String userNo);
 
     Object getUpdateByKey(String alertKey);
+
+    Object returnCounterNo(UserListDo userListDo);
+
+    Object getUserList(UserListDo userListDo);
 }

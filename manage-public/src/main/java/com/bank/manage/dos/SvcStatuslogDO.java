@@ -25,12 +25,14 @@ public class SvcStatuslogDO implements Serializable {
     private Integer svcstatus;
     private LocalDateTime dtbegin;
     private LocalDateTime dtend;
+    @TableField(exist = false)
     private LocalDateTime beginTime;
+    @TableField(exist = false)
     private LocalDateTime endTime;
     @TableField(exist = false)
-    private String dtTime = getDtTime();
+    private String dttime;
 
-    private String getDtTime() {
+    public String getDtTime() {
         String s = null;
         if (dtbegin != null && dtend != null) {
             Duration d = Duration.between(dtbegin, dtend);

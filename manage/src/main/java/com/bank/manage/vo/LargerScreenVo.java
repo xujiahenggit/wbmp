@@ -20,5 +20,6 @@ public class LargerScreenVo {
     private String terminalCode;
     @ApiModelProperty(value = "状态")
     private String status;
-
+    @ApiModelProperty(value = "机构号")
+    private String  orgId ;
 }

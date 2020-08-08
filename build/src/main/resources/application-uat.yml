@@ -1,5 +1,5 @@
 application:
-  ip: 162.16.14.78
+  ip: 162.16.14.78 #uat-wbmp.mis.bcs
   port: 9080 #tomcat启动端口
   contextPath: /wbmp-server
 server:
@@ -26,16 +26,28 @@ spring:
       max-file-size: 1024MB
       max-request-size: 1024MB
   datasource:
-    # 如果存在多个数据源，监控的时候可以通过名字来区分开来
-    name: mysql
-    # 连接数据库的url
-    url: jdbc:mysql://162.16.14.78:3306/wbmp?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true&failOverReadOnly=false&serverTimezone=GMT%2B8
-    # 连接数据库的账号
-    username: root
-    #  连接数据库的密码
-    password: root78
-    # 使用druid数据源
-    type: com.alibaba.druid.pool.DruidDataSource
+    master:
+      # 如果存在多个数据源，监控的时候可以通过名字来区分开来
+      name: master
+      # 连接数据库的url
+      url: jdbc:mysql://162.16.14.78:3306/wbmp?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true&failOverReadOnly=false&serverTimezone=GMT%2B8
+      # 连接数据库的账号
+      username: root
+      #  连接数据库的密码
+      #password: root78
+      password: 2iA6EctcLuo=
+      # 使用druid数据源
+      type: com.alibaba.druid.pool.DruidDataSource
+    esbmgt:
+      # 连接数据库的url
+      url: jdbc:mysql://162.16.22.136:3306/ssamgt?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true&failOverReadOnly=false&serverTimezone=GMT%2B8
+      # 连接数据库的账号
+      username: query
+      #  连接数据库的密码
+      #password: query
+      password: GWdSRfDzleo=
+      # 使用druid数据源
+      type: com.alibaba.druid.pool.DruidDataSource
     druid:
       # 扩展插件
       # 监控统计用的filter:stat 日志用的filter:log4j 防御sql注入的filter:wall
@@ -98,6 +110,8 @@ ICOP:
 IMAGE_PLATFORM:
   IP: 162.16.12.80
   PORT: 8021
+  USER_NAME: Wdzhgl
+  PASS_WORD: 'Wdzhgl*abcd1234'
 #自定义属性
 #日志版本
 LOG:
@@ -109,8 +123,8 @@ DAT:
   FTP_PORT: 21
   #FTP 用户名
   FTP_USER_NAME: ftpuser
-  #FTP 密码
-  FTP_PASS_WORD: abc@1234
+  #FTP 密码 改造为密文
+  FTP_PASS_WORD: Sf7Bh97NnFrvXndE0G017w==
   #FTP 文件路径
   FTP_FILE_PATH: /nhr/
   #FTP 核心文件 文件

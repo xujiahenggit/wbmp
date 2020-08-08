@@ -2,17 +2,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.bank.manage.dao.TermDao">
     <select id="queryList" resultType="com.bank.manage.dos.TermDO">
-        select t.ID,t.STRTERMNUM,t.STRBANKNUM,b1.STRBANKNAME,t.STRBRANCHNUM,b2.STRBRANCHNAME,t.STRSUBBRANCHNUM,b3.STRSUBBRANCHNAME,t.STRSSBNUM,b4.STRSSBNAME,t.DEVICEID,t.STRNETADDR,t.STRTELLERNUM,s.SVCSTATUS,s.IHDWSTATUS,s.IAGENTSTATUS,s.CASHACCEPTORINFO
+        select
+        t.ID,t.STRTERMNUM,t.STRBANKNUM,t.STRBRANCHNUM,t.STRSUBBRANCHNUM,t.STRSSBNUM,t.DEVICEID,t.STRNETADDR,t.STRTELLERNUM,s.SVCSTATUS,s.IHDWSTATUS,s.IAGENTSTATUS,s.CASHACCEPTORINFO
         ,s.CASHDISPENSERINFO,d.IDEVTYPE,d.STRDEVMANU as strDevMenu,t.FORVERIFICATION,t.APTLID,dict.label as strDevType
-        from z_term t,z_termstatus s,z_bank b1,z_branch b2,z_subbranch b3,
-        z_selfsvcbank b4,z_device d,z_sys_dict dict
+        from z_term t,z_termstatus s,z_device d,z_sys_dict dict
         where t.STRTERMNUM = s.STRTERMNUM
-        and t. STRBANKNUM= b1.STRBANKNUM
-        and t. STRBRANCHNUM= b2.STRBRANCHNUM
-        and t. STRSUBBRANCHNUM= b3.STRSUBBRANCHNUM
-        and t. STRSSBNUM= b4.STRSSBNUM
         and t.DEVICEID =d.ID
         and d.IDEVTYPE =dict.value
         and dict.key = 'device_type'
+        <if test="model != null and model !=''">
+            and (strbanknum = #{model}
+            or strbranchnum = #{model}
+            or strsubbranchnum = #{model})
+        </if>
     </select>
 </mapper>

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -17,7 +18,8 @@ public class BankController extends BaseController {
     private BankService bankService;
 
     @PostMapping("/list")
-    public List<BankDO> queryList() {
-        return bankService.queryList();
+    public List<BankDO> queryList(HttpServletRequest request) {
+        String powerNum = bankService.selectByOrgcode(getCurrentUserInfo(request).getOrgId());
+        return bankService.queryList(powerNum);
     }
 }

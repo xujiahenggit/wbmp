@@ -29,4 +29,6 @@ public class EquipmentVo {
 
     @ApiModelProperty(value = "厂商（服务商）")
     private String deviceVendor;
+    @ApiModelProperty(value = "姓名")
+    private String name;
 }

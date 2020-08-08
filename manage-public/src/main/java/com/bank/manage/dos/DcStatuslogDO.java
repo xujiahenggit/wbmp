@@ -1,6 +1,7 @@
 package com.bank.manage.dos;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
@@ -20,21 +21,27 @@ import java.time.LocalDateTime;
 public class DcStatuslogDO implements Serializable {
     @TableId(value = "ID", type = IdType.AUTO)
     private String id;
-    private String strTermNum;
-    private String strVMName;
+    private String strtermnum;
+    private String strvmname;
     private String strhdwstatus;
-    private String modelName;
-    private String modelStatusDesc;
-    private LocalDateTime dtBegin;
-    private LocalDateTime dtEnd;
-    private LocalDateTime beginTime;
-    private LocalDateTime endTime;
-    private String dtTime = getDtTime();
 
-    private String getDtTime() {
+    @TableField(value = "modelName")
+    private String modelname;
+    @TableField (value = "modelStatusDesc")
+    private String modelstatusdesc;
+    private LocalDateTime dtbegin;
+    private LocalDateTime dtend;
+    @TableField(exist = false)
+    private LocalDateTime beginTime;
+    @TableField(exist = false)
+    private LocalDateTime endTime;
+    @TableField(exist = false)
+    private String dttime = getDttime();
+
+    public String getDttime() {
         String s = null;
-        if (dtBegin != null && dtEnd != null) {
-            Duration d = Duration.between(dtBegin, dtEnd);
+        if (dtbegin != null && dtend != null) {
+            Duration d = Duration.between(dtbegin, dtend);
             long days = d.toDays();
             long hours = d.toHours();
             long minutes = d.toMinutes();

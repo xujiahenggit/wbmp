@@ -44,4 +44,6 @@ public class PersonnelDO implements Serializable {
     private String strSubBranchName;
     private String strBranchName;
     private String strBankName;
+    @TableField(exist = false)
+    private String powerNum;
 }

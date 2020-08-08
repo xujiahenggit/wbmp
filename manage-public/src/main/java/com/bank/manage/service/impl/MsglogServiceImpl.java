@@ -32,7 +32,7 @@ public class MsglogServiceImpl extends ServiceImpl<MsglogDao, MsglogDO> implemen
 
 
     @Override
-    public IPage<MsglogDO> queryList(PageQueryModel pageQueryModel) {
+    public IPage<MsglogDO> queryList(PageQueryModel pageQueryModel, String powerNum) {
         Page<MsglogDO> page = new Page<>(pageQueryModel.getPageIndex(), pageQueryModel.getPageSize());
 
         if (StringUtils.isNotBlank(pageQueryModel.getSort())) {

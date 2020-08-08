@@ -1,12 +1,12 @@
 package com.bank.manage.service;
 
+import com.bank.core.entity.PageQueryModel;
 import com.bank.manage.dos.DcStatuslogDO;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
-import java.util.List;
-
 public interface DcStatuslogService extends IService<DcStatuslogDO> {
-    List<DcStatuslogDO> queryList(String termNum);
+    IPage<DcStatuslogDO> queryList(PageQueryModel pageQueryModel);
 
     Boolean log(DcStatuslogDO dcStatuslogDO);
 }

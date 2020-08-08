@@ -27,6 +27,12 @@ public class TransDO implements Serializable {
     private String id;
 
     /**
+     * 权限号码
+     */
+    @TableField(exist = false)
+    private String powerNum;
+
+    /**
      * 设备id
      */
     private String deviceId;

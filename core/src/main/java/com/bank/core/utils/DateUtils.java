@@ -215,7 +215,9 @@ public class DateUtils {
         calendar.set(Calendar.DAY_OF_MONTH, 1);// 设置为当月第一天
         int daySize = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);// 当月最大天数
         for (int i = 0; i < daySize; i++) {
-            calendar.add(Calendar.DATE, 1);//在第一天的基础上加1
+            if(i!=0){
+                calendar.add(Calendar.DATE, 1);//在第一天的基础上加1
+            }
             int week = calendar.get(Calendar.DAY_OF_WEEK);
             if (calendar.get(Calendar.DAY_OF_MONTH) <= day) {
                 if (!(week == Calendar.SATURDAY || week == Calendar.SUNDAY)) {// 1代表周日，7代表周六 判断这是一个星期的第几天从而判断是否是周末
@@ -545,8 +547,17 @@ public class DateUtils {
 //        DateTimeFormatter dateTimeFormatter=DateTimeFormatter.ofPattern("yyyy-mm");
 //        String date= LocalDate.now().minusDays(1).toString().substring(0, 7);
 //        System.out.println(date);
+//
+//        List<String> list = getLatest12Month();
+//        System.out.println( Arrays.toString(list.toArray()));
 
-        List<String> list = getDateBefor30();
-        System.out.println( Arrays.toString(list.toArray()));
+        System.out.println(("2020-06-29").substring(0,7));
     }
+
+    public static String now() {
+        return DateUtil.format(LocalDateTime.now(), "yyyyMMddHHmmssSSS");
+    }
+
+
+
 }

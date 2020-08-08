@@ -28,7 +28,7 @@ public class FileRiskEventDo implements Serializable {
     @ApiModelProperty("风险事件责任人")
     private String mistaketlr;
     @ApiModelProperty("返回日期")
-    private Date orderfeedbackdt;
+    private String orderfeedbackdt;
     @ApiModelProperty("原交易金额")
     private String tradesum;
     @ApiModelProperty("协查行描述")

@@ -30,7 +30,7 @@ public class CassalertServiceImpl extends ServiceImpl<CassalertDao, CassalertDO>
     private CassalertDao cassalertDao;
 
     @Override
-    public IPage<CassalertDO> queryList(PageQueryModel pageQueryModel) {
+    public IPage<CassalertDO> queryList(PageQueryModel pageQueryModel, String orgcode) {
         Page<CassalertDO> page = new Page<>(pageQueryModel.getPageIndex(), pageQueryModel.getPageSize());
 
         if (StringUtils.isNotBlank(pageQueryModel.getSort())) {
@@ -44,6 +44,9 @@ public class CassalertServiceImpl extends ServiceImpl<CassalertDao, CassalertDO>
         String subBranchNum = "";
         if (!MapUtils.isEmpty(queryParam)) {
             subBranchNum = (String) queryParam.get("strSubBranchNum");
+            if (!orgcode.equals("") && !subBranchNum.equals(orgcode)) {
+                return null;
+            }
         }
         List<CassalertDO> list = cassalertDao.queryList(page, subBranchNum);
         page.setRecords(list);
@@ -52,14 +55,20 @@ public class CassalertServiceImpl extends ServiceImpl<CassalertDao, CassalertDO>
     }
 
     @Override
-    public CassalertDO queryBank(String strBankNum) {
+    public CassalertDO queryBank(String strBankNum, String orgcode) {
+        if (!orgcode.equals("") && !strBankNum.equals(orgcode)) {
+            return null;
+        }
         CassalertDO cassalertDO = cassalertDao.selectBank(strBankNum);
         log.info("银行预警值查询：{}", cassalertDO);
         return cassalertDO;
     }
 
     @Override
-    public CassalertDO queryBranch(String strBranchNum) {
+    public CassalertDO queryBranch(String strBranchNum, String orgcode) {
+        if (!orgcode.equals("") && !strBranchNum.equals(orgcode)) {
+            return null;
+        }
         CassalertDO cassalertDO = cassalertDao.selectBranch(strBranchNum);
         log.info("分行预警值查询：{}", cassalertDO);
         return cassalertDO;

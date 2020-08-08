@@ -20,6 +20,7 @@ public class DcStatusDO implements Serializable {
     @TableId(value = "ID", type = IdType.AUTO)
     private String id;
     private String strTermNum;
+    private String dcDesc;
     private String strVMName;
     private Integer ihdwStatus;
     private String strVMDetailedStatus;

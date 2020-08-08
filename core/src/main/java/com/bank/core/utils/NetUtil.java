@@ -16,36 +16,22 @@ public class NetUtil {
     ConfigFileReader configFileReader;
 
     public String getUrlSuffix(String contextPath) {
-        String ip = "";
-        if (configFileReader.getSpringProfile().equals("dev")) {
-            ip = configFileReader.getApplicationIp();
-        }
         //生产环境与sit环境使用域名
-        else if (StringUtils.indexOf("sit,pro", configFileReader.getSpringProfile()) > -1) {
+        if (StringUtils.indexOf("sit,pro", configFileReader.getSpringProfile()) > -1) {
             return "http://" + configFileReader.getApplicationIp() + contextPath;
         }
-        else {
-            ip = cn.hutool.core.net.NetUtil.getLocalhostStr();
-        }
-        return "http://" + ip + ":" + configFileReader.getApplicationPort() + contextPath;
+        return "http://" + configFileReader.getApplicationIp() + ":" + configFileReader.getApplicationPort() + contextPath;
     }
 
     public String getUrlSuffix() {
-        String ip = "";
-        if (configFileReader.getSpringProfile().equals("dev")) {
-            ip = configFileReader.getApplicationIp();
-        }
         //生产环境与sit环境使用域名
-        else if (StringUtils.indexOf("sit,pro", configFileReader.getSpringProfile()) > -1) {
+        if (StringUtils.indexOf("sit,pro", configFileReader.getSpringProfile()) > -1) {
             return "http://" + configFileReader.getApplicationIp() + configFileReader.getApplicationContextPath();
         }
-        else {
-            ip = cn.hutool.core.net.NetUtil.getLocalhostStr();
-        }
-        return "http://" + ip + ":" + configFileReader.getApplicationPort() + configFileReader.getApplicationContextPath();
+        return "http://" + configFileReader.getApplicationIp() + ":" + configFileReader.getApplicationPort() + configFileReader.getApplicationContextPath();
     }
 
-    private String getProIp() {
+    public String getProIp() {
         String ip = "";
         try {
             Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();

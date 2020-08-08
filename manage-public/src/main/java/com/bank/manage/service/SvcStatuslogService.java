@@ -1,12 +1,12 @@
 package com.bank.manage.service;
 
+import com.bank.core.entity.PageQueryModel;
 import com.bank.manage.dos.SvcStatuslogDO;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
-import java.util.List;
-
 public interface SvcStatuslogService extends IService<SvcStatuslogDO> {
-    List<SvcStatuslogDO> queryList(String termNum);
+    IPage<SvcStatuslogDO> queryList(PageQueryModel pageQueryModel);
 
     void setSvc(SvcStatuslogDO statuslogDO);
 }

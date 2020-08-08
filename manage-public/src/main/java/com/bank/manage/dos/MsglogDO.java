@@ -31,4 +31,5 @@ public class MsglogDO implements Serializable {
     private LocalDateTime sendDate;
     private LocalDateTime createDate;
 
+    private String powerNum;
 }

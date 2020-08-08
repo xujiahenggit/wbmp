@@ -10,7 +10,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.bank.manage.dos.UsherDO;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,6 +28,7 @@ import com.bank.auth.base.BaseController;
 import com.bank.core.entity.BizException;
 import com.bank.core.entity.PageQueryModel;
 import com.bank.core.utils.PropertyUtil;
+import com.bank.manage.dos.UsherDO;
 import com.bank.manage.dos.UsherPopulationDO;
 import com.bank.manage.dto.UsherDTO;
 import com.bank.manage.dto.UsherPopulationDTO;
@@ -74,28 +74,28 @@ public class UsherController extends BaseController {
     @ApiImplicitParam(name = "usherDTO", value = "网点引导员信息", required = true, paramType = "body", dataType = "UsherDTO")
     @PostMapping
     public Integer insert(UsherDTO usherDTO, HttpServletRequest request) {
-        return this.usherService.insert(usherDTO, getCurrentUserId(request));
+        return usherService.insert(usherDTO, getCurrentUserId(request));
     }
 
     @ApiOperation(value = "删除网点引导员信息")
     @ApiImplicitParam(name = "id", value = "网点引导员唯一标识", required = true, paramType = "path")
     @DeleteMapping("/{id}")
     public Integer delete(@PathVariable Integer id, HttpServletRequest request) {
-        return this.usherService.deleteById(id, getCurrentUserId(request));
+        return usherService.deleteById(id, getCurrentUserId(request));
     }
 
     @ApiOperation(value = "更新网点引导员信息")
     @ApiImplicitParam(name = "usherDTO", value = "网点引导员信息", required = true, paramType = "body", dataType = "UsherDTO")
     @PutMapping
     public Integer updateById(@RequestBody UsherDTO usherDTO, HttpServletRequest request) {
-        return this.usherService.updateById(usherDTO, getCurrentUserId(request));
+        return usherService.updateById(usherDTO, getCurrentUserId(request));
     }
 
     @ApiOperation(value = "查询网点引导员信息-分页")
     @ApiImplicitParam(name = "pageQueryModel", value = "网点引导员信息分页查询", required = true, paramType = "body", dataType = "PageQueryModel")
     @PostMapping("/selectPage")
-    public IPage<UsherDTO> selectPage(@RequestBody PageQueryModel pageQueryModel) {
-        return this.usherService.selectPageExt(pageQueryModel);
+    public IPage<UsherDTO> selectPage(@RequestBody PageQueryModel pageQueryModel, HttpServletRequest request) {
+        return usherService.selectPageExt(pageQueryModel, getCurrentUserInfo(request).getOrgId());
     }
 
     @ApiOperation(value = "网点引导员信息-Excel导入模板下载")
@@ -135,7 +135,7 @@ public class UsherController extends BaseController {
             throw new BizException("请上传网点引导员信息Excel文件进行数据导入操作！");
         }
         try {
-            EasyExcel.read(excelFile.getInputStream(), UsherExcelData.class, new UsherExcelListener(this.usherService, getCurrentUserId(request), response)).sheet().doRead();
+            EasyExcel.read(excelFile.getInputStream(), UsherExcelData.class, new UsherExcelListener(usherService, getCurrentUserId(request), response)).sheet().doRead();
         }
         catch (IOException e) {
             throw new BizException("网点引导员信息-Excel数据导入失败");
@@ -153,7 +153,7 @@ public class UsherController extends BaseController {
             throw new BizException("请上传网点引导员人数控制Excel文件进行数据导入操作！");
         }
         try {
-            EasyExcel.read(excelFile.getInputStream(), UsherPopulationExcelData.class, new UsherPopulationExcelListener(this.usherService, getCurrentUserId(request), response)).sheet().doRead();
+            EasyExcel.read(excelFile.getInputStream(), UsherPopulationExcelData.class, new UsherPopulationExcelListener(usherService, getCurrentUserId(request), response)).sheet().doRead();
         }
         catch (IOException e) {
             throw new BizException("网点引导员人数控制-Excel数据导入失败");
@@ -164,7 +164,7 @@ public class UsherController extends BaseController {
     @ApiOperation(value = "网点引导员人数控制-导出Excel数据")
     @GetMapping("/downloadUsherPopulationData")
     public void downloadUsherPopulationData(HttpServletResponse response) throws IOException {
-        List<UsherPopulationDO> listData = this.usherService.selectUsherPopulation("");
+        List<UsherPopulationDO> listData = usherService.selectUsherPopulation("");
         List<UsherPopulationExcelData> excelData = new ArrayList<>();
         for (int i = 0; i < listData.size(); i++) {
             UsherPopulationExcelData rowData = new UsherPopulationExcelData();
@@ -184,26 +184,26 @@ public class UsherController extends BaseController {
     @ApiImplicitParam(name = "orgName", value = "机构名称", required = false)
     @GetMapping("/selectUsherPopulation")
     public List<UsherPopulationDO> selectUsherPopulation(@RequestParam(value = "orgName", required = false) String orgName, HttpServletRequest request) {
-        return this.usherService.selectUsherPopulation(orgName);
+        return usherService.selectUsherPopulation(orgName);
     }
 
     @ApiOperation(value = "保存网点引导员人数控制-多笔数据保存")
     @PostMapping("/saveUsherPopulation")
     public Integer saveUsherPopulation(@RequestBody @ApiParam(value = "网点引导员人数控制数据列表") List<UsherPopulationDTO> usherPopulationDTOList, HttpServletRequest request) {
-        return this.usherService.saveLimit(usherPopulationDTOList, getCurrentUserId(request));
+        return usherService.saveLimit(usherPopulationDTOList, getCurrentUserId(request));
     }
 
     @ApiOperation(value = "批量设置网点引导员人数控制")
     @ApiImplicitParam(name = "limit", value = "人数控制", required = true, paramType = "path")
     @PostMapping("/{limit}")
     public Integer batchSetLimit(@PathVariable Integer limit, HttpServletRequest request) {
-        return this.usherService.batchSetLimit(limit, getCurrentUserId(request));
+        return usherService.batchSetLimit(limit, getCurrentUserId(request));
     }
 
     @GetMapping("/queryUsherByPhone/{phone}")
     @ApiOperation(value = "根据手机号查询引导员信息")
     @ApiImplicitParam(name = "phone", value = "引导员手机号", required = true)
-    public List<UsherDO> queryUsherByPhone(@PathVariable("phone") String phone){
+    public List<UsherDO> queryUsherByPhone(@PathVariable("phone") String phone) {
         return usherService.queryUsherByPhone(phone);
     }
 

@@ -61,4 +61,12 @@ public interface SatisfactAttendDao extends BaseMapper<SatisfactAttendDO> {
      * @return
      */
     IPage<CheckWorkRejectDto> getSasifactWaitPerple(Page<CheckWorkRejectDto> page,@Param(value = "date") String date);
+
+    /**
+     * 月度满意度 未完成人数
+     * @param orgId
+     * @param queryDate
+     * @return
+     */
+    List<SatisfactAttendDO> getSatisfactAttendRejectSize(@Param(value = "orgId") String orgId,@Param(value = "queryDate") String queryDate);
 }

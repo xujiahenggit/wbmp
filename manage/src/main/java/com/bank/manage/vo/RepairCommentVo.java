@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 /**
  * @Author: Zhangfuqiang
@@ -20,6 +21,16 @@ public class RepairCommentVo {
     @ApiModelProperty("工单编号")
     @NotBlank(message = "工单编号不能为空！")
     private String workOrderCode;
+
+    @ApiModelProperty(value = "现场联系人工号")
+    private String contactId;
+
+    /**
+     * 工单类型
+     */
+    @ApiModelProperty("工单类型")
+    @NotBlank(message = "工单类型！")
+    private String repairType;
 
     /**
      * 评论等级
@@ -37,4 +48,15 @@ public class RepairCommentVo {
     private String  ratingNote ;
 
 
+    @ApiModelProperty("退回原因")
+    private String returnOpinion;
+
+    @ApiModelProperty("分行取消意见")
+    private String subCancelOpinion;
+
+    @ApiModelProperty("总行取消意见")
+    private String bankCancelOpinion;
+
+    @ApiModelProperty("操作: 1:确认；2：取消;3：知悉；4：退回；5：评价；6：厂商回复")
+    private String type;
 }

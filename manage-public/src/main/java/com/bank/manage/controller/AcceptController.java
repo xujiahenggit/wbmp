@@ -7,6 +7,7 @@ import com.bank.manage.dto.AcceptDTO;
 import com.bank.manage.entity.Result;
 import com.bank.manage.service.*;
 import com.bank.message.conf.WebSocketServer;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,14 +41,22 @@ public class AcceptController {
         Result resultBody;
         JSONObject jsonObject = JSONObject.parseObject(str);
         String code = jsonObject.getString("code");
-        if (code.equals("moduleState")) {
-            resultBody = setModuleState(jsonObject);
-        } else if (code.equals("serviceState")) {
-            resultBody = setServiceState(jsonObject);
-        } else if (code.equals("tradeLog")) {
-            resultBody = setTradeLog(jsonObject);
-        } else {
-            resultBody = new Result("9999", "交易码识别错误");
+        switch (code) {
+            case "moduleState":
+                resultBody = setModuleState(jsonObject);
+                if (StringUtils.isNotBlank(jsonObject.getString("SVCSTATUS"))) {
+                    setServiceState(jsonObject);
+                }
+                break;
+            case "serviceState":
+                resultBody = setServiceState(jsonObject);
+                break;
+            case "tradeLog":
+                resultBody = setTradeLog(jsonObject);
+                break;
+            default:
+                resultBody = new Result("9999", "交易码识别错误");
+                break;
         }
         if (resultBody.getRetmsg() == null || resultBody.getRetmsg().equals("")) {
             resultBody.setRetmsg("交易成功");
@@ -72,16 +81,16 @@ public class AcceptController {
             LocalDateTime now = ds.getNow(dcStatusDO);
 
             DcStatuslogDO dcStatuslogDO = DcStatuslogDO.builder()
-                    .strTermNum(strtermnum)
-                    .strVMName(acceptDTO.getSTRVMNAME())
+                    .strtermnum(strtermnum)
+                    .strvmname(acceptDTO.getSTRVMNAME())
                     .strhdwstatus(acceptDTO.getIHDWSTATUS() + "")
-                    .modelName(acceptDTO.getModelName())
-                    .modelStatusDesc(acceptDTO.getModelStatusDesc())
-                    .dtBegin(now)
+//                    .modelName(acceptDTO.getModelName())
+                    .modelstatusdesc(acceptDTO.getModelStatusDesc())
+                    .dtbegin(now)
                     .build();
             dls.log(dcStatuslogDO);
         }
-        return new Result("0000", "测试");
+        return new Result("0000", "交易成功");
     }
 
     private Result setServiceState(JSONObject jsonObject) {
@@ -95,43 +104,97 @@ public class AcceptController {
                 .svcstatus(termStatusDO.getSvcstatus())
                 .dtbegin(now).build();
         ss.setSvc(statuslogDO);
-        return new Result("0000", "");
+        return new Result("0000", "交易成功");
     }
 
     //(jsonObject.getString("transTime"))
     private Result setTradeLog(JSONObject jsonObject) {
-        TransDO transDO = TransDO.builder()
-                .transTime(LocalDateTime.parse(jsonObject.getString("transTime")
-                        , DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
-                .transStatus(jsonObject.getString("transStatus"))
-                .returnDesc(jsonObject.getString("returnDesc"))
-                .returnCode(jsonObject.getString("returnCode"))
-                .accountType(jsonObject.getString("accountType"))
-                .account(jsonObject.getString("account"))
-                .amount(Float.parseFloat(jsonObject.getString("amount")))
-                .transName(jsonObject.getString("transName"))
-                .strssbnum(jsonObject.getString("strssbnum"))
-                .strsubbranchnum(jsonObject.getString("strsubbranchnum"))
-                .strbranchnum(jsonObject.getString("strbranchnum"))
-                .strbanknum(jsonObject.getString("strbanknum"))
-                .tellernum(jsonObject.getString("tellernum"))
-                .targetAccount(jsonObject.getString("targetAccount"))
-                .innerTermNum(jsonObject.getString("innerTermNum"))
-                .termNum(jsonObject.getString("STRTERMNUM"))
-                .ownerOrgno(jsonObject.getString("ownerOrgno"))
-                .transOrgno(jsonObject.getString("transOrgno"))
-                .hostTsn(jsonObject.getString("hostTsn"))
-                .transCode(jsonObject.getString("transCode"))
-                .transType(jsonObject.getString("transType"))
-                .transSource(jsonObject.getString("transSource"))
-                .deviceType(jsonObject.getString("deviceType"))
-                .deviceClass(jsonObject.getString("deviceClass"))
-                .deviceId(jsonObject.getString("deviceId")).build();
+        TransDO transDO = new TransDO();
+        if (StringUtils.isNotBlank(jsonObject.getString("deviceId"))) {
+            transDO.setDeviceId(jsonObject.getString("deviceId"));
+        }
+        if (StringUtils.isNotBlank(jsonObject.getString("deviceClass"))) {
+            transDO.setDeviceClass(jsonObject.getString("deviceClass"));
+        }
+        if (StringUtils.isNotBlank(jsonObject.getString("deviceType"))) {
+            transDO.setDeviceType(jsonObject.getString("deviceType"));
+        }
+        if (StringUtils.isNotBlank(jsonObject.getString("transSource"))) {
+            transDO.setTransSource(jsonObject.getString("transSource"));
+        }
+        if (StringUtils.isNotBlank(jsonObject.getString("transType"))) {
+            transDO.setTransType(jsonObject.getString("transType"));
+        }
+        if (StringUtils.isNotBlank(jsonObject.getString("transCode"))) {
+            transDO.setTransCode(jsonObject.getString("transCode"));
+        }
+        if (StringUtils.isNotBlank(jsonObject.getString("hostTsn"))) {
+            transDO.setHostTsn(jsonObject.getString("hostTsn"));
+        }
+        if (StringUtils.isNotBlank(jsonObject.getString("transOrgno"))) {
+            transDO.setTransOrgno(jsonObject.getString("transOrgno"));
+        }
+        if (StringUtils.isNotBlank(jsonObject.getString("ownerOrgno"))) {
+            transDO.setOwnerOrgno(jsonObject.getString("ownerOrgno"));
+        }
+        if (StringUtils.isNotBlank(jsonObject.getString("STRTERMNUM"))) {
+            transDO.setTermNum(jsonObject.getString("STRTERMNUM"));
+        }
+        if (StringUtils.isNotBlank(jsonObject.getString("innerTermNum"))) {
+            transDO.setInnerTermNum(jsonObject.getString("innerTermNum"));
+        }
+        if (StringUtils.isNotBlank(jsonObject.getString("targetAccount"))) {
+            transDO.setTargetAccount(jsonObject.getString("targetAccount"));
+        }
+        if (StringUtils.isNotBlank(jsonObject.getString("tellernum"))) {
+            transDO.setTellernum(jsonObject.getString("tellernum"));
+        }
+        if (StringUtils.isNotBlank(jsonObject.getString("strbanknum"))) {
+            transDO.setStrbanknum(jsonObject.getString("strbanknum"));
+        }
+        if (StringUtils.isNotBlank(jsonObject.getString("strbranchnum"))) {
+            transDO.setStrbranchnum(jsonObject.getString("strbranchnum"));
+        }
+        if (StringUtils.isNotBlank(jsonObject.getString("strsubbranchnum"))) {
+            transDO.setStrsubbranchnum(jsonObject.getString("strsubbranchnum"));
+        }
+        if (StringUtils.isNotBlank(jsonObject.getString("strssbnum"))) {
+            transDO.setStrssbnum(jsonObject.getString("strssbnum"));
+        }
+        if (StringUtils.isNotBlank(jsonObject.getString("transName"))) {
+            transDO.setTransName(jsonObject.getString("transName"));
+        }
+        if (StringUtils.isNotBlank(jsonObject.getString("account"))) {
+            transDO.setAccount(jsonObject.getString("account"));
+        }
+        if (StringUtils.isNotBlank(jsonObject.getString("accountType"))) {
+            transDO.setAccountType(jsonObject.getString("accountType"));
+        }
+        if (StringUtils.isNotBlank(jsonObject.getString("returnCode"))) {
+            transDO.setReturnCode(jsonObject.getString("returnCode"));
+        }
+        if (StringUtils.isNotBlank(jsonObject.getString("returnDesc"))) {
+            transDO.setReturnDesc(jsonObject.getString("returnDesc"));
+        }
+        if (StringUtils.isNotBlank(jsonObject.getString("transTime"))) {
+            transDO.setTransTime(LocalDateTime.parse(jsonObject.getString("transTime")
+                    , DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        }
+        if (StringUtils.isNotBlank(jsonObject.getString("transStatus"))) {
+            transDO.setTransStatus(jsonObject.getString("transStatus"));
+        }
 
-        String s = JSONObject.toJSONString(transDO);
-        WebSocketServer.sendInfo(s, "");
+        //使用websocket推送给前端
+        try {
+            String s = JSONObject.toJSONString(transDO);
+            WebSocketServer.sendInfo(s, "10086");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
+        //入库
         boolean save = ts.save(transDO);
-        return new Result("0000", "");
+        //返回成功
+        return new Result("0000", "交易成功");
     }
 }

@@ -31,6 +31,11 @@
                 <if test="model.strPhoneNum != null and model.strPhoneNum !=''">
                     and STRPHONENUM = #{model.strPhoneNum}
                 </if>
+                <if test="model.powerNum != null and model.powerNum !=''">
+                    and (strbanknum = #{model.powerNum}
+                    or strbranchnum = #{model.powerNum}
+                    or strsubbranchnum = #{model.powerNum})
+                </if>
             </if>
         </where>
     </select>

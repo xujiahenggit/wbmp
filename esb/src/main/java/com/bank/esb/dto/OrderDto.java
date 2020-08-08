@@ -50,5 +50,16 @@ public class OrderDto {
     @ApiModelProperty(value = "工单描述")
     private String orderDetail;
 
+    @ApiModelProperty(value = "创建人联系电话")
+    private String createUserPhone;
+
+    @ApiModelProperty(value = "现场联系人")
+    private String sceneUserName;
+
+    @ApiModelProperty(value = "现场联系人电话")
+    private String sceneUserPhone;
+
+    @ApiModelProperty(value = "工单类型")
+    private String orderType;
 
 }

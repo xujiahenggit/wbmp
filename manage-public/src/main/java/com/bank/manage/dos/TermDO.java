@@ -1,5 +1,6 @@
 package com.bank.manage.dos;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,6 +35,11 @@ public class TermDO implements Serializable {
     private Integer forVerification;
     private String aptlId;
     private String strDevType;
+    /**
+     * 权限号码
+     */
+    @TableField(exist = false)
+    private String powerNum ;
 
 //    private String strpinkey;
 //    private String strmackey;

@@ -1,11 +1,9 @@
 package com.bank.esb.vo;
 
+import cn.hutool.core.date.DateTime;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * @Author: cq
@@ -32,18 +30,24 @@ public class InspectionSheetVo {
     @ApiModelProperty(value = "统计时间 1-上季度；2-本季度；3-上个半年；4-本半年")
     private String statisticalTime;
 
+    @ApiModelProperty(value = "开始时间")
+    private DateTime startTime;
+
+    @ApiModelProperty(value = "结束时间")
+    private DateTime endTime;
+
     @ApiModelProperty(value = "机构号")
     private String orgId;
 
     @ApiModelProperty(value = "服务商")
-    private String serviceProvider;
+    private String provider;
 
     @ApiModelProperty(value = "巡检标识 1-已巡检；2-未巡检")
     private String orderStatus;
 
     @ApiModelProperty(value = "分页大小")
-    private int pageSize;
+    private int pageSize=10;
 
     @ApiModelProperty(value = "第几页")
-    private int pageIndex;
+    private int pageIndex=1;
 }

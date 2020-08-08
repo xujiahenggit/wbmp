@@ -60,6 +60,7 @@
 
     <!--    统计加班时长-->
     <select id="getRestWorkLenghth" resultType="java.lang.Float">
+       SELECT IFNULL((
         SELECT
             SUM(WORK_SUPPLE_LENGTH)
         FROM
@@ -69,6 +70,7 @@
         AND WORK_SUPPLE_DATE=#{satisfactAttendYear}
         AND WORK_SUPPLE_STATE = 20
         AND WORK_SUPPLE_TYPE = #{type}
+       ),0)
     </select>
 
 
@@ -97,7 +99,7 @@
                     WS.WORK_SUPPLE_ID AS ID,
                     '引导员加班时长申请' AS NAME,
                     CONCAT(
-                        WORK_SUPPLE_DATE,
+                        WS.WORK_SUPPLE_DATE,
                         U.USHER_NAME,
                         '的加班时长申请'
                     ) AS CONTENT,
@@ -172,7 +174,7 @@
     <select id="getAeadyList" resultMap="Facilitator">
         SELECT
             NEW_TABLE.ID,
-            NEW_TABLE. NAME,
+            NEW_TABLE.NAME,
             NEW_TABLE.CONTENT,
             NEW_TABLE.TYPE,
             NEW_TABLE.DATE,

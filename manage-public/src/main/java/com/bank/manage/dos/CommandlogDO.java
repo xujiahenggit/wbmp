@@ -2,6 +2,7 @@ package com.bank.manage.dos;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@TableName("z_vw_command_log")
 public class CommandlogDO implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private String id;
@@ -35,6 +37,11 @@ public class CommandlogDO implements Serializable {
     private String strBranchNum;
     private String SubBranchNum;
     private String SsbNum;
+
+    /**
+     * 权限号码
+     */
+    private String powerNum;
 //    private LocalDateTime updatedAt;
     /*
     * "id": 1434,

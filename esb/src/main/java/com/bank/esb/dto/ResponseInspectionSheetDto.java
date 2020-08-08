@@ -13,8 +13,13 @@ import java.util.List;
 @ApiModel(description = "机构列表")
 @Data
 public class ResponseInspectionSheetDto {
+
     @ApiModelProperty(value = "业务响应码 -1: 交易失败 ; 0: 正常 , ")
     private String repcode;
+
     @ApiModelProperty(value = "机构列表")
-    private List<InspectionSheetDto> inspectionSheetDtoList;
+    private List<InspectionSheetDto> List;
+
+    @ApiModelProperty(value = "总记录条数")
+    private int total;
 }

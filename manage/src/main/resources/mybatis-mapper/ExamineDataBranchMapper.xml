@@ -48,6 +48,7 @@
 		<if test="outOrgId != null and outOrgId != ''">
 			AND EL.ORG_ID = #{outOrgId}
 		</if>
+		ORDER BY ER.ORG_ID, EL.ORG_ID, EL.EXCEL_QUARTER
 	</select>
 
 	<select id="queryExamineDataAnalyzeByBranch" resultType="com.bank.manage.vo.ExamineAnalyzeVo">

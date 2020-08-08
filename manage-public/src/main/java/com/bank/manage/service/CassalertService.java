@@ -6,11 +6,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 public interface CassalertService extends IService<CassalertDO> {
-    IPage<CassalertDO> queryList(PageQueryModel pageQueryModel);
+    IPage<CassalertDO> queryList(PageQueryModel pageQueryModel, String orgcode);
 
-    CassalertDO queryBank(String strBankNum);
+    CassalertDO queryBank(String strBankNum, String orgcode);
 
-    CassalertDO queryBranch(String strBranchNum);
+    CassalertDO queryBranch(String strBranchNum, String orgcode);
 
     boolean save(CassalertDO cassalertDO);
 

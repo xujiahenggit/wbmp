@@ -173,7 +173,7 @@ public class PartorlDownloadRecordServiceImpl extends ServiceImpl<PartorlDownloa
         List<PartorlRecordExcelEntity> listRecord = list;
         String fileName=configFileReader.getRECORD_EXCEL()+title+".xls";
         //String fileName = "D:/excel/excelFile/" + title + ".xls";
-        createExcelFile(title, sheetName, fileName, listRecord);
+        createExcelFile(title, sheetName, fileName, listRecord,configFileReader.getRECORD_EXCEL());
         return  fileName;
     }
 
@@ -184,8 +184,14 @@ public class PartorlDownloadRecordServiceImpl extends ServiceImpl<PartorlDownloa
      * @param fileName   文件名称
      * @param listRecord 列表
      */
-    private void createExcelFile(String title, String sheetName, String fileName, List<PartorlRecordExcelEntity> listRecord) {
+    private void createExcelFile(String title, String sheetName, String fileName, List<PartorlRecordExcelEntity> listRecord,String filePath) {
         try {
+
+            //创建目录
+            File temp=new File(filePath);
+            if(!temp.isDirectory()){
+                temp.mkdirs();
+            }
             FileOutputStream fos = null;
             Workbook workbook = null;
             ExportParams exportParams = new ExportParams(title, sheetName);
