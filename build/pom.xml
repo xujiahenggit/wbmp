@@ -41,6 +41,11 @@
         </dependency>
         <dependency>
             <groupId>com.bank</groupId>
+            <artifactId>manage-public</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.bank</groupId>
             <artifactId>service-quartz</artifactId>
             <version>1.0</version>
         </dependency>

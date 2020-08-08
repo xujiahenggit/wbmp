@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.TransDao">
+    <select id="queryList" resultType="com.bank.manage.dos.TransDO">
+        select * from z_vw_translog
+        <where>
+            <if test="model!=null">
+                <if test="model.termNum != null and model.termNum !=''">
+                    AND term_num = #{model.termNum}
+                </if>
+                <if test="model.strbanknum != null and model.strbanknum !=''">
+                    AND strbanknum = #{model.strbanknum}
+                </if>
+                <if test="model.strbranchnum != null and model.strbranchnum !=''">
+                    AND strbranchnum = #{model.strbranchnum}
+                </if>
+                <if test="model.strsubbranchnum != null and model.strsubbranchnum !=''">
+                    AND strsubbranchnum = #{model.strsubbranchnum}
+                </if>
+                <if test="model.strssbnum != null and model.strssbnum !=''">
+                    AND strssbnum = #{model.strssbnum}
+                </if>
+                <if test="model.beginTime != null and model.beginTime !=''">
+                    AND trans_time &gt;= #{model.beginTime}
+                </if>
+                <if test="model.endTime != null and model.endTime !=''">
+                    AND trans_time &lt;= #{model.endTime}
+                </if>
+            </if>
+        </where>
+    </select>
+
+    <!-- 首页今日交易总量 -->
+    <select id="selectTransGross" resultType="com.bank.manage.dto.HomePageTransHnumDTO">
+        SELECT a.hour hour, ifnull(b.count, 0) count FROM (
+        SELECT '00' hour UNION ALL SELECT '01' hour UNION ALL SELECT '02' hour UNION ALL SELECT '03' hour
+        UNION ALL SELECT '04' hour UNION ALL SELECT '05' hour UNION ALL SELECT '06' hour UNION ALL SELECT '07' hour
+        UNION ALL SELECT '08' hour UNION ALL SELECT '09' hour UNION ALL SELECT '10' hour UNION ALL SELECT '11' hour
+        UNION ALL SELECT '12' hour UNION ALL SELECT '13' hour UNION ALL SELECT '14' hour UNION ALL SELECT '15' hour
+        UNION ALL SELECT '16' hour UNION ALL SELECT '17' hour UNION ALL SELECT '18' hour UNION ALL SELECT '19' hour
+        UNION ALL SELECT '20' hour UNION ALL SELECT '21' hour UNION ALL SELECT '22' hour UNION ALL SELECT '23' hour
+        ) a LEFT JOIN
+            (
+            SELECT DATE_FORMAT(t.trans_time,'%H') as hour,count(*) as count
+            FROM z_vw_translog t
+            WHERE DATE_FORMAT(t.trans_time,'%Y-%m-%d') = curdate()
+            AND t.trans_status = 1
+            <if test="branchnum != null and branchnum != '' and branchnum.length() == 8">
+                AND T.STRSUBBRANCHNUM = #{branchnum}
+            </if>
+            <if test="branchnum != null and branchnum != '' and branchnum.length() == 4">
+                AND T.STRBRANCHNUM = #{branchnum}
+            </if>
+            GROUP BY HOUR(t.trans_time)
+            ) b
+        ON a.hour=b.hour
+        WHERE a.hour+0 &lt;= HOUR(NOW())
+        ORDER BY hour
+    </select>
+
+    <!-- 首页当月网点业务量排行榜 -->
+    <select id="listSsbRanking" resultType="com.bank.manage.dto.SsbRankingDTO">
+        SELECT
+        Z.STRSSBNAME,Z.STRSSBNUM,IFNULL(T.CO,0) COUNTNUM
+        FROM Z_SELFSVCBANK Z LEFT JOIN
+        (SELECT
+        ZS.STRSSBNAME,ZT.STRSSBNUM, COUNT(*) CO
+        FROM Z_SELFSVCBANK ZS LEFT JOIN Z_VW_TRANSLOG ZT ON ZS.STRSSBNUM = ZT.STRSSBNUM
+        WHERE ZT.TRANS_STATUS = 1 AND DATE_FORMAT(ZT.TRANS_TIME,'%y-%m') = DATE_FORMAT(CURDATE(),'%y-%m')
+        -- 非现金
+        <if test="deviceClass != null and deviceClass !='' and deviceClass == '1'.toString()">
+            AND ZT.DEVICE_CLASS = #{deviceClass}
+        </if>
+        -- 现金
+        <if test="deviceClass != null and deviceClass !='' and deviceClass == '0'.toString()">
+            AND ZT.DEVICE_CLASS != 1
+        </if>
+        <if test="branchnum != null and branchnum != '' and branchnum.length() == 8">
+            AND ZT.STRSUBBRANCHNUM = #{branchnum}
+        </if>
+        <if test="branchnum != null and branchnum != '' and branchnum.length() == 4">
+            AND ZT.STRBRANCHNUM = #{branchnum}
+        </if>
+        GROUP BY ZT.STRSSBNUM,ZS.STRSSBNAME) T ON Z.STRSSBNUM = T.STRSSBNUM
+        ORDER BY CO DESC
+        LIMIT 7
+    </select>
+
+    <!-- 首页月度业务量统计 -->
+    <select id="listSsbTransRankBar" resultType="com.bank.manage.dto.SsbTransRankBarDTO">
+        SELECT
+        sum(if(DATE_FORMAT(t.trans_time,'%y-%m') =  DATE_FORMAT(CURDATE(),'%y-01'), 1,0)) month1,-- 月数
+        sum(if(DATE_FORMAT(t.trans_time,'%y-%m') =  DATE_FORMAT(CURDATE(),'%y-02'), 1,0)) month2,
+        sum(if(DATE_FORMAT(t.trans_time,'%y-%m') =  DATE_FORMAT(CURDATE(),'%y-03'), 1,0)) month3,
+        sum(if(DATE_FORMAT(t.trans_time,'%y-%m') =  DATE_FORMAT(CURDATE(),'%y-04'), 1,0)) month4,
+        sum(if(DATE_FORMAT(t.trans_time,'%y-%m') =  DATE_FORMAT(CURDATE(),'%y-05'), 1,0)) month5,
+        sum(if(DATE_FORMAT(t.trans_time,'%y-%m') =  DATE_FORMAT(CURDATE(),'%y-06'), 1,0)) month6,
+        sum(if(DATE_FORMAT(t.trans_time,'%y-%m') =  DATE_FORMAT(CURDATE(),'%y-07'), 1,0)) month7,
+        sum(if(DATE_FORMAT(t.trans_time,'%y-%m') =  DATE_FORMAT(CURDATE(),'%y-08'), 1,0)) month8,
+        sum(if(DATE_FORMAT(t.trans_time,'%y-%m') =  DATE_FORMAT(CURDATE(),'%y-09'), 1,0)) month9,
+        sum(if(DATE_FORMAT(t.trans_time,'%y-%m') =  DATE_FORMAT(CURDATE(),'%y-10'), 1,0)) month10,
+        sum(if(DATE_FORMAT(t.trans_time,'%y-%m') =  DATE_FORMAT(CURDATE(),'%y-11'), 1,0)) month11,
+        sum(if(DATE_FORMAT(t.trans_time,'%y-%m') =  DATE_FORMAT(CURDATE(),'%y-12'), 1,0)) month12
+        FROM Z_VW_TRANSLOG T
+        WHERE T.TRANS_STATUS = 1
+        -- 非现金
+        <if test="deviceClass != null and deviceClass !='' and deviceClass == '1'.toString()">
+            AND T.DEVICE_CLASS = #{deviceClass}
+        </if>
+        -- 现金
+        <if test="deviceClass != null and deviceClass !='' and deviceClass == '0'.toString()">
+            AND T.DEVICE_CLASS != 1
+        </if>
+        <if test="branchnum != null and branchnum != '' and branchnum.length() == 8">
+            AND T.STRSUBBRANCHNUM = #{branchnum}
+        </if>
+        <if test="branchnum != null and branchnum != '' and branchnum.length() == 4">
+            AND T.STRBRANCHNUM = #{branchnum}
+        </if>
+    </select>
+
+</mapper>

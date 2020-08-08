@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bank.manage.dao.ZdeviceDao">
+
+	<!-- 注意 字典表要维护全设备类型的名称信息 -->
+    <select id="listDeviceTypeCount" resultType="com.bank.manage.dto.ZdeviceDictDTO">
+        SELECT ZSD.LABEL DICTNAME,IFNULL(ZD.CONNUM,0) CONNUM
+		FROM Z_SYS_DICT ZSD
+		LEFT JOIN ( SELECT
+					T.IDEVTYPE,
+					(SELECT ZS.LABEL FROM Z_SYS_DICT ZS WHERE ZS.KEY = 'DEVICE_TYPE' AND ZS.VALUE = T.IDEVTYPE) DICTNAME,
+					COUNT(*) CONNUM
+					FROM Z_DEVICE T
+					<where>
+						<if test="branchnum != null and branchnum != ''">
+							T.STRBRANCHNUM = #{branchnum}
+						</if>
+					</where>
+					GROUP BY DICTNAME ,T.IDEVTYPE) ZD
+		ON  ZD.IDEVTYPE = ZSD.VALUE
+		WHERE ZSD.KEY = 'DEVICE_TYPE'
+		ORDER BY CONNUM DESC
+    </select>
+	<!-- 注意 字典表要维护全设备的名称信息 -->
+    <select id="listDevmanuCount" resultType="com.bank.manage.dto.ZdeviceDictDTO">
+        SELECT ZSD.LABEL DICTNAME,IFNULL(ZD.CONNUM,0) CONNUM
+		FROM Z_SYS_DICT ZSD
+		LEFT JOIN ( SELECT
+					T.STRDEVMANU,
+					(SELECT ZS.LABEL FROM Z_SYS_DICT ZS WHERE ZS.KEY = 'DEVMANU' AND ZS.VALUE = T.STRDEVMANU) DICTNAME,
+					COUNT(*) CONNUM
+					FROM Z_DEVICE T
+					<where>
+						<if test="branchnum != null and branchnum != ''">
+							T.STRBRANCHNUM = #{branchnum}
+						</if>
+					</where>
+					GROUP BY DICTNAME,T.STRDEVMANU) ZD
+		ON  ZD.STRDEVMANU = ZSD.VALUE
+		WHERE ZSD.KEY = 'DEVMANU'
+		ORDER BY CONNUM DESC
+    </select>
+
+	<!-- 注意 字典表要维护全设备类型的名称信息 -->
+	<select id="listDeviceTypeCountSlave" resultType="com.bank.manage.dto.ZdeviceDictDTO">
+        SELECT ZSD.LABEL DICTNAME,IFNULL(ZD.CONNUM,0) CONNUM
+		FROM SYS_DICT ZSD
+		LEFT JOIN ( SELECT
+					T.IDEVTYPE,
+					(SELECT ZS.LABEL FROM SYS_DICT ZS WHERE ZS.KEY = 'DEVICE_TYPE' AND ZS.VALUE = T.IDEVTYPE) DICTNAME,
+					COUNT(*) CONNUM
+					FROM ssacardrun.DEVICE T
+					<where>
+						<if test="branchnum != null and branchnum != ''">
+							T.STRBRANCHNUM = #{branchnum}
+						</if>
+					</where>
+					GROUP BY DICTNAME ,T.IDEVTYPE) ZD
+		ON  ZD.IDEVTYPE = ZSD.VALUE
+		WHERE ZSD.KEY = 'DEVICE_TYPE'
+		ORDER BY CONNUM DESC
+    </select>
+	<!-- 注意 字典表要维护全设备的名称信息 -->
+	<select id="listDevmanuCountSlave" resultType="com.bank.manage.dto.ZdeviceDictDTO">
+        SELECT ZSD.LABEL DICTNAME,IFNULL(ZD.CONNUM,0) CONNUM
+		FROM SYS_DICT ZSD
+		LEFT JOIN ( SELECT
+					T.STRDEVMANU,
+					(SELECT ZS.LABEL FROM SYS_DICT ZS WHERE ZS.KEY = 'DEVMANU' AND ZS.VALUE = T.STRDEVMANU) DICTNAME,
+					COUNT(*) CONNUM
+					FROM ssacardrun.DEVICE T
+					<where>
+						<if test="branchnum != null and branchnum != ''">
+								T.STRBRANCHNUM = #{branchnum}
+						</if>
+					</where>
+					GROUP BY DICTNAME,T.STRDEVMANU) ZD
+		ON  ZD.STRDEVMANU = ZSD.VALUE
+		WHERE ZSD.KEY = 'DEVMANU'
+		ORDER BY CONNUM DESC
+    </select>
+</mapper>
